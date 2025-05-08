@@ -25,5 +25,12 @@ pub enum Expression<'a> {
     Unary { op: UnaryOperator, expr: Box<Expression<'a>> },
     Binary { left: Box<Expression<'a>>, op: BinaryOperator, right: Box<Expression<'a>> },
     Indexing(Box<IndexingExpression<'a>>),
-    PostfixUnary { op: UnaryOperator, expr: Box<Expression<'a>> },
+    PostfixUnary {
+        op: UnaryOperator,
+        expr: Box<Expression<'a>>,
+    },
+    This, // Added 'this' keyword expression
+    Base, // Added 'base' keyword expression
+    // TODO: Add variants for other C# expressions as needed:
+    // e.g., New, Cast, TypeOf, Default, Lambda, Query, etc.
 }

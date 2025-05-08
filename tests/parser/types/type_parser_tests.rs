@@ -1,4 +1,4 @@
-use nom::IResult;
+// use nom::IResult; // Removing unused import
 use bsharp::parser::nodes::identifier::Identifier;
 use bsharp::parser::nodes::types::{PrimitiveType, Type};
 use bsharp::parsers::types::type_parser::parse_type_expression;
@@ -10,16 +10,6 @@ fn parse_test(code: &str) -> Result<Type, String> {
         Ok((remaining, _)) => Err(format!("Didn't consume all input. Remaining: '{}'", remaining)),
         Err(e) => Err(format!("Parse error: {:?}", e)),
     }
-}
-
-// Helper for optional whitespace within tests
-fn ws<'a, F: 'a, O>(inner: F) -> impl FnMut(&'a str) -> IResult<&'a str, O>
-where
-    F: FnMut(&'a str) -> IResult<&'a str, O>,
-{
-    use nom::sequence::delimited;
-    use nom::character::complete::multispace0;
-    delimited(multispace0, inner, multispace0)
 }
 
 #[test]

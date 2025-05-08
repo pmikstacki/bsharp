@@ -17,7 +17,7 @@ fn test_parse_do_while_statement() {
             assert_eq!(do_while_stmt.condition, Expression::Literal(Literal::Boolean(false)));
             // Check block structure if needed
              assert!(matches!(*do_while_stmt.body, Statement::Block(_)));
-            if let Statement::Block(b) = *do_while_stmt.body {
+            if let Statement::Block(_b) = *do_while_stmt.body {
                // Check block contents if needed
             }
         }

@@ -5,13 +5,13 @@ use nom::{
     combinator::{value},
     multi::many0,
     sequence::{terminated},
-    IResult,
-    error::{Error, ErrorKind},
 };
+use nom::error::ParseError;
+use crate::parser::errors::{BResult, BSharpParseError};
 use crate::parser::nodes::declarations::Modifier;
 
 // Parse a single modifier keyword
-fn parse_single_modifier(input: &str) -> IResult<&str, Modifier> {
+fn parse_single_modifier(input: &str) -> BResult<&str, Modifier> {
     alt((
         // First group
         alt((
@@ -51,7 +51,7 @@ fn parse_single_modifier(input: &str) -> IResult<&str, Modifier> {
 }
 
 /// Parse and validate modifiers for a specific declaration type
-pub fn parse_modifiers_for_decl_type<'a>(input: &'a str, decl_type: &str) -> IResult<&'a str, Vec<Modifier>> {
+pub fn parse_modifiers_for_decl_type<'a>(input: &'a str, decl_type: &str) -> BResult<&'a str, Vec<Modifier>> {
     // Consume modifier + mandatory space
     let (input, mut modifiers) = many0(terminated(parse_single_modifier, multispace1))(input)?;
     
@@ -61,7 +61,7 @@ pub fn parse_modifiers_for_decl_type<'a>(input: &'a str, decl_type: &str) -> IRe
     // Check if all parsed modifiers are compatible with the declaration type
     for modifier in &modifiers {
         if !compatible_modifiers.contains(modifier) {
-            return Err(nom::Err::Error(Error::new(input, ErrorKind::Tag)));
+            return Err(nom::Err::Error(BSharpParseError::from_error_kind(input, nom::error::ErrorKind::Tag)));
         }
     }
     
@@ -69,7 +69,7 @@ pub fn parse_modifiers_for_decl_type<'a>(input: &'a str, decl_type: &str) -> IRe
     for (i, mod1) in modifiers.iter().enumerate() {
         for (j, mod2) in modifiers.iter().enumerate() {
             if i != j && mod1.is_incompatible_with(mod2) {
-                return Err(nom::Err::Error(Error::new(input, ErrorKind::Tag)));
+                return Err(nom::Err::Error(BSharpParseError::from_error_kind(input, nom::error::ErrorKind::Tag)));
             }
         }
     }
@@ -81,7 +81,7 @@ pub fn parse_modifiers_for_decl_type<'a>(input: &'a str, decl_type: &str) -> IRe
 }
 
 // Parse zero or more modifiers (for backward compatibility)
-pub fn parse_modifiers(input: &str) -> IResult<&str, Vec<Modifier>> {
+pub fn parse_modifiers(input: &str) -> BResult<&str, Vec<Modifier>> {
     // Consume modifier + mandatory space
     let (input, mut modifiers) = many0(terminated(parse_single_modifier, multispace1))(input)?;
     

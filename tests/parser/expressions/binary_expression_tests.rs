@@ -1,6 +1,8 @@
 use bsharp::parser::nodes::expressions::{
-    AssignmentExpression, BinaryOperator, Expression, Literal,
+    AssignmentExpression, BinaryOperator,
 };
+use bsharp::parser::nodes::expressions::expression::Expression;
+use bsharp::parser::nodes::expressions::literal::Literal;
 use bsharp::parser::nodes::identifier::Identifier;
 use bsharp::parsers::expressions::expression_parser::parse_expression;
 

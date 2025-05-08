@@ -147,7 +147,7 @@ fn test_parse_method_with_modifiers() {
     ));
     assert_eq!(parse_method_declaration(input), expected);
 
-    let input = "private async Task ProcessAsync(int x)";
+    let _input = "private async Task ProcessAsync(int x)";
     let input_with_body = "private async Task ProcessAsync(int x);";
     let expected_modifiers_async = vec![Modifier::Private, Modifier::Async];
     let expected_async: Result<(&str, MethodDeclaration), String> = Ok((
@@ -157,16 +157,23 @@ fn test_parse_method_with_modifiers() {
             return_type: types::Type::Reference(Identifier { name: "Task".to_string() }),
             name: Identifier { name: "ProcessAsync".to_string() },
             type_parameters: vec![],
-            parameters: vec![],
+            parameters: vec![types::Parameter {
+                ty: types::Type::Primitive(types::PrimitiveType::Int),
+                name: Identifier { name: "x".to_string() },
+                _phantom: PhantomData,
+            }],
             constraints: vec![],
-            body: Some(";".to_string()),
+            body: None, // Changed from Some("".to_string()) to None
             _phantom: PhantomData,
         },
     ));
+
     let result = parse_method_declaration(input_with_body);
-    assert!(result.is_ok());
-    let (_, parsed_decl) = result.unwrap();
-    assert_eq!(parsed_decl.modifiers, expected_modifiers_async); // expected_modifiers_async is not moved because we cloned it above
-    assert_eq!(parsed_decl.return_type, types::Type::Reference(Identifier { name: "Task".to_string() }));
-    assert_eq!(parsed_decl.name, Identifier { name: "ProcessAsync".to_string() });
+    assert!(result.is_ok(), "Parsing failed for input '{}': {:?}", input_with_body, result.err());
+    let (remaining_actual, parsed_decl_actual) = result.unwrap();
+
+    let (remaining_expected, expected_decl_struct) = expected_async.expect("expected_async was an Err, which should not happen for an Ok-defined literal");
+
+    assert_eq!(remaining_actual, remaining_expected, "Remaining input did not match for: {}", input_with_body);
+    assert_eq!(parsed_decl_actual, expected_decl_struct, "Parsed method declaration did not match for: {}", input_with_body);
 }

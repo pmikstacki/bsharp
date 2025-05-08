@@ -242,12 +242,9 @@ fn test_parse_class_with_modifiers() {
             })
         ],
     });
-    let result_sealed = parse_class_decl_test(input);
-    assert!(result_sealed.is_ok(), "Parsing failed for: {input}");
-    let parsed_decl = result_sealed.unwrap();
-    assert_eq!(parsed_decl.modifiers, expected_modifiers_sealed); 
-    assert_eq!(parsed_decl.name, Identifier { name: "FinalClass".to_string() });
-    assert!(!parsed_decl.members.is_empty()); 
+    let result_sealed_case = parse_class_decl_test(input);
+    assert!(result_sealed_case.is_ok(), "Parsing failed for: {input}");
+    assert_eq!(result_sealed_case, expected_sealed);
 
     let input_static = "public static class Utility {}";
     let expected_modifiers_static = vec![Modifier::Public, Modifier::Static];

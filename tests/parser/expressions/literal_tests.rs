@@ -1,6 +1,6 @@
 // Tests for parsing literals
 
-use bsharp::parser::nodes::expressions::Literal;
+use bsharp::parser::nodes::expressions::literal::Literal;
 use bsharp::parsers::expressions::literal_parser::parse_literal;
 
 #[test]

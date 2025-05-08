@@ -7,7 +7,7 @@ use nom::{
 use crate::parser::errors::BResult;
 use crate::parser::nodes::declarations::local_variable_declaration::{LocalVariableDeclaration, VariableDeclarator};
 // Import bws, remove local ws. Ensure bchar, keyword etc. are imported.
-use crate::parser::parser_helpers::{bchar, bs_context, bws, nom_to_bs}; 
+use crate::parser::parser_helpers::{bchar, bs_context, bws, nom_to_bs, keyword}; 
 use crate::parsers::expressions::expression_parser::parse_expression;
 use crate::parsers::identifier_parser::parse_identifier;
 use crate::parsers::types::type_parser::parse_type_expression;
@@ -35,23 +35,22 @@ pub fn parse_variable_declarator(input: &str) -> BResult<&str, VariableDeclarato
     )(input)
 }
 
-// Parse a local variable declaration: <type> <declarator> (, <declarator>)* ;
+// Parse a local variable declaration: [const] <type> <declarator> (, <declarator>)* ;
 pub fn parse_local_variable_declaration(input: &str) -> BResult<&str, LocalVariableDeclaration> {
     bs_context(
         "local variable declaration",
         map(
             tuple((
-                // bws expects its inner parser to return BResult, so wrap parse_type_expression (which returns IResult)
+                opt(keyword("const")), // Optionally parse "const"
                 bws(nom_to_bs(parse_type_expression)),
-                // parse_variable_declarator returns BResult
-                // bchar returns BResult
                 separated_list1(bws(bchar(',')), parse_variable_declarator),
-                // bchar returns BResult
                 bws(bchar(';')) 
             )),
-            |(ty, declarators, _)| LocalVariableDeclaration { ty, declarators }
+            |(const_modifier, ty, declarators, _)| LocalVariableDeclaration {
+                is_const: const_modifier.is_some(), // Check if 'const' was present
+                ty,
+                declarators
+            }
         )
     )(input)
 }
-
-

@@ -7,7 +7,6 @@ use bsharp::parser::nodes::statements::statement::Statement;
 use bsharp::parser::nodes::declarations::LocalVariableDeclaration;
 use bsharp::parser::nodes::types::{PrimitiveType, Type};
 use bsharp::parsers::statements::block_statement_parser::parse_block_statement;
-use bsharp::parsers::statement_parser::parse_statement;
 use bsharp::parser::test_helpers::parse_all;
 use nom::combinator::all_consuming;
 use nom::Finish;
@@ -105,18 +104,5 @@ fn test_parse_block_statement_with_statements() {
             }
         }
         _ => panic!("Expected Statement::Block for block with statements"),
-    }
-}
-
-// Helper function from statement_tests.rs
-fn assert_statement_parses(code: &str, expected: Statement) {
-    let code_trimmed = code.trim();
-    match all_consuming(parse_statement)(code_trimmed).finish() {
-        Ok((_, parsed_statement)) => {
-            assert_eq!(parsed_statement, expected, "Parsed statement does not match expected for code: {}\n", code_trimmed);
-        }
-        Err(e) => {
-            panic!("Parser failed for code: '{}'\nError: {:?}", code_trimmed, e);
-        }
     }
 }

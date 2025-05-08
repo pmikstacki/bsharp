@@ -5,23 +5,23 @@ use nom::{
     combinator::{value, opt, map},
     multi::{many0, separated_list0},
     sequence::delimited,
-    IResult,
 };
+use crate::parser::errors::BResult;
 use crate::parser::nodes::types::{TypeParameter, Variance};
 use crate::parser::nodes::declarations::{TypeParameterConstraint, TypeParameterConstraintClause};
 use crate::parsers::identifier_parser::parse_identifier;
 use crate::parsers::types::type_parser::parse_type_expression;
 
 // Helper for optional whitespace
-fn ws<'a, F: 'a, O>(inner: F) -> impl FnMut(&'a str) -> IResult<&'a str, O>
+fn ws<'a, F: 'a, O>(inner: F) -> impl FnMut(&'a str) -> BResult<&'a str, O>
 where
-    F: FnMut(&'a str) -> IResult<&'a str, O>,
+    F: FnMut(&'a str) -> BResult<&'a str, O>,
 {
     delimited(multispace0, inner, multispace0)
 }
 
 // Parse variance keyword (in/out)
-fn parse_variance(input: &str) -> IResult<&str, Variance> {
+fn parse_variance(input: &str) -> BResult<&str, Variance> {
     alt((
         value(Variance::In, tag("in")),
         value(Variance::Out, tag("out")),
@@ -29,7 +29,7 @@ fn parse_variance(input: &str) -> IResult<&str, Variance> {
 }
 
 // Parse a single type parameter, e.g., "T", "in T", "out T"
-fn parse_single_type_parameter(input: &str) -> IResult<&str, TypeParameter> {
+fn parse_single_type_parameter(input: &str) -> BResult<&str, TypeParameter> {
     // Try parsing optional variance keyword first
     let (input, variance) = opt(ws(parse_variance))(input)?;
     let (input, name) = parse_identifier(input)?;
@@ -42,7 +42,7 @@ fn parse_single_type_parameter(input: &str) -> IResult<&str, TypeParameter> {
 }
 
 // Parse a list of type parameters enclosed in angle brackets, e.g., "<T, in U>"
-pub fn parse_type_parameter_list(input: &str) -> IResult<&str, Vec<TypeParameter>> {
+pub fn parse_type_parameter_list(input: &str) -> BResult<&str, Vec<TypeParameter>> {
     delimited(
         ws(nom_char('<')),
         separated_list0(ws(nom_char(',')), ws(parse_single_type_parameter)),
@@ -51,13 +51,13 @@ pub fn parse_type_parameter_list(input: &str) -> IResult<&str, Vec<TypeParameter
 }
 
 // Optional type parameter list (returns empty Vec if no list)
-pub fn opt_parse_type_parameter_list(input: &str) -> IResult<&str, Vec<TypeParameter>> {
+pub fn opt_parse_type_parameter_list(input: &str) -> BResult<&str, Vec<TypeParameter>> {
     opt(parse_type_parameter_list)(input)
     .map(|(rest, opt_list)| (rest, opt_list.unwrap_or_default()))
 }
 
 // Parse a single constraint (e.g., 'class', 'struct', 'new()', 'BaseType', 'T')
-fn parse_type_parameter_constraint(input: &str) -> IResult<&str, TypeParameterConstraint> {
+fn parse_type_parameter_constraint(input: &str) -> BResult<&str, TypeParameterConstraint> {
     // For now, let's just handle simple type constraints (identifiers)
     // Need to add parsing for 'class', 'struct', 'new()'
     alt((
@@ -72,7 +72,7 @@ fn parse_type_parameter_constraint(input: &str) -> IResult<&str, TypeParameterCo
 }
 
 // Parse a 'where' clause for a specific type parameter
-fn parse_where_clause(input: &str) -> IResult<&str, TypeParameterConstraintClause> {
+fn parse_where_clause(input: &str) -> BResult<&str, TypeParameterConstraintClause> {
     let (input, _) = ws(tag("where"))(input)?;
     let (input, name) = ws(parse_identifier)(input)?;
     let (input, _) = ws(nom_char(':'))(input)?;
@@ -89,6 +89,6 @@ fn parse_where_clause(input: &str) -> IResult<&str, TypeParameterConstraintClaus
 }
 
 // Parse zero or more 'where' clauses
-pub fn parse_type_parameter_constraints_clauses(input: &str) -> IResult<&str, Vec<TypeParameterConstraintClause>> {
+pub fn parse_type_parameter_constraints_clauses(input: &str) -> BResult<&str, Vec<TypeParameterConstraintClause>> {
     many0(ws(parse_where_clause))(input)
 }

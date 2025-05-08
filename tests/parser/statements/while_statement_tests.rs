@@ -18,8 +18,8 @@ fn test_parse_while_statement() {
             assert_eq!(*while_stmt.condition, Expression::Literal(Literal::Boolean(true)));
             // Check block structure if needed
             assert!(matches!(*while_stmt.body, Statement::Block(_)));
-            if let Statement::Block(ref b) = *while_stmt.body {
-                // Check block contents if needed, e.g. b.len()
+            if let Statement::Block(ref _b) = *while_stmt.body {
+                // Check block contents if needed, e.g. _b.len()
             }
         }
         _ => panic!("Expected While statement"),

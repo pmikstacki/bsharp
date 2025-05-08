@@ -5,20 +5,20 @@ use nom::{
     bytes::complete::tag,
     combinator::{opt, value},
     sequence::delimited,
-    IResult,
 };
 use crate::parser::nodes::types::{PrimitiveType, Type};
+use crate::parser::errors::BResult;
 
 // Helper for optional whitespace
-fn ws<'a, F: 'a, O>(inner: F) -> impl FnMut(&'a str) -> IResult<&'a str, O>
+fn ws<'a, F: 'a, O>(inner: F) -> impl FnMut(&'a str) -> BResult<&'a str, O>
 where
-    F: FnMut(&'a str) -> IResult<&'a str, O>,
+    F: FnMut(&'a str) -> BResult<&'a str, O>,
 {
     delimited(multispace0, inner, multispace0)
 }
 
 // Parse primitive types like int, bool, string
-fn parse_primitive_type(input: &str) -> IResult<&str, Type> {
+fn parse_primitive_type(input: &str) -> BResult<&str, Type> {
     alt((
         value(Type::Primitive(PrimitiveType::Int), tag("int")),
         value(Type::Primitive(PrimitiveType::Bool), tag("bool")),
@@ -30,7 +30,7 @@ fn parse_primitive_type(input: &str) -> IResult<&str, Type> {
 }
 
 // Parse an identifier (qualified, e.g., System.Console)
-fn parse_identifier(input: &str) -> IResult<&str, String> {
+fn parse_identifier(input: &str) -> BResult<&str, String> {
     use nom::{bytes::complete::take_while1, multi::separated_list1};
     let (input, parts) = separated_list1(
         ws(nom_char('.')),
@@ -40,7 +40,7 @@ fn parse_identifier(input: &str) -> IResult<&str, String> {
 }
 
 // Parse a generic type: Identifier<type1, type2, ...>
-fn parse_generic_type(input: &str) -> IResult<&str, Type> {
+fn parse_generic_type(input: &str) -> BResult<&str, Type> {
     use nom::{multi::separated_list1, character::complete::char as nom_char};
     let (input, base) = parse_identifier(input)?;
     let (input, opt_generics) = opt(
@@ -57,7 +57,7 @@ fn parse_generic_type(input: &str) -> IResult<&str, Type> {
     }
 }
 
-fn parse_identifier_type(input: &str) -> IResult<&str, Type> {
+fn parse_identifier_type(input: &str) -> BResult<&str, Type> {
     parse_generic_type(input)
 }
 
@@ -68,7 +68,7 @@ fn parse_identifier_type(input: &str) -> IResult<&str, Type> {
 // }
 
 // Parse array type suffix like [], [,] etc.
-fn parse_array_suffix(input: &str) -> IResult<&str, usize> {
+fn parse_array_suffix(input: &str) -> BResult<&str, usize> {
     let (input, _) = ws(nom_char('['))(input)?;
     // Count the number of commas between brackets
     let (input, inner) = nom::bytes::complete::take_while(|c: char| c == ',' || c.is_whitespace())(input)?;
@@ -78,12 +78,12 @@ fn parse_array_suffix(input: &str) -> IResult<&str, usize> {
 }
 
 // Parse a potentially nullable type (e.g., int?)
-fn parse_nullable_suffix(input: &str) -> IResult<&str, ()> {
+fn parse_nullable_suffix(input: &str) -> BResult<&str, ()> {
     value((), nom_char('?'))(input)
 }
 
 // Main type parser: handles primitives, identifiers, arrays, nullables
-pub fn parse_type_expression(input: &str) -> IResult<&str, Type> {
+pub fn parse_type_expression(input: &str) -> BResult<&str, Type> {
     // Consume leading whitespace - REMOVED AGAIN
     // let (input, _) = multispace0(input)?;
 
@@ -95,7 +95,7 @@ pub fn parse_type_expression(input: &str) -> IResult<&str, Type> {
     let (input, _) = multispace0(input)?;
 
     // Define a helper function to parse and apply suffixes recursively
-    fn parse_suffixes<'a>(input: &'a str, ty: Type<'a>) -> IResult<&'a str, Type<'a>> {
+    fn parse_suffixes<'a>(input: &'a str, ty: Type<'a>) -> BResult<&'a str, Type<'a>> {
         // Try array suffix
         if let Ok((next_input, rank)) = parse_array_suffix(input) {
             let array_type = Type::Array { element_type: Box::new(ty), rank };
@@ -117,4 +117,3 @@ pub fn parse_type_expression(input: &str) -> IResult<&str, Type> {
     let (input, _) = multispace0(input)?;
     Ok((input, ty))
 }
-

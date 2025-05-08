@@ -4,8 +4,8 @@ use nom::{
     branch::alt,
     combinator::map,
     sequence::delimited,
-    IResult,
 };
+use crate::parser::errors::BResult;
 use crate::parser::nodes::declarations::{MethodDeclaration};
 use crate::parsers::identifier_parser::parse_identifier;
 use crate::parsers::types::type_parser::parse_type_expression;
@@ -14,15 +14,15 @@ use crate::parsers::declarations::parameter_parser::parse_parameter_list;
 use crate::parsers::declarations::modifier_parser::parse_modifiers_for_decl_type;
 
 // Helper for optional whitespace
-fn ws<'a, F: 'a, O>(inner: F) -> impl FnMut(&'a str) -> IResult<&'a str, O>
+fn ws<'a, F: 'a, O>(inner: F) -> impl FnMut(&'a str) -> BResult<&'a str, O>
 where
-    F: FnMut(&'a str) -> IResult<&'a str, O>,
+    F: FnMut(&'a str) -> BResult<&'a str, O>,
 {
     delimited(multispace0, inner, multispace0)
 }
 
 // Parser for method body (captures content within braces)
-fn parse_method_body(input: &str) -> IResult<&str, Option<String>> {
+fn parse_method_body(input: &str) -> BResult<&str, Option<String>> {
     // Try parsing a block body { ... }
     let block_parser = map(
         delimited(
@@ -43,7 +43,7 @@ fn parse_method_body(input: &str) -> IResult<&str, Option<String>> {
 }
 
 // Parse a method declaration
-pub fn parse_method_declaration(input: &str) -> IResult<&str, MethodDeclaration> {
+pub fn parse_method_declaration(input: &str) -> BResult<&str, MethodDeclaration> {
     // Parse modifiers with validation for method declarations
     let (input, modifiers) = ws(|i| parse_modifiers_for_decl_type(i, "method"))(input)?;
     

@@ -3,14 +3,25 @@ use serde::{Serialize, Deserialize};
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Serialize, Deserialize)]
 pub enum UnaryOperator {
     // Arithmetic
-    Plus,          // +
-    Minus,         // -
+    Plus,          // + (prefix)
+    Minus,         // - (prefix)
+
     // Logical
-    LogicalNot,    // !
+    LogicalNot,    // ! (prefix)
+
     // Bitwise
-    BitwiseNot,    // ~
-    // Increment/Decrement (prefix/postfix handled by context/structure)
-    Increment,     // ++
+    BitwiseNot,    // ~ (prefix)
+
+    // Increment/Decrement (prefix/postfix contextually distinguished by Expression enum variants)
+    Increment,     // ++ 
     Decrement,     // --
-    // TODO: Add others like await, typeof, sizeof? Maybe separate nodes.
+
+    // C# Specific Unary Operators
+    Await,         // await (prefix)
+    AddressOf,     // & (unsafe, prefix)
+    PointerIndirection, // * (unsafe, prefix)
+    Cast,          // (Type) (prefix, might need specific Expression variant later)
+    IndexFromEnd,  // ^ (prefix, e.g. ^1)
+    NullForgiving, // ! (postfix, e.g. expr!)
+    // TODO: Add others like typeof, sizeof? Maybe separate nodes.
 }

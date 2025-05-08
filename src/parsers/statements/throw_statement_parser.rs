@@ -4,11 +4,11 @@ use crate::parser::nodes::statements::statement::Statement;
 use nom::{
     character::complete::{multispace0, multispace1}, 
     combinator::{map, opt},
-    sequence::{preceded, terminated},
+    sequence::{preceded, tuple}, 
 };
 
 use crate::parser::errors::BResult;
-use crate::parser::parser_helpers::{bchar, bs_context, keyword}; 
+use crate::parser::parser_helpers::{bchar, bs_context, btag}; 
 use crate::parsers::expressions::expression_parser::parse_expression; 
 
 
@@ -18,11 +18,19 @@ pub fn parse_throw_statement(input: &str) -> BResult<&str, Statement> {
     bs_context(
         "throw statement",
         map(
-            terminated(
-                preceded(keyword("throw"), opt(preceded(multispace1, parse_expression))),
-                preceded(multispace0, bchar(';'))
-            ),
-            |expr| Statement::Throw(expr.map(Box::new)),
+            tuple((
+                multispace0, 
+                btag("throw"), 
+                opt( 
+                    preceded(
+                        multispace1, 
+                        parse_expression
+                    )
+                ),
+                multispace0, 
+                bchar(';')   
+            )),
+            |(_, _, expr_opt, _, _)| Statement::Throw(expr_opt.map(Box::new)),
         ),
     )(input)
 }

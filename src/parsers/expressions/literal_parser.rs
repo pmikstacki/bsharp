@@ -4,20 +4,20 @@ use nom::{
     character::complete::{char as nom_char, digit1, multispace0, none_of},
     combinator::{map, value, opt, map_res},
     sequence::delimited,
-    IResult,
 };
 use crate::parser::nodes::expressions::literal::Literal;
+use crate::parser::errors::BResult;
 
 // Helper for optional whitespace
-fn ws<'a, F: 'a, O>(inner: F) -> impl FnMut(&'a str) -> IResult<&'a str, O>
+fn ws<'a, F: 'a, O>(inner: F) -> impl FnMut(&'a str) -> BResult<&'a str, O>
 where
-    F: FnMut(&'a str) -> IResult<&'a str, O>,
+    F: FnMut(&'a str) -> BResult<&'a str, O>,
 {
     delimited(multispace0, inner, multispace0)
 }
 
 // Parse a boolean literal (true or false)
-pub fn parse_boolean(input: &str) -> IResult<&str, Literal> {
+pub fn parse_boolean(input: &str) -> BResult<&str, Literal> {
     alt((
         value(Literal::Boolean(true), tag_no_case("true")),
         value(Literal::Boolean(false), tag_no_case("false")),
@@ -25,12 +25,12 @@ pub fn parse_boolean(input: &str) -> IResult<&str, Literal> {
 }
 
 // Parse an integer literal
-pub fn parse_integer(input: &str) -> IResult<&str, Literal> {
+pub fn parse_integer(input: &str) -> BResult<&str, Literal> {
     map_res(digit1, |s: &str| s.parse::<i64>().map(Literal::Integer))(input)
 }
 
 // Parse a string literal (e.g., "hello", "with \" escape")
-pub fn parse_string(input: &str) -> IResult<&str, Literal> {
+pub fn parse_string(input: &str) -> BResult<&str, Literal> {
     map(
         delimited(
             nom_char('"'),
@@ -54,7 +54,7 @@ pub fn parse_string(input: &str) -> IResult<&str, Literal> {
 }
 
 // Parse a char literal (e.g., 'a', '\n')
-pub fn parse_char_literal(input: &str) -> IResult<&str, Literal> {
+pub fn parse_char_literal(input: &str) -> BResult<&str, Literal> {
     map(
         delimited(
             nom_char('\''),
@@ -66,7 +66,7 @@ pub fn parse_char_literal(input: &str) -> IResult<&str, Literal> {
 }
 
 // Main literal parser: tries boolean, integer, string, then char
-pub fn parse_literal(input: &str) -> IResult<&str, Literal> {
+pub fn parse_literal(input: &str) -> BResult<&str, Literal> {
     ws(alt((
         parse_boolean,
         parse_integer,

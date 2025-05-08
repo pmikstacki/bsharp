@@ -5,19 +5,19 @@ use nom::{
     combinator::{map, recognize, verify},
     multi::many0,
     sequence::{delimited, pair, preceded},
-    IResult,
 };
+use crate::parser::errors::BResult;
 
 // Helper for optional whitespace
-fn ws<'a, F: 'a, O>(inner: F) -> impl FnMut(&'a str) -> IResult<&'a str, O>
+fn ws<'a, F: 'a, O>(inner: F) -> impl FnMut(&'a str) -> BResult<&'a str, O>
 where
-    F: FnMut(&'a str) -> IResult<&'a str, O>,
+    F: FnMut(&'a str) -> BResult<&'a str, O>,
 {
     delimited(multispace0, inner, multispace0)
 }
 
 // Parse a C# identifier (letters, digits, underscore, but must start with letter or underscore)
-pub fn parse_identifier(input: &str) -> IResult<&str, Identifier> {
+pub fn parse_identifier(input: &str) -> BResult<&str, Identifier> {
     // C# identifiers can start with a letter or underscore, followed by
     // letters, digits, or underscores. Unicode support would be more complex.
     let identifier_start = alt((alpha1, recognize(nom_char('_'))));
@@ -53,7 +53,7 @@ fn is_keyword(word: &str) -> bool {
 }
 
 // Parse a qualified name (e.g., System.Collections.Generic)
-pub fn parse_qualified_name(input: &str) -> IResult<&str, Vec<Identifier>> {
+pub fn parse_qualified_name(input: &str) -> BResult<&str, Vec<Identifier>> {
     let dot = ws(nom_char('.'));
     let mut identifier = ws(parse_identifier);
     
