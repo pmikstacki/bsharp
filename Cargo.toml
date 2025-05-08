@@ -1,0 +1,38 @@
+[package]
+name = "bsharp"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+anyhow = "1.0"
+thiserror = "1.0"
+log = "0.4"
+env_logger = "0.10"
+
+# Parser combinator
+nom = "7.1"
+
+# CLI tools
+clap = { version = "4.4", features = ["derive"] }
+
+# SVG generation
+svg = "0.13"
+
+# Cranelift backend
+cranelift-codegen = "0.90"
+cranelift-module = "0.90"
+cranelift-entity = "0.90"
+cranelift-frontend = "0.90"
+cranelift-native = "0.90"
+cranelift-object = "0.90"   # Added for ObjectModule
+
+# Target description
+target-lexicon = "0.12" # Added
+
+# Additional utilities
+petgraph = "0.6"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+[features]
+default = []

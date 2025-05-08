@@ -1,0 +1,32 @@
+// Declare all statement test modules
+
+mod block_statement_tests;
+mod break_statement_tests;
+mod catch_clause_tests;
+mod checked_statement_tests;
+mod continue_statement_tests;
+mod do_while_statement_tests;
+mod expression_statement_tests;
+mod finally_clause_tests;
+mod fixed_statement_tests;
+mod for_each_statement_tests;
+mod for_statement_tests;
+mod foreach_statement_tests;
+mod goto_case_statement_tests;
+mod goto_statement_tests;
+mod if_statement_tests;
+mod label_statement_tests;
+mod local_declaration_statement_tests;
+mod lock_statement_tests;
+mod return_statement_tests;
+mod statement_tests;
+mod switch_label_tests;
+mod switch_section_tests;
+mod switch_statement_tests;
+mod throw_statement_tests;
+mod try_catch_finally_tests;
+mod try_statement_tests;
+mod unsafe_statement_tests;
+mod using_statement_tests;
+mod while_statement_tests;
+mod yield_statement_tests;
