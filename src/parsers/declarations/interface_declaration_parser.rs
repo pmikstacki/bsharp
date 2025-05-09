@@ -1,14 +1,8 @@
-use nom::character::complete::char;
-use nom::combinator::opt;
-
 use crate::parser::errors::BResult;
 use crate::parser::nodes::declarations::InterfaceDeclaration;
-use crate::parser::parser_helpers::{bws, keyword, nom_to_bs};
+use crate::parser::parser_helpers::nom_to_bs;
 use crate::parsers::declarations::attribute_parser::parse_attribute_lists;
-use crate::parsers::declarations::base_types_parser::parse_base_type_list;
-use crate::parsers::declarations::modifier_parser::parse_modifiers_for_decl_type;
-use crate::parsers::declarations::type_parameter_parser::parse_type_parameter_list;
-use crate::parsers::identifier_parser::parse_identifier;
+use crate::parsers::declarations::type_declaration_helpers::{parse_type_declaration_header, parse_open_brace, parse_close_brace};
 
 /// Parse an interface declaration
 /// Example in C#:
@@ -18,44 +12,27 @@ use crate::parsers::identifier_parser::parse_identifier;
 /// }
 /// ```
 pub fn parse_interface_declaration<'a>(input: &'a str) -> BResult<&'a str, InterfaceDeclaration<'a>> {
-    // Parse attributes (e.g., [Serializable])
-    let (input, attribute_lists) = parse_attribute_lists(input)?;
-    
-    // Convert AttributeList to Vec<Attribute> as expected by InterfaceDeclaration
-    let attributes = attribute_lists.into_iter()
-        .flat_map(|list| list.attributes)
-        .collect();
-    
-    // Use the improved declaration header parser to handle whitespace and modifiers
-    let mut header_parser = crate::parsers::declaration_helpers::parse_declaration_header(
-        |i| parse_modifiers_for_decl_type(i, "interface"),
-        "interface"
-    );
-    
-    let (input, (modifiers, _)) = header_parser(input)?;
-    
-    // Parse interface name with proper whitespace handling
-    let (input, name) = bws(nom_to_bs(parse_identifier))(input)?;
-    
-    // Parse optional type parameters for generic interfaces
-    let (input, type_parameters) = opt(bws(parse_type_parameter_list))(input)?;
-    
-    // Parse optional base type list (interfaces can inherit from other interfaces)
-    let (input, base_types) = opt(bws(parse_base_type_list))(input)?;
+    // Use the common type declaration header parser
+    let (input, base_decl) = parse_type_declaration_header(input, "interface", "interface")?;
     
     // Parse the interface body
-    let (input, _) = bws(nom_to_bs(char::<&str, nom::error::Error<&str>>('{')))(input)?;
+    let (input, _) = parse_open_brace(input)?;
     
     // TODO: Add proper interface member parsing here
     // For now, we'll just parse until closing brace
-    let (input, _) = bws(nom_to_bs(char::<&str, nom::error::Error<&str>>('}')))(input)?;
+    let (input, _) = parse_close_brace(input)?;
+    
+    // Convert AttributeList to Vec<Attribute> as expected by InterfaceDeclaration
+    let attributes = base_decl.attributes.into_iter()
+        .flat_map(|list| list.attributes)
+        .collect();
     
     Ok((input, InterfaceDeclaration {
         attributes,
-        modifiers,
-        name,
-        type_parameters: type_parameters.unwrap_or_default(),
-        base_types: base_types.unwrap_or_default(),
+        modifiers: base_decl.modifiers,
+        name: base_decl.name,
+        type_parameters: base_decl.type_parameters.unwrap_or_default(),
+        base_types: base_decl.base_types,
         members: vec![], // Will be filled in later when we implement interface member parsing
     }))
 }

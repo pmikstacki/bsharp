@@ -1,26 +1,16 @@
 use nom::{
     branch::alt,
-    character::complete::{char as nom_char, multispace0, multispace1},
+    character::complete::{char as nom_char},
     bytes::complete::{tag, take_until},
     combinator::{map, opt},
     sequence::tuple,
 };
 
 use crate::parser::errors::BResult;
-use crate::parser::nodes::declarations::{
-    RecordDeclaration,
-    Attribute, // Changed from attribute::AttributeList to match the AST node structure
-    modifier::Modifier,
-};
+use crate::parser::nodes::declarations::RecordDeclaration;
 use crate::parser::nodes::types::Type;
-use crate::parser::nodes::types::Parameter;
-
 use crate::parser::parser_helpers::{bws, nom_to_bs};
-use crate::parsers::identifier_parser::parse_identifier;
-use crate::parsers::declarations::type_parameter_parser::opt_parse_type_parameter_list;
-use crate::parsers::declarations::modifier_parser::parse_modifiers_for_decl_type;
-use crate::parsers::declarations::base_types_parser::parse_base_type_list;
-use crate::parsers::declarations::attribute_parser::parse_attribute_lists;
+use crate::parsers::declarations::type_declaration_helpers::{BaseTypeDeclaration, parse_type_declaration_header, parse_open_brace, parse_close_brace};
 use crate::parsers::declarations::parameter_parser::parse_parameter_list;
 
 /// Parse a C# record declaration with full feature support.
@@ -31,43 +21,8 @@ use crate::parsers::declarations::parameter_parser::parse_parameter_list;
 /// 
 /// Records can also be declared as record structs: `record struct Point { ... }`
 pub fn parse_record_declaration<'a>(input: &'a str) -> BResult<&'a str, RecordDeclaration<'a>> {
-    // Parse attributes (e.g., [Serializable])
-    let (input, attribute_lists) = parse_attribute_lists(input)?;
-    
-    // Convert AttributeList to Vec<Attribute> as expected by RecordDeclaration
-    let attributes = attribute_lists.into_iter()
-        .flat_map(|list| list.attributes)
-        .collect();
-
-    // Handle the different record type variants with improved whitespace handling
-    let (input, (is_record_struct, modifiers)) = if let Ok((next_input, _)) = nom_to_bs(crate::parsers::declaration_helpers::parse_keyword("record"))(input) {
-        // This is a 'record' declaration (possibly followed by 'struct')
-        let (next_input2, struct_keyword) = opt(nom_to_bs(crate::parsers::declaration_helpers::parse_keyword("struct")))(next_input)?;
-        
-        // Parse modifiers with the appropriate declaration type
-        let decl_type = if struct_keyword.is_some() { "recordstruct" } else { "record" };
-        let (next_input3, modifiers) = bws(nom_to_bs(|i| parse_modifiers_for_decl_type(i, decl_type)))(next_input2)?;
-        
-        (next_input3, (struct_keyword.is_some(), modifiers))
-    } else {
-        // This might be a 'struct' record declaration
-        let mut header_parser = crate::parsers::declaration_helpers::parse_declaration_header(
-            |i| parse_modifiers_for_decl_type(i, "recordstruct"),
-            "struct"
-        );
-        
-        let (rest, (modifiers, _)) = header_parser(input)?;
-        (rest, (true, modifiers))
-    };
-    
-    // We've already determined if this is a struct record from our earlier parsing
-    let is_struct = is_record_struct;
-
-    // Parse record name
-    let (input, name) = bws(nom_to_bs(parse_identifier))(input)?;
-
-    // Parse optional type parameters (generics like <T, U>)
-    let (input, _type_parameters) = bws(nom_to_bs(opt_parse_type_parameter_list))(input)?;
+    // Records are special because we need to handle both "record" and "record struct" declarations
+    let (input, (is_struct, base_decl)) = parse_record_declaration_header(input)?;
 
     // Parse one of two forms - positional record or body record
     let positional_record_parser = map(
@@ -75,45 +30,72 @@ pub fn parse_record_declaration<'a>(input: &'a str) -> BResult<&'a str, RecordDe
             // Parse parameters
             bws(nom_to_bs(parse_parameter_list)),
             // Parse optional base types
-            parse_base_type_list,
-            // Parse optional semicolon at the end
             opt(bws(nom_to_bs(nom_char::<&str, nom::error::Error<&str>>(';')))),
         )),
-        |(params, base_types, _)| (params, base_types, vec![])
+        |(params, _)| (params, vec![])
     );
     
     let body_record_parser = map(
         tuple((
-            // Parse optional base types
-            parse_base_type_list,
             // Parse the opening brace
-            bws(nom_to_bs(nom_char::<&str, nom::error::Error<&str>>('{'))),
+            parse_open_brace,
             // TODO: Parse members here once struct_member parser is better
             //       For now, we'll just skip everything until the closing brace
             opt(bws(nom_to_bs(take_until::<&str, &str, nom::error::Error<&str>>("}")))),
             // Parse the closing brace
-            bws(nom_to_bs(nom_char::<&str, nom::error::Error<&str>>('}'))),
+            parse_close_brace,
         )),
-        |(base_types, _, _, _)| (vec![], base_types, vec![])
+        |(_, _, _)| (vec![], vec![])
     );
     
-    let (input, (parameters, base_types, members)) = alt((
+    let (input, (parameters, members)) = alt((
         positional_record_parser,
         body_record_parser,
     ))(input)?;
+    
+    // Convert AttributeList to Vec<Attribute> as expected by RecordDeclaration
+    let attributes = base_decl.attributes.into_iter()
+        .flat_map(|list| list.attributes)
+        .collect();
 
     Ok((
         input,
         RecordDeclaration {
             attributes,
-            modifiers,
-            name,
+            modifiers: base_decl.modifiers,
+            name: base_decl.name,
             is_struct,
             parameters,
-            base_types,
+            base_types: base_decl.base_types,
             members,
         },
     ))
+}
+
+/// Parse a record declaration header, which has special handling for both 'record' and 'record struct'
+fn parse_record_declaration_header<'a>(input: &'a str) -> BResult<&'a str, (bool, BaseTypeDeclaration<'a>)> {
+    // Try parsing as "record" or "record struct"
+    if let Ok((next_input, _)) = nom_to_bs(crate::parsers::declaration_helpers::parse_keyword("record"))(input) {
+        // This is a 'record' declaration (possibly followed by 'struct')
+        let (next_input2, struct_keyword) = opt(nom_to_bs(crate::parsers::declaration_helpers::parse_keyword("struct")))(next_input)?;
+        
+        // Determine is_struct based on presence of struct keyword
+        let is_struct = struct_keyword.is_some();
+        
+        // Choose the appropriate declaration type
+        let decl_type = if is_struct { "recordstruct" } else { "record" };
+        
+        // Parse the base type declaration (attributes, modifiers, name, etc.)
+        let (input, base_decl) = parse_type_declaration_header(next_input2, decl_type, "")?;
+        
+        Ok((input, (is_struct, base_decl)))
+    } else {
+        // Try parsing as "struct" which might be a record struct
+        let (input, base_decl) = parse_type_declaration_header(input, "recordstruct", "struct")?;
+        
+        // This is definitely a struct record
+        Ok((input, (true, base_decl)))
+    }
 }
 
 #[cfg(test)]

@@ -155,6 +155,22 @@ impl Modifier {
                 Modifier::Public, Modifier::Private, Modifier::Protected, Modifier::Internal,
                 Modifier::Static, Modifier::Abstract, Modifier::Sealed, Modifier::Partial, Modifier::New,
             ],
+            "struct" => vec![
+                Modifier::Public, Modifier::Private, Modifier::Protected, Modifier::Internal,
+                Modifier::Static, Modifier::Readonly, Modifier::Partial, Modifier::New, Modifier::Unsafe,
+            ],
+            "interface" => vec![
+                Modifier::Public, Modifier::Private, Modifier::Protected, Modifier::Internal,
+                Modifier::Partial, Modifier::New,
+            ],
+            "record" => vec![
+                Modifier::Public, Modifier::Private, Modifier::Protected, Modifier::Internal,
+                Modifier::Static, Modifier::Abstract, Modifier::Sealed, Modifier::Partial, Modifier::New,
+            ],
+            "enum" => vec![
+                Modifier::Public, Modifier::Private, Modifier::Protected, Modifier::Internal,
+                Modifier::New,
+            ],
             "method" => vec![
                 Modifier::Public, Modifier::Private, Modifier::Protected, Modifier::Internal,
                 Modifier::Static, Modifier::Abstract, Modifier::Virtual, Modifier::Override,

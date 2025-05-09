@@ -6,9 +6,10 @@ use nom::sequence::{preceded, tuple};
 use crate::parser::errors::BResult;
 use crate::parser::nodes::declarations::EnumDeclaration;
 use crate::parser::nodes::declarations::enum_declaration::EnumMember;
-use crate::parser::parser_helpers::{bws, keyword, nom_to_bs};
+use crate::parser::nodes::types::Type;
+use crate::parser::parser_helpers::{bws, nom_to_bs};
 use crate::parsers::declarations::attribute_parser::parse_attribute_lists;
-use crate::parsers::declarations::modifier_parser::parse_modifiers_for_decl_type;
+use crate::parsers::declarations::type_declaration_helpers::{parse_type_declaration_header, parse_open_brace, parse_close_brace};
 use crate::parsers::expressions::expression_parser::parse_expression;
 use crate::parsers::identifier_parser::parse_identifier;
 use crate::parsers::types::type_parser::parse_type_expression;
@@ -30,49 +31,37 @@ use crate::parsers::types::type_parser::parse_type_expression;
 /// }
 /// ```
 pub fn parse_enum_declaration<'a>(input: &'a str) -> BResult<&'a str, EnumDeclaration<'a>> {
-    // Parse attributes (e.g., [Flags])
-    let (input, attribute_lists) = parse_attribute_lists(input)?;
+    // Use the common type declaration header parser
+    let (input, base_decl) = parse_type_declaration_header(input, "enum", "enum")?;
     
-    // Convert AttributeList to Vec<Attribute> as expected by EnumDeclaration
-    let attributes = attribute_lists.into_iter()
-        .flat_map(|list| list.attributes)
-        .collect();
-    
-    // Use the improved declaration header parser to handle whitespace and modifiers
-    let mut header_parser = crate::parsers::declaration_helpers::parse_declaration_header(
-        |i| parse_modifiers_for_decl_type(i, "enum"),
-        "enum"
-    );
-    
-    let (input, (modifiers, _)) = header_parser(input)?;
-    
-    // Parse enum name with proper whitespace handling
-    let (input, name) = bws(nom_to_bs(parse_identifier))(input)?;
-    
-    // Parse optional underlying type (e.g., ': byte', ': int')
-    let (input, underlying_type) = opt(
-        tuple((
-            bws(nom_to_bs(char::<&str, nom::error::Error<&str>>(':'))),
-            bws(parse_type_expression)
-        ))
-    )(input)?;
+    // Parse optional underlying type (: byte, : int, etc.)
+    // This is unique to enums and not handled by the base parser
+    let (input, underlying_type) = opt(tuple((
+        bws(nom_to_bs(char::<&str, nom::error::Error<&str>>(':'))),
+        bws(nom_to_bs(parse_type_expression))
+    )))(input)?;
     
     // Extract the Type from the tuple, if present
     let underlying_type = underlying_type.map(|(_, ty)| ty);
     
-    // Parse the enum opening brace
-    let (input, _) = bws(nom_to_bs(char::<&str, nom::error::Error<&str>>('{')))(input)?;
+    // Parse the enum body
+    let (input, _) = parse_open_brace(input)?;
     
     // Parse enum members
     let (input, members) = parse_enum_members(input)?;
     
     // Parse the closing brace
-    let (input, _) = bws(nom_to_bs(char::<&str, nom::error::Error<&str>>('}')))(input)?;
+    let (input, _) = parse_close_brace(input)?;
+    
+    // Convert AttributeList to Vec<Attribute> as expected by EnumDeclaration
+    let attributes = base_decl.attributes.into_iter()
+        .flat_map(|list| list.attributes)
+        .collect();
     
     Ok((input, EnumDeclaration {
         attributes,
-        modifiers,
-        name,
+        modifiers: base_decl.modifiers,
+        name: base_decl.name,
         underlying_type,
         members,
     }))

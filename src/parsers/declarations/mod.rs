@@ -18,5 +18,8 @@ pub mod namespace_declaration_parser;
 pub mod base_types_parser;
 pub mod attribute_parser;
 
+// Common helpers modules
+pub mod type_declaration_helpers;
+
 // Re-export key node types if needed for convenience, though often handled in src/parser/nodes/mod.rs
 // pub use crate::parser::nodes::declarations::TypeParameterConstraintClause;

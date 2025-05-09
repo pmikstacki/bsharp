@@ -1,27 +1,20 @@
-use nom::{
-    branch::alt,
-    character::complete::{char, multispace0, multispace1},
-    bytes::complete::tag,
-    combinator::{map, opt},
-    multi::many0,
-    sequence::{delimited, terminated, tuple},
-};
+use nom::{branch::alt, bytes::complete::tag, character::complete::multispace0, combinator::{map, opt}};
 
-use crate::parser::errors::BResult;
+use crate::parser::errors::{BResult, BSharpParseError, CustomErrorKind};
 use crate::parser::nodes::declarations::{
-    StructDeclaration, StructMember, attribute::AttributeList, modifier::Modifier,
+    StructDeclaration, StructMember, Modifier
 };
-use crate::parser::nodes::types::{Type, TypeParameter};
 use crate::parser::nodes::identifier::Identifier;
-
-use crate::parser::parser_helpers::{bws, nom_to_bs};
-use crate::parsers::identifier_parser::parse_identifier;
-use crate::parsers::declarations::type_parameter_parser::opt_parse_type_parameter_list;
-use crate::parsers::declarations::modifier_parser::parse_modifiers_for_decl_type;
-use crate::parsers::declarations::base_types_parser::parse_base_type_list;
+use crate::parser::nodes::types::{Type, TypeParameter};
+use crate::parser::parser_helpers::{bws, nom_to_bs, keyword};
 use crate::parsers::declarations::attribute_parser::parse_attribute_lists;
 use crate::parsers::declarations::field_declaration_parser::parse_field_declaration;
 use crate::parsers::declarations::method_declaration_parser::parse_method_declaration;
+use crate::parsers::declarations::modifier_parser::parse_modifiers;
+use crate::parsers::declarations::type_parameter_parser::opt_parse_type_parameter_list;
+use crate::parsers::declarations::base_types_parser::parse_base_type_list;
+use crate::parsers::identifier_parser::parse_identifier;
+use crate::parsers::declarations::type_declaration_helpers::{parse_open_brace, parse_close_brace, at_end_of_body};
 
 /// Parse a struct member (field, method, constructor, etc.)
 fn parse_struct_member<'a>(input: &'a str) -> BResult<&'a str, StructMember<'a>> {
@@ -53,77 +46,82 @@ fn parse_struct_member<'a>(input: &'a str) -> BResult<&'a str, StructMember<'a>>
 /// [Serializable]
 /// public struct KeyValuePair<TKey, TValue> { ... }
 /// ```
+/// Parses a C# struct declaration with full feature support.
+///
+/// # Examples
+///
+/// Basic struct:
+/// ```csharp
+/// struct Point { int x; int y; }
+/// ```
+///
+/// Struct with modifiers and interfaces:
+/// ```csharp
+/// public struct Measurement : IComparable, IFormattable { ... }
+/// ```
+///
+/// Generic struct with attributes:
+/// ```csharp
+/// [Serializable]
+/// public struct KeyValuePair<TKey, TValue> { ... }
+/// ```
 pub fn parse_struct_declaration<'a>(input: &'a str) -> BResult<&'a str, StructDeclaration<'a>> {
-    // Parse attributes (e.g., [Serializable])
+    // First parse attributes (can be empty)
     let (input, attributes) = parse_attribute_lists(input)?;
-
-    // Parse modifiers (e.g., public, internal, readonly)
-    // Make sure to handle whitespace properly between modifiers
-    let (input, modifiers) = parse_modifiers_for_decl_type(input, "struct")?;
-
-    // Parse the "struct" keyword
-    // We need to be careful about whitespace here - there must be whitespace before the struct keyword
-    // if there are modifiers
-    let (input, _) = bws(nom_to_bs(tag::<_, _, nom::error::Error<_>>("struct")))(input)?;
-
-    // Parse the struct name with proper whitespace handling
-    let (input, name) = bws(nom_to_bs(parse_identifier))(input)?;
     
-    // Parse optional type parameters (generics like <T, U>)
-    let (input, type_parameters) = opt(bws(nom_to_bs(opt_parse_type_parameter_list)))(input)?;
+    // Parse optional modifiers (public, private, etc.) but NOT the struct keyword itself
+    // We're only looking for access/other modifiers that precede the struct keyword
+    let (input, modifiers) = parse_modifiers(input)?;
     
-    // Flatten the Option<Option<Vec<...>>> to Option<Vec<...>>
-    let type_parameters = type_parameters.and_then(|x| x);
+    // Parse the 'struct' keyword as a separate token (not a modifier)
+    // This should always be present for a struct declaration
+    let (input, _) = nom_to_bs(multispace0::<&str, nom::error::Error<&str>>)(input)?;
+    let (input, _) = keyword("struct")(input)?;
     
-    // Parse optional base types (interfaces implemented by the struct)
+    // Parse the struct name (identifier)
+    let (input, _) = nom_to_bs(multispace0::<&str, nom::error::Error<&str>>)(input)?;
+    let (input, name) = nom_to_bs(parse_identifier)(input)?;
+    
+    // Parse optional type parameters like <T> or <K, V>
+    let (input, _) = nom_to_bs(multispace0::<&str, nom::error::Error<&str>>)(input)?;
+    let (input, type_params_opt) = opt(nom_to_bs(opt_parse_type_parameter_list))(input)?;
+    let type_parameters = type_params_opt.and_then(|tp| tp);
+    
+    // Parse optional base type list (interfaces)
+    let (input, _) = nom_to_bs(multispace0::<&str, nom::error::Error<&str>>)(input)?;
     let (input, base_types) = parse_base_type_list(input)?;
     
-    // Parse struct body enclosed in {}
-    // Use nom_to_bs and bws for consistent whitespace handling with direct call
-    let (input, _) = bws(nom_to_bs(char::<_, nom::error::Error<_>>('{')))(input)?;
+    // Parse the struct body between { }
+    let (input, _) = nom_to_bs(multispace0::<&str, nom::error::Error<&str>>)(input)?;
+    let (input, _) = nom_to_bs(tag::<&str, &str, nom::error::Error<&str>>("{"))(input)?; // Fix the incorrect tag function call syntax
     
     // Parse struct members (fields, methods, etc.)
     let mut members = Vec::new();
-    let mut current_input = input;
+    let mut current = input;
     
-    loop {
-        // Skip whitespace
-        let (after_ws, _) = multispace0(current_input)?;
-        
-        // If we find a closing brace, we're done parsing members
-        if after_ws.starts_with('}') {
-            current_input = after_ws;
-            break;
-        }
-        
-        // Try to parse a struct member
-        match parse_struct_member(after_ws) {
-            Ok((new_input, member)) => {
+    // Keep parsing members until we hit the closing brace
+    while !at_end_of_body(current) {
+        match parse_struct_member(current) {
+            Ok((rest, member)) => {
                 members.push(member);
-                current_input = new_input;
+                current = rest;
             },
-            Err(_) => {
-                // If we can't parse a member, we're at the end or there's a syntax error
-                break;
-            }
+            Err(_) => break, // Break if we can't parse more members
         }
     }
     
-    // Parse closing brace with proper whitespace handling with direct call
-    let (input, _) = bws(nom_to_bs(char::<_, nom::error::Error<_>>('}')))(current_input)?;
+    // Parse the closing brace
+    let (input, _) = parse_close_brace(current)?;
     
-    // Construct and return the StructDeclaration
-    Ok((
-        input,
-        StructDeclaration {
-            attributes,
-            modifiers,
-            name,
-            type_parameters,
-            base_types,
-            members,
-        },
-    ))
+    // Return the completed struct declaration
+    Ok((input, StructDeclaration {
+        attributes,
+        modifiers,
+        name,
+        type_parameters,
+        base_types, 
+        members,
+    }))
 }
 
 #[cfg(test)]
@@ -131,7 +129,9 @@ mod tests {
     use super::*;
     use crate::parser::nodes::declarations::Modifier;
     use crate::parser::nodes::declarations::field_declaration::FieldDeclaration;
-    use crate::parser::nodes::types::PrimitiveType;
+    use crate::parser::nodes::types::{PrimitiveType, TypeParameter};
+    use crate::parser::nodes::identifier::Identifier;
+    use crate::parser::nodes::types::Variance;
 
     #[test]
     fn test_simple_struct() {
