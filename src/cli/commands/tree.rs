@@ -6,6 +6,9 @@ use anyhow::{Result, Context, anyhow};
 use crate::parser;
 use crate::parser::ast;
 
+const SVG_HEADER: &str = "<?xml version=\"1.0\" standalone=\"no\"?>\n<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\">";
+const SVG_FOOTER: &str = "</svg>";
+
 /// Execute the tree command: generate an SVG visualization of the AST
 pub fn execute(input: PathBuf, output: Option<PathBuf>) -> Result<()> {
     // Read the source code
@@ -24,9 +27,12 @@ pub fn execute(input: PathBuf, output: Option<PathBuf>) -> Result<()> {
         path
     });
     
-    // Generate SVG for the AST
-    generate_svg_ast(&ast, &output_path)
-        .with_context(|| format!("Failed to generate SVG AST: {}", output_path.display()))?;
+    // Generate SVG content
+    let svg_content = generate_svg_ast(&ast, &output_path)?;
+    
+    // Write the SVG to file
+    fs::write(output_path.clone(), svg_content)
+        .with_context(|| format!("Failed to write SVG file: {}", output_path.display()))?;
     
     println!("SVG AST visualization written to: {}", output_path.display());
     
@@ -34,7 +40,7 @@ pub fn execute(input: PathBuf, output: Option<PathBuf>) -> Result<()> {
 }
 
 /// Generate an SVG representation of the AST
-fn generate_svg_ast(_ast: &ast::SourceFile, output_path: &Path) -> Result<()> {
+fn generate_svg_ast(_ast: &ast::CompilationUnit, output_path: &Path) -> Result<String> {
     // Create a new SVG document
     let mut document = svg::Document::new()
         .set("viewBox", (0, 0, 1200, 800))
@@ -70,16 +76,15 @@ fn generate_svg_ast(_ast: &ast::SourceFile, output_path: &Path) -> Result<()> {
         .set("x", 600)
         .set("y", 75)
         .set("text-anchor", "middle")
-        .add(svg::node::Text::new("SourceFile"));
+        .add(svg::node::Text::new("CompilationUnit"));
     document = document.add(root_text);
     
     // TODO: Recursively visualize the AST tree structure here
     // This is a placeholder that would be expanded to traverse the 
     // AST and create a proper tree visualization
     
-    // Save the SVG document to a file
-    svg::save(output_path, &document)
-        .context("Failed to save SVG file")?;
+    // Save the SVG document to a string
+    let svg_content = format!("{}{}{}", SVG_HEADER, document.to_string(), SVG_FOOTER);
     
-    Ok(())
+    Ok(svg_content)
 }

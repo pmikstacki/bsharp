@@ -68,7 +68,7 @@ pub fn parse_method_declaration(input: &str) -> BResult<&str, MethodDeclaration>
             modifiers,
             return_type,
             name,
-            type_parameters,
+            type_parameters, // Now this is Option<Vec<TypeParameter>> matching the AST node definition
             parameters,
             constraints,
             body: body_str,

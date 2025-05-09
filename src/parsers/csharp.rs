@@ -6,18 +6,22 @@ use nom::character::complete::{multispace0, multispace1};
 use nom::combinator::map;
 
 use crate::parser::errors::BResult;
-use crate::parser::ast::{SourceFile, TopLevelMember};
-use crate::parser::nodes::declarations::{UsingDirective, NamespaceDeclaration};
-use crate::parser::nodes::declarations::namespace_declaration::NamespaceMember;
+use crate::parser::ast::{CompilationUnit, TopLevelMember};
+use crate::parser::nodes::declarations::UsingDirective;
 use crate::parser::nodes::identifier::Identifier;
 use crate::parser::parser_helpers::{bchar, keyword, nom_to_bs, bws};
 use crate::parsers::declarations::class_declaration_parser::parse_class_declaration;
+use crate::parsers::declarations::struct_declaration_parser::parse_struct_declaration;
+use crate::parsers::declarations::record_declaration_parser::parse_record_declaration;
+use crate::parsers::declarations::interface_declaration_parser::parse_interface_declaration;
+use crate::parsers::declarations::enum_declaration_parser::parse_enum_declaration;
+use crate::parsers::declarations::namespace_declaration_parser::parse_namespace_declaration;
 use crate::parsers::identifier_parser::parse_qualified_name;
 
 /// Parse a C# source file following Roslyn's model where a source file contains:
 /// - using directives (imports)
 /// - namespace or top-level type declarations
-pub fn parse_csharp_source<'a>(input: &'a str) -> BResult<&'a str, SourceFile<'a>> {
+pub fn parse_csharp_source<'a>(input: &'a str) -> BResult<&'a str, CompilationUnit<'a>> {
     println!("Starting source file parsing with input length: {}", input.len());
     
     // Skip any leading whitespace and remove any BOM or other text markers
@@ -95,11 +99,11 @@ pub fn parse_csharp_source<'a>(input: &'a str) -> BResult<&'a str, SourceFile<'a
     }
     
     // Create the source file
-    let source_file = SourceFile { usings, members };
+    let compilation_unit = CompilationUnit { usings, members };
     
     // Log some debug info
     println!("Parsed source file with {} usings and {} members", 
-        source_file.usings.len(), source_file.members.len());
+        compilation_unit.usings.len(), compilation_unit.members.len());
     
     // Check if we fully consumed the input
     if !remaining.trim().is_empty() {
@@ -109,7 +113,7 @@ pub fn parse_csharp_source<'a>(input: &'a str) -> BResult<&'a str, SourceFile<'a
         println!("Successfully parsed the entire input.");
     }
     
-    Ok((remaining, source_file))
+    Ok((remaining, compilation_unit))
 }
 
 // Parse a using directive
@@ -168,160 +172,11 @@ fn parse_top_level_member<'a>(input: &'a str) -> BResult<&'a str, TopLevelMember
     
     // We prioritize namespace parsing over class parsing
     alt((
-        parse_namespace,
-        parse_class,
+        map(parse_namespace_declaration, TopLevelMember::Namespace),
+        map(parse_class_declaration, TopLevelMember::Class),
+        map(parse_struct_declaration, TopLevelMember::Struct),
+        map(parse_record_declaration, TopLevelMember::Record),
+        map(parse_interface_declaration, TopLevelMember::Interface),
+        map(parse_enum_declaration, TopLevelMember::Enum),
     ))(input)
-}
-
-// Parse a namespace
-fn parse_namespace<'a>(input: &'a str) -> BResult<&'a str, TopLevelMember<'a>> {
-    // Print the input for debugging
-    println!("Trying to parse namespace from: {}", input.chars().take(60).collect::<String>());
-    
-    // Skip leading whitespace
-    let (input, _) = multispace0(input)?;
-    
-    // Check for 'namespace' keyword
-    if !input.starts_with("namespace") {
-        println!("Not a namespace declaration: doesn't start with 'namespace'");
-        return Err(nom::Err::Error(crate::parser::errors::BSharpParseError::new(
-            input,
-            crate::parser::errors::CustomErrorKind::Expected("namespace")
-        )));
-    }
-    
-    // Parse the 'namespace' keyword
-    let (input, _) = keyword("namespace")(input)?;
-    println!("Found 'namespace' keyword");
-    
-    // Parse required whitespace after 'namespace'
-    let (input, _) = multispace1(input)?;
-    
-    // Parse the namespace name (qualified name like 'System.Collections')
-    let (input, name) = nom_to_bs(parse_qualified_name)(input)?;
-    let namespace_name = name.iter().map(|i| i.name.clone()).collect::<Vec<_>>().join(".");
-    println!("Found namespace name: {}", namespace_name);
-    
-    // Parse optional whitespace before opening brace
-    let (input, _) = multispace0(input)?;
-    
-    // Parse opening brace
-    let (input, _) = bchar('{')(input)?;
-    println!("Found opening brace");
-    
-    // Parse optional whitespace after opening brace
-    let (input, _) = multispace0(input)?;
-    
-    // Parse using directives within namespace
-    let mut usings = Vec::new();
-    let mut current_input = input;
-    
-    loop {
-        let trimmed = current_input.trim_start();
-        if !trimmed.starts_with("using") {
-            break; // No more using directives
-        }
-        
-        match parse_using_directive(current_input) {
-            Ok((rest, using)) => {
-                println!("Parsed using directive inside namespace");
-                usings.push(using);
-                current_input = rest;
-            },
-            Err(_) => break,
-        }
-    }
-    
-    // Parse namespace members (classes, etc.)
-    let mut members = Vec::new();
-    
-    loop {
-        let trimmed = current_input.trim_start();
-        if trimmed.is_empty() || trimmed.starts_with("}") {
-            break; // End of namespace or empty
-        }
-        
-        match parse_namespace_member(current_input) {
-            Ok((rest, member)) => {
-                println!("Parsed namespace member");
-                members.push(member);
-                current_input = rest;
-            },
-            Err(e) => {
-                println!("Failed to parse namespace member: {:?}", e);
-                break;
-            }
-        }
-    }
-    
-    // Parse optional whitespace before closing brace
-    let (current_input, _) = multispace0(current_input)?;
-    
-    // Parse closing brace
-    let (current_input, _) = bchar('}')(current_input)?;
-    println!("Found closing brace");
-    
-    // Parse optional whitespace after closing brace
-    let (current_input, _) = multispace0(current_input)?;
-    
-    println!("Successfully parsed namespace '{}' with {} usings and {} members", 
-        namespace_name, usings.len(), members.len());
-    
-    // Create the namespace declaration
-    let namespace_decl = TopLevelMember::Namespace(NamespaceDeclaration {
-        name: Identifier { name: namespace_name },
-        usings,
-        members,
-    });
-    
-    Ok((current_input, namespace_decl))
-}
-
-// Parse a namespace member (namespace or class)
-fn parse_namespace_member<'a>(input: &'a str) -> BResult<&'a str, NamespaceMember<'a>> {
-    alt((
-        map(
-            parse_namespace,
-            |member| match member {
-                TopLevelMember::Namespace(ns) => NamespaceMember::Namespace(ns),
-                // This shouldn't happen with our parser setup, but we need to handle all cases
-                TopLevelMember::Class(cls) => NamespaceMember::Class(cls),
-            }
-        ),
-        map(
-            nom_to_bs(parse_class_declaration),
-            |class| NamespaceMember::Class(class)
-        ),
-    ))(input)
-}
-
-// Parse a top-level class declaration
-fn parse_class<'a>(input: &'a str) -> BResult<&'a str, TopLevelMember<'a>> {
-    // Print the input for debugging
-    println!("Attempting to parse class from: {}", input.chars().take(60).collect::<String>());
-    
-    // Skip leading whitespace
-    let (input, _) = multispace0(input)?;
-    
-    // Check if we potentially have a class declaration (by looking for 'class' keyword)
-    if !input.contains("class") {
-        println!("Not a class declaration: doesn't contain 'class' keyword");
-        return Err(nom::Err::Error(crate::parser::errors::BSharpParseError::new(
-            input,
-            crate::parser::errors::CustomErrorKind::Expected("class")
-        )));
-    }
-    
-    // Try to parse the class declaration using the imported function
-    // We need to convert between BResult types
-    match nom_to_bs(parse_class_declaration)(input) {
-        Ok((remaining, class_decl)) => {
-            println!("Successfully parsed class: {}", class_decl.name.name);
-            Ok((remaining, TopLevelMember::Class(class_decl)))
-        },
-        Err(e) => {
-            println!("Failed to parse class declaration: {:?}", e);
-            Err(e)
-        }
-    }
 }

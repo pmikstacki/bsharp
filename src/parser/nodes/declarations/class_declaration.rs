@@ -7,6 +7,6 @@ use crate::parser::nodes::types::TypeParameter;
 pub struct ClassDeclaration<'a> {
     pub modifiers: Vec<Modifier>,
     pub name: Identifier,
-    pub type_parameters: Vec<TypeParameter>,
+    pub type_parameters: Option<Vec<TypeParameter>>,
     pub members: Vec<ClassMember<'a>>,
 }

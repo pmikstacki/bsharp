@@ -43,7 +43,7 @@ pub use type_parameter_constraint::{TypeParameterConstraintClause, TypeParameter
 pub use global_attribute::GlobalAttribute;
 pub use file_scoped_namespace_declaration::FileScopedNamespaceDeclaration;
 pub use global_using_directive::GlobalUsingDirective;
-pub use struct_declaration::StructDeclaration;
+pub use struct_declaration::{StructDeclaration, StructMember};
 pub use enum_declaration::EnumDeclaration;
 pub use interface_declaration::InterfaceDeclaration;
 pub use delegate_declaration::DelegateDeclaration;

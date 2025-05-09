@@ -162,27 +162,38 @@ impl CodeGenerator {
         }
     }
 
-    pub fn compile(mut self, ast: &ast::SourceFile) -> Result<Vec<u8>, String> { 
+    pub fn compile(mut self, ast: &ast::CompilationUnit) -> Result<Vec<u8>, String> { 
         // TODO: Implement compilation logic
         // For now, just process the AST structure and perhaps define functions
 
         for member in &ast.members { 
             match member {
+                ast::TopLevelMember::Namespace(ns) => {
+                    // TODO: Handle namespace members
+                    for _member /* type Member */ in &ns.members {
+                        // self.visit_declaration(member)?; // Assuming a method to handle declarations
+                    }
+                }
                 ast::TopLevelMember::Class(class_decl) => {
-                    // Call the compile_node method from the trait
-                    // Pass None for class_name context at the top level
-                    class_decl.compile_node(
-                        None, 
-                        &mut self.module, 
-                        &mut self.builder_context, 
-                        &mut self.context
-                    )?;
+                    self.visit_class_declaration(class_decl)?;
                 }
-                ast::TopLevelMember::Namespace(namespace_decl) => {
-                    // TODO: Handle namespace members recursively
-                    eprintln!("Skipping namespace compilation: {}", namespace_decl.name);
+                ast::TopLevelMember::Struct(_) => {
+                    // TODO: Implement codegen for StructDeclaration
+                    todo!("Codegen for StructDeclaration not implemented");
                 }
-                // TODO: Handle other MemberDeclarationSyntax variants when added
+                ast::TopLevelMember::Record(_) => {
+                    // TODO: Implement codegen for RecordDeclaration
+                    todo!("Codegen for RecordDeclaration not implemented");
+                }
+                ast::TopLevelMember::Interface(_) => {
+                    // TODO: Implement codegen for InterfaceDeclaration
+                    todo!("Codegen for InterfaceDeclaration not implemented");
+                }
+                ast::TopLevelMember::Enum(_) => {
+                    // TODO: Implement codegen for EnumDeclaration
+                    todo!("Codegen for EnumDeclaration not implemented");
+                }
+                // TODO: Handle other top-level members like enums, interfaces, etc.
             }
         }
 
@@ -191,6 +202,15 @@ impl CodeGenerator {
             Ok(obj_bytes) => Ok(obj_bytes),
             Err(e) => Err(format!("Failed to emit object code: {}", e)),
         }
+    }
+
+    // Stub for visit_class_declaration
+    fn visit_class_declaration(&mut self, class_decl: &ast::ClassDeclaration<'_>) -> Result<(), String> {
+        // TODO: Implement actual class declaration visitation logic
+        // This might involve calling class_decl.compile_node(...) if that's the pattern,
+        // or other specific logic for classes.
+        class_decl.compile_node(None, &mut self.module, &mut self.builder_context, &mut self.context)?;
+        Ok(())
     }
 }
 

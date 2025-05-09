@@ -9,7 +9,7 @@ pub struct MethodDeclaration<'a> {
     pub modifiers: Vec<Modifier>,
     pub return_type: Type<'a>,
     pub name: Identifier,
-    pub type_parameters: Vec<TypeParameter>,
+    pub type_parameters: Option<Vec<TypeParameter>>,
     pub parameters: Vec<Parameter<'a>>,
     pub body: Option<String>,
     pub constraints: Vec<TypeParameterConstraintClause<'a>>,

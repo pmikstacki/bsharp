@@ -9,6 +9,7 @@ use nom::{
 use nom::error::ParseError;
 use crate::parser::errors::{BResult, BSharpParseError};
 use crate::parser::nodes::declarations::Modifier;
+use crate::parser::parser_helpers::bws;
 
 // Parse a single modifier keyword
 fn parse_single_modifier(input: &str) -> BResult<&str, Modifier> {
@@ -52,8 +53,9 @@ fn parse_single_modifier(input: &str) -> BResult<&str, Modifier> {
 
 /// Parse and validate modifiers for a specific declaration type
 pub fn parse_modifiers_for_decl_type<'a>(input: &'a str, decl_type: &str) -> BResult<&'a str, Vec<Modifier>> {
-    // Consume modifier + mandatory space
-    let (input, mut modifiers) = many0(terminated(parse_single_modifier, multispace1))(input)?;
+    // Parse modifiers with optional whitespace between them
+    // Use bws (bounded whitespace) to make it more flexible
+    let (input, mut modifiers) = many0(bws(parse_single_modifier))(input)?;
     
     // Get compatible modifiers for this declaration type
     let compatible_modifiers = Modifier::get_compatible_modifiers_for(decl_type);

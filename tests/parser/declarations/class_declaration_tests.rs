@@ -23,7 +23,7 @@ fn test_parse_simple_class() {
     let expected = ClassDeclaration {
         modifiers: vec![],
         name: Identifier { name: "MyClass".to_string() },
-        type_parameters: vec![],
+        type_parameters: vec![].into(),
         members: vec![], 
     };
     assert_eq!(parse_class_decl_test(code), Ok(expected));
@@ -44,7 +44,7 @@ fn test_parse_generic_class() {
                 name: Identifier { name: "TValue".to_string() },
                 variance: Variance::None,
             },
-        ],
+        ].into(),
         members: vec![], 
     };
     assert_eq!(parse_class_decl_test(code), Ok(expected));
@@ -60,13 +60,13 @@ fn test_parse_class_with_method() {
     let expected = ClassDeclaration {
         modifiers: vec![],
         name: Identifier { name: "Calculator".to_string() },
-        type_parameters: vec![],
+        type_parameters: vec![].into(),
         members: vec![
             ClassMember::Method(MethodDeclaration {
                 modifiers: vec![], // Added for test compatibility
                 return_type: Type::Primitive(PrimitiveType::Int),
                 name: Identifier { name: "Add".to_string() },
-                type_parameters: vec![],
+                type_parameters: vec![].into(),
                 parameters: vec![
                     Parameter {
                         ty: Type::Primitive(PrimitiveType::Int),
@@ -99,13 +99,13 @@ fn test_parse_class_with_multiple_members() {
     let expected = ClassDeclaration {
         modifiers: vec![],
         name: Identifier { name: "Service".to_string() },
-        type_parameters: vec![],
+        type_parameters: vec![].into(),
         members: vec![
             ClassMember::Method(MethodDeclaration {
                 modifiers: vec![], // Added for test compatibility
                 return_type: Type::Primitive(PrimitiveType::Void),
                 name: Identifier { name: "Start".to_string() },
-                type_parameters: vec![],
+                type_parameters: vec![].into(),
                 parameters: vec![],
                 body: Some("".to_string()), 
                 constraints: vec![],
@@ -115,7 +115,7 @@ fn test_parse_class_with_multiple_members() {
                 modifiers: vec![], // Added for test compatibility
                 return_type: Type::Primitive(PrimitiveType::Void),
                 name: Identifier { name: "Stop".to_string() },
-                type_parameters: vec![],
+                type_parameters: vec![].into(),
                 parameters: vec![],
                 body: Some("".to_string()), 
                 constraints: vec![],
@@ -136,7 +136,7 @@ fn test_parse_class_with_field() {
     let expected = ClassDeclaration {
         modifiers: vec![],
         name: Identifier { name: "Data".to_string() },
-        type_parameters: vec![],
+        type_parameters: vec![].into(),
         members: vec![
             ClassMember::Field(FieldDeclaration {
                 ty: Type::Primitive(PrimitiveType::Int),
@@ -160,7 +160,7 @@ fn test_parse_class_with_mixed_members() {
     let expected = ClassDeclaration {
         modifiers: vec![],
         name: Identifier { name: "MyComponent".to_string() },
-        type_parameters: vec![],
+        type_parameters: vec![].into(),
         members: vec![
             ClassMember::Field(FieldDeclaration {
                 ty: Type::Primitive(PrimitiveType::String),
@@ -171,7 +171,7 @@ fn test_parse_class_with_mixed_members() {
                 modifiers: vec![], // Added for test compatibility
                 return_type: Type::Primitive(PrimitiveType::Void),
                 name: Identifier { name: "Initialize".to_string() },
-                type_parameters: vec![],
+                type_parameters: vec![].into(),
                 parameters: vec![],
                 body: Some("".to_string()), 
                 constraints: vec![],
@@ -192,13 +192,13 @@ fn test_parse_class_with_method_with_body() {
     let expected = ClassDeclaration {
         modifiers: vec![],
         name: Identifier { name: "Greeter".to_string() },
-        type_parameters: vec![],
+        type_parameters: vec![].into(),
         members: vec![
             ClassMember::Method(MethodDeclaration {
                 modifiers: vec![], // Added for test compatibility
                 return_type: Type::Primitive(PrimitiveType::Void),
                 name: Identifier { name: "SayHello".to_string() },
-                type_parameters: vec![],
+                type_parameters: vec![].into(),
                 parameters: vec![],
                 body: Some("Console.WriteLine(\"Hello\");".to_string()), 
                 constraints: vec![],
@@ -216,7 +216,7 @@ fn test_parse_class_with_modifiers() {
     let expected = Ok(ClassDeclaration {
         modifiers: expected_modifiers,
         name: Identifier { name: "BaseClass".to_string() },
-        type_parameters: vec![],
+        type_parameters: vec![].into(),
         members: vec![], 
     });
     let result = parse_class_decl_test(input);
@@ -228,13 +228,13 @@ fn test_parse_class_with_modifiers() {
     let expected_sealed: Result<ClassDeclaration, String> = Ok(ClassDeclaration {
         modifiers: expected_modifiers_sealed.clone(),
         name: Identifier { name: "FinalClass".to_string() },
-        type_parameters: vec![],
+        type_parameters: vec![].into(),
         members: vec![ 
             ClassMember::Method(MethodDeclaration {
                 modifiers: vec![],
                 return_type: Type::Primitive(PrimitiveType::Void),
                 name: Identifier { name: "M".to_string() },
-                type_parameters: vec![],
+                type_parameters: vec![].into(),
                 parameters: vec![],
                 body: Some("".to_string()), 
                 constraints: vec![],
@@ -251,7 +251,7 @@ fn test_parse_class_with_modifiers() {
     let expected_static = Ok(ClassDeclaration {
         modifiers: expected_modifiers_static,
         name: Identifier { name: "Utility".to_string() },
-        type_parameters: vec![],
+        type_parameters: vec![].into(),
         members: vec![],
     });
     let result_static = parse_class_decl_test(input_static);

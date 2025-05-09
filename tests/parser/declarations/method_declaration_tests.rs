@@ -18,13 +18,13 @@ fn parse_method_decl_test(code: &str) -> Result<MethodDeclaration, String> {
 fn test_parse_simple_void_method() {
     let code = "void DoSomething() {}";
     let expected = MethodDeclaration {
-        modifiers: vec![],
+        modifiers: vec![].into(),
         return_type: types::Type::Primitive(types::PrimitiveType::Void),
         name: Identifier { name: "DoSomething".to_string() },
-        type_parameters: vec![],
-        parameters: vec![],
+        type_parameters: vec![].into(),
+        parameters: vec![].into(),
         body: Some("".to_string()),
-        constraints: vec![],
+        constraints: vec![].into(),
         _phantom: PhantomData,
     };
     assert_eq!(parse_method_decl_test(code), Ok(expected));
@@ -34,13 +34,13 @@ fn test_parse_simple_void_method() {
 fn test_parse_method_with_return_type() {
     let code = "int GetCount() {}";
     let expected = MethodDeclaration {
-        modifiers: vec![],
+        modifiers: vec![].into(),
         return_type: types::Type::Primitive(types::PrimitiveType::Int),
         name: Identifier { name: "GetCount".to_string() },
-        type_parameters: vec![],
-        parameters: vec![],
+        type_parameters: vec![].into(),
+        parameters: vec![].into(),
         body: Some("".to_string()),
-        constraints: vec![],
+        constraints: vec![].into(),
         _phantom: PhantomData,
     };
     assert_eq!(parse_method_decl_test(code), Ok(expected));
@@ -50,10 +50,10 @@ fn test_parse_method_with_return_type() {
 fn test_parse_method_with_parameters() {
     let code = "void SetValue(int value, string name) {}";
     let expected = MethodDeclaration {
-        modifiers: vec![],
+        modifiers: vec![].into(),
         return_type: types::Type::Primitive(types::PrimitiveType::Void),
         name: Identifier { name: "SetValue".to_string() },
-        type_parameters: vec![],
+        type_parameters: vec![].into(),
         parameters: vec![
             types::Parameter {
                 ty: types::Type::Primitive(types::PrimitiveType::Int),
@@ -65,9 +65,9 @@ fn test_parse_method_with_parameters() {
                 name: Identifier { name: "name".to_string() },
                 _phantom: PhantomData,
             },
-        ],
+        ].into(),
         body: Some("".to_string()),
-        constraints: vec![],
+        constraints: vec![].into(),
         _phantom: PhantomData,
     };
     assert_eq!(parse_method_decl_test(code), Ok(expected));
@@ -77,20 +77,20 @@ fn test_parse_method_with_parameters() {
 fn test_parse_generic_method() {
     let code = "T Process<T>(T input) {}";
     let expected = MethodDeclaration {
-        modifiers: vec![],
+        modifiers: vec![].into(),
         return_type: types::Type::Reference(Identifier { name: "T".to_string() }),
         name: Identifier { name: "Process".to_string() },
         type_parameters: vec![types::TypeParameter {
             name: Identifier { name: "T".to_string() },
             variance: types::Variance::None,
-        }],
+        }].into(),
         parameters: vec![types::Parameter {
             ty: types::Type::Reference(Identifier { name: "T".to_string() }),
             name: Identifier { name: "input".to_string() },
             _phantom: PhantomData,
-        }],
+        }].into(),
         body: Some("".to_string()),
-        constraints: vec![],
+        constraints: vec![].into(),
         _phantom: PhantomData,
     };
     assert_eq!(parse_method_decl_test(code), Ok(expected));
@@ -100,13 +100,13 @@ fn test_parse_generic_method() {
 fn test_parse_method_with_body_content() {
     let code = "int Calculate() { int x = 5; return x * 2; }";
     let expected = MethodDeclaration {
-        modifiers: vec![],
+        modifiers: vec![].into(),
         return_type: types::Type::Primitive(types::PrimitiveType::Int),
         name: Identifier { name: "Calculate".to_string() },
-        type_parameters: vec![],
-        parameters: vec![],
+        type_parameters: vec![].into(),
+        parameters: vec![].into(),
         body: Some("int x = 5; return x * 2;".to_string()),
-        constraints: vec![],
+        constraints: vec![].into(),
         _phantom: PhantomData,
     };
     assert_eq!(parse_method_decl_test(code), Ok(expected));
@@ -116,13 +116,13 @@ fn test_parse_method_with_body_content() {
 fn test_parse_abstract_method() {
     let code = "void AbstractMethod();";
     let expected = MethodDeclaration {
-        modifiers: vec![],
+        modifiers: vec![].into(),
         return_type: types::Type::Primitive(types::PrimitiveType::Void),
         name: Identifier { name: "AbstractMethod".to_string() },
-        type_parameters: vec![],
-        parameters: vec![],
+        type_parameters: vec![].into(),
+        parameters: vec![].into(),
         body: None,
-        constraints: vec![],
+        constraints: vec![].into(),
         _phantom: PhantomData,
     };
     assert_eq!(parse_method_decl_test(code), Ok(expected));
@@ -138,10 +138,10 @@ fn test_parse_method_with_modifiers() {
             modifiers: expected_modifiers,
             return_type: types::Type::Primitive(types::PrimitiveType::Void),
             name: Identifier { name: "DoSomething".to_string() },
-            type_parameters: vec![],
-            parameters: vec![],
+            type_parameters: vec![].into(),
+            parameters: vec![].into(),
             body: Some("".to_string()),
-            constraints: vec![],
+            constraints: vec![].into(),
             _phantom: PhantomData,
         },
     ));
@@ -156,13 +156,13 @@ fn test_parse_method_with_modifiers() {
             modifiers: expected_modifiers_async.clone(),
             return_type: types::Type::Reference(Identifier { name: "Task".to_string() }),
             name: Identifier { name: "ProcessAsync".to_string() },
-            type_parameters: vec![],
+            type_parameters: vec![].into(),
             parameters: vec![types::Parameter {
                 ty: types::Type::Primitive(types::PrimitiveType::Int),
                 name: Identifier { name: "x".to_string() },
                 _phantom: PhantomData,
-            }],
-            constraints: vec![],
+            }].into(),
+            constraints: vec![].into(),
             body: None, // Changed from Some("".to_string()) to None
             _phantom: PhantomData,
         },

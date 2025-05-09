@@ -3,6 +3,7 @@ pub mod nodes;
 pub mod errors;
 pub mod parser_helpers;
 pub mod test_helpers;
+pub mod comment_parser;
 
 //------------------------------------------------------------------------------
 // Public Parser API
@@ -16,20 +17,13 @@ impl Parser {
         Parser
     }
 
-    pub fn parse<'a>(&self, input: &'a str) -> Result<ast::SourceFile<'a>, String> {
-        use crate::parser::nodes::{CompilationUnit, TopLevelMember};
-        use crate::parser::errors::{BSharpParseError, BResult};
-        use nom::combinator::all_consuming;
-
-        use crate::parsers::top_level::compilation_unit_parser::parse_compilation_unit;
-
-        use std::fs::File;
-        use std::io::Read;
-        use std::path::Path;
+    pub fn parse<'a>(&self, input: &'a str) -> Result<ast::CompilationUnit<'a>, String> {
+        use crate::parsers::csharp::parse_csharp_source;
+        use nom::Finish;
 
         // Use the actual parser implementation from the parsers module
         match parse_csharp_source(input).finish() {
-            Ok((_, source_file)) => Ok(source_file),
+            Ok((_, compilation_unit)) => Ok(compilation_unit),
             Err(e) => Err(format!("Failed to parse C# code: {:?}", e))
         }
     }

@@ -50,10 +50,9 @@ pub fn parse_type_parameter_list(input: &str) -> BResult<&str, Vec<TypeParameter
     )(input)
 }
 
-// Optional type parameter list (returns empty Vec if no list)
-pub fn opt_parse_type_parameter_list(input: &str) -> BResult<&str, Vec<TypeParameter>> {
+// Optional type parameter list (returns None if no list, Some(Vec) otherwise)
+pub fn opt_parse_type_parameter_list<'a>(input: &'a str) -> BResult<&'a str, Option<Vec<TypeParameter>>> {
     opt(parse_type_parameter_list)(input)
-    .map(|(rest, opt_list)| (rest, opt_list.unwrap_or_default()))
 }
 
 // Parse a single constraint (e.g., 'class', 'struct', 'new()', 'BaseType', 'T')

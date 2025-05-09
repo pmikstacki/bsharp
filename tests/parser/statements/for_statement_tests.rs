@@ -55,7 +55,7 @@ fn test_parse_for_statement_logic() {
         Statement::For(boxed_for_stmt) => {
             let for_stmt = &*boxed_for_stmt;
             assert_eq!(for_stmt.iterator.len(), 2);
-            assert!(matches!(for_stmt.iterator[0], Expression::Unary { .. }));
+            assert!(matches!(for_stmt.iterator[0], Expression::PostfixUnary { .. }));
             assert!(matches!(for_stmt.iterator[1], Expression::Invocation(_)));
         }
         _ => panic!("Expected For statement, got {:?}", stmt_multiple_iter),

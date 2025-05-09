@@ -71,7 +71,7 @@ pub fn parse_class_declaration(input: &str) -> BResult<&str, ClassDeclaration> {
     Ok((input, ClassDeclaration {
         modifiers,
         name,
-        type_parameters,
+        type_parameters, // Now this is Option<Vec<TypeParameter>> matching the AST node definition
         members,
     }))
 }
