@@ -8,7 +8,7 @@ use nom::{
 };
 
 use crate::parser::errors::BResult;
-use crate::parser::parser_helpers::{bchar, bs_context}; 
+use crate::parser::parser_helpers::{bchar, bs_context, bws}; 
 
 use crate::parsers::statement_parser::parse_statement_ws;
 
@@ -28,9 +28,9 @@ pub fn parse_block_statement<'a>(input: &'a str) -> BResult<&'a str, Statement<'
         "block statement",
         map(
             delimited(
-                bchar('{'),
-                many0(parse_statement_ws),
-                bchar('}')
+                bws(bchar('{')),  // Make sure we handle whitespace around braces
+                many0(parse_statement_ws), // Allow for zero or more statements (handles empty blocks)
+                bws(bchar('}'))  // Make sure we handle whitespace around braces
             ),
             |statements| Statement::Block(statements), // Wrap in Statement::Block
         ),

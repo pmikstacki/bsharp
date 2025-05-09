@@ -4,7 +4,7 @@ use bsharp::parser::nodes::statements::statement::{Statement, Statement::*};
 use bsharp::parser::nodes::expressions::expression::Expression;
 use bsharp::parser::nodes::expressions::literal::Literal;
 use bsharp::parser::nodes::identifier::Identifier;
-use bsharp::parsers::statements::statement_parser::parse_statement;
+use bsharp::parsers::statement_parser::parse_statement;
 
 fn parse_statement_test(code: &str) -> Result<Statement, String> {
     match parse_statement(code) {

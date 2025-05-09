@@ -17,8 +17,15 @@ impl Parser {
     }
 
     pub fn parse<'a>(&self, input: &'a str) -> Result<ast::SourceFile<'a>, String> {
-        use crate::parsers::csharp::parse_csharp_source;
-        use nom::Finish;
+        use crate::parser::nodes::{CompilationUnit, TopLevelMember};
+        use crate::parser::errors::{BSharpParseError, BResult};
+        use nom::combinator::all_consuming;
+
+        use crate::parsers::top_level::compilation_unit_parser::parse_compilation_unit;
+
+        use std::fs::File;
+        use std::io::Read;
+        use std::path::Path;
 
         // Use the actual parser implementation from the parsers module
         match parse_csharp_source(input).finish() {

@@ -10,7 +10,8 @@ use bsharp::parser::test_helpers::{parse_input_unwrap, parse_all};
 fn test_parse_specific_catch_clause() {
     let input = "catch (Exception e) { } CATCH_SPECIFIC_BODY";
     let (remaining_input, catch_clause) = parse_input_unwrap(parse_catch_clause(input));
-    assert_eq!(remaining_input, " CATCH_SPECIFIC_BODY");
+    // With proper whitespace handling, there's no leading space anymore
+    assert_eq!(remaining_input, "CATCH_SPECIFIC_BODY");
     assert_eq!(catch_clause.exception_type, Some(Type::Reference(Identifier { name: "Exception".to_string() })));
     assert_eq!(catch_clause.exception_variable, Some(Identifier { name: "e".to_string() }));
     match *catch_clause.block {
@@ -23,7 +24,8 @@ fn test_parse_specific_catch_clause() {
 fn test_parse_general_catch_clause() {
     let input = "catch { } CATCH_GENERAL_BODY";
     let (remaining_input, catch_clause) = parse_input_unwrap(parse_catch_clause(input));
-    assert_eq!(remaining_input, " CATCH_GENERAL_BODY");
+    // With proper whitespace handling, there's no leading space anymore
+    assert_eq!(remaining_input, "CATCH_GENERAL_BODY");
     assert!(catch_clause.exception_type.is_none());
     assert!(catch_clause.exception_variable.is_none());
     match *catch_clause.block {
@@ -36,7 +38,8 @@ fn test_parse_general_catch_clause() {
 fn test_parse_catch_clause_no_identifier() {
     let input = "catch (System.Exception) { } CATCH_NO_IDENT_BODY";
     let (remaining_input, catch_clause) = parse_input_unwrap(parse_catch_clause(input));
-    assert_eq!(remaining_input, " CATCH_NO_IDENT_BODY");
+    // With proper whitespace handling, there's no leading space anymore
+    assert_eq!(remaining_input, "CATCH_NO_IDENT_BODY");
     assert_eq!(catch_clause.exception_type, Some(Type::Reference(Identifier { name: "System.Exception".to_string() })));
     assert!(catch_clause.exception_variable.is_none());
 }
@@ -45,7 +48,8 @@ fn test_parse_catch_clause_no_identifier() {
 fn test_parse_finally_clause() {
     let input = "finally { } FINALLY_BODY";
     let (remaining_input, finally_clause) = parse_input_unwrap(parse_finally_clause(input));
-    assert_eq!(remaining_input, " FINALLY_BODY");
+    // With proper whitespace handling, there's no leading space anymore
+    assert_eq!(remaining_input, "FINALLY_BODY");
     match *finally_clause.block {
         Statement::Block(ref block_statement) => assert!(block_statement.is_empty()),
         _ => panic!("Expected BlockStatement for finally clause"),
@@ -58,8 +62,8 @@ fn test_parse_try_catch_statement() {
     let result = parse_input_unwrap(parse_try_statement(input)).1;
     match result {
         Statement::Try(ts) => {
-            assert_eq!(ts.catches.len(), 1);
-            assert!(ts.finally_clause.is_none());
+            assert_eq!(ts.catches.len(), 1, "Expected 1 catch clause");
+            assert!(ts.finally_clause.is_none(), "Expected no finally clause");
         },
         _ => panic!("Expected Try statement"),
     }

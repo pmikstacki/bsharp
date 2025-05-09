@@ -1,31 +1,51 @@
-use crate::parser::nodes::statements::statement::Statement;
 // Parser for for loops
 
 use nom::{
     branch::alt,
-    character::complete::multispace0, 
     combinator::{map, opt},
-    multi::separated_list1,
-    sequence::{delimited, preceded, tuple},
+    multi::{separated_list0, separated_list1},
+    sequence::tuple,
 };
 
 use crate::parser::errors::BResult;
-use crate::parser::nodes::statements::*;
-use crate::parser::parser_helpers::{bchar, bs_context, keyword};
-use crate::parsers::declarations::variable_declaration_parser::parse_local_variable_declaration;
+use crate::parser::nodes::statements::statement::Statement;
+use crate::parser::nodes::statements::{ForStatement, ForInitializer};
+use crate::parser::nodes::expressions::expression::Expression;
+use crate::parser::nodes::declarations::local_variable_declaration::LocalVariableDeclaration;
+use crate::parser::parser_helpers::{bs_context, bws, bchar, keyword, nom_to_bs};
 use crate::parsers::expressions::expression_parser::parse_expression;
 use crate::parsers::statement_parser::parse_statement_ws;
+use crate::parsers::types::type_parser::parse_type_expression;
+use crate::parsers::declarations::variable_declaration_parser::parse_variable_declarator;
 
-// Original parse_for_initializer from statement_parser.rs
+// Parse the initializer part of a for loop statement - can be a variable declaration
+// or a comma-separated list of expressions
 fn parse_for_initializer(input: &str) -> BResult<&str, ForInitializer> {
     bs_context(
         "for initializer",
         alt((
-            map(parse_local_variable_declaration, |decl| {
-                ForInitializer::Declaration(decl)
-            }),
+            // Try to parse a variable declaration first (e.g., "int i = 0")
+            // Note: For a for loop, don't expect a semicolon at the end of the variable declaration
             map(
-                separated_list1(delimited(multispace0, bchar(','), multispace0), parse_expression),
+                tuple((
+                    // Optionally parse "const"
+                    opt(keyword("const")),
+                    // Parse type name
+                    bws(nom_to_bs(parse_type_expression)),
+                    // Parse declarators (name and initializer)
+                    separated_list1(bws(bchar(',')), parse_variable_declarator)
+                )),
+                |(const_modifier, ty, declarators)| {
+                    ForInitializer::Declaration(LocalVariableDeclaration {
+                        is_const: const_modifier.is_some(),
+                        ty,
+                        declarators,
+                    })
+                }
+            ),
+            // If that fails, try to parse expressions (e.g., "i = 0, j = 1")
+            map(
+                separated_list1(bws(bchar(',')), bws(parse_expression)),
                 |exprs| ForInitializer::Expressions(exprs),
             ),
         )),
@@ -33,33 +53,37 @@ fn parse_for_initializer(input: &str) -> BResult<&str, ForInitializer> {
 }
 
 // Original parse_for_statement function from statement_parser.rs
+// Parse a for loop statement using Roslyn-like structure
 pub fn parse_for_statement(input: &str) -> BResult<&str, Statement> {
-    bs_context(
-        "for statement",
-        map(
-            tuple((
-                preceded(keyword("for"), multispace0),
-                bchar('('),
-                opt(parse_for_initializer),
-                bchar(';'),
-                opt(preceded(multispace0, parse_expression)),
-                bchar(';'),
-                opt(preceded(multispace0,
-                    separated_list1(delimited(multispace0, bchar(','), multispace0), parse_expression)
-                )),
-                bchar(')'),
-                multispace0,
-                // Use parse_statement_ws for better whitespace handling
-                parse_statement_ws
-            )),
-            |(_, _, initializer, _, condition, _, iterator, _, _, body_statement)| {
-                Statement::For(Box::new(ForStatement {
-                    initializer,
-                    condition: condition,
-                    iterator: iterator.unwrap_or_default(),
-                    body: Box::new(body_statement), // body_statement is already a Statement
-                }))
-            },
-        ),
-    )(input)
+    // Base approach addressing all the test cases
+    let (input, _) = keyword("for")(input)?;
+    let (input, _) = bws(bchar('('))(input)?;
+    
+    // 1. Parse initializer (optional)
+    let (input, initializer) = opt(bws(parse_for_initializer))(input)?;
+    let (input, _) = bws(bchar(';'))(input)?;
+    
+    // 2. Parse condition (optional)
+    let (input, condition) = opt(bws(parse_expression))(input)?;
+    let (input, _) = bws(bchar(';'))(input)?;
+    
+    // 3. Parse iterators - the critical part for the test case
+    // We need to handle multiple comma-separated expressions
+    let (input, iterators) = separated_list0(bws(bchar(',')), bws(parse_expression))(input)?;
+    
+    // 4. Parse closing parenthesis
+    let (input, _) = bws(bchar(')'))(input)?;
+    
+    // 5. Parse body statement, ensuring we handle comments correctly
+    let (input, body) = bws(parse_statement_ws)(input)?;
+    
+    // Create and return the ForStatement node
+    Ok((input, Statement::For(Box::new(ForStatement {
+        initializer,
+        condition,
+        iterator: iterators,
+        body: Box::new(body),
+    }))))
 }
+
+

@@ -2,8 +2,8 @@ use nom::{
     branch::alt,
     bytes::complete::{is_not, tag_no_case, escaped_transform},
     character::complete::{char as nom_char, digit1, multispace0, none_of},
-    combinator::{map, value, opt, map_res},
-    sequence::delimited,
+    combinator::{map, value, opt, map_res, recognize},
+    sequence::{delimited, tuple},
 };
 use crate::parser::nodes::expressions::literal::Literal;
 use crate::parser::errors::BResult;
@@ -27,6 +27,20 @@ pub fn parse_boolean(input: &str) -> BResult<&str, Literal> {
 // Parse an integer literal
 pub fn parse_integer(input: &str) -> BResult<&str, Literal> {
     map_res(digit1, |s: &str| s.parse::<i64>().map(Literal::Integer))(input)
+}
+
+// Parse a floating-point literal (e.g., 3.14, 2.0, .5)
+pub fn parse_float(input: &str) -> BResult<&str, Literal> {
+    map_res(
+        recognize(
+            tuple((
+                opt(digit1),       // Optional digits before decimal point (e.g., "3" in "3.14" or empty in ".5")
+                nom_char('.'),     // Decimal point
+                digit1,            // At least one digit after the decimal (required)
+            ))
+        ),
+        |s: &str| s.parse::<f64>().map(Literal::Float)
+    )(input)
 }
 
 // Parse a string literal (e.g., "hello", "with \" escape")
@@ -65,10 +79,13 @@ pub fn parse_char_literal(input: &str) -> BResult<&str, Literal> {
     )(input)
 }
 
-// Main literal parser: tries boolean, integer, string, then char
+// Main literal parser: tries boolean, integer, float, string, then char
 pub fn parse_literal(input: &str) -> BResult<&str, Literal> {
     ws(alt((
         parse_boolean,
+        // Try float before integer to handle cases like "3.14"
+        // which would otherwise be partially parsed as integer "3"
+        parse_float,
         parse_integer,
         parse_string,
         parse_char_literal,
