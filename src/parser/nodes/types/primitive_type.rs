@@ -23,4 +23,5 @@ pub enum PrimitiveType {
     // Character and string types
     Char,
     String,
+    Object, // object keyword in C#
 }

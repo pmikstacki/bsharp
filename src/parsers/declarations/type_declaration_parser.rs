@@ -28,14 +28,16 @@ use crate::parsers::declarations::type_declaration_helpers::{at_end_of_body, par
 use crate::parsers::identifier_parser::parse_identifier;
 use crate::parsers::declarations::field_declaration_parser::parse_field_declaration;
 use crate::parsers::declarations::method_declaration_parser::parse_method_declaration;
-use crate::parsers::declarations::parameter_parser::parse_parameter_list;
 use crate::parsers::declarations::property_declaration_parser::parse_property_declaration;
 use crate::parsers::declarations::constructor_declaration_parser::parse_constructor_declaration;
 use crate::parsers::declarations::event_declaration_parser::parse_event_declaration;
 use crate::parsers::declarations::indexer_declaration_parser::parse_indexer_declaration;
+use crate::parsers::declarations::operator_declaration_parser::parse_operator_declaration;
+use crate::parsers::declarations::destructor_declaration_parser::parse_destructor_declaration;
+use crate::parsers::declarations::enum_declaration_parser::parse_enum_declaration;
+use crate::parsers::declarations::parameter_parser::parse_parameter_list;
 
 // Re-export the specific type parsers that are now consolidated or managed by this module
-pub use crate::parsers::declarations::enum_declaration_parser::parse_enum_declaration;
 // Add other re-exports here as needed, e.g.:
 // pub use crate::parsers::declarations::class_declaration_parser::parse_class_declaration; // (if it were separate)
 
@@ -177,7 +179,7 @@ fn skip_to_recovery_point(input: &str) -> &str {
     ""
 }
 
-/// Helper function for parsing class members (fields, methods, properties, constructors, events, indexers)
+/// Helper function for parsing class members (fields, methods, properties, constructors, events, indexers, operators, destructors, nested types)
 fn parse_class_member(input: &str) -> BResult<&str, ClassBodyDeclaration> {
     alt((
         map(parse_field_declaration, ClassBodyDeclaration::Field),
@@ -186,7 +188,14 @@ fn parse_class_member(input: &str) -> BResult<&str, ClassBodyDeclaration> {
         map(parse_constructor_declaration, ClassBodyDeclaration::Constructor),
         map(parse_event_declaration, ClassBodyDeclaration::Event),
         map(parse_indexer_declaration, ClassBodyDeclaration::Indexer),
-        // TODO: Add other class members like operators, nested types etc.
+        map(parse_operator_declaration, ClassBodyDeclaration::Operator),
+        map(parse_destructor_declaration, ClassBodyDeclaration::Destructor),
+        // Nested type declarations
+        map(parse_class_declaration, ClassBodyDeclaration::NestedClass),
+        map(parse_struct_declaration, ClassBodyDeclaration::NestedStruct),
+        map(parse_interface_declaration, ClassBodyDeclaration::NestedInterface),
+        map(parse_enum_declaration, ClassBodyDeclaration::NestedEnum),
+        map(parse_record_declaration, ClassBodyDeclaration::NestedRecord),
     ))(input)
 }
 

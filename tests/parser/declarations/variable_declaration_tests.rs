@@ -33,7 +33,7 @@ fn test_parse_local_variable_declaration_single_declarator() {
     let input = "int x;";
     let (remaining_input, decl) = parse_input_unwrap(parse_local_variable_declaration(input));
     assert!(remaining_input.is_empty());
-    assert_eq!(decl.ty, Type::Primitive(bsharp::parser::nodes::types::PrimitiveType::Int));
+    assert_eq!(decl.declaration_type, Type::Primitive(bsharp::parser::nodes::types::PrimitiveType::Int));
     assert_eq!(decl.declarators.len(), 1);
     assert_eq!(decl.declarators[0].name, Identifier { name: "x".to_string() });
     assert!(decl.declarators[0].initializer.is_none());
@@ -44,7 +44,7 @@ fn test_parse_local_variable_declaration_multiple_declarators() {
     let input = "string name = \"Test\", value;";
     let (remaining_input, decl) = parse_input_unwrap(parse_local_variable_declaration(input));
     assert!(remaining_input.is_empty());
-    assert_eq!(decl.ty, Type::Primitive(bsharp::parser::nodes::types::PrimitiveType::String));
+    assert_eq!(decl.declaration_type, Type::Primitive(bsharp::parser::nodes::types::PrimitiveType::String));
     assert_eq!(decl.declarators.len(), 2);
     assert_eq!(decl.declarators[0].name, Identifier { name: "name".to_string() });
     assert!(matches!(

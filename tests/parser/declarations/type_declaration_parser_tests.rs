@@ -47,7 +47,7 @@ fn test_record_class() {
             assert_eq!(remaining, "");
             assert_eq!(decl.name.to_string(), "Person");
             assert_eq!(decl.is_struct, false);
-            assert_eq!(decl.parameters.len(), 2);
+            assert_eq!(decl.parameters.iter().size_hint(), (2, Some(2)));
         }
         Err(e) => panic!("Parsing failed: {:?}", e),
     }
@@ -62,7 +62,7 @@ fn test_record_struct() {
             assert_eq!(remaining, "");
             assert_eq!(decl.name.to_string(), "Point");
             assert_eq!(decl.is_struct, true);
-            assert_eq!(decl.parameters.len(), 2);
+            assert_eq!(decl.parameters.iter().size_hint(), (2, Some(2)));
         }
         Err(e) => panic!("Parsing failed: {:?}", e),
     }

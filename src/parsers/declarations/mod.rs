@@ -18,6 +18,8 @@ pub mod type_declaration_parser;
 pub mod delegate_declaration_parser;
 pub mod event_declaration_parser;
 pub mod indexer_declaration_parser;
+pub mod operator_declaration_parser;
+pub mod destructor_declaration_parser;
 
 // Common helpers modules
 pub mod type_declaration_helpers;

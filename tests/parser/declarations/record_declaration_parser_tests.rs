@@ -1,5 +1,5 @@
 #![cfg(test)]
-use bsharp::parsers::declarations::record_declaration_parser::parse_record_declaration;
+use bsharp::parsers::declarations::type_declaration_parser::parse_record_declaration;
 use bsharp::parser::nodes::declarations::Modifier;
 use bsharp::parser::nodes::identifier::Identifier;
 use bsharp::parser::nodes::types::Type;
@@ -21,7 +21,7 @@ fn test_simple_record_class() {
     let (_, result) = parse_record_declaration(input).unwrap();
     assert_eq!(result.name.name, "Person");
     assert!(!result.is_struct);
-    assert!(result.parameters.is_empty());
+    assert!(result.parameters.is_none());
 }
 
 #[test]
@@ -36,15 +36,16 @@ fn test_record_struct() {
 fn test_positional_record() {
     let input = "record Person(string FirstName, string LastName);";
     let (_, result) = parse_record_declaration(input).unwrap();
+    let parameters_unwrapped = result.parameters.unwrap();
+
     assert_eq!(result.name.name, "Person");
-    assert_eq!(result.parameters.len(), 2);
-    
+    assert_eq!(parameters_unwrapped.len(), 2);
     // Check parameter names
-    assert_eq!(result.parameters[0].name.name, "FirstName");
-    assert_eq!(result.parameters[1].name.name, "LastName");
+    assert_eq!(parameters_unwrapped[0].name.name, "FirstName");
+    assert_eq!(parameters_unwrapped[1].name.name, "LastName");
     
     // Check parameter types
-    if let Type::Primitive(prim_type) = &result.parameters[0].ty {
+    if let Type::Primitive(prim_type) = &parameters_unwrapped[0].parameter_type {
         assert_eq!(format!("{:?}", prim_type), "String");
     } else {
         panic!("Expected primitive string type");
@@ -58,7 +59,7 @@ fn test_record_with_attributes_and_modifiers() {
     
     // Check attribute
     assert_eq!(result.attributes.len(), 1);
-    assert_eq!(result.attributes[0].name.name, "Serializable");
+    assert_eq!(result.attributes[0].attributes[0].name, Identifier::new("Serializable"));
     
     // Check modifier
     assert_eq!(result.modifiers.len(), 1);

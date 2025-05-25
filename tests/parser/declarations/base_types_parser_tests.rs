@@ -1,6 +1,5 @@
 #![cfg(test)]
 use bsharp::parsers::declarations::base_types_parser::*;
-use bsharp::parser::nodes::identifier::Identifier;
 use bsharp::parser::nodes::types::Type;
 
 #[test]

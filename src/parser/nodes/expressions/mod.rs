@@ -52,3 +52,5 @@ pub use throw_expression::ThrowExpression;
 pub use null_conditional_expression::NullConditionalExpression;
 pub use null_forgiving_expression::NullForgivingExpression;
 pub use deconstruction_expression::DeconstructionExpression;
+pub use expression::Expression;
+pub use literal::Literal;

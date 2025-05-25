@@ -1,13 +1,13 @@
 use serde::{Serialize, Deserialize};
 use crate::parser::nodes::types::Type;
 use crate::parser::nodes::types::Parameter;
-use crate::parser::nodes::declarations::Attribute;
+use crate::parser::nodes::declarations::{Attribute, Modifier};
 use crate::parser::nodes::identifier::Identifier;
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct OperatorDeclaration {
     pub attributes: Vec<Attribute>,
-    pub modifiers: Vec<String>,
+    pub modifiers: Vec<Modifier>,
     pub return_type: Type,
     pub operator: OperatorKind,
     pub parameters: Vec<Parameter>,

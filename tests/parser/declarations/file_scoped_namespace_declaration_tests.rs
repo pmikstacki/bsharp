@@ -12,8 +12,8 @@ fn test_parse_file_scoped_namespace() {
     let code = "namespace MyNs;";
     let expected = FileScopedNamespaceDeclaration {
         name: Identifier { name: "MyNs".to_string() },
-        usings: vec![],
-        members: vec![],
+        using_directives: vec![],
+        declarations: vec![],
     };
     // assert_eq!(parse_file_scoped_namespace_declaration(code), Ok(expected));
     assert!(parse_file_scoped_namespace_declaration(code).is_err());

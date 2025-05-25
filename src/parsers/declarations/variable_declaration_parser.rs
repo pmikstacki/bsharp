@@ -48,7 +48,7 @@ pub fn parse_local_variable_declaration(input: &str) -> BResult<&str, LocalVaria
             )),
             |(const_modifier, ty, declarators, _)| LocalVariableDeclaration {
                 is_const: const_modifier.is_some(), // Check if 'const' was present
-                ty,
+                declaration_type: ty,
                 declarators
             }
         )

@@ -1,10 +1,11 @@
 use crate::parser::errors::BResult;
 use crate::parser::nodes::types::Type;
-use crate::parser::parser_helpers::{bws, nom_to_bs};
+use crate::parser::parser_helpers::{bws, nom_to_bs, bchar};
 use crate::parsers::types::type_parser::parse_type_expression;
 use nom::{
     character::complete::char as nom_char,
     multi::separated_list1,
+    combinator::opt,
 };
 
 /// Parses a base type list for declarations like classes, structs, interfaces, and records.
@@ -15,16 +16,21 @@ use nom::{
 /// - `: IDisposable`
 /// - `: IEnumerable<T>, IDisposable`
 /// - `: BaseClass, IDisposable` (for classes only)
+/// - No colon (returns empty vector)
 ///
 /// # Returns
 /// A vector of parsed types, or an empty vector if no base types are specified.
 pub fn parse_base_type_list(input: &str) -> BResult<&str, Vec<Type>> {
-    // Attempt to parse the colon. If this fails, the whole function fails (it's not an optional colon here).
-    let (input, _) = bws(nom_to_bs(nom_char::<&str, nom::error::Error<&str>>(':')))(input)?;
+    // Check if there's a colon. If not, return empty vector.
+    let (input, colon_opt) = opt(bws(bchar(':')))(input)?;
+    
+    if colon_opt.is_none() {
+        return Ok((input, Vec::new()));
+    }
     
     // If the colon is present, parse one or more types separated by commas.
     let (input, types) = bws(nom_to_bs(separated_list1(
-        bws(nom_to_bs(nom_char::<&str, nom::error::Error<&str>>(','))),
+        bws(bchar(',')),
         bws(nom_to_bs(parse_type_expression))
     )))(input)?;
     

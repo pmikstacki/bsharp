@@ -37,6 +37,7 @@ fn parse_primitive_type(input: &str) -> BResult<&str, Type> {
         // Character and string types
         value(Type::Primitive(PrimitiveType::Char), tag::<&str, &str, nom::error::Error<&str>>("char")),
         value(Type::Primitive(PrimitiveType::String), tag::<&str, &str, nom::error::Error<&str>>("string")),
+        value(Type::Primitive(PrimitiveType::Object), tag::<&str, &str, nom::error::Error<&str>>("object")),
         
         // Special types
         value(Type::Dynamic, tag::<&str, &str, nom::error::Error<&str>>("dynamic")),

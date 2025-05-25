@@ -1,7 +1,7 @@
 // Integration tests for parsing namespace declarations (block-scoped and file-scoped)
 
 use bsharp::parser::nodes::identifier::Identifier;
-use bsharp::parser::nodes::declarations::{NamespaceDeclaration, FileScopedNamespaceDeclaration, MemberDeclarationSyntax, UsingDirective};
+use bsharp::parser::nodes::declarations::{NamespaceDeclaration, FileScopedNamespaceDeclaration};
 
 // Assuming parser functions like parse_file_scoped_namespace and parse_namespace_declaration exist
 // use bsharp::parser::parser::{parse_file_scoped_namespace, parse_namespace_declaration};
@@ -25,8 +25,8 @@ fn test_parse_file_scoped_namespace() {
     let code = "namespace MyFileScope.Example;\n\nusing System;\n\nclass MyClass {}\n";
     let expected = FileScopedNamespaceDeclaration {
         name: Identifier { name: "MyFileScope.Example".to_string() }, // Assuming IdentifierNameSyntax handles qualified names
-        usings: vec![/* ... using directives ... */], // Need to parse members to populate accurately
-        members: vec![/* ... class/struct/etc ... */], // Need to parse members to populate accurately
+        using_directives: vec![/* ... using directives ... */], // Use correct field name
+        declarations: vec![/* ... class/struct/etc ... */], // Use correct field name
     };
     
     // For now, we'll just check if the parser *would* fail, as it's not implemented
@@ -41,8 +41,8 @@ fn test_parse_block_scoped_namespace() {
     let code = "namespace MyBlockScope {\n using System; \n class Inner {}\n }";
     let expected = NamespaceDeclaration {
         name: Identifier { name: "MyBlockScope".to_string() },
-        usings: vec![/* ... */], 
-        members: vec![/* ... */],
+        using_directives: vec![/* ... */], // Use correct field name
+        declarations: vec![/* ... */], // Use correct field name
     };
 
     // assert_eq!(parse_block_scope_ns(code).map(|ns| ns.name), Ok(expected.name)); // Example check

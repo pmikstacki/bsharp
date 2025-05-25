@@ -56,11 +56,11 @@ fn test_parse_method_with_parameters() {
         type_parameters: None,
         parameters: vec![
             Parameter {
-                ty: Type::Primitive(PrimitiveType::Int),
+                parameter_type: Type::Primitive(PrimitiveType::Int),
                 name: Identifier { name: "x".to_string() },
             },
             Parameter {
-                ty: Type::Primitive(PrimitiveType::String),
+                parameter_type: Type::Primitive(PrimitiveType::String),
                 name: Identifier { name: "y".to_string() },
             },
         ],

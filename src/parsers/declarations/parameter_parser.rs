@@ -13,7 +13,7 @@ pub fn parse_parameter(input: &str) -> BResult<&str, Parameter> {
     let (input, name) = bws(parse_identifier)(input)?;
     
     Ok((input, Parameter {
-        ty,
+        parameter_type: ty,
         name,
     }))
 }

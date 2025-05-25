@@ -32,7 +32,7 @@ fn test_parse_local_variable_declaration_no_init() {
         "string message;",
         Statement::Declaration(LocalVariableDeclaration {
             is_const: false,
-            ty: Type::Primitive(PrimitiveType::String),
+            declaration_type: Type::Primitive(PrimitiveType::String),
             declarators: vec![
                 VariableDeclarator {
                     name: Identifier { name: "message".to_string() },
@@ -49,7 +49,7 @@ fn test_parse_local_variable_declaration_with_initializer() {
         "bool flag = true;",
         Statement::Declaration(LocalVariableDeclaration {
             is_const: false,
-            ty: Type::Primitive(PrimitiveType::Bool),
+            declaration_type: Type::Primitive(PrimitiveType::Bool),
             declarators: vec![
                 VariableDeclarator {
                     name: Identifier { name: "flag".to_string() },
@@ -66,7 +66,7 @@ fn test_parse_local_variable_declaration_int_with_initializer() {
         "int count = 10;",
         Statement::Declaration(LocalVariableDeclaration {
             is_const: false,
-            ty: Type::Primitive(PrimitiveType::Int),
+            declaration_type: Type::Primitive(PrimitiveType::Int),
             declarators: vec![
                 VariableDeclarator {
                     name: Identifier { name: "count".to_string() },
@@ -83,7 +83,7 @@ fn test_parse_local_variable_declaration_list_new_expression() {
         "List<string> names = new List<string>();",
         Statement::Declaration(LocalVariableDeclaration {
             is_const: false,
-            ty: Type::Generic {
+            declaration_type: Type::Generic {
                 base: Identifier { name: "List".to_string() },
                 args: vec![Type::Primitive(PrimitiveType::String)],
             },
@@ -111,7 +111,7 @@ fn test_parse_local_variable_declaration_multiple_declarators() {
         "int x = 1, y = 2;",
         Statement::Declaration(LocalVariableDeclaration {
             is_const: false,
-            ty: Type::Primitive(PrimitiveType::Int),
+            declaration_type: Type::Primitive(PrimitiveType::Int),
             declarators: vec![
                 VariableDeclarator {
                     name: Identifier { name: "x".to_string() },
@@ -132,7 +132,7 @@ fn test_parse_local_variable_declaration_var_keyword() {
         "var name = \"BSharp\";",
         Statement::Declaration(LocalVariableDeclaration {
             is_const: false,
-            ty: Type::Var, 
+            declaration_type: Type::Var, 
             declarators: vec![
                 VariableDeclarator {
                     name: Identifier { name: "name".to_string() },
@@ -149,7 +149,7 @@ fn test_parse_local_variable_declaration_const_modifier() {
         "const double PI = 3.14;",
         Statement::Declaration(LocalVariableDeclaration {
             is_const: true,
-            ty: Type::Primitive(PrimitiveType::Double),
+            declaration_type: Type::Primitive(PrimitiveType::Double),
             declarators: vec![
                 VariableDeclarator {
                     name: Identifier { name: "PI".to_string() },
@@ -166,7 +166,7 @@ fn test_parse_local_variable_declaration_var_with_new_expression() {
         "var list = new List<string>();",
         Statement::Declaration(LocalVariableDeclaration {
             is_const: false,
-            ty: Type::Var,
+            declaration_type: Type::Var,
             declarators: vec![
                 VariableDeclarator {
                     name: Identifier { name: "list".to_string() },
@@ -191,7 +191,7 @@ fn test_parse_local_variable_declaration_var_with_numeric_literal() {
         "var count = 42;",
         Statement::Declaration(LocalVariableDeclaration {
             is_const: false,
-            ty: Type::Var,
+            declaration_type: Type::Var,
             declarators: vec![
                 VariableDeclarator {
                     name: Identifier { name: "count".to_string() },
@@ -208,7 +208,7 @@ fn test_parse_local_variable_declaration_var_multiple_declarators() {
         "var x = 1, y = 2;",
         Statement::Declaration(LocalVariableDeclaration {
             is_const: false,
-            ty: Type::Var,
+            declaration_type: Type::Var,
             declarators: vec![
                 VariableDeclarator {
                     name: Identifier { name: "x".to_string() },

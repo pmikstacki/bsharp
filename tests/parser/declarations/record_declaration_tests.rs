@@ -26,7 +26,7 @@ fn test_parse_positional_record() {
         is_struct: false,
         parameters: Some(vec![
             Parameter {
-                ty: Type::Primitive(PrimitiveType::String),
+                parameter_type: Type::Primitive(PrimitiveType::String),
                 name: Identifier { name: "Name".to_string() },
             },
         ]),

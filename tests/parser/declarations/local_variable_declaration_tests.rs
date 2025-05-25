@@ -1,6 +1,7 @@
 // Tests for parsing local variable declarations
 
 use bsharp::parser::nodes::declarations::LocalVariableDeclaration;
+use bsharp::parser::nodes::declarations::local_variable_declaration::VariableDeclarator;
 use bsharp::parser::nodes::types::{Type, PrimitiveType};
 use bsharp::parser::nodes::identifier::Identifier;
 use bsharp::parser::nodes::expressions::{Expression, Literal};
@@ -18,9 +19,14 @@ fn parse_local_var_decl_test(code: &str) -> Result<LocalVariableDeclaration, Str
 fn test_parse_local_variable_with_initializer() {
     let code = "int x = 5;";
     let expected = LocalVariableDeclaration {
-        ty: Type::Primitive(PrimitiveType::Int),
-        name: Identifier { name: "x".to_string() },
-        initializer: Some(Expression::Literal(Literal::Integer(5))),
+        is_const: false,
+        declaration_type: Type::Primitive(PrimitiveType::Int),
+        declarators: vec![
+            VariableDeclarator {
+                name: Identifier { name: "x".to_string() },
+                initializer: Some(Expression::Literal(Literal::Integer(5))),
+            }
+        ],
     };
     assert_eq!(parse_local_var_decl_test(code), Ok(expected));
 }
@@ -29,9 +35,14 @@ fn test_parse_local_variable_with_initializer() {
 fn test_parse_local_variable_without_initializer() {
     let code = "string name;";
     let expected = LocalVariableDeclaration {
-        ty: Type::Primitive(PrimitiveType::String),
-        name: Identifier { name: "name".to_string() },
-        initializer: None,
+        is_const: false,
+        declaration_type: Type::Primitive(PrimitiveType::String),
+        declarators: vec![
+            VariableDeclarator {
+                name: Identifier { name: "name".to_string() },
+                initializer: None,
+            }
+        ],
     };
     assert_eq!(parse_local_var_decl_test(code), Ok(expected));
 }

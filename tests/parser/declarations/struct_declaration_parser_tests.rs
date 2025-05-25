@@ -1,6 +1,6 @@
 #![cfg(test)]
-use bsharp::parsers::declarations::struct_declaration_parser::parse_struct_declaration;
-use bsharp::parser::nodes::declarations::{Modifier, StructDeclaration, StructBodyDeclaration, FieldDeclaration, MethodDeclaration};
+use bsharp::parsers::declarations::type_declaration_parser::parse_struct_declaration;
+use bsharp::parser::nodes::declarations::{Modifier, StructDeclaration, StructBodyDeclaration};
 use bsharp::parser::nodes::types::{PrimitiveType, Type, TypeParameter, Variance};
 use bsharp::parser::nodes::identifier::Identifier;
 
@@ -55,7 +55,7 @@ fn test_struct_with_single_generic_parameter() {
         name: Identifier::new("MyGenericStruct"),
         type_parameters: Some(vec![TypeParameter {
             name: Identifier::new("T"),
-            variance: crate::parser::nodes::types::Variance::None,
+            variance: Variance::None,
         }]),
         base_types: vec![],
         body_declarations: vec![],
@@ -80,11 +80,11 @@ fn test_public_struct_with_multiple_generic_parameters() {
         type_parameters: Some(vec![
             TypeParameter {
                 name: Identifier::new("K"),
-                variance: crate::parser::nodes::types::Variance::None,
+                variance: Variance::None,
             },
             TypeParameter {
                 name: Identifier::new("V"),
-                variance: crate::parser::nodes::types::Variance::None,
+                variance: Variance::None,
             },
         ]),
         base_types: vec![],

@@ -1,8 +1,8 @@
 // Integration tests for parsing record declarations (class and struct)
 
 use bsharp::parser::nodes::identifier::Identifier;
-use bsharp::parser::nodes::declarations::{RecordDeclaration, Parameter, ClassBodyDeclaration, Attribute};
-use bsharp::parser::nodes::types::Type; // Assuming TypeSyntax exists
+use bsharp::parser::nodes::declarations::{RecordDeclaration, Modifier};
+ // Parameter is in types module
 
 // Assuming a parser function like parse_record_declaration exists
 // use bsharp::parser::parser::parse_record_declaration;
@@ -20,12 +20,12 @@ fn test_parse_record_class() {
     let code = "public record Person(string Name, int Age);";
     let expected = RecordDeclaration {
         attributes: vec![], // Simplified
-        modifiers: vec!["public".to_string()], // Simplified
+        modifiers: vec![Modifier::Public], // Use Modifier enum
         name: Identifier { name: "Person".to_string() },
         is_struct: false, // Key check for record class
-        parameters: vec![/* Parameter { name: Identifier { name: "Name".to_string() }, ... }, Parameter { name: Identifier { name: "Age".to_string() }, ... } */], // Simplified
+        parameters: Some(vec![/* Parameter { name: Identifier { name: "Name".to_string() }, ... }, Parameter { name: Identifier { name: "Age".to_string() }, ... } */]), // Simplified
         base_types: vec![], // Simplified
-        members: vec![], // Simplified
+        body_declarations: vec![], // Use correct field name
     };
 
     // Check the flag specifically when parser is implemented
@@ -38,12 +38,12 @@ fn test_parse_record_struct() {
     let code = "internal record struct Point(double X, double Y);";
      let expected = RecordDeclaration {
         attributes: vec![], // Simplified
-        modifiers: vec!["internal".to_string()], // Simplified
+        modifiers: vec![Modifier::Internal], // Use Modifier enum
         name: Identifier { name: "Point".to_string() },
         is_struct: true, // Key check for record struct
-        parameters: vec![/* Parameter { name: Identifier { name: "X".to_string() }, ... }, Parameter { name: Identifier { name: "Y".to_string() }, ... } */], // Simplified
+        parameters: Some(vec![/* Parameter { name: Identifier { name: "X".to_string() }, ... }, Parameter { name: Identifier { name: "Y".to_string() }, ... } */]), // Simplified
         base_types: vec![], // Simplified
-        members: vec![], // Simplified
+        body_declarations: vec![], // Use correct field name
     };
     
     // Check the flag specifically when parser is implemented

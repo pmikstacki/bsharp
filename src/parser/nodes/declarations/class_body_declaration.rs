@@ -1,5 +1,6 @@
 use serde::{Serialize, Deserialize};
 use super::{FieldDeclaration, MethodDeclaration, EventDeclaration, IndexerDeclaration, OperatorDeclaration, ConstructorDeclaration, DestructorDeclaration, RecordDeclaration, PropertyDeclaration};
+use super::{ClassDeclaration, StructDeclaration, InterfaceDeclaration, EnumDeclaration};
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub enum ClassBodyDeclaration {
@@ -12,4 +13,10 @@ pub enum ClassBodyDeclaration {
     Constructor(ConstructorDeclaration),
     Destructor(DestructorDeclaration),
     Record(RecordDeclaration),
+    // Nested type declarations
+    NestedClass(ClassDeclaration),
+    NestedStruct(StructDeclaration),
+    NestedInterface(InterfaceDeclaration),
+    NestedEnum(EnumDeclaration),
+    NestedRecord(RecordDeclaration),
 } 

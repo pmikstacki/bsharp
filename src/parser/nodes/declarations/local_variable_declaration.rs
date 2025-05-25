@@ -12,6 +12,6 @@ pub struct VariableDeclarator {
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct LocalVariableDeclaration {
     pub is_const: bool,
-    pub ty: Type,
+    pub declaration_type: Type,
     pub declarators: Vec<VariableDeclarator>,
 }

@@ -5,6 +5,6 @@ use crate::parser::nodes::identifier::Identifier;
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct Parameter {
-    pub ty: Type,
+    pub parameter_type: Type,
     pub name: Identifier,
 }

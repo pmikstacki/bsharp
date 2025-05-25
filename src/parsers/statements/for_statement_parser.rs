@@ -37,7 +37,7 @@ fn parse_for_initializer(input: &str) -> BResult<&str, ForInitializer> {
                 |(const_modifier, ty, declarators)| {
                     ForInitializer::Declaration(LocalVariableDeclaration {
                         is_const: const_modifier.is_some(),
-                        ty,
+                        declaration_type: ty,
                         declarators,
                     })
                 }

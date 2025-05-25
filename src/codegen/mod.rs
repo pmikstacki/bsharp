@@ -80,10 +80,10 @@ impl Compilable for MethodDeclaration {
         }
 
         for param in &self.parameters {
-            if let Some(param_type) = map_type_stub(&param.ty) { // Use stub for now
+            if let Some(param_type) = map_type_stub(&param.parameter_type) { // Use stub for now
                 sig.params.push(AbiParam::new(param_type));
             } else {
-                return Err(format!("Unsupported parameter type: {:?}\nIn method: {}.{}", param.ty, current_class_name, self.name));
+                return Err(format!("Unsupported parameter type: {:?}\nIn method: {}.{}", param.parameter_type, current_class_name, self.name));
             }
         }
 
@@ -244,6 +244,10 @@ fn map_type_stub(ty: &Type) -> Option<types::Type> {
             PrimitiveType::Char => Some(types::I16), // UTF-16 character
             PrimitiveType::String => {
                 log::warn!("String type mapping not fully implemented yet.");
+                None
+            }
+            PrimitiveType::Object => {
+                log::warn!("Object type mapping not fully implemented yet.");
                 None
             }
         },

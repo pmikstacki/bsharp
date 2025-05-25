@@ -81,7 +81,7 @@ fn test_parse_block_statement_with_statements() {
 
             // Validate first statement: int a = 1;
             match &statements[0] {
-                Statement::Declaration(LocalVariableDeclaration { declarators, ty, .. }) => {
+                Statement::Declaration(LocalVariableDeclaration { declarators, declaration_type: ty, .. }) => {
                     assert_eq!(declarators.len(), 1, "Expected one declarator for 'int a = 1;'");
                     let declarator = &declarators[0];
                     assert_eq!(declarator.name.name, "a");
@@ -93,7 +93,7 @@ fn test_parse_block_statement_with_statements() {
 
             // Validate second statement: string b = "test";
             match &statements[1] {
-                Statement::Declaration(LocalVariableDeclaration { declarators, ty, .. }) => {
+                Statement::Declaration(LocalVariableDeclaration { declarators, declaration_type: ty, .. }) => {
                     assert_eq!(declarators.len(), 1, "Expected one declarator for 'string b = \"test\";'");
                     let declarator = &declarators[0];
                     assert_eq!(declarator.name.name, "b");

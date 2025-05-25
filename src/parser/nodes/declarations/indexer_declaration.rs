@@ -1,13 +1,13 @@
 use serde::{Serialize, Deserialize};
 use crate::parser::nodes::types::Type;
 use crate::parser::nodes::types::Parameter;
-use crate::parser::nodes::declarations::Attribute;
+use crate::parser::nodes::declarations::{Attribute, Modifier};
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct IndexerDeclaration {
     pub attributes: Vec<Attribute>,
-    pub modifiers: Vec<String>,
-    pub ty: Type,
+    pub modifiers: Vec<Modifier>,
+    pub indexer_type: Type,
     pub parameters: Vec<Parameter>,
     pub accessor_list: IndexerAccessorList,
 }
