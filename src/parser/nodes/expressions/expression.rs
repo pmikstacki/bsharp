@@ -5,8 +5,10 @@ use crate::parser::nodes::expressions::UnaryOperator;
 use crate::parser::nodes::expressions::{
     AnonymousMethodExpression, AnonymousObjectCreationExpression, AssignmentExpression, AwaitExpression,
     ConditionalExpression, DeconstructionExpression, InvocationExpression, LambdaExpression, MemberAccessExpression,
-    NewExpression, NullConditionalExpression, Pattern, TupleExpression, QueryExpression
+    NewExpression, NullConditionalExpression, Pattern, TupleExpression, QueryExpression,
+    ThrowExpression, NameofExpression, TypeofExpression, SizeofExpression, DefaultExpression
 };
+use crate::parser::nodes::expressions::range_expression::{RangeExpression, IndexExpression};
 use crate::parser::nodes::identifier::Identifier;
 use serde::{Deserialize, Serialize};
 
@@ -14,6 +16,8 @@ use serde::{Deserialize, Serialize};
 pub enum Expression {
     AnonymousObject(AnonymousObjectCreationExpression),
     Tuple(TupleExpression),
+    Range(Box<RangeExpression>), // Range expressions: start..end, ..end, start.., ..
+    Index(Box<IndexExpression>), // Index from end expressions: ^expression
     Pattern(Box<Pattern>),
     Deconstruction(DeconstructionExpression),
     Conditional(Box<ConditionalExpression>),
@@ -46,8 +50,11 @@ pub enum Expression {
         expression: Box<Expression>, 
         target_type: crate::parser::nodes::types::Type 
     }, // Type casting: (int)x
-    // TODO: Add variants for other C# expressions as needed:
-    // e.g., TypeOf, Default, etc.
+    Throw(Box<ThrowExpression>), // Throw expressions: throw new Exception()
+    Nameof(Box<NameofExpression>), // Nameof expressions: nameof(variable)
+    Typeof(Box<TypeofExpression>), // Typeof expressions: typeof(int)
+    Sizeof(Box<SizeofExpression>), // Sizeof expressions: sizeof(int)
+    Default(Box<DefaultExpression>), // Default expressions: default(int) or default
 }
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]

@@ -22,7 +22,7 @@ fn test_parse_literal_integer() {
 
 #[test]
 fn test_parse_literal_string() {
-    let input = r#"\"hello\""#;
+    let input = r#""hello""#;
     let (rest, expr) = parse_primary_expression(input).unwrap();
     assert_eq!(expr, Expression::Literal(Literal::String("hello".to_string())));
     assert_eq!(rest, "");

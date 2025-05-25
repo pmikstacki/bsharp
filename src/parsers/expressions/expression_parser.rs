@@ -10,6 +10,7 @@ use crate::parser::nodes::expressions::member_access_expression::MemberAccessExp
 use crate::parser::nodes::expressions::new_expression::NewExpression;
 use crate::parser::nodes::expressions::anonymous_object_creation_expression::{AnonymousObjectCreationExpression, AnonymousObjectMember};
 use crate::parser::nodes::expressions::null_conditional_expression::NullConditionalExpression;
+use crate::parser::nodes::expressions::range_expression::{IndexExpression, RangeExpression};
 use crate::parser::nodes::expressions::BinaryOperator;
 use crate::parser::nodes::expressions::UnaryOperator;
 use crate::parser::nodes::identifier::Identifier;
@@ -18,6 +19,12 @@ use crate::parsers::expressions::lambda_expression_parser::parse_lambda_or_anony
 use crate::parsers::expressions::literal_parser::parse_literal;
 use crate::parsers::expressions::query_expression_parser::parse_query_expression;
 use crate::parsers::expressions::switch_expression_parser::parse_switch_expression;
+use crate::parsers::expressions::tuple_expression_parser::parse_tuple_expression;
+use crate::parsers::expressions::throw_expression_parser::parse_throw_expression;
+use crate::parsers::expressions::nameof_expression_parser::parse_nameof_expression;
+use crate::parsers::expressions::typeof_expression_parser::parse_typeof_expression;
+use crate::parsers::expressions::sizeof_expression_parser::parse_sizeof_expression;
+use crate::parsers::expressions::default_expression_parser::parse_default_expression;
 use crate::parsers::identifier_parser::parse_identifier;
 use crate::parsers::types::type_parser::parse_type_expression;
 
@@ -33,7 +40,7 @@ use nom::{
 pub fn parse_expression(input: &str) -> BResult<&str, Expression> {
     bs_context(
         "expression",
-        parse_assignment_expression_or_higher,
+        bws(parse_assignment_expression_or_higher),
     )(input)
 }
 
@@ -311,10 +318,42 @@ fn parse_multiplicative_expression_or_higher(input: &str) -> BResult<&str, Expre
     Ok((input, left))
 }
 
+// Helper for parse_range_expression_or_higher to specifically parse ranges starting with `..`
+fn parse_range_starting_with_dots(input: &str) -> BResult<&str, Expression> {
+    let (input, _) = pair(bchar('.'), bchar('.'))(input)?;
+    let (input, end_operand) = opt(bws(parse_unary_expression_or_higher))(input)?;
+    Ok((
+        input,
+        Expression::Range(Box::new(RangeExpression {
+            start: None,
+            end: end_operand.map(Box::new),
+            is_inclusive: false,
+        })),
+    ))
+}
+
+// This is the main function that should be in the precedence chain.
+// It will first try to parse a range that starts with `..`
+// If that fails, it will try to parse a unary expression, and then check if it's followed by `..`
 fn parse_range_expression_or_higher(input: &str) -> BResult<&str, Expression> {
-    // For now, just pass through to unary
-    // TODO: Implement range expressions (.., ..^, ^..)
-    parse_unary_expression_or_higher(input)
+    alt((
+        // Attempt to parse ranges like `..expr` or `..` first
+        bs_context("range starting with ..", parse_range_starting_with_dots),
+        // Then, attempt to parse expressions like `expr..`, `expr..expr` or just `expr`
+        bs_context("range starting with operand or just operand", |i: &str| {
+            let (i, start_expr) = parse_unary_expression_or_higher(i)?;
+            if let Ok((i_after_dots, _)) = bws(pair(bchar('.'), bchar('.')))(i) {
+                let (i_after_end, end_expr) = opt(parse_unary_expression_or_higher)(i_after_dots)?;
+                Ok((i_after_end, Expression::Range(Box::new(RangeExpression {
+                    start: Some(Box::new(start_expr)),
+                    end: end_expr.map(Box::new),
+                    is_inclusive: false,
+                }))))
+            } else {
+                Ok((i, start_expr))
+            }
+        }),
+    ))(input)
 }
 
 #[derive(Debug, Clone)]
@@ -340,8 +379,16 @@ fn parse_unary_expression_or_higher(input: &str) -> BResult<&str, Expression> {
         map(recognize(pair(bchar('-'), bchar('-'))), |_| UnaryOperator::Decrement),
         map(bchar('&'), |_| UnaryOperator::AddressOf),
         map(bchar('*'), |_| UnaryOperator::PointerIndirection),
+        // Add ^ (index from end) operator here. It has high precedence like other unary operators.
+        map(bchar('^'), |_| UnaryOperator::IndexFromEnd),
     )))(input) {
         let (input, operand) = parse_unary_expression_or_higher(input)?;
+        // If the operator is IndexFromEnd, wrap it in Expression::Index
+        if op == UnaryOperator::IndexFromEnd {
+            return Ok((input, Expression::Index(Box::new(IndexExpression {
+                value: Box::new(operand),
+            }))));
+        }
         return Ok((input, Expression::Unary {
             op,
             expr: Box::new(operand),
@@ -375,22 +422,14 @@ fn parse_unary_expression_or_higher(input: &str) -> BResult<&str, Expression> {
         }
     }
     
-    // Try sizeof expression - for now, treat as unary operator
-    if let Ok((input, _)) = bws(keyword("sizeof"))(input) {
-        let (input, _) = bws(bchar('('))(input)?;
-        let (input, _ty) = bws(parse_type_expression)(input)?;
-        let (input, _) = bws(bchar(')'))(input)?;
-        // For now, create a dummy expression since we don't have a proper sizeof AST node
-        return Ok((input, Expression::Literal(Literal::Integer(0))));
+    // Try sizeof expression
+    if let Ok((input, sizeof_expr)) = parse_sizeof_expression(input) {
+        return Ok((input, sizeof_expr));
     }
     
-    // Try typeof expression - for now, treat as unary operator  
-    if let Ok((input, _)) = bws(keyword("typeof"))(input) {
-        let (input, _) = bws(bchar('('))(input)?;
-        let (input, _ty) = bws(parse_type_expression)(input)?;
-        let (input, _) = bws(bchar(')'))(input)?;
-        // For now, create a dummy expression since we don't have a proper typeof AST node
-        return Ok((input, Expression::Literal(Literal::Integer(0))));
+    // Try typeof expression
+    if let Ok((input, typeof_expr)) = parse_typeof_expression(input) {
+        return Ok((input, typeof_expr));
     }
     
     // If none of the above work, try postfix expressions
@@ -495,10 +534,18 @@ fn parse_primary_expression(input: &str) -> BResult<&str, Expression> {
             parse_query_expression,
             // Switch expressions - must come before variables/identifiers  
             parse_switch_expression,
+            // Throw expressions - must come before variables/identifiers
+            parse_throw_expression,
+            // Nameof expressions - must come before variables/identifiers
+            parse_nameof_expression,
+            // Default expressions - must come before variables/identifiers
+            parse_default_expression,
             // Literals
             map(parse_literal, |lit| Expression::Literal(lit)),
             // this keyword
             map(keyword("this"), |_| Expression::This),
+            // Tuple expressions: (expr1, expr2, ...) - must come before general parenthesized expressions
+            parse_tuple_expression,
             // Parenthesized expressions - try before new/lambda to avoid potential conflicts with their parameter/arg list parsing
             delimited(bws(bchar('(')), bws(parse_expression), bws(bchar(')'))),
             // New expressions

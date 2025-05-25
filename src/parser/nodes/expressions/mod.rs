@@ -26,6 +26,7 @@ pub mod null_conditional_expression;
 pub mod null_forgiving_expression;
 pub mod deconstruction_expression;
 pub mod indexing_expression;
+pub mod range_expression;
 
 pub use anonymous_object_creation_expression::{AnonymousObjectCreationExpression, AnonymousObjectMember};
 pub use array_index_expression::ArrayIndexExpression;
@@ -48,6 +49,7 @@ pub use null_conditional_expression::NullConditionalExpression;
 pub use null_forgiving_expression::NullForgivingExpression;
 pub use pattern::*;
 pub use query_expression::*;
+pub use range_expression::{RangeExpression, IndexExpression};
 pub use sizeof_expression::SizeofExpression;
 pub use stackalloc_expression::StackAllocExpression;
 pub use throw_expression::ThrowExpression;
