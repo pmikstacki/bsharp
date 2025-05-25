@@ -199,7 +199,7 @@ mod tests {
     
     #[test]
     fn test_parse_enum_with_attributes_modifiers_and_base_type() {
-        let code = "#[Flags] public enum MyEnum : int { A, B }";
+        let code = "[Flags] public enum MyEnum : int { A, B }";
         let result = parse_full_input(code, parse_enum_declaration);
         assert!(result.is_ok(), "Parsing failed: {:?}", result.err());
         let (_remaining, decl) = result.unwrap();
