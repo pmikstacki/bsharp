@@ -18,7 +18,7 @@ pub fn parse_keyword<'a>(keyword: &'static str) -> impl FnMut(&'a str) -> IResul
         let (input, _) = multispace0::<&str, NomError<&str>>(input)?;
         
         // Parse the actual keyword
-        let mut tag_parser = nom_tag::<&'static str, &'a str, NomError<&'a str>>(keyword);
+        let tag_parser = nom_tag::<&'static str, &'a str, NomError<&'a str>>(keyword);
         let (input, kw) = tag_parser(input)?;
         
         // Ensure there's at least some whitespace after the keyword

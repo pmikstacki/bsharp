@@ -1,5 +1,6 @@
 use crate::parsers::identifier_parser::parse_identifier;
 use crate::parser::nodes::expressions::expression::Expression;
+use crate::parsers::declarations::modifier_parser::parse_modifiers;
 use nom::{
     character::complete::{char as nom_char},
     sequence::{preceded},
@@ -24,16 +25,17 @@ fn parse_field_initializer(input: &str) -> BResult<&str, Option<Expression>> {
 }
 
 // Parse a field declaration
-// Format: TypeSyntax Identifier [= Initializer];
-// Modifiers are not handled yet.
+// Format: [Modifiers] TypeSyntax Identifier [= Initializer];
 pub fn parse_field_declaration(input: &str) -> BResult<&str, FieldDeclaration> {
-    // TODO: Parse modifiers here later
+    // Parse modifiers (private, readonly, etc.)
+    let (input, modifiers) = parse_modifiers(input)?;
     let (input, ty) = bws(nom_to_bs(parse_type_expression))(input)?;
     let (input, name) = bws(nom_to_bs(parse_identifier))(input)?;
     let (input, initializer) = parse_field_initializer(input)?;
     let (input, _) = bws(nom_to_bs(map(nom_char::<&str, nom::error::Error<&str>>(';'), |c| c)))(input)?; // Field declarations must end with a semicolon
 
     Ok((input, FieldDeclaration {
+        modifiers,
         ty,
         name,
         initializer,

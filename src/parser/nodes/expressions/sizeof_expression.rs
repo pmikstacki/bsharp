@@ -1,11 +1,10 @@
 use serde::{Serialize, Deserialize};
 use crate::parser::nodes::types::Type;
-use std::marker::PhantomData;
+
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
-pub struct SizeofExpression<'a> {
-    pub target_type: Type<'a>,
+pub struct SizeofExpression {
+    pub target_type: Type,
     // This marker helps Rust understand that we're intentionally using this lifetime
-    #[serde(skip)]
-    _phantom: PhantomData<&'a ()>,
+
 }

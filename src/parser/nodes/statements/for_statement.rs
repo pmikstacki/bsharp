@@ -4,20 +4,20 @@ use crate::parser::nodes::declarations::LocalVariableDeclaration;
 use crate::parser::nodes::statements::statement::Statement;
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
-pub struct ForStatement<'a> {
+pub struct ForStatement {
     // Initializer can be a declaration or a list of expression statements
-    pub initializer: Option<ForInitializer<'a>>,
+    pub initializer: Option<ForInitializer>,
     // Loop condition
-    pub condition: Option<Expression<'a>>,
+    pub condition: Option<Expression>,
     // Iterator statements (executed after each loop iteration)
-    pub iterator: Vec<Expression<'a>>,
+    pub iterator: Vec<Expression>,
     // Loop body
-    pub body: Box<Statement<'a>>, // Expecting Statement::Block usually
+    pub body: Box<Statement>, // Expecting Statement::Block usually
 }
 
 // Define what can be in the initializer part of a for loop
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
-pub enum ForInitializer<'a> {
-    Declaration(LocalVariableDeclaration<'a>),
-    Expressions(Vec<Expression<'a>>),
+pub enum ForInitializer {
+    Declaration(LocalVariableDeclaration),
+    Expressions(Vec<Expression>),
 }

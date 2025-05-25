@@ -4,11 +4,11 @@ use crate::parser::nodes::types::Parameter;
 use crate::parser::nodes::declarations::Attribute;
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
-pub struct IndexerDeclaration<'a> {
-    pub attributes: Vec<Attribute<'a>>,
+pub struct IndexerDeclaration {
+    pub attributes: Vec<Attribute>,
     pub modifiers: Vec<String>,
-    pub ty: Type<'a>,
-    pub parameters: Vec<Parameter<'a>>,
+    pub ty: Type,
+    pub parameters: Vec<Parameter>,
     pub accessor_list: IndexerAccessorList,
 }
 

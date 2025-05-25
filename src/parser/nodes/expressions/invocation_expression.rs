@@ -2,9 +2,9 @@ use serde::{Serialize, Deserialize};
 use crate::parser::nodes::expressions::expression::Expression;
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
-pub struct InvocationExpression<'a> {
+pub struct InvocationExpression {
     // The expression being called (e.g., Variable, MemberAccess)
-    pub callee: Box<Expression<'a>>,
+    pub callee: Box<Expression>,
     // The arguments passed to the method
-    pub arguments: Vec<Expression<'a>>,
+    pub arguments: Vec<Expression>,
 }

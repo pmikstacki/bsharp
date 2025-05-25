@@ -1,60 +1,66 @@
 use nom::{
     branch::alt,
     bytes::complete::tag,
-    character::complete::{multispace1},
-    combinator::{value},
+    character::complete::alpha1,
+    combinator::{value, not, peek},
     multi::many0,
-    sequence::{terminated},
+    sequence::terminated,
 };
 use nom::error::ParseError;
 use crate::parser::errors::{BResult, BSharpParseError};
 use crate::parser::nodes::declarations::Modifier;
-use crate::parser::parser_helpers::bws;
+use crate::parser::parser_helpers::{nom_to_bs, bws};
 
-// Parse a single modifier keyword
+// Helper to ensure we match complete words, not prefixes
+fn word_boundary(input: &str) -> nom::IResult<&str, (), nom::error::Error<&str>> {
+    // Check that the next character is not alphanumeric or underscore, without consuming it
+    peek(not(alpha1))(input)
+}
+
+// Parse a single modifier keyword with word boundary check
 fn parse_single_modifier(input: &str) -> BResult<&str, Modifier> {
-    alt((
+    nom_to_bs(alt((
         // First group
         alt((
-            value(Modifier::Public, tag("public")),
-            value(Modifier::Private, tag("private")),
-            value(Modifier::Protected, tag("protected")),
-            value(Modifier::Internal, tag("internal")),
-            value(Modifier::Static, tag("static")),
-            value(Modifier::Abstract, tag("abstract")),
+            value(Modifier::Public, terminated(tag("public"), word_boundary)),
+            value(Modifier::Private, terminated(tag("private"), word_boundary)),
+            value(Modifier::Protected, terminated(tag("protected"), word_boundary)),
+            value(Modifier::Internal, terminated(tag("internal"), word_boundary)),
+            value(Modifier::Static, terminated(tag("static"), word_boundary)),
+            value(Modifier::Abstract, terminated(tag("abstract"), word_boundary)),
         )),
         // Second group
         alt((
-            value(Modifier::Sealed, tag("sealed")),
-            value(Modifier::Virtual, tag("virtual")),
-            value(Modifier::Override, tag("override")),
-            value(Modifier::Extern, tag("extern")),
-            value(Modifier::Unsafe, tag("unsafe")),
-            value(Modifier::Readonly, tag("readonly")),
-            value(Modifier::Volatile, tag("volatile")),
+            value(Modifier::Sealed, terminated(tag("sealed"), word_boundary)),
+            value(Modifier::Virtual, terminated(tag("virtual"), word_boundary)),
+            value(Modifier::Override, terminated(tag("override"), word_boundary)),
+            value(Modifier::Extern, terminated(tag("extern"), word_boundary)),
+            value(Modifier::Unsafe, terminated(tag("unsafe"), word_boundary)),
+            value(Modifier::Readonly, terminated(tag("readonly"), word_boundary)),
+            value(Modifier::Volatile, terminated(tag("volatile"), word_boundary)),
         )),
         // Third group
         alt((
-            value(Modifier::New, tag("new")),
-            value(Modifier::Partial, tag("partial")),
-            value(Modifier::Ref, tag("ref")),
-            value(Modifier::Out, tag("out")),
-            value(Modifier::In, tag("in")),
-            value(Modifier::Params, tag("params")),
+            value(Modifier::New, terminated(tag("new"), word_boundary)),
+            value(Modifier::Partial, terminated(tag("partial"), word_boundary)),
+            value(Modifier::Ref, terminated(tag("ref"), word_boundary)),
+            value(Modifier::Out, terminated(tag("out"), word_boundary)),
+            value(Modifier::In, terminated(tag("in"), word_boundary)),
+            value(Modifier::Params, terminated(tag("params"), word_boundary)),
         )),
         // Fourth group
         alt((
-            value(Modifier::Async, tag("async")),
-            value(Modifier::Const, tag("const")),
-            value(Modifier::Fixed, tag("fixed")),
+            value(Modifier::Async, terminated(tag("async"), word_boundary)),
+            value(Modifier::Const, terminated(tag("const"), word_boundary)),
+            value(Modifier::Fixed, terminated(tag("fixed"), word_boundary)),
         )),
-    ))(input)
+    )))(input)
 }
 
 /// Parse and validate modifiers for a specific declaration type
 pub fn parse_modifiers_for_decl_type<'a>(input: &'a str, decl_type: &str) -> BResult<&'a str, Vec<Modifier>> {
-    // Parse modifiers with optional whitespace between them
-    // Use bws (bounded whitespace) to make it more flexible
+    // Reverted to many0(bws(parse_single_modifier))
+    // bws around parse_single_modifier handles spaces between and potentially after the list.
     let (input, mut modifiers) = many0(bws(parse_single_modifier))(input)?;
     
     // Get compatible modifiers for this declaration type
@@ -82,12 +88,11 @@ pub fn parse_modifiers_for_decl_type<'a>(input: &'a str, decl_type: &str) -> BRe
     Ok((input, modifiers))
 }
 
-// Parse zero or more modifiers (for backward compatibility)
+// Parse zero or more modifiers (for backward compatibility or general use)
 pub fn parse_modifiers(input: &str) -> BResult<&str, Vec<Modifier>> {
-    // Consume modifier + mandatory space
-    let (input, mut modifiers) = many0(terminated(parse_single_modifier, multispace1))(input)?;
+    // This version uses many0(bws(parse_single_modifier)) for consistency.
+    let (input, mut modifiers) = many0(bws(parse_single_modifier))(input)?;
     
-    // Just order them but don't validate for specific declaration types
     Modifier::order_modifiers(&mut modifiers);
     
     Ok((input, modifiers))

@@ -11,7 +11,8 @@ use cranelift_object::{ObjectBuilder, ObjectModule};
 use std::str::FromStr;
 use target_lexicon::Triple;
 
-use crate::parser::nodes::declarations::{ClassMember, MethodDeclaration, ClassDeclaration};
+use crate::parser::nodes::declarations::{ClassBodyDeclaration, MethodDeclaration, ClassDeclaration};
+use crate::parser::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration;
 use crate::parser::nodes::types::{Type, PrimitiveType};
 
 // Trait for AST nodes that can be compiled
@@ -30,7 +31,7 @@ pub trait Compilable {
 }
 
 // Implement Compilable for ClassDeclaration
-impl Compilable for ClassDeclaration<'_> {
+impl Compilable for ClassDeclaration {
     fn compile_node(
         &self,
         _parent_class_name: Option<&str>, // Currently unused for class
@@ -39,13 +40,13 @@ impl Compilable for ClassDeclaration<'_> {
         context: &mut Context,
     ) -> Result<(), String> {
         log::info!("Compiling class: {}", self.name);
-        for member in &self.members {
+        for member in &self.body_declarations {
             match member {
-                ClassMember::Method(method_decl) => {
+                ClassBodyDeclaration::Method(method_decl) => {
                     // Pass the current class name as context
                     method_decl.compile_node(Some(&self.name.name), module, builder_context, context)?;
                 }
-                ClassMember::Field(field_decl) => {
+                ClassBodyDeclaration::Field(field_decl) => {
                     // TODO: Handle field declarations (e.g., allocate space in constructor?)
                     log::info!("Skipping field declaration (in trait impl): {}", field_decl.name);
                 }
@@ -57,7 +58,7 @@ impl Compilable for ClassDeclaration<'_> {
 }
 
 // Implement Compilable for MethodDeclaration
-impl Compilable for MethodDeclaration<'_> {
+impl Compilable for MethodDeclaration {
     fn compile_node(
         &self,
         class_name: Option<&str>, // Receive class name context
@@ -166,34 +167,34 @@ impl CodeGenerator {
         // TODO: Implement compilation logic
         // For now, just process the AST structure and perhaps define functions
 
-        for member in &ast.members { 
-            match member {
-                ast::TopLevelMember::Namespace(ns) => {
-                    // TODO: Handle namespace members
-                    for _member /* type Member */ in &ns.members {
-                        // self.visit_declaration(member)?; // Assuming a method to handle declarations
+        for declaration in &ast.declarations {
+            match declaration {
+                ast::TopLevelDeclaration::Namespace(ns) => {
+                    // TODO: Handle namespace scoping in bytecode
+                    for ns_member in &ns.declarations {
+                        if let NamespaceBodyDeclaration::Class(class_decl) = ns_member {
+                            do_compile_class(class_decl, &mut self.module, &mut self.builder_context, &mut self.context)?;
+                        }
                     }
                 }
-                ast::TopLevelMember::Class(class_decl) => {
-                    self.visit_class_declaration(class_decl)?;
+                ast::TopLevelDeclaration::Class(class_decl) => {
+                    do_compile_class(class_decl, &mut self.module, &mut self.builder_context, &mut self.context)?;
                 }
-                ast::TopLevelMember::Struct(_) => {
-                    // TODO: Implement codegen for StructDeclaration
-                    todo!("Codegen for StructDeclaration not implemented");
+                ast::TopLevelDeclaration::Struct(_struct_decl) => {
+                    return Err("Struct compilation not implemented yet".to_string());
                 }
-                ast::TopLevelMember::Record(_) => {
-                    // TODO: Implement codegen for RecordDeclaration
-                    todo!("Codegen for RecordDeclaration not implemented");
+                ast::TopLevelDeclaration::Record(_record_decl) => {
+                    return Err("Record compilation not implemented yet".to_string());
                 }
-                ast::TopLevelMember::Interface(_) => {
-                    // TODO: Implement codegen for InterfaceDeclaration
-                    todo!("Codegen for InterfaceDeclaration not implemented");
+                ast::TopLevelDeclaration::Interface(_iface_decl) => {
+                    return Err("Interface compilation not implemented yet".to_string());
                 }
-                ast::TopLevelMember::Enum(_) => {
-                    // TODO: Implement codegen for EnumDeclaration
-                    todo!("Codegen for EnumDeclaration not implemented");
+                ast::TopLevelDeclaration::Enum(_enum_decl) => {
+                    return Err("Enum compilation not implemented yet".to_string());
                 }
-                // TODO: Handle other top-level members like enums, interfaces, etc.
+                ast::TopLevelDeclaration::Delegate(_delegate_decl) => {
+                    return Err("Delegate compilation not implemented yet".to_string());
+                }
             }
         }
 
@@ -203,15 +204,15 @@ impl CodeGenerator {
             Err(e) => Err(format!("Failed to emit object code: {}", e)),
         }
     }
+}
 
-    // Stub for visit_class_declaration
-    fn visit_class_declaration(&mut self, class_decl: &ast::ClassDeclaration<'_>) -> Result<(), String> {
-        // TODO: Implement actual class declaration visitation logic
-        // This might involve calling class_decl.compile_node(...) if that's the pattern,
-        // or other specific logic for classes.
-        class_decl.compile_node(None, &mut self.module, &mut self.builder_context, &mut self.context)?;
-        Ok(())
-    }
+// Changed from a method to a free function
+fn do_compile_class(class_decl: &ast::ClassDeclaration, module: &mut ObjectModule, builder_context: &mut FunctionBuilderContext, context: &mut Context) -> Result<(), String> {
+    // TODO: Implement actual class declaration visitation logic
+    // This might involve calling class_decl.compile_node(...) if that's the pattern,
+    // or other specific logic for classes.
+    class_decl.compile_node(None, module, builder_context, context)?;
+    Ok(())
 }
 
 // TODO: Remove this stub once map_type is refactored or part of codegen context
@@ -219,8 +220,28 @@ fn map_type_stub(ty: &Type) -> Option<types::Type> {
     match ty {
         Type::Primitive(primitive) => match primitive {
             PrimitiveType::Void => None,
-            PrimitiveType::Int => Some(types::I32),
             PrimitiveType::Bool => Some(types::I8),
+            
+            // Integral types
+            PrimitiveType::Byte => Some(types::I8),
+            PrimitiveType::SByte => Some(types::I8),
+            PrimitiveType::Short => Some(types::I16),
+            PrimitiveType::UShort => Some(types::I16),
+            PrimitiveType::Int => Some(types::I32),
+            PrimitiveType::UInt => Some(types::I32),
+            PrimitiveType::Long => Some(types::I64),
+            PrimitiveType::ULong => Some(types::I64),
+            
+            // Floating-point types
+            PrimitiveType::Float => Some(types::F32),
+            PrimitiveType::Double => Some(types::F64),
+            PrimitiveType::Decimal => {
+                log::warn!("Decimal type mapping not fully implemented yet - using F64 as fallback.");
+                Some(types::F64)
+            }
+            
+            // Character and string types
+            PrimitiveType::Char => Some(types::I16), // UTF-16 character
             PrimitiveType::String => {
                 log::warn!("String type mapping not fully implemented yet.");
                 None

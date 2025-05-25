@@ -1,7 +1,7 @@
 // Integration tests for parsing record declarations (class and struct)
 
 use bsharp::parser::nodes::identifier::Identifier;
-use bsharp::parser::nodes::declarations::{RecordDeclaration, Parameter, ClassMember, Attribute};
+use bsharp::parser::nodes::declarations::{RecordDeclaration, Parameter, ClassBodyDeclaration, Attribute};
 use bsharp::parser::nodes::types::Type; // Assuming TypeSyntax exists
 
 // Assuming a parser function like parse_record_declaration exists

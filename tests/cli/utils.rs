@@ -2,6 +2,7 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use std::env;
 use std::io;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 // Get the path to test cases directory
 pub fn get_test_cases_dir() -> PathBuf {
@@ -29,14 +30,16 @@ pub fn get_all_test_files() -> Vec<PathBuf> {
 
 // Create a temporary directory for test outputs
 pub fn create_temp_dir() -> io::Result<PathBuf> {
-    let mut temp_dir = env::temp_dir();
-    temp_dir.push("bsharp_cli_tests");
+    let mut temp_dir_base = env::temp_dir();
+    let since_the_epoch = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .expect("Time went backwards");
+    let suffix = format!("bsharp_cli_tests_{}_{}", since_the_epoch.as_secs(), since_the_epoch.subsec_nanos());
+    temp_dir_base.push(suffix);
     
-    if !temp_dir.exists() {
-        fs::create_dir_all(&temp_dir)?;
-    }
+    fs::create_dir_all(&temp_dir_base)?;
     
-    Ok(temp_dir)
+    Ok(temp_dir_base)
 }
 
 // Clean up temporary files after tests

@@ -41,34 +41,24 @@ namespace TestApp
 
         public void Loops()
         {
-            // For loop
             for (int i = 0; i < 5; i++)
             {
-                Console.WriteLine($"For loop: {i}");
+                Console.WriteLine("For loop: " + i);
             }
 
-            // While loop
             int counter = 0;
             while (counter < 3)
             {
-                Console.WriteLine($"While loop: {counter}");
+                Console.WriteLine("While loop: " + counter);
                 counter++;
             }
 
-            // Do-while loop
             int doCounter = 0;
             do
             {
-                Console.WriteLine($"Do-while loop: {doCounter}");
+                Console.WriteLine("Do-while loop: " + doCounter);
                 doCounter++;
             } while (doCounter < 3);
-
-            // Foreach loop
-            string[] fruits = { "apple", "banana", "orange" };
-            foreach (string fruit in fruits)
-            {
-                Console.WriteLine($"Foreach loop: {fruit}");
-            }
         }
     }
 }

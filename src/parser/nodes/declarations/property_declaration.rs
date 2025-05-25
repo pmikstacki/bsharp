@@ -14,10 +14,10 @@ pub enum PropertyAccessor {
 
 /// Represents a C# property declaration
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
-pub struct PropertyDeclaration<'a> {
+pub struct PropertyDeclaration {
     pub modifiers: Vec<Modifier>,  // Added modifiers
-    pub ty: Type<'a>,
+    pub ty: Type,
     pub name: Identifier,
     pub accessors: Vec<PropertyAccessor>,
-    pub initializer: Option<Expression<'a>>, // For auto-property initializers: "public int Count { get; set; } = 0;"
+    pub initializer: Option<Expression>, // For auto-property initializers: "public int Count { get; set; } = 0;"
 }

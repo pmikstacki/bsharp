@@ -1,0 +1,79 @@
+{
+  "usings": [],
+  "members": [
+    {
+      "Class": {
+        "modifiers": [
+          "Public"
+        ],
+        "name": {
+          "name": "Test"
+        },
+        "type_parameters": null,
+        "base_types": null,
+        "members": [
+          {
+            "Method": {
+              "modifiers": [
+                "Public"
+              ],
+              "return_type": {
+                "Primitive": "Void"
+              },
+              "name": {
+                "name": "Add"
+              },
+              "type_parameters": null,
+              "parameters": [
+                {
+                  "ty": {
+                    "Primitive": "Int"
+                  },
+                  "name": {
+                    "name": "value"
+                  }
+                }
+              ],
+              "body": {
+                "Block": [
+                  {
+                    "Declaration": {
+                      "is_const": false,
+                      "ty": {
+                        "Primitive": "Int"
+                      },
+                      "declarators": [
+                        {
+                          "name": {
+                            "name": "x"
+                          },
+                          "initializer": {
+                            "Binary": {
+                              "left": {
+                                "Variable": {
+                                  "name": "value"
+                                }
+                              },
+                              "op": "Add",
+                              "right": {
+                                "Literal": {
+                                  "Integer": 1
+                                }
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              "constraints": null
+            }
+          }
+        ],
+        "documentation": null
+      }
+    }
+  ]
+}

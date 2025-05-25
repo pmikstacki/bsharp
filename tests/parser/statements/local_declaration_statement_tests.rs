@@ -149,11 +149,11 @@ fn test_parse_local_variable_declaration_const_modifier() {
         "const double PI = 3.14;",
         Statement::Declaration(LocalVariableDeclaration {
             is_const: true,
-            ty: Type::Reference(Identifier::new("double")),
+            ty: Type::Primitive(PrimitiveType::Double),
             declarators: vec![
                 VariableDeclarator {
                     name: Identifier { name: "PI".to_string() },
-                    initializer: Some(Expression::Literal(Literal::Float(3.14))), // Changed from String to Float
+                    initializer: Some(Expression::Literal(Literal::Float(3.14))),
                 }
             ],
         }),

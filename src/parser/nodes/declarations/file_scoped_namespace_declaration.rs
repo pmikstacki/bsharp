@@ -1,11 +1,11 @@
 use serde::{Serialize, Deserialize};
+use crate::parser::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration;
 use crate::parser::nodes::identifier::Identifier;
-use crate::parser::nodes::declarations::namespace_declaration::NamespaceMember;
-use super::UsingDirective;
+use crate::parser::nodes::declarations::UsingDirective;
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
-pub struct FileScopedNamespaceDeclaration<'a> {
+pub struct FileScopedNamespaceDeclaration {
     pub name: Identifier, // The namespace name (e.g., MyOrg.MyApp)
-    pub usings: Vec<UsingDirective>,
-    pub members: Vec<NamespaceMember<'a>>, // Declarations within this file-scoped namespace
+    pub declarations: Vec<NamespaceBodyDeclaration>, // Declarations within this file-scoped namespace
+    pub using_directives: Vec<UsingDirective>,
 }

@@ -3,7 +3,7 @@ use crate::parser::nodes::declarations::Attribute;
 use crate::parser::nodes::identifier::Identifier;
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
-pub struct GlobalAttribute<'a> {
+pub struct GlobalAttribute {
     pub target: Identifier, // e.g. "assembly", "module"
-    pub attribute: Attribute<'a>,
+    pub attribute: Attribute,
 }

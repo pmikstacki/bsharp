@@ -1,13 +1,11 @@
-use nom::{
-    character::complete::{char as nom_char, multispace0},
-    combinator::{map, opt},
-    multi::separated_list1,
-    sequence::tuple,
-};
 use crate::parser::errors::BResult;
 use crate::parser::nodes::types::Type;
 use crate::parser::parser_helpers::{bws, nom_to_bs};
 use crate::parsers::types::type_parser::parse_type_expression;
+use nom::{
+    character::complete::char as nom_char,
+    multi::separated_list1,
+};
 
 /// Parses a base type list for declarations like classes, structs, interfaces, and records.
 /// Handles the syntax `: Type1, Type2, ...` where each type is typically an interface
@@ -20,37 +18,28 @@ use crate::parsers::types::type_parser::parse_type_expression;
 ///
 /// # Returns
 /// A vector of parsed types, or an empty vector if no base types are specified.
-pub fn parse_base_type_list<'a>(input: &'a str) -> BResult<&'a str, Vec<Type<'a>>> {
-    // Parse an optional base type list prefixed with ':' character
-    let base_list_parser = tuple((
-        bws(nom_to_bs(nom_char::<&str, nom::error::Error<&str>>(':'))),
-        bws(nom_to_bs(separated_list1(
-            bws(nom_to_bs(nom_char::<&str, nom::error::Error<&str>>(','))),
-            bws(nom_to_bs(parse_type_expression))
-        ))),
-    ));
+pub fn parse_base_type_list(input: &str) -> BResult<&str, Vec<Type>> {
+    // Attempt to parse the colon. If this fails, the whole function fails (it's not an optional colon here).
+    let (input, _) = bws(nom_to_bs(nom_char::<&str, nom::error::Error<&str>>(':')))(input)?;
     
-    // Make the entire base list optional
-    let (input, opt_base_list) = opt(base_list_parser)(input)?;
+    // If the colon is present, parse one or more types separated by commas.
+    let (input, types) = bws(nom_to_bs(separated_list1(
+        bws(nom_to_bs(nom_char::<&str, nom::error::Error<&str>>(','))),
+        bws(nom_to_bs(parse_type_expression))
+    )))(input)?;
     
-    // Return parsed types or empty vector if no base list
-    match opt_base_list {
-        Some((_, types)) => Ok((input, types)),
-        None => Ok((input, Vec::new())),
-    }
+    Ok((input, types))
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::parser::nodes::identifier::Identifier;
-    
+
     #[test]
     fn test_no_base_types() {
-        let input = "{ }";
-        let (rest, types) = parse_base_type_list(input).unwrap();
-        assert_eq!(rest, "{ }");
-        assert!(types.is_empty());
+        let input = "{ }"; // No colon
+        let result = parse_base_type_list(input);
+        assert!(result.is_err()); // Should err because no colon is present
     }
     
     #[test]

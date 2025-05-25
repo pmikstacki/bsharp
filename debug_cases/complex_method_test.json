@@ -1,0 +1,76 @@
+{
+  "usings": [],
+  "members": [
+    {
+      "Class": {
+        "modifiers": [
+          "Public"
+        ],
+        "name": {
+          "name": "Test"
+        },
+        "type_parameters": null,
+        "base_types": null,
+        "members": [
+          {
+            "Method": {
+              "modifiers": [
+                "Public"
+              ],
+              "return_type": {
+                "Primitive": "Void"
+              },
+              "name": {
+                "name": "Add"
+              },
+              "type_parameters": null,
+              "parameters": [
+                {
+                  "ty": {
+                    "Reference": {
+                      "name": "Product"
+                    }
+                  },
+                  "name": {
+                    "name": "entity"
+                  }
+                }
+              ],
+              "body": {
+                "Block": [
+                  {
+                    "Expression": {
+                      "Invocation": {
+                        "callee": {
+                          "MemberAccess": {
+                            "object": {
+                              "Variable": {
+                                "name": "_products"
+                              }
+                            },
+                            "member": {
+                              "name": "Add"
+                            }
+                          }
+                        },
+                        "arguments": [
+                          {
+                            "Variable": {
+                              "name": "entity"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                ]
+              },
+              "constraints": null
+            }
+          }
+        ],
+        "documentation": null
+      }
+    }
+  ]
+}

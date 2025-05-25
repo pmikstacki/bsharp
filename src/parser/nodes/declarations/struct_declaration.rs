@@ -5,20 +5,24 @@ use super::attribute::AttributeList;
 use super::modifier::Modifier;
 use super::field_declaration::FieldDeclaration;
 use super::method_declaration::MethodDeclaration;
+use super::property_declaration::PropertyDeclaration;
+use super::constructor_declaration::ConstructorDeclaration;
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
-pub enum StructMember<'a> {
-    Field(FieldDeclaration<'a>),
-    Method(MethodDeclaration<'a>),
-    // TODO: Add other struct members like constructors, properties, nested types, etc.
+pub enum StructBodyDeclaration {
+    Field(FieldDeclaration),
+    Method(MethodDeclaration),
+    Property(PropertyDeclaration),
+    Constructor(ConstructorDeclaration),
+    // TODO: Add other struct members like nested types, etc.
 }
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
-pub struct StructDeclaration<'a> {
-    pub attributes: Vec<AttributeList<'a>>,
+pub struct StructDeclaration {
+    pub attributes: Vec<AttributeList>,
     pub modifiers: Vec<Modifier>,
     pub name: Identifier,
     pub type_parameters: Option<Vec<TypeParameter>>,
-    pub base_types: Vec<Type<'a>>,
-    pub members: Vec<StructMember<'a>>,
+    pub base_types: Vec<Type>,
+    pub body_declarations: Vec<StructBodyDeclaration>,
 }

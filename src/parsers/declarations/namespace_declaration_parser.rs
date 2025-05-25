@@ -1,48 +1,81 @@
 use crate::parser::errors::BResult;
-use crate::parser::nodes::declarations::NamespaceDeclaration;
+use crate::parser::nodes::declarations::{NamespaceDeclaration, namespace_declaration::NamespaceBodyDeclaration};
 use crate::parser::nodes::identifier::Identifier;
-use crate::parser::parser_helpers::{bws, keyword, nom_to_bs};
+use crate::parser::parser_helpers::{bws, nom_to_bs, keyword};
 use crate::parsers::identifier_parser::parse_qualified_name;
-use nom::character::complete::{multispace0, char as bchar};
-use nom::error::Error as NomError;
-// Placeholder for NamespaceMember, assuming it's defined elsewhere or will be simplified.
-// For a real implementation, you'd import specific member parsers.
-// use crate::parser::nodes::declarations::NamespaceMember;
+use crate::parsers::declarations::type_declaration_parser::{parse_class_declaration, parse_struct_declaration, parse_interface_declaration, parse_record_declaration};
+use crate::parsers::declarations::enum_declaration_parser::parse_enum_declaration;
+use crate::parsers::declarations::delegate_declaration_parser::parse_delegate_declaration;
+use nom::character::complete::{char as nom_char, multispace0};
+use nom::branch::alt;
+use nom::combinator::map;
+use nom::multi::many0;
+use nom::sequence::terminated;
 
-// Parse a namespace declaration with improved whitespace handling
-// TODO: Implement full parsing logic for namespace members
-pub fn parse_namespace_declaration<'a>(input: &'a str) -> BResult<&'a str, NamespaceDeclaration<'a>> {
-    // Use the improved declaration helpers for the keyword
-    let keyword_parser = crate::parsers::declaration_helpers::parse_keyword("namespace");
-    let (input, _) = nom_to_bs(keyword_parser)(input)?;
+/// Parse a namespace member (class, struct, interface, enum, record, or nested namespace)
+fn parse_namespace_member_safe(input: &str) -> BResult<&str, NamespaceBodyDeclaration> {
+    println!("[DEBUG] parse_namespace_member_safe: input = {:?}", input.chars().take(60).collect::<String>());
     
-    // Parse qualified name with proper whitespace handling
+    alt((
+        map(parse_namespace_declaration, NamespaceBodyDeclaration::Namespace),
+        map(parse_interface_declaration, NamespaceBodyDeclaration::Interface),
+        map(parse_class_declaration, NamespaceBodyDeclaration::Class),
+        map(parse_struct_declaration, NamespaceBodyDeclaration::Struct),
+        map(parse_enum_declaration, NamespaceBodyDeclaration::Enum),
+        map(parse_record_declaration, NamespaceBodyDeclaration::Record),
+        map(parse_delegate_declaration, NamespaceBodyDeclaration::Delegate),
+    ))(input)
+}
+
+/// Parse a C# namespace declaration using proper Nom combinators
+/// Example in C#:
+/// ```csharp
+/// namespace MyCompany.MyProject
+/// {
+///     public class MyClass { }
+/// }
+/// ```
+pub fn parse_namespace_declaration(input: &str) -> BResult<&str, NamespaceDeclaration> {
+    println!("[DEBUG] parse_namespace_declaration: input = {:?}", input.chars().take(60).collect::<String>());
+    
+    // Parse the "namespace" keyword
+    let (input, _) = bws(keyword("namespace"))(input)?;
+    
+    // Parse qualified name (e.g., "System.Collections")
     let (input, name_parts) = bws(parse_qualified_name)(input)?;
     let name_str = name_parts.iter().map(|id| id.name.clone()).collect::<Vec<_>>().join(".");
     
-    // Parse the opening brace with proper whitespace handling
-    let (input, _) = bws(nom_to_bs(|i| Ok((i, bchar::<&str, NomError<&str>>('{')(i)?))))(input)?;
+    // Parse opening brace
+    let (input, _) = bws(nom_to_bs(nom_char::<_, nom::error::Error<_>>('{')))(input)?;
+    println!("[DEBUG] parse_namespace_declaration: after open brace");
     
-    // For now, the body is empty - just a placeholder for actual namespace members
-    let (input, _) = multispace0(input)?;
+    // Parse namespace members using many0 - this will parse 0 or more members
+    // and stop when it can't parse any more (which should be at the closing brace)
+    let (input, members) = many0(
+        terminated(
+            bws(parse_namespace_member_safe),
+            multispace0 // consume whitespace after each member
+        )
+    )(input)?;
     
-    // Parse the closing brace with proper whitespace handling
-    let (input, _) = bws(nom_to_bs(|i| Ok((i, bchar::<&str, NomError<&str>>('}')(i)?))))(input)?;
+    println!("[DEBUG] parse_namespace_declaration: parsed {} members", members.len());
+    
+    // Parse closing brace
+    let (input, _) = bws(nom_to_bs(nom_char::<_, nom::error::Error<_>>('}')))(input)?;
+    println!("[DEBUG] parse_namespace_declaration: successfully parsed closing brace");
 
     Ok((input, NamespaceDeclaration {
         name: Identifier { name: name_str },
-        usings: vec![], // Namespaces in C# don't directly contain 'using' directives in their body for other namespaces.
-                        // Usings are typically file-level or for extern aliases.
-        members: vec![], // Placeholder for actual members
-        // span: todo!(),
+        using_directives: vec![], // Namespaces in C# don't directly contain 'using' directives in their body
+        declarations: vec![], // Stub for parsing namespace members - replace with actual member parsers
     }))
 }
 
 // Stub for parsing namespace members - replace with actual member parsers
-// fn parse_namespace_member_stub<'a>(input: &'a str) -> BResult<&'a str, NamespaceMember<'a>> {
+// fn parse_namespace_member_stub<'a>(input: &'a str) -> BResult<&'a str, NamespaceBodyDeclaration<'a>> {
 //     // This is highly simplified. A real parser would try to parse class, struct, enum, interface, nested namespace, etc.
 //     // For now, let's assume it consumes nothing and returns a dummy member or an error.
-//     Err(nom::Err::Error(crate::parser::errors::BSharpParseError::new(input, crate::parser::errors::CustomErrorKind::NotYetImplemented("NamespaceMember"))))
+//     Err(nom::Err::Error(crate::parser::errors::BSharpParseError::new(input, crate::parser::errors::CustomErrorKind::NotYetImplemented("NamespaceBodyDeclaration"))))
 // }
 
 

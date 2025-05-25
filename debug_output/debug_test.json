@@ -1,0 +1,45 @@
+{
+  "usings": [],
+  "members": [
+    {
+      "Namespace": {
+        "name": {
+          "name": "TestApp"
+        },
+        "usings": [],
+        "members": [
+          {
+            "Interface": {
+              "attributes": [],
+              "modifiers": [
+                "Public"
+              ],
+              "name": {
+                "name": "ITest"
+              },
+              "type_parameters": [],
+              "base_types": [],
+              "members": [
+                {
+                  "Method": {
+                    "modifiers": [],
+                    "return_type": {
+                      "Primitive": "Void"
+                    },
+                    "name": {
+                      "name": "Method"
+                    },
+                    "type_parameters": null,
+                    "parameters": [],
+                    "body": null,
+                    "constraints": []
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

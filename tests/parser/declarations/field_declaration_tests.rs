@@ -19,6 +19,7 @@ fn parse_field_decl_test(code: &str) -> Result<FieldDeclaration, String> {
 fn test_parse_simple_field() {
     let code = "int count;";
     let expected = FieldDeclaration {
+        modifiers: vec![],
         ty: Type::Primitive(PrimitiveType::Int),
         name: Identifier { name: "count".to_string() },
         initializer: None,
@@ -30,6 +31,7 @@ fn test_parse_simple_field() {
 fn test_parse_field_with_initializer() {
     let code = "string message = \"Hello\";";
     let expected = FieldDeclaration {
+        modifiers: vec![],
         ty: Type::Primitive(PrimitiveType::String),
         name: Identifier { name: "message".to_string() },
         initializer: Some(Expression::Literal(Literal::String("Hello".to_string()))),
@@ -41,6 +43,7 @@ fn test_parse_field_with_initializer() {
 fn test_parse_field_bool_initializer() {
     let code = "bool enabled = true;";
     let expected = FieldDeclaration {
+        modifiers: vec![],
         ty: Type::Primitive(PrimitiveType::Bool),
         name: Identifier { name: "enabled".to_string() },
         initializer: Some(Expression::Literal(Literal::Boolean(true))),

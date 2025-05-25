@@ -2,12 +2,12 @@ use serde::{Serialize, Deserialize};
 use crate::parser::nodes::expressions::expression::Expression;
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
-pub enum GotoCaseKind<'a> {
-    Case(Expression<'a>),
+pub enum GotoCaseKind {
+    Case(Expression),
     Default,
 }
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
-pub struct GotoCaseStatement<'a> {
-    pub kind: GotoCaseKind<'a>,
+pub struct GotoCaseStatement {
+    pub kind: GotoCaseKind,
 }

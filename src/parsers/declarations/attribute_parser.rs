@@ -1,27 +1,24 @@
 use nom::{
-    branch::alt,
-    bytes::complete::tag,
     character::complete::{char as nom_char, multispace0},
-    combinator::{map, opt},
+    combinator::opt,
     multi::{many0, separated_list0},
-    sequence::{delimited, terminated, tuple},
+    sequence::{delimited, terminated},
 };
-use crate::parser::errors::{BResult, BSharpParseError, CustomErrorKind};
+use crate::parser::errors::BResult;
 use crate::parser::nodes::declarations::attribute::{Attribute, AttributeList};
 use crate::parser::nodes::expressions::expression::Expression;
-use crate::parser::nodes::identifier::Identifier;
 use crate::parser::parser_helpers::{bws, nom_to_bs};
 use crate::parsers::identifier_parser::parse_identifier;
 use crate::parsers::expressions::expression_parser::parse_expression;
 
 /// Parses an attribute argument which can be any expression
-fn parse_attribute_argument<'a>(input: &'a str) -> BResult<&'a str, Expression<'a>> {
+fn parse_attribute_argument(input: &str) -> BResult<&str, Expression> {
     parse_expression(input)
 }
 
 /// Parses a single attribute with optional arguments
 /// Example: `[Serializable]` or `[DataMember(Name = "firstName", Order = 1)]`
-fn parse_single_attribute<'a>(input: &'a str) -> BResult<&'a str, Attribute<'a>> {
+fn parse_single_attribute(input: &str) -> BResult<&str, Attribute> {
     // Parse the attribute name
     let (input, name) = bws(nom_to_bs(parse_identifier))(input)?;
     
@@ -42,7 +39,7 @@ fn parse_single_attribute<'a>(input: &'a str) -> BResult<&'a str, Attribute<'a>>
 
 /// Parses an attribute list enclosed in square brackets
 /// Example: `[Serializable, DataContract]`
-fn parse_attribute_group<'a>(input: &'a str) -> BResult<&'a str, AttributeList<'a>> {
+fn parse_attribute_group(input: &str) -> BResult<&str, AttributeList> {
     let (input, attributes) = delimited(
         bws(nom_to_bs(nom_char::<&str, nom::error::Error<&str>>('['))),
         separated_list0(
@@ -57,7 +54,7 @@ fn parse_attribute_group<'a>(input: &'a str) -> BResult<&'a str, AttributeList<'
 
 /// Parses multiple attribute lists that might appear before a declaration
 /// Example: `[Serializable] [DataContract]`
-pub fn parse_attribute_lists<'a>(input: &'a str) -> BResult<&'a str, Vec<AttributeList<'a>>> {
+pub fn parse_attribute_lists(input: &str) -> BResult<&str, Vec<AttributeList>> {
     // Use terminated to ensure we don't consume trailing whitespace after the attributes
     // This ensures the rest of the parsers (class, interface, etc.) get any whitespace before them
     many0(terminated(nom_to_bs(parse_attribute_group), multispace0))(input)
@@ -108,12 +105,9 @@ mod tests {
     }
     
     #[test]
-    fn test_attribute_with_named_arguments() {
-        // Note: This test will fail until the expression parser fully supports
-        // named arguments/assignments. We will need to enhance the expression parser
-        // to handle these. For now, adding as a placeholder.
-        let input = "[DataMember(Name = \"firstName\")]";
-        // Implementation will need to be updated when expression parser supports assignments
+    fn test_attribute_with_named_argument() {
+        let _input = "[DataMember(Name = \"firstName\")]";
+        // Further assertions would go here if we were testing the output
     }
     
     #[test]
@@ -137,8 +131,8 @@ mod tests {
     }
     
     #[test]
-    fn test_attribute_with_multiple_arguments() {
-        let input = "[DebuggerDisplay(\"Count = {Count}\", Type = \"MyType\")]";
-        // Will need to be updated when expression parser supports string literals and assignments
+    fn test_complex_attribute_with_multiple_arguments() {
+        let _input = "[DebuggerDisplay(\"Count = {Count}\", Type = \"MyType\")]";
+        // Further assertions for complex attributes
     }
 }

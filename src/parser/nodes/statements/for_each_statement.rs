@@ -5,13 +5,13 @@ use crate::parser::nodes::statements::statement::Statement;
 use crate::parser::nodes::identifier::Identifier;
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
-pub struct ForEachStatement<'a> {
+pub struct ForEachStatement {
     // TypeSyntax of the iteration variable (can be 'var')
-    pub var_type: Type<'a>, // Or maybe a special 'Var' type?
+    pub var_type: Type, // Or maybe a special 'Var' type?
     // Name of the iteration variable
     pub var_name: Identifier,
     // The collection expression being iterated over
-    pub collection: Box<Expression<'a>>,
+    pub collection: Box<Expression>,
     // Loop body
-    pub body: Box<Statement<'a>>, // Expecting Statement::Block usually
+    pub body: Box<Statement>, // Expecting Statement::Block usually
 }

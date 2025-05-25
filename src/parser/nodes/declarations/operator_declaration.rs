@@ -3,26 +3,24 @@ use crate::parser::nodes::types::Type;
 use crate::parser::nodes::types::Parameter;
 use crate::parser::nodes::declarations::Attribute;
 use crate::parser::nodes::identifier::Identifier;
-use std::marker::PhantomData;
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
-pub struct OperatorDeclaration<'a> {
-    pub attributes: Vec<Attribute<'a>>,
+pub struct OperatorDeclaration {
+    pub attributes: Vec<Attribute>,
     pub modifiers: Vec<String>,
-    pub return_type: Type<'a>,
-    pub operator: OperatorKind<'a>,
-    pub parameters: Vec<Parameter<'a>>,
+    pub return_type: Type,
+    pub operator: OperatorKind,
+    pub parameters: Vec<Parameter>,
     pub body: String, // body or signature
 }
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
-pub enum OperatorKind<'a> {
+pub enum OperatorKind {
     Unary(Identifier), // op symbol
     Binary(Identifier),
-    Conversion { kind: ConversionKind, target_type: Type<'a> },
+    Conversion { kind: ConversionKind, target_type: Type },
     // This variant uses the lifetime to satisfy the compiler
-    #[serde(skip)]
-    Phantom(PhantomData<&'a ()>),
+
 }
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]

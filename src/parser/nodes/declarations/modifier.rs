@@ -188,6 +188,9 @@ impl Modifier {
             "parameter" => vec![
                 Modifier::Ref, Modifier::Out, Modifier::In, Modifier::Params,
             ],
+            "constructor" => vec![
+                Modifier::Public, Modifier::Private, Modifier::Protected, Modifier::Internal, Modifier::Static,
+            ],
             _ => Vec::new(),
         }
     }

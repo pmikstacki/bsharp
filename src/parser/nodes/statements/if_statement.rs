@@ -3,11 +3,11 @@ use crate::parser::nodes::expressions::expression::Expression;
 use crate::parser::nodes::statements::statement::Statement; // Use StatementSyntax from the same directory's mod.rs
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
-pub struct IfStatement<'a> { 
-    pub condition: Expression<'a>, 
+pub struct IfStatement { 
+    pub condition: Expression, 
     // An if statement's body is typically a block, but can be a single statement.
     // We'll enforce Block for simplicity now, can refine later based on grammar.
-    pub consequence: Box<Statement<'a>>, 
+    pub consequence: Box<Statement>, 
     // Optional else block or else-if statement
-    pub alternative: Option<Box<Statement<'a>>>, 
+    pub alternative: Option<Box<Statement>>, 
 }

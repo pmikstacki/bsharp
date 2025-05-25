@@ -4,12 +4,12 @@ use crate::parser::nodes::types::{TypeParameter, Type, Parameter}; // Need Param
 use super::{AttributeList, Modifier};
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
-pub struct DelegateDeclaration<'a> {
-    pub attributes: Vec<AttributeList<'a>>,
+pub struct DelegateDeclaration {
+    pub attributes: Vec<AttributeList>,
     pub modifiers: Vec<Modifier>,
-    pub return_type: Type<'a>,
+    pub return_type: Type,
     pub name: Identifier,
     pub type_parameters: Vec<TypeParameter>,
-    pub parameters: Vec<Parameter<'a>>,
+    pub parameters: Vec<Parameter>,
     // TODO: Add constraints
 }

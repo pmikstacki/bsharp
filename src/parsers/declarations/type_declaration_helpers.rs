@@ -1,13 +1,7 @@
 // Common helpers for type declarations (struct, class, interface, record, enum)
 // This module provides shared functionality for parsing C# type declarations
 
-use nom::{
-    branch::alt,
-    character::complete::{char, multispace0},
-    bytes::complete::tag,
-    combinator::{map, opt},
-    sequence::{delimited, tuple},
-};
+use nom::character::complete::{char, multispace0};
 
 use crate::parser::errors::BResult;
 use crate::parser::nodes::declarations::{
@@ -25,12 +19,12 @@ use crate::parsers::declarations::attribute_parser::parse_attribute_lists;
 
 /// Core structure for type declarations (class, struct, interface, record)
 /// Contains the common elements shared by all these declaration types
-pub struct BaseTypeDeclaration<'a> {
-    pub attributes: Vec<AttributeList<'a>>,
+pub struct BaseTypeDeclaration {
+    pub attributes: Vec<AttributeList>,
     pub modifiers: Vec<Modifier>,
     pub name: Identifier,
     pub type_parameters: Option<Vec<TypeParameter>>,
-    pub base_types: Vec<Type<'a>>,
+    pub base_types: Vec<Type>,
 }
 
 /// Parse a type declaration header, handling attributes, modifiers, keyword, name and type parameters
@@ -39,10 +33,12 @@ pub fn parse_type_declaration_header<'a>(
     input: &'a str,
     declaration_type: &'static str,
     keyword: &'static str,
-) -> BResult<&'a str, BaseTypeDeclaration<'a>> {
+) -> BResult<&'a str, BaseTypeDeclaration> {
     // Parse attributes first
     let (input, attribute_lists) = parse_attribute_lists(input)?;
     
+    println!("parse_type_declaration_header: input = {:?}", input);
+
     // Try to parse using the declaration helper which handles the keyword and modifiers
     let mut header_parser = crate::parsers::declaration_helpers::parse_declaration_header(
         |i| parse_modifiers_for_decl_type(i, declaration_type),
@@ -50,21 +46,30 @@ pub fn parse_type_declaration_header<'a>(
     );
     
     // Parse the header with improved whitespace handling
-    let (input, (modifiers, _)) = header_parser(input)?;
+    let (remaining, (modifiers, _)) = match header_parser(input) {
+        Ok(result) => result,
+        Err(err) => {
+            println!("Error parsing declaration header for {}: {:?}", declaration_type, err);
+            return Err(err);
+        }
+    };
     
     // Parse the type name
-    let (input, name) = bws(nom_to_bs(parse_identifier))(input)?;
+    let (remaining, name) = match bws(nom_to_bs(parse_identifier))(remaining) {
+        Ok(result) => result,
+        Err(err) => {
+            println!("Error parsing type name for {}: {:?}", declaration_type, err);
+            return Err(err);
+        }
+    };
     
-    // Parse optional type parameters (generics like <T, U>)
-    let (input, type_parameters) = opt(bws(nom_to_bs(opt_parse_type_parameter_list)))(input)?;
-    
-    // Flatten Option<Option<Vec<...>>> to Option<Vec<...>>
-    let type_parameters = type_parameters.and_then(|x| x);
+    // Parse type parameters directly - avoid nested Option
+    let (remaining, type_parameters) = bws(nom_to_bs(opt_parse_type_parameter_list))(remaining)?;
     
     // Parse optional base types (interfaces or base classes)
-    let (input, base_types) = parse_base_type_list(input)?;
+    let (remaining, base_types) = parse_base_type_list(remaining)?;
     
-    Ok((input, BaseTypeDeclaration {
+    Ok((remaining, BaseTypeDeclaration {
         attributes: attribute_lists,
         modifiers,
         name,
@@ -74,19 +79,19 @@ pub fn parse_type_declaration_header<'a>(
 }
 
 /// Parse the opening brace of a type declaration body
-pub fn parse_open_brace<'a>(input: &'a str) -> BResult<&'a str, ()> {
+pub fn parse_open_brace(input: &str) -> BResult<&str, ()> {
     let (input, _) = bws(nom_to_bs(char::<_, nom::error::Error<_>>('{')))(input)?;
     Ok((input, ()))
 }
 
 /// Parse the closing brace of a type declaration body
-pub fn parse_close_brace<'a>(input: &'a str) -> BResult<&'a str, ()> {
+pub fn parse_close_brace(input: &str) -> BResult<&str, ()> {
     let (input, _) = bws(nom_to_bs(char::<_, nom::error::Error<_>>('}')))(input)?;
     Ok((input, ()))
 }
 
 /// Skip whitespace and check if we've reached the end of a body (closing brace)
-pub fn at_end_of_body<'a>(input: &'a str) -> bool {
+pub fn at_end_of_body(input: &str) -> bool {
     let (after_ws, _) = multispace0::<&str, nom::error::Error<&str>>(input).unwrap_or((input, ""));
     after_ws.starts_with('}')
 }

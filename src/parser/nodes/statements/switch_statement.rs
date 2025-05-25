@@ -3,9 +3,9 @@ use crate::parser::nodes::expressions::expression::Expression;
 use super::SwitchSection;
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
-pub struct SwitchStatement<'a> {
+pub struct SwitchStatement {
     // The expression whose value is being switched on
-    pub expression: Expression<'a>,
+    pub expression: Expression,
     // The sections within the switch block
-    pub sections: Vec<SwitchSection<'a>>,
+    pub sections: Vec<SwitchSection>,
 }

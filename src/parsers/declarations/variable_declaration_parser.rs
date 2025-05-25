@@ -54,3 +54,9 @@ pub fn parse_local_variable_declaration(input: &str) -> BResult<&str, LocalVaria
         )
     )(input)
 }
+
+// Wrapper function to use in statement parsing
+use crate::parser::nodes::statements::statement::Statement;
+pub fn parse_local_variable_declaration_statement(input: &str) -> BResult<&str, Statement> {
+    map(parse_local_variable_declaration, Statement::Declaration)(input)
+}

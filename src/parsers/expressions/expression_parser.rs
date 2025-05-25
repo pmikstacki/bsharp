@@ -24,13 +24,13 @@ use crate::parsers::types::type_parser::parse_type_expression;
 
 /// Parses a C# expression.
 /// This is the main entry point for parsing expressions.
-pub fn parse_expression<'a>(input: &'a str) -> BResult<&'a str, Expression<'a>> {
+pub fn parse_expression(input: &str) -> BResult<&str, Expression> {
     // Start with the lowest precedence level (assignment or lambda expressions)
     parse_assignment_expression_or_higher(input)
 }
 
 // Level 16: Assignment, Compound Assignment, Null-Coalescing Assignment, Lambda
-fn parse_assignment_expression_or_higher<'a>(input: &'a str) -> BResult<&'a str, Expression<'a>> {
+fn parse_assignment_expression_or_higher(input: &str) -> BResult<&str, Expression> {
     // TODO: Handle lambdas here as well, as they have the lowest precedence along with assignments.
     // Assignment is right-associative: a = b = c  is a = (b = c)
     // Try parsing a conditional expression first (LHS of a potential assignment)
@@ -73,7 +73,7 @@ fn parse_assignment_expression_or_higher<'a>(input: &'a str) -> BResult<&'a str,
 }
 
 // Level 15: Conditional (Ternary) Operator `?:` (Right-associative)
-fn parse_conditional_expression_or_higher<'a>(input: &'a str) -> BResult<&'a str, Expression<'a>> {
+fn parse_conditional_expression_or_higher(input: &str) -> BResult<&str, Expression> {
     let (i, condition_expr) = parse_null_coalescing_expression_or_higher(input)?;
 
     if let Ok((i_after_q, _)) = preceded(multispace0::<&str, BSharpParseError<&str>>, bchar('?'))(i) {
@@ -99,7 +99,7 @@ fn parse_conditional_expression_or_higher<'a>(input: &'a str) -> BResult<&'a str
 }
 
 // Level 14: Null Coalescing Operator `??` (Right-associative)
-fn parse_null_coalescing_expression_or_higher<'a>(input: &'a str) -> BResult<&'a str, Expression<'a>> {
+fn parse_null_coalescing_expression_or_higher(input: &str) -> BResult<&str, Expression> {
     let (i, lhs) = parse_logical_or_expression_or_higher(input)?;
 
     if let Ok((i_after_op, _)) = preceded(multispace0::<&str, BSharpParseError<&str>>, keyword("??"))(i) {
@@ -119,7 +119,7 @@ fn parse_null_coalescing_expression_or_higher<'a>(input: &'a str) -> BResult<&'a
 }
 
 // Level 13: Logical OR `||`
-fn parse_logical_or_expression_or_higher<'a>(input: &'a str) -> BResult<&'a str, Expression<'a>> {
+fn parse_logical_or_expression_or_higher(input: &str) -> BResult<&str, Expression> {
     let (i, initial) = parse_logical_and_expression_or_higher(input)?;
     fold_many0(
         tuple((
@@ -134,7 +134,7 @@ fn parse_logical_or_expression_or_higher<'a>(input: &'a str) -> BResult<&'a str,
 }
 
 // Level 12: Logical AND `&&`
-fn parse_logical_and_expression_or_higher<'a>(input: &'a str) -> BResult<&'a str, Expression<'a>> {
+fn parse_logical_and_expression_or_higher(input: &str) -> BResult<&str, Expression> {
     let (i, initial) = parse_bitwise_or_expression_or_higher(input)?;
     fold_many0(
         tuple((
@@ -149,7 +149,7 @@ fn parse_logical_and_expression_or_higher<'a>(input: &'a str) -> BResult<&'a str
 }
 
 // Level 11: Bitwise OR `|`
-fn parse_bitwise_or_expression_or_higher<'a>(input: &'a str) -> BResult<&'a str, Expression<'a>> {
+fn parse_bitwise_or_expression_or_higher(input: &str) -> BResult<&str, Expression> {
     let (i, initial) = parse_bitwise_xor_expression_or_higher(input)?;
     fold_many0(
         tuple((
@@ -164,7 +164,7 @@ fn parse_bitwise_or_expression_or_higher<'a>(input: &'a str) -> BResult<&'a str,
 }
 
 // Level 10: Bitwise XOR `^`
-fn parse_bitwise_xor_expression_or_higher<'a>(input: &'a str) -> BResult<&'a str, Expression<'a>> {
+fn parse_bitwise_xor_expression_or_higher(input: &str) -> BResult<&str, Expression> {
     let (i, initial) = parse_bitwise_and_expression_or_higher(input)?;
     fold_many0(
         tuple((
@@ -179,7 +179,7 @@ fn parse_bitwise_xor_expression_or_higher<'a>(input: &'a str) -> BResult<&'a str
 }
 
 // Level 9: Bitwise AND `&`
-fn parse_bitwise_and_expression_or_higher<'a>(input: &'a str) -> BResult<&'a str, Expression<'a>> {
+fn parse_bitwise_and_expression_or_higher(input: &str) -> BResult<&str, Expression> {
     let (i, initial) = parse_equality_expression_or_higher(input)?;
     fold_many0(
         tuple((
@@ -194,7 +194,7 @@ fn parse_bitwise_and_expression_or_higher<'a>(input: &'a str) -> BResult<&'a str
 }
 
 // Level 8: Equality `==`, `!=`
-fn parse_equality_expression_or_higher<'a>(input: &'a str) -> BResult<&'a str, Expression<'a>> {
+fn parse_equality_expression_or_higher(input: &str) -> BResult<&str, Expression> {
     let (i, initial) = parse_relational_expression_or_higher(input)?;
     fold_many0(
         tuple((
@@ -212,7 +212,7 @@ fn parse_equality_expression_or_higher<'a>(input: &'a str) -> BResult<&'a str, E
 }
 
 // Level 7: Relational `<`, `>`, `<=`, `>=`, `is`, `as`
-fn parse_relational_expression_or_higher<'a>(input: &'a str) -> BResult<&'a str, Expression<'a>> {
+fn parse_relational_expression_or_higher(input: &str) -> BResult<&str, Expression> {
     let (i, initial) = parse_shift_expression_or_higher(input)?;
     fold_many0(
         tuple((
@@ -234,7 +234,7 @@ fn parse_relational_expression_or_higher<'a>(input: &'a str) -> BResult<&'a str,
 }
 
 // Level 6: Shift `<<`, `>>`, `>>>`
-fn parse_shift_expression_or_higher<'a>(input: &'a str) -> BResult<&'a str, Expression<'a>> {
+fn parse_shift_expression_or_higher(input: &str) -> BResult<&str, Expression> {
     let (i, initial) = parse_additive_expression_or_higher(input)?;
     fold_many0(
         tuple((
@@ -252,7 +252,7 @@ fn parse_shift_expression_or_higher<'a>(input: &'a str) -> BResult<&'a str, Expr
 }
 
 // Level 5: Additive `+`, `-` (Original parse_additive_expression will be adapted)
-fn parse_additive_expression_or_higher<'a>(input: &'a str) -> BResult<&'a str, Expression<'a>> {
+fn parse_additive_expression_or_higher(input: &str) -> BResult<&str, Expression> {
     let (i, initial) = parse_multiplicative_expression_or_higher(input)?;
 
     fold_many0(
@@ -271,7 +271,7 @@ fn parse_additive_expression_or_higher<'a>(input: &'a str) -> BResult<&'a str, E
 }
 
 // Level 4: Multiplicative `*`, `/`, `%` (Original parse_multiplicative_expression will be adapted)
-fn parse_multiplicative_expression_or_higher<'a>(input: &'a str) -> BResult<&'a str, Expression<'a>> {
+fn parse_multiplicative_expression_or_higher(input: &str) -> BResult<&str, Expression> {
     let (i, initial) = parse_range_expression_or_higher(input)?;
 
     fold_many0(
@@ -291,7 +291,7 @@ fn parse_multiplicative_expression_or_higher<'a>(input: &'a str) -> BResult<&'a 
 }
 
 // Level 3: Range `..` (New level)
-fn parse_range_expression_or_higher<'a>(input: &'a str) -> BResult<&'a str, Expression<'a>> {
+fn parse_range_expression_or_higher(input: &str) -> BResult<&str, Expression> {
     let (i, initial) = parse_unary_expression_or_higher(input)?;
 
     let res_opt = opt(tuple((
@@ -315,16 +315,16 @@ fn parse_range_expression_or_higher<'a>(input: &'a str) -> BResult<&'a str, Expr
 
 // Level 2: Unary `+ - ! ~ ++ -- (T) await ^ & *` (New level)
 #[derive(Debug, Clone)]
-enum PostfixOpKind<'a> { 
-    Invocation(Vec<Expression<'a>>), 
+enum PostfixOpKind { 
+    Invocation(Vec<Expression>), 
     MemberAccess(Identifier),
-    Indexing(Box<Expression<'a>>), 
+    Indexing(Box<Expression>), 
     PostfixIncrement,
     PostfixDecrement,
     NullForgiving,
 }
 
-fn parse_unary_expression_or_higher<'a>(input: &'a str) -> BResult<&'a str, Expression<'a>> {
+fn parse_unary_expression_or_higher(input: &str) -> BResult<&str, Expression> {
     alt((
         map(
             tuple((keyword("++"), multispace0::<&str, BSharpParseError<&str>>, parse_unary_expression_or_higher)),
@@ -387,8 +387,8 @@ fn parse_unary_expression_or_higher<'a>(input: &'a str) -> BResult<&'a str, Expr
 }
 
 // Level 1: Postfix (member access, invocation, indexing, postfix `++ -- !`)
-fn parse_postfix_expression_or_higher<'a>(input: &'a str) -> BResult<&'a str, Expression<'a>> { 
-    let (i, initial_expr): (&str, Expression<'a>) = parse_primary_expression(input)?;
+fn parse_postfix_expression_or_higher(input: &str) -> BResult<&str, Expression> { 
+    let (i, initial_expr): (&str, Expression) = parse_primary_expression(input)?;
 
     fold_many0(
         alt::<_, _, BSharpParseError<&str>, _>((
@@ -398,7 +398,7 @@ fn parse_postfix_expression_or_higher<'a>(input: &'a str) -> BResult<&'a str, Ex
                     separated_list0(bws(bchar(',')), parse_expression),
                     bws(bchar(')')),
                 )),
-                |(_, args, _): (_, Vec<Expression<'a>>, _)| PostfixOpKind::Invocation(args)
+                |(_, args, _): (_, Vec<Expression>, _)| PostfixOpKind::Invocation(args)
             ),
             map(
                 preceded(bchar('.'), preceded(multispace0::<&str, BSharpParseError<&str>>, parse_identifier)),
@@ -406,7 +406,7 @@ fn parse_postfix_expression_or_higher<'a>(input: &'a str) -> BResult<&'a str, Ex
             ),
             map(
                 tuple((bws(bchar('[')), parse_expression, bws(bchar(']')))),
-                |(_, index_val, _): (_, Expression<'a>, _)| PostfixOpKind::Indexing(Box::new(index_val))
+                |(_, index_val, _): (_, Expression, _)| PostfixOpKind::Indexing(Box::new(index_val))
             ),
             map(preceded(multispace0::<&str, BSharpParseError<&str>>, keyword("++")),
                 |_| PostfixOpKind::PostfixIncrement
@@ -419,7 +419,7 @@ fn parse_postfix_expression_or_higher<'a>(input: &'a str) -> BResult<&'a str, Ex
             ),
         )),
         move || initial_expr.clone(), 
-        |acc_expr: Expression<'a>, op_kind: PostfixOpKind<'a>| -> Expression<'a> { 
+        |acc_expr: Expression, op_kind: PostfixOpKind| -> Expression { 
             match op_kind {
                 PostfixOpKind::Invocation(args) => Expression::Invocation(Box::new(InvocationExpression {
                     callee: Box::new(acc_expr),
@@ -451,7 +451,7 @@ fn parse_postfix_expression_or_higher<'a>(input: &'a str) -> BResult<&'a str, Ex
 }
 
 // Level 0: Primary (literals, identifiers, parenthesized expressions, `new`, `typeof`, `default`)
-fn parse_primary_expression<'a>(input: &'a str) -> BResult<&'a str, Expression<'a>> {
+fn parse_primary_expression(input: &str) -> BResult<&str, Expression> {
     bws(alt((
         map(parse_literal, Expression::Literal),
         map(parse_identifier, Expression::Variable),

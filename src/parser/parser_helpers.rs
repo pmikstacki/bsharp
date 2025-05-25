@@ -293,8 +293,9 @@ pub fn make_generic_nom_err<I: Clone + std::fmt::Display>(e: NomError<I>) -> BSh
     BSharpParseError::new(e.input, CustomErrorKind::Nom(e.code))
 }
 
-/// Helper for parsing keywords. Combines btag with bws.
-/// It matches the given keyword string, consuming surrounding whitespace.
+/// Parses a keyword. It matches the given keyword string.
+/// It's intended to be used with `bws` which handles surrounding whitespace
+/// and error conversion.
 pub fn keyword<'a>(kw: &'static str) -> impl FnMut(&'a str) -> BResult<&'a str, &'a str> {
-    bws(btag(kw)) // btag already returns BResult, bws expects a parser that returns BResult
+    nom_to_bs(bytes_complete::tag::<&'static str, &'a str, StdNomError<&'a str>>(kw))
 }

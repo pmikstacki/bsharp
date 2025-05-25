@@ -3,7 +3,12 @@ pub mod nodes;
 pub mod errors;
 pub mod parser_helpers;
 pub mod test_helpers;
+pub mod analysis;     // AST analysis functionality (replaces factories)
+pub mod navigation;   // AST navigation functionality (replaces ast_node)
 pub mod comment_parser;
+// Re-export the new idiomatic traits for easy access
+pub use analysis::{AstAnalyze, AstAnalysis};
+pub use navigation::{AstNavigate, FindDeclarations};
 
 //------------------------------------------------------------------------------
 // Public Parser API
@@ -17,7 +22,7 @@ impl Parser {
         Parser
     }
 
-    pub fn parse<'a>(&self, input: &'a str) -> Result<ast::CompilationUnit<'a>, String> {
+    pub fn parse(&self, input: &str) -> Result<ast::CompilationUnit, String> {
         use crate::parsers::csharp::parse_csharp_source;
         use nom::Finish;
 

@@ -10,7 +10,7 @@ use nom::combinator::map;
 use nom::sequence::{preceded, terminated};
 
 // Original parse_break_statement function from statement_parser.rs
-pub fn parse_break_statement<'a>(input: &'a str) -> BResult<&'a str, Statement<'a>> {
+pub fn parse_break_statement(input: &str) -> BResult<&str, Statement> {
     bs_context(
         "break statement",
         nom_to_bs(map(

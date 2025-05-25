@@ -1,0 +1,124 @@
+{
+  "usings": [],
+  "members": [
+    {
+      "Namespace": {
+        "name": {
+          "name": "TestApp"
+        },
+        "usings": [],
+        "members": [
+          {
+            "Class": {
+              "modifiers": [
+                "Public"
+              ],
+              "name": {
+                "name": "Simple"
+              },
+              "type_parameters": null,
+              "base_types": null,
+              "members": [
+                {
+                  "Method": {
+                    "modifiers": [
+                      "Public"
+                    ],
+                    "return_type": {
+                      "Primitive": "Void"
+                    },
+                    "name": {
+                      "name": "Method1"
+                    },
+                    "type_parameters": null,
+                    "parameters": [],
+                    "body": {
+                      "Block": [
+                        {
+                          "If": {
+                            "condition": {
+                              "Literal": {
+                                "Boolean": true
+                              }
+                            },
+                            "consequence": {
+                              "Block": [
+                                {
+                                  "Declaration": {
+                                    "is_const": false,
+                                    "ty": {
+                                      "Primitive": "Int"
+                                    },
+                                    "declarators": [
+                                      {
+                                        "name": {
+                                          "name": "x"
+                                        },
+                                        "initializer": {
+                                          "Literal": {
+                                            "Integer": 5
+                                          }
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            },
+                            "alternative": null
+                          }
+                        }
+                      ]
+                    },
+                    "constraints": null
+                  }
+                },
+                {
+                  "Method": {
+                    "modifiers": [
+                      "Public"
+                    ],
+                    "return_type": {
+                      "Primitive": "Void"
+                    },
+                    "name": {
+                      "name": "Method2"
+                    },
+                    "type_parameters": null,
+                    "parameters": [],
+                    "body": {
+                      "Block": [
+                        {
+                          "Declaration": {
+                            "is_const": false,
+                            "ty": {
+                              "Primitive": "Int"
+                            },
+                            "declarators": [
+                              {
+                                "name": {
+                                  "name": "y"
+                                },
+                                "initializer": {
+                                  "Literal": {
+                                    "Integer": 10
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    "constraints": null
+                  }
+                }
+              ],
+              "documentation": null
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

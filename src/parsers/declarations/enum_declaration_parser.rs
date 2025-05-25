@@ -6,10 +6,10 @@ use nom::sequence::{preceded, tuple};
 use crate::parser::errors::BResult;
 use crate::parser::nodes::declarations::EnumDeclaration;
 use crate::parser::nodes::declarations::enum_declaration::EnumMember;
-use crate::parser::nodes::types::Type;
-use crate::parser::parser_helpers::{bws, nom_to_bs};
+use crate::parser::parser_helpers::{bws, nom_to_bs, keyword};
 use crate::parsers::declarations::attribute_parser::parse_attribute_lists;
-use crate::parsers::declarations::type_declaration_helpers::{parse_type_declaration_header, parse_open_brace, parse_close_brace};
+use crate::parsers::declarations::modifier_parser::parse_modifiers;
+use crate::parsers::declarations::type_declaration_helpers::{parse_open_brace, parse_close_brace};
 use crate::parsers::expressions::expression_parser::parse_expression;
 use crate::parsers::identifier_parser::parse_identifier;
 use crate::parsers::types::type_parser::parse_type_expression;
@@ -30,12 +30,21 @@ use crate::parsers::types::type_parser::parse_type_expression;
 ///     Weekend = Saturday | Sunday
 /// }
 /// ```
-pub fn parse_enum_declaration<'a>(input: &'a str) -> BResult<&'a str, EnumDeclaration<'a>> {
-    // Use the common type declaration header parser
-    let (input, base_decl) = parse_type_declaration_header(input, "enum", "enum")?;
+pub fn parse_enum_declaration(input: &str) -> BResult<&str, EnumDeclaration> {
+    println!("parse_enum_declaration: input = \"{}\"" , input);
+    // Parse attributes and convert to the expected format
+    let (input, attribute_lists) = parse_attribute_lists(input)?;
+
+    // Parse modifiers (public, internal, etc.)
+    let (input, modifiers) = parse_modifiers(input)?;
+
+    // Parse "enum" keyword
+    let (input, _) = bws(keyword("enum"))(input)?;
+
+    // Parse enum name
+    let (input, name) = bws(parse_identifier)(input)?;
     
     // Parse optional underlying type (: byte, : int, etc.)
-    // This is unique to enums and not handled by the base parser
     let (input, underlying_type) = opt(tuple((
         bws(nom_to_bs(char::<&str, nom::error::Error<&str>>(':'))),
         bws(nom_to_bs(parse_type_expression))
@@ -53,23 +62,18 @@ pub fn parse_enum_declaration<'a>(input: &'a str) -> BResult<&'a str, EnumDeclar
     // Parse the closing brace
     let (input, _) = parse_close_brace(input)?;
     
-    // Convert AttributeList to Vec<Attribute> as expected by EnumDeclaration
-    let attributes = base_decl.attributes.into_iter()
-        .flat_map(|list| list.attributes)
-        .collect();
-    
     Ok((input, EnumDeclaration {
-        attributes,
-        modifiers: base_decl.modifiers,
-        name: base_decl.name,
+        attributes: attribute_lists,
+        modifiers,
+        name,
         underlying_type,
-        members,
+        enum_members: members,
     }))
 }
 
 /// Parse a list of enum members
 /// Example: "None = 0, Monday = 1, Tuesday = 2"
-fn parse_enum_members<'a>(input: &'a str) -> BResult<&'a str, Vec<EnumMember<'a>>> {
+fn parse_enum_members<'a>(input: &'a str) -> BResult<&'a str, Vec<EnumMember>> {
     // Parse a comma-separated list of enum members
     // The list can be empty or have a trailing comma
     separated_list0(
@@ -80,14 +84,9 @@ fn parse_enum_members<'a>(input: &'a str) -> BResult<&'a str, Vec<EnumMember<'a>
 
 /// Parse a single enum member
 /// Example: "Monday = 1" or just "Monday"
-fn parse_enum_member<'a>(input: &'a str) -> BResult<&'a str, EnumMember<'a>> {
+fn parse_enum_member<'a>(input: &'a str) -> BResult<&'a str, EnumMember> {
     // Parse attributes for enum member
     let (input, attribute_lists) = parse_attribute_lists(input)?;
-    
-    // Convert AttributeList to Vec<Attribute>
-    let attributes = attribute_lists.into_iter()
-        .flat_map(|list| list.attributes)
-        .collect();
     
     // Parse the member name
     let (input, name) = bws(parse_identifier)(input)?;
@@ -101,7 +100,7 @@ fn parse_enum_member<'a>(input: &'a str) -> BResult<&'a str, EnumMember<'a>> {
     )(input)?;
     
     Ok((input, EnumMember {
-        attributes,
+        attributes: attribute_lists,
         name,
         value,
     }))
@@ -136,7 +135,7 @@ mod tests {
         assert!(decl.attributes.is_empty());
         assert!(decl.modifiers.is_empty());
         assert!(decl.underlying_type.is_none());
-        assert!(decl.members.is_empty());
+        assert!(decl.enum_members.is_empty());
     }
     
     #[test]
@@ -146,11 +145,11 @@ mod tests {
         assert!(result.is_ok());
         let (_remaining, decl) = result.unwrap();
         assert_eq!(decl.name.name, "Direction");
-        assert_eq!(decl.members.len(), 4);
-        assert_eq!(decl.members[0].name.name, "North");
-        assert_eq!(decl.members[1].name.name, "East");
-        assert_eq!(decl.members[2].name.name, "South");
-        assert_eq!(decl.members[3].name.name, "West");
+        assert_eq!(decl.enum_members.len(), 4);
+        assert_eq!(decl.enum_members[0].name.name, "North");
+        assert_eq!(decl.enum_members[1].name.name, "East");
+        assert_eq!(decl.enum_members[2].name.name, "South");
+        assert_eq!(decl.enum_members[3].name.name, "West");
     }
     
     #[test]
@@ -160,18 +159,18 @@ mod tests {
         assert!(result.is_ok());
         let (_remaining, decl) = result.unwrap();
         assert_eq!(decl.name.name, "ErrorCode");
-        assert_eq!(decl.members.len(), 3);
+        assert_eq!(decl.enum_members.len(), 3);
         
         // Check that values were parsed correctly
-        assert_eq!(decl.members[0].name.name, "Success");
-        if let Some(Expression::Literal(Literal::Integer(0))) = decl.members[0].value {
+        assert_eq!(decl.enum_members[0].name.name, "Success");
+        if let Some(Expression::Literal(Literal::Integer(0))) = decl.enum_members[0].value {
             // Success
         } else {
             panic!("Expected integer literal 0");
         }
         
-        assert_eq!(decl.members[1].name.name, "NotFound");
-        if let Some(Expression::Literal(Literal::Integer(404))) = decl.members[1].value {
+        assert_eq!(decl.enum_members[1].name.name, "NotFound");
+        if let Some(Expression::Literal(Literal::Integer(404))) = decl.enum_members[1].value {
             // Success
         } else {
             panic!("Expected integer literal 404");
@@ -195,26 +194,35 @@ mod tests {
         }
         
         // Check members
-        assert_eq!(decl.members.len(), 4);
+        assert_eq!(decl.enum_members.len(), 4);
     }
     
     #[test]
-    fn test_enum_with_modifiers_and_attributes() {
-        let input = "[Flags] public enum Colors { Red = 1, Green = 2, Blue = 4, Yellow = 8 }";
-        let result = parse_full_input(input, parse_enum_declaration);
-        assert!(result.is_ok());
+    fn test_parse_enum_with_attributes_modifiers_and_base_type() {
+        let code = "#[Flags] public enum MyEnum : int { A, B }";
+        let result = parse_full_input(code, parse_enum_declaration);
+        assert!(result.is_ok(), "Parsing failed: {:?}", result.err());
         let (_remaining, decl) = result.unwrap();
-        assert_eq!(decl.name.name, "Colors");
+
+        assert_eq!(decl.name.name, "MyEnum");
         
         // Check attributes
-        assert_eq!(decl.attributes.len(), 1);
-        assert_eq!(decl.attributes[0].name.name, "Flags");
+        assert_eq!(decl.attributes.len(), 1, "Expected 1 attribute list");
+        assert!(!decl.attributes[0].attributes.is_empty(), "Expected attributes in the list");
+        assert_eq!(decl.attributes[0].attributes[0].name.name, "Flags", "Attribute name mismatch");
         
         // Check modifiers
-        assert_eq!(decl.modifiers.len(), 1);
-        assert_eq!(decl.modifiers[0], Modifier::Public);
+        assert_eq!(decl.modifiers.len(), 1, "Expected 1 modifier");
+        assert_eq!(decl.modifiers[0], Modifier::Public, "Modifier mismatch");
+
+        // Check underlying type
+        assert!(decl.underlying_type.is_some(), "Expected an underlying type");
+        if let Some(Type::Primitive(primitive)) = &decl.underlying_type {
+            assert_eq!(*primitive, PrimitiveType::Int, "Underlying type mismatch");
+        } else {
+            panic!("Expected int primitive type, got {:?}", decl.underlying_type);
+        }
         
-        // Check members
-        assert_eq!(decl.members.len(), 4);
+        assert_eq!(decl.enum_members.len(), 2, "Member count mismatch");
     }
 }

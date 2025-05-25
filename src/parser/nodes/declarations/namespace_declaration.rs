@@ -6,24 +6,24 @@ use crate::parser::nodes::declarations::{
 use crate::parser::nodes::preprocessor::PreprocessorDirective;
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
-pub struct NamespaceDeclaration<'a> {
+pub struct NamespaceDeclaration {
     pub name: Identifier, 
     // TODO: Add support for nested namespaces later
-    pub usings: Vec<UsingDirective>,
+    pub using_directives: Vec<UsingDirective>,
     // Members can be nested namespaces or type declarations
-    pub members: Vec<NamespaceMember<'a>>, 
+    pub declarations: Vec<NamespaceBodyDeclaration>, 
 }
 
 // Define what can be a member of a namespace
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
-pub enum NamespaceMember<'a> {
-    Namespace(NamespaceDeclaration<'a>),
-    Class(ClassDeclaration<'a>),
-    Struct(StructDeclaration<'a>),
-    Interface(InterfaceDeclaration<'a>),
-    Enum(EnumDeclaration<'a>),
-    Delegate(DelegateDeclaration<'a>),
-    Record(RecordDeclaration<'a>),
-    GlobalAttribute(GlobalAttribute<'a>),
+pub enum NamespaceBodyDeclaration {
+    Namespace(NamespaceDeclaration),
+    Class(ClassDeclaration),
+    Struct(StructDeclaration),
+    Interface(InterfaceDeclaration),
+    Enum(EnumDeclaration),
+    Delegate(DelegateDeclaration),
+    Record(RecordDeclaration),
+    GlobalAttribute(GlobalAttribute),
     Preprocessor(PreprocessorDirective), 
 }

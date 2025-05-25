@@ -5,9 +5,9 @@ use crate::parser::nodes::statements::statement::Statement;
 use crate::parser::nodes::identifier::Identifier;
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
-pub struct FixedStatement<'a> {
-    pub var_type: Type<'a>,
+pub struct FixedStatement {
+    pub var_type: Type,
     pub var_name: Identifier,
-    pub initializer: Expression<'a>,
-    pub body: Box<Statement<'a>>,
+    pub initializer: Expression,
+    pub body: Box<Statement>,
 }
