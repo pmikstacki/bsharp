@@ -18,6 +18,7 @@ mod goto_statement_tests;
 mod if_statement_tests;
 mod label_statement_tests;
 mod local_declaration_statement_tests;
+mod local_function_statement_tests;
 mod lock_statement_tests;
 mod return_statement_tests;
 mod switch_label_tests;

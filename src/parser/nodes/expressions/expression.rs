@@ -6,7 +6,7 @@ use crate::parser::nodes::expressions::{
     AnonymousMethodExpression, AnonymousObjectCreationExpression, AssignmentExpression, AwaitExpression,
     ConditionalExpression, DeconstructionExpression, InvocationExpression, LambdaExpression, MemberAccessExpression,
     NewExpression, NullConditionalExpression, Pattern, TupleExpression, QueryExpression,
-    ThrowExpression, NameofExpression, TypeofExpression, SizeofExpression, DefaultExpression
+    ThrowExpression, NameofExpression, TypeofExpression, SizeofExpression, DefaultExpression, StackAllocExpression
 };
 use crate::parser::nodes::expressions::range_expression::{RangeExpression, IndexExpression};
 use crate::parser::nodes::identifier::Identifier;
@@ -55,6 +55,7 @@ pub enum Expression {
     Typeof(Box<TypeofExpression>), // Typeof expressions: typeof(int)
     Sizeof(Box<SizeofExpression>), // Sizeof expressions: sizeof(int)
     Default(Box<DefaultExpression>), // Default expressions: default(int) or default
+    StackAlloc(Box<StackAllocExpression>), // Stackalloc expressions: stackalloc int[10]
 }
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]

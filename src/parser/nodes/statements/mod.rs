@@ -21,6 +21,8 @@ pub mod using_statement;
 pub mod yield_statement;
 pub mod unsafe_statement;
 pub mod fixed_statement;
+pub mod for_initializer;
+pub mod local_function_statement;
 
 pub use break_statement::BreakStatement;
 pub use catch_clause::CatchClause;
@@ -44,3 +46,4 @@ pub use unsafe_statement::UnsafeStatement;
 pub use using_statement::UsingStatement;
 pub use while_statement::WhileStatement;
 pub use yield_statement::YieldStatement;
+pub use local_function_statement::LocalFunctionStatement;

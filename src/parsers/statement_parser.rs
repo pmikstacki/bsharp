@@ -16,6 +16,7 @@ use crate::parsers::statements::expression_statement_parser::parse_expression_st
 use crate::parsers::statements::for_statement_parser::parse_for_statement;
 use crate::parsers::statements::foreach_statement_parser::parse_foreach_statement;
 use crate::parsers::statements::if_statement_parser::parse_if_statement;
+use crate::parsers::statements::local_function_statement_parser::parse_local_function_statement;
 use crate::parsers::statements::return_statement_parser::parse_return_statement;
 use crate::parsers::statements::switch_statement_parser::parse_switch_statement;
 use crate::parsers::statements::throw_statement_parser::parse_throw_statement;
@@ -39,6 +40,9 @@ pub fn parse_statement(input: &str) -> BResult<&str, Statement> {
         parse_using_statement, // Using statement
         parse_return_statement, // Return statement
         parse_throw_statement, // Throw statement
+        // Local functions must be tried before variable declarations
+        // as they share similar syntax patterns (type identifier)
+        parse_local_function_statement,
         // Declaration statement must be tried before expression statement
         // as a simple identifier could be an expression.
         parse_local_variable_declaration_statement,

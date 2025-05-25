@@ -1,6 +1,6 @@
 use crate::parser::nodes::expressions::expression::Expression;
 use serde::{Deserialize, Serialize};
-use super::{BreakStatement, CheckedStatement, ContinueStatement, DoWhileStatement, FixedStatement, ForEachStatement, ForStatement, GotoCaseStatement, GotoStatement, IfStatement, LabelStatement, LockStatement, SwitchStatement, TryStatement, UncheckedStatement, UnsafeStatement, UsingStatement, WhileStatement, YieldStatement};
+use super::{BreakStatement, CheckedStatement, ContinueStatement, DoWhileStatement, FixedStatement, ForEachStatement, ForStatement, GotoCaseStatement, GotoStatement, IfStatement, LabelStatement, LockStatement, SwitchStatement, TryStatement, UncheckedStatement, UnsafeStatement, UsingStatement, WhileStatement, YieldStatement, LocalFunctionStatement};
 // Use absolute path
 use crate::parser::nodes::declarations::LocalVariableDeclaration;
 // Use items from same directory's mod.rs
@@ -27,6 +27,7 @@ pub enum Statement {
     While(Box<WhileStatement>),
     If(Box<IfStatement>),
     Declaration(LocalVariableDeclaration),
+    LocalFunction(Box<LocalFunctionStatement>),
     Expression(Expression),
     Return(Option<Box<Expression>>), 
     Throw(Option<Box<Expression>>), 

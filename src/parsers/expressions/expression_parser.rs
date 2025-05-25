@@ -25,6 +25,7 @@ use crate::parsers::expressions::nameof_expression_parser::parse_nameof_expressi
 use crate::parsers::expressions::typeof_expression_parser::parse_typeof_expression;
 use crate::parsers::expressions::sizeof_expression_parser::parse_sizeof_expression;
 use crate::parsers::expressions::default_expression_parser::parse_default_expression;
+use crate::parsers::expressions::stackalloc_expression_parser::parse_stackalloc_expression;
 use crate::parsers::identifier_parser::parse_identifier;
 use crate::parsers::types::type_parser::parse_type_expression;
 
@@ -422,6 +423,11 @@ fn parse_unary_expression_or_higher(input: &str) -> BResult<&str, Expression> {
         }
     }
     
+    // Try stackalloc expression
+    if let Ok((input, stackalloc_expr)) = parse_stackalloc_expression(input) {
+        return Ok((input, stackalloc_expr));
+    }
+    
     // Try sizeof expression
     if let Ok((input, sizeof_expr)) = parse_sizeof_expression(input) {
         return Ok((input, sizeof_expr));
@@ -556,6 +562,8 @@ fn parse_primary_expression(input: &str) -> BResult<&str, Expression> {
             map(parse_identifier, |id| Expression::Variable(id)),
             // Anonymous object creation
             parse_anonymous_object_creation,
+            // Stackalloc expressions
+            parse_stackalloc_expression,
         )),
     )(input)
 }

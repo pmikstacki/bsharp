@@ -13,6 +13,7 @@ pub mod block_statement_parser;
 pub mod expression_statement_parser;
 pub mod empty_statement_parser;
 pub mod using_statement_parser;
+pub mod local_function_statement_parser;
 // Removed duplicate statement_parser
 // Add other statement parser modules here as they are created
 
@@ -31,5 +32,6 @@ pub use throw_statement_parser::parse_throw_statement;
 pub use try_catch_finally_parser::parse_try_statement;
 pub use using_statement_parser::parse_using_statement;
 pub use while_statement_parser::parse_while_statement;
+pub use local_function_statement_parser::parse_local_function_statement;
 // Removed duplicate statement_parser import
 // Add other pub use statements here
