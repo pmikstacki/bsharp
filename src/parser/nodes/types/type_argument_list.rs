@@ -1,5 +1,5 @@
-use serde::{Serialize, Deserialize};
 use super::Type;
+use serde::{Deserialize, Serialize};
 
 
 /// Represents a list of type arguments, like `<T, U>`.

@@ -1,5 +1,5 @@
-use serde::{Serialize, Deserialize};
-use super::{MethodDeclaration, PropertyDeclaration, EventDeclaration, IndexerDeclaration};
+use super::{EventDeclaration, IndexerDeclaration, MethodDeclaration, PropertyDeclaration};
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub enum InterfaceBodyDeclaration {

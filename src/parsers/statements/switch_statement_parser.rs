@@ -2,10 +2,11 @@ use crate::parser::nodes::statements::statement::Statement;
 // Parser for switch statements
 
 use crate::parser::errors::BResult;
-use crate::parser::parser_helpers::{bchar, bs_context, keyword};
 use crate::parser::nodes::statements::*;
+use crate::parser::parser_helpers::{bchar, bs_context, keyword};
 use crate::parsers::expressions::expression_parser::parse_expression;
-use crate::parsers::statement_parser::parse_statement; // Need this for statements within sections
+use crate::parsers::statement_parser::parse_statement;
+// Need this for statements within sections
 
 use nom::branch::alt;
 use nom::character::complete::multispace0;

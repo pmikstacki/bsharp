@@ -1,15 +1,15 @@
 // Improved whitespace handling for declaration parsers
 // This module provides common helpers for parsing C# declarations with robust whitespace handling
 
-use nom::{
-    character::complete::{multispace0, multispace1},
-    bytes::complete::tag as nom_tag,
-    IResult,
-    error::Error as NomError,
-};
 use crate::parser::errors::BResult;
-use crate::parser::parser_helpers::nom_to_bs;
 use crate::parser::nodes::declarations::Modifier;
+use crate::parser::parser_helpers::nom_to_bs;
+use nom::{
+    bytes::complete::tag as nom_tag,
+    character::complete::{multispace0, multispace1},
+    error::Error as NomError,
+    IResult,
+};
 
 /// Robustly parses a keyword with optional surrounding whitespace
 pub fn parse_keyword<'a>(keyword: &'static str) -> impl FnMut(&'a str) -> IResult<&'a str, &'a str, NomError<&'a str>> {

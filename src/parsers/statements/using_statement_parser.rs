@@ -7,7 +7,7 @@ use nom::{
 };
 
 use crate::parser::errors::BResult;
-use crate::parser::parser_helpers::{bchar, bs_context, keyword, bws};
+use crate::parser::parser_helpers::{bchar, bs_context, bws, keyword};
 use crate::parsers::expressions::expression_parser::parse_expression;
 use crate::parsers::statement_parser::parse_statement_ws;
 

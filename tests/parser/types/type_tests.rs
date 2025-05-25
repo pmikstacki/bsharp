@@ -17,7 +17,7 @@ fn test_parse_primitive_type() {
     assert_eq!(parse_type("int"), Ok(Type::Primitive(PrimitiveType::Int)));
     assert_eq!(parse_type("bool"), Ok(Type::Primitive(PrimitiveType::Bool)));
     assert_eq!(parse_type("string"), Ok(Type::Primitive(PrimitiveType::String)));
-    assert_eq!(parse_type("void"), Ok(Type::Void));
+    assert_eq!(parse_type("void"), Ok(Type::Primitive(PrimitiveType::Void)));
     assert_eq!(parse_type("dynamic"), Ok(Type::Dynamic));
 }
 

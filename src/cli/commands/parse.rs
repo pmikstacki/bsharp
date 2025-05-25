@@ -1,7 +1,7 @@
+use anyhow::{anyhow, Context, Result};
+use serde_json::to_string_pretty;
 use std::fs;
 use std::path::PathBuf;
-use anyhow::{Result, Context, anyhow};
-use serde_json::to_string_pretty;
 
 // Import the parser from the containing crate
 use crate::parser;

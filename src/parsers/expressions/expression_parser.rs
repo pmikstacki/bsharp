@@ -1,25 +1,27 @@
 use crate::parser::errors::BResult;
-use crate::parser::nodes::expressions::expression::Expression;
-use crate::parser::nodes::expressions::literal::Literal;
-use crate::parser::nodes::expressions::new_expression::NewExpression;
 use crate::parser::nodes::expressions::assignment_expression::AssignmentExpression;
+use crate::parser::nodes::expressions::await_expression::AwaitExpression;
 use crate::parser::nodes::expressions::conditional_expression::ConditionalExpression;
-use crate::parser::nodes::expressions::member_access_expression::MemberAccessExpression;
-use crate::parser::nodes::expressions::invocation_expression::InvocationExpression;
+use crate::parser::nodes::expressions::expression::Expression;
 use crate::parser::nodes::expressions::indexing_expression::IndexingExpression;
+use crate::parser::nodes::expressions::invocation_expression::InvocationExpression;
+use crate::parser::nodes::expressions::literal::Literal;
+use crate::parser::nodes::expressions::member_access_expression::MemberAccessExpression;
+use crate::parser::nodes::expressions::new_expression::NewExpression;
 use crate::parser::nodes::expressions::BinaryOperator;
 use crate::parser::nodes::expressions::UnaryOperator;
 use crate::parser::nodes::identifier::Identifier;
 use crate::parser::parser_helpers::{bchar, bs_context, bws, keyword};
+use crate::parsers::expressions::lambda_expression_parser::parse_lambda_or_anonymous_method;
 use crate::parsers::expressions::literal_parser::parse_literal;
 use crate::parsers::identifier_parser::parse_identifier;
 use crate::parsers::types::type_parser::parse_type_expression;
 
 use nom::{
-    combinator::{map, opt, recognize},
-    multi::separated_list0,
-    sequence::{delimited, pair, preceded, tuple},
     branch::alt,
+    combinator::{cut, map, opt, recognize},
+    multi::{separated_list0, separated_list1},
+    sequence::{delimited, pair, preceded, tuple},
 };
 
 /// Parse any expression - the main entry point for expression parsing
@@ -328,13 +330,13 @@ fn parse_unary_expression_or_higher(input: &str) -> BResult<&str, Expression> {
         }));
     }
     
-    // Try await expression
-    if let Ok((input, _)) = bws(keyword("await"))(input) {
-        let (input, operand) = parse_unary_expression_or_higher(input)?;
-        return Ok((input, Expression::Unary {
-            op: UnaryOperator::Await,
+    // Try await expression (reverted to opt + cut version)
+    let (input_after_opt_await, opt_await_keyword) = opt(bws(keyword("await")))(input)?;
+    if opt_await_keyword.is_some() {
+        let (input_after_operand, operand) = cut(parse_unary_expression_or_higher)(input_after_opt_await)?;
+        return Ok((input_after_operand, Expression::Await(Box::new(AwaitExpression {
             expr: Box::new(operand),
-        }));
+        }))));
     }
     
     // Try cast expression: (Type)expression
@@ -449,10 +451,12 @@ fn parse_primary_expression(input: &str) -> BResult<&str, Expression> {
             map(parse_literal, |lit| Expression::Literal(lit)),
             // this keyword
             map(keyword("this"), |_| Expression::This),
+            // Parenthesized expressions - try before new/lambda to avoid potential conflicts with their parameter/arg list parsing
+            delimited(bws(bchar('(')), bws(parse_expression), bws(bchar(')'))),
             // New expressions
             parse_new_expression,
-            // Parenthesized expressions - for now, just unwrap the inner expression
-            delimited(bws(bchar('(')), bws(parse_expression), bws(bchar(')'))),
+            // Lambda expressions
+            parse_lambda_or_anonymous_method,
             // Variables/identifiers
             map(parse_identifier, |id| Expression::Variable(id)),
         )),
@@ -499,11 +503,12 @@ enum InitializerKind {
 
 fn parse_initializer(input: &str) -> BResult<&str, InitializerKind> {
     delimited(
-        bchar('{'),
+        bws(bchar('{')),
         alt((
-            // Try object initializer first: { prop = value, prop2 = value2 }
+            // Object initializer: { prop = value, prop2 = value2 }
+            // Must have at least one member assignment.
             map(
-                separated_list0(
+                separated_list1(
                     bws(bchar(',')),
                     tuple((
                         bws(parse_identifier),
@@ -515,12 +520,13 @@ fn parse_initializer(input: &str) -> BResult<&str, InitializerKind> {
                     pairs.into_iter().map(|(id, _, expr)| (id.name, expr)).collect()
                 )
             ),
-            // Collection initializer: { expr1, expr2, expr3 }
+            // Collection initializer: { expr1, expr2, expr3 } or { }
+            // Handles non-empty and empty { } cases.
             map(
                 separated_list0(bws(bchar(',')), bws(parse_expression)),
                 InitializerKind::Collection
-            )
+            ),
         )),
-        bchar('}')
+        bws(bchar('}'))
     )(input)
 }

@@ -1,6 +1,6 @@
-use serde::{Serialize, Deserialize};
 use crate::parser::nodes::declarations::{Attribute, Modifier};
 use crate::parser::nodes::identifier::Identifier;
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct DestructorDeclaration {

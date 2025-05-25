@@ -1,6 +1,6 @@
-use serde::{Serialize, Deserialize};
+use super::BinaryOperator;
 use crate::parser::nodes::expressions::expression::Expression;
-use super::BinaryOperator; 
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct AssignmentExpression {

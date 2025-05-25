@@ -1,12 +1,12 @@
 use crate::parser::errors::BResult;
 use crate::parser::nodes::declarations::enum_declaration::{EnumDeclaration, EnumMember};
-use crate::parser::parser_helpers::{bws, nom_to_bs, keyword};
+use crate::parser::parser_helpers::{bws, keyword, nom_to_bs};
+use crate::parsers::declarations::attribute_parser::parse_attribute_lists;
+use crate::parsers::declarations::modifier_parser::parse_modifiers;
+use crate::parsers::declarations::type_declaration_helpers::{parse_close_brace, parse_open_brace};
+use crate::parsers::expressions::expression_parser::parse_expression;
 use crate::parsers::identifier_parser::parse_identifier;
 use crate::parsers::types::type_parser::parse_type_expression;
-use crate::parsers::declarations::modifier_parser::parse_modifiers;
-use crate::parsers::declarations::attribute_parser::parse_attribute_lists;
-use crate::parsers::expressions::expression_parser::parse_expression;
-use crate::parsers::declarations::type_declaration_helpers::{parse_open_brace, parse_close_brace};
 use nom::{
     character::complete::char,
     combinator::opt,

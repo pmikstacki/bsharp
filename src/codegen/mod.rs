@@ -3,7 +3,7 @@ use cranelift_codegen::ir::types;
 use cranelift_codegen::ir::{AbiParam, InstBuilder};
 use cranelift_codegen::settings::{self};
 use cranelift_codegen::verifier::verify_function;
-use cranelift_codegen::{Context};
+use cranelift_codegen::Context;
 use cranelift_frontend::{FunctionBuilder, FunctionBuilderContext};
 use cranelift_module::{DataContext, Linkage, Module};
 use cranelift_object::{ObjectBuilder, ObjectModule};
@@ -11,9 +11,9 @@ use cranelift_object::{ObjectBuilder, ObjectModule};
 use std::str::FromStr;
 use target_lexicon::Triple;
 
-use crate::parser::nodes::declarations::{ClassBodyDeclaration, MethodDeclaration, ClassDeclaration};
 use crate::parser::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration;
-use crate::parser::nodes::types::{Type, PrimitiveType};
+use crate::parser::nodes::declarations::{ClassBodyDeclaration, ClassDeclaration, MethodDeclaration};
+use crate::parser::nodes::types::{PrimitiveType, Type};
 
 // Trait for AST nodes that can be compiled
 pub trait Compilable {

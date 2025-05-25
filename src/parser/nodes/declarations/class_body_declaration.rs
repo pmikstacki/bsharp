@@ -1,6 +1,6 @@
-use serde::{Serialize, Deserialize};
-use super::{FieldDeclaration, MethodDeclaration, EventDeclaration, IndexerDeclaration, OperatorDeclaration, ConstructorDeclaration, DestructorDeclaration, RecordDeclaration, PropertyDeclaration};
-use super::{ClassDeclaration, StructDeclaration, InterfaceDeclaration, EnumDeclaration};
+use super::{ClassDeclaration, EnumDeclaration, InterfaceDeclaration, StructDeclaration};
+use super::{ConstructorDeclaration, DestructorDeclaration, EventDeclaration, FieldDeclaration, IndexerDeclaration, MethodDeclaration, OperatorDeclaration, PropertyDeclaration, RecordDeclaration};
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub enum ClassBodyDeclaration {

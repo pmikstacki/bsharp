@@ -6,15 +6,15 @@ use nom::{
 };
 
 use crate::parser::errors::BResult;
-use crate::parser::nodes::declarations::{OperatorDeclaration, OperatorKind, ConversionKind};
+use crate::parser::nodes::declarations::{ConversionKind, OperatorDeclaration, OperatorKind};
 use crate::parser::nodes::identifier::Identifier;
 use crate::parser::parser_helpers::{bws, nom_to_bs};
-use crate::parsers::types::type_parser::parse_type_expression;
-use crate::parsers::declarations::parameter_parser::parse_parameter_list;
-use crate::parsers::declarations::modifier_parser::parse_modifiers;
 use crate::parsers::declarations::attribute_parser::parse_attribute_lists;
+use crate::parsers::declarations::modifier_parser::parse_modifiers;
+use crate::parsers::declarations::parameter_parser::parse_parameter_list;
 use crate::parsers::declarations::type_declaration_parser::convert_attributes;
 use crate::parsers::statements::block_statement_parser::parse_block_statement;
+use crate::parsers::types::type_parser::parse_type_expression;
 
 /// Parse a C# operator declaration
 /// 

@@ -1,8 +1,10 @@
-use serde::{Serialize, Deserialize};
-use crate::parser::nodes::Identifier; // Updated path
-use crate::parser::nodes::XmlDocumentationComment; // Added for documentation
-use crate::parser::nodes::declarations::{ClassBodyDeclaration, Modifier, attribute::AttributeList};
-use crate::parser::nodes::types::{TypeParameter, Type};
+use crate::parser::nodes::Identifier;
+use serde::{Deserialize, Serialize};
+// Updated path
+use crate::parser::nodes::XmlDocumentationComment;
+// Added for documentation
+use crate::parser::nodes::declarations::{attribute::AttributeList, ClassBodyDeclaration, Modifier};
+use crate::parser::nodes::types::{Type, TypeParameter};
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct ClassDeclaration {

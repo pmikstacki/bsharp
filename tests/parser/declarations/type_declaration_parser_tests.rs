@@ -47,7 +47,8 @@ fn test_record_class() {
             assert_eq!(remaining, "");
             assert_eq!(decl.name.to_string(), "Person");
             assert_eq!(decl.is_struct, false);
-            assert_eq!(decl.parameters.iter().size_hint(), (2, Some(2)));
+            assert!(decl.parameters.is_some());
+            assert_eq!(decl.parameters.unwrap().len(), 2);
         }
         Err(e) => panic!("Parsing failed: {:?}", e),
     }
@@ -62,7 +63,8 @@ fn test_record_struct() {
             assert_eq!(remaining, "");
             assert_eq!(decl.name.to_string(), "Point");
             assert_eq!(decl.is_struct, true);
-            assert_eq!(decl.parameters.iter().size_hint(), (2, Some(2)));
+            assert!(decl.parameters.is_some());
+            assert_eq!(decl.parameters.unwrap().len(), 2);
         }
         Err(e) => panic!("Parsing failed: {:?}", e),
     }
@@ -130,13 +132,24 @@ fn test_interface_with_method() {
 
 #[test]
 fn test_interface_with_method_body_error() {
-    // Interface methods cannot have a body, so this should fail
+    // Interface methods cannot have a body, but parser should use error recovery
     let input = "interface IBad { void BadMethod() { return; } }";
 
     match parse_interface_declaration(input) {
-        Ok(_) => panic!("Expected parsing to fail for interface method with body"),
-        Err(_) => { // This is expected
+        Ok((remaining, decl)) => {
+            assert_eq!(remaining, "");
+            assert_eq!(decl.name.to_string(), "IBad");
+            assert_eq!(decl.body_declarations.len(), 1);
+            
+            // The method should be parsed but with body set to None (error recovery)
+            if let InterfaceBodyDeclaration::Method(method) = &decl.body_declarations[0] {
+                assert_eq!(method.name.to_string(), "BadMethod");
+                assert_eq!(method.body, None); // Body should be removed for interface methods
+            } else {
+                panic!("Expected a method, found something else");
+            }
         }
+        Err(e) => panic!("Expected parsing to succeed with error recovery, but got: {:?}", e),
     }
 }
 

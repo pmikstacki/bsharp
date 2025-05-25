@@ -1,12 +1,12 @@
-use serde::{Serialize, Deserialize};
-use crate::parser::nodes::identifier::Identifier;
-use crate::parser::nodes::types::{TypeParameter, Type};
 use super::attribute::AttributeList;
-use super::modifier::Modifier;
+use super::constructor_declaration::ConstructorDeclaration;
 use super::field_declaration::FieldDeclaration;
 use super::method_declaration::MethodDeclaration;
+use super::modifier::Modifier;
 use super::property_declaration::PropertyDeclaration;
-use super::constructor_declaration::ConstructorDeclaration;
+use crate::parser::nodes::identifier::Identifier;
+use crate::parser::nodes::types::{Type, TypeParameter};
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub enum StructBodyDeclaration {

@@ -1,16 +1,16 @@
 use crate::parser::errors::BResult;
-use crate::parser::nodes::declarations::{EventDeclaration, EventAccessorList, EventAccessor};
+use crate::parser::nodes::declarations::{EventAccessor, EventAccessorList, EventDeclaration};
 use crate::parser::parser_helpers::{bchar, bs_context, bws, keyword};
-use crate::parsers::declarations::modifier_parser::parse_modifiers;
 use crate::parsers::declarations::attribute_parser::parse_attribute_lists;
-use crate::parsers::types::type_parser::parse_type_expression;
+use crate::parsers::declarations::modifier_parser::parse_modifiers;
 use crate::parsers::identifier_parser::parse_identifier;
 use crate::parsers::statement_parser::parse_statement;
+use crate::parsers::types::type_parser::parse_type_expression;
 
 use nom::{
+    branch::alt,
     combinator::{map, opt},
     sequence::{delimited, tuple},
-    branch::alt,
 };
 
 /// Parse an event accessor (add or remove)

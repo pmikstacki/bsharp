@@ -1,5 +1,5 @@
-use serde::{Serialize, Deserialize};
 use crate::parser::nodes::types::Type;
+use serde::{Deserialize, Serialize};
 
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]

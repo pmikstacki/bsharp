@@ -1,17 +1,17 @@
+use crate::parser::errors::BResult;
+use crate::parser::nodes::declarations::DelegateDeclaration;
+use crate::parser::parser_helpers::{bws, nom_to_bs};
+use crate::parsers::declarations::attribute_parser::parse_attribute_lists;
+use crate::parsers::declarations::modifier_parser::parse_modifiers_for_decl_type;
+use crate::parsers::declarations::parameter_parser::parse_parameter_list;
+use crate::parsers::declarations::type_parameter_parser::{opt_parse_type_parameter_list, parse_type_parameter_constraints_clauses};
+use crate::parsers::identifier_parser::parse_identifier;
+use crate::parsers::types::type_parser::parse_type_expression;
 use nom::{
     bytes::complete::tag,
     character::complete::char as nom_char,
     combinator::opt,
 };
-use crate::parser::errors::BResult;
-use crate::parser::nodes::declarations::DelegateDeclaration;
-use crate::parser::parser_helpers::{bws, nom_to_bs};
-use crate::parsers::identifier_parser::parse_identifier;
-use crate::parsers::types::type_parser::parse_type_expression;
-use crate::parsers::declarations::type_parameter_parser::{opt_parse_type_parameter_list, parse_type_parameter_constraints_clauses};
-use crate::parsers::declarations::parameter_parser::parse_parameter_list;
-use crate::parsers::declarations::modifier_parser::parse_modifiers_for_decl_type;
-use crate::parsers::declarations::attribute_parser::parse_attribute_lists;
 
 /// Parse a delegate declaration
 /// Example: public delegate void MyDelegate(int x, string y);

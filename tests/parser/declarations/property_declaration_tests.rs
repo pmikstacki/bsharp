@@ -1,6 +1,6 @@
 // Tests for parsing property declarations
 
-use bsharp::parser::nodes::declarations::{PropertyDeclaration, PropertyAccessor};
+use bsharp::parser::nodes::declarations::{PropertyDeclaration, PropertyAccessor, Modifier};
 use bsharp::parser::nodes::identifier::Identifier;
 use bsharp::parser::nodes::types::{Type, PrimitiveType};
 use bsharp::parsers::declarations::property_declaration_parser::parse_property_declaration;
@@ -95,7 +95,7 @@ fn test_parse_init_only_property() {
 fn test_parse_property_with_modifier() {
     let code = "public int Count { get; set; }";
     let expected = PropertyDeclaration {
-        modifiers: vec![],
+        modifiers: vec![Modifier::Public],
         ty: Type::Primitive(PrimitiveType::Int),
         name: Identifier { name: "Count".to_string() },
         accessors: vec![
@@ -111,7 +111,7 @@ fn test_parse_property_with_modifier() {
 fn test_parse_property_with_multiple_modifiers() {
     let code = "public static int Count { get; set; }";
     let expected = PropertyDeclaration {
-        modifiers: vec![],
+        modifiers: vec![Modifier::Public, Modifier::Static],
         ty: Type::Primitive(PrimitiveType::Int),
         name: Identifier { name: "Count".to_string() },
         accessors: vec![

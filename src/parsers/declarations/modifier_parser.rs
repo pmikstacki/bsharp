@@ -1,15 +1,15 @@
+use crate::parser::errors::{BResult, BSharpParseError};
+use crate::parser::nodes::declarations::Modifier;
+use crate::parser::parser_helpers::{bws, nom_to_bs};
+use nom::error::ParseError;
 use nom::{
     branch::alt,
     bytes::complete::tag,
     character::complete::alpha1,
-    combinator::{value, not, peek},
+    combinator::{not, peek, value},
     multi::many0,
     sequence::terminated,
 };
-use nom::error::ParseError;
-use crate::parser::errors::{BResult, BSharpParseError};
-use crate::parser::nodes::declarations::Modifier;
-use crate::parser::parser_helpers::{nom_to_bs, bws};
 
 // Helper to ensure we match complete words, not prefixes
 fn word_boundary(input: &str) -> nom::IResult<&str, (), nom::error::Error<&str>> {

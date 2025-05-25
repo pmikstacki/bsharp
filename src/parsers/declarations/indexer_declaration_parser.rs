@@ -1,19 +1,19 @@
 use nom::{
+    branch::alt,
     bytes::complete::tag as nom_tag,
     character::complete::{char as nom_char, multispace0},
     combinator::map,
-    branch::alt,
 };
 
 use crate::parser::errors::BResult;
-use crate::parser::nodes::declarations::{IndexerDeclaration, IndexerAccessorList};
+use crate::parser::nodes::declarations::{IndexerAccessorList, IndexerDeclaration};
 use crate::parser::nodes::types::Parameter;
 use crate::parser::parser_helpers::{bws, nom_to_bs};
-use crate::parsers::types::type_parser::parse_type_expression;
 use crate::parsers::declarations::attribute_parser::parse_attribute_lists;
-use crate::parsers::declarations::type_declaration_parser::convert_attributes;
 use crate::parsers::declarations::modifier_parser::parse_modifiers;
+use crate::parsers::declarations::type_declaration_parser::convert_attributes;
 use crate::parsers::statements::block_statement_parser::parse_block_statement;
+use crate::parsers::types::type_parser::parse_type_expression;
 
 /// Parse a C# indexer declaration
 /// 

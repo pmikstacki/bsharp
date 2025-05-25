@@ -6,22 +6,22 @@ use crate::parser::errors::BResult;
 use crate::parser::nodes::statements::statement::Statement;
 use crate::parser::parser_helpers::bs_context;
 
-use crate::parsers::statements::block_statement_parser::parse_block_statement;
-use crate::parsers::statements::for_statement_parser::parse_for_statement;
-use crate::parsers::statements::if_statement_parser::parse_if_statement;
-use crate::parsers::statements::return_statement_parser::parse_return_statement;
-use crate::parsers::statements::expression_statement_parser::parse_expression_statement;
 use crate::parsers::declarations::variable_declaration_parser::parse_local_variable_declaration_statement;
-use crate::parsers::statements::while_statement_parser::parse_while_statement;
-use crate::parsers::statements::do_while_statement_parser::parse_do_while_statement;
-use crate::parsers::statements::foreach_statement_parser::parse_foreach_statement;
-use crate::parsers::statements::switch_statement_parser::parse_switch_statement;
-use crate::parsers::statements::empty_statement_parser::parse_empty_statement;
-use crate::parsers::statements::try_catch_finally_parser::parse_try_statement;
-use crate::parsers::statements::throw_statement_parser::parse_throw_statement;
+use crate::parsers::statements::block_statement_parser::parse_block_statement;
 use crate::parsers::statements::break_statement_parser::parse_break_statement;
 use crate::parsers::statements::continue_statement_parser::parse_continue_statement;
+use crate::parsers::statements::do_while_statement_parser::parse_do_while_statement;
+use crate::parsers::statements::empty_statement_parser::parse_empty_statement;
+use crate::parsers::statements::expression_statement_parser::parse_expression_statement;
+use crate::parsers::statements::for_statement_parser::parse_for_statement;
+use crate::parsers::statements::foreach_statement_parser::parse_foreach_statement;
+use crate::parsers::statements::if_statement_parser::parse_if_statement;
+use crate::parsers::statements::return_statement_parser::parse_return_statement;
+use crate::parsers::statements::switch_statement_parser::parse_switch_statement;
+use crate::parsers::statements::throw_statement_parser::parse_throw_statement;
+use crate::parsers::statements::try_catch_finally_parser::parse_try_statement;
 use crate::parsers::statements::using_statement_parser::parse_using_statement;
+use crate::parsers::statements::while_statement_parser::parse_while_statement;
 
 /// Main statement parser - handles all types of statements
 /// This function correctly handles recursion by dispatching to specific statement parsers

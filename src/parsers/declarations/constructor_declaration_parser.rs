@@ -1,13 +1,12 @@
-use nom::{
-    combinator::opt,
-};
 use crate::parser::errors::BResult;
 use crate::parser::nodes::declarations::constructor_declaration::ConstructorDeclaration;
 use crate::parser::parser_helpers::{bws, nom_to_bs};
-use crate::parsers::identifier_parser::parse_identifier;
+use crate::parsers::declarations::modifier_parser::parse_modifiers_for_decl_type;
 use crate::parsers::declarations::parameter_parser::parse_parameter_list;
+use crate::parsers::identifier_parser::parse_identifier;
 use crate::parsers::statements::block_statement_parser::parse_block_statement;
-use crate::parsers::declarations::modifier_parser::parse_modifiers_for_decl_type; // Assuming constructors can have modifiers
+use nom::combinator::opt;
+// Assuming constructors can have modifiers
 
 pub fn parse_constructor_declaration(input: &str) -> BResult<&str, ConstructorDeclaration> {
     println!("[DEBUG] parse_constructor_declaration: input = {:?}", input.chars().take(60).collect::<String>());

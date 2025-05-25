@@ -1,41 +1,41 @@
 use nom::branch::alt;
-use nom::combinator::map;
-use nom::character::complete::multispace0;
 use nom::bytes::complete::tag as nom_tag;
+use nom::character::complete::multispace0;
+use nom::combinator::map;
 use nom::combinator::opt;
 use nom::sequence::tuple;
 use std::marker::PhantomData;
 
 use crate::parser::errors::BResult;
-use crate::parser::nodes::declarations::Attribute;
 use crate::parser::nodes::declarations::attribute::AttributeList;
-use crate::parser::nodes::declarations::{ClassDeclaration, StructDeclaration, InterfaceDeclaration, RecordDeclaration, PropertyDeclaration, EventDeclaration, IndexerDeclaration, InterfaceBodyDeclaration, PropertyAccessor};
-use crate::parser::nodes::declarations::{TypeDeclaration, ClassBodyDeclaration, StructBodyDeclaration};
-use crate::parser::nodes::types::{Type, TypeParameter, Parameter};
-use crate::parser::nodes::identifier::Identifier;
+use crate::parser::nodes::declarations::Attribute;
 use crate::parser::nodes::declarations::Modifier;
-use crate::parser::parser_helpers::{nom_to_bs, bws, bchar};
+use crate::parser::nodes::declarations::{ClassBodyDeclaration, StructBodyDeclaration, TypeDeclaration};
+use crate::parser::nodes::declarations::{ClassDeclaration, EventDeclaration, IndexerDeclaration, InterfaceBodyDeclaration, InterfaceDeclaration, PropertyAccessor, PropertyDeclaration, RecordDeclaration, StructDeclaration};
+use crate::parser::nodes::identifier::Identifier;
+use crate::parser::nodes::types::{Parameter, Type, TypeParameter};
+use crate::parser::parser_helpers::{bchar, bws, nom_to_bs};
 
 // Import specialized parsers
 // use crate::parsers::declarations::class_declaration_parser::parse_class_declaration; // Removed old import
 // use crate::parsers::declarations::interface_declaration_parser::parse_interface_declaration; // Already removed
 // use crate::parsers::declarations::record_declaration_parser::{parse_record_declaration, parse_record_class_declaration, parse_record_struct_declaration}; // Removed, handled in this file
 use crate::parsers::declarations::attribute_parser::parse_attribute_lists;
-use crate::parsers::declarations::modifier_parser::parse_modifiers;
-use crate::parsers::declarations::type_parameter_parser::opt_parse_type_parameter_list;
 use crate::parsers::declarations::base_types_parser::parse_base_type_list;
-use crate::parsers::declarations::type_declaration_helpers::{at_end_of_body, parse_close_brace};
-use crate::parsers::identifier_parser::parse_identifier;
-use crate::parsers::declarations::field_declaration_parser::parse_field_declaration;
-use crate::parsers::declarations::method_declaration_parser::parse_method_declaration;
-use crate::parsers::declarations::property_declaration_parser::parse_property_declaration;
 use crate::parsers::declarations::constructor_declaration_parser::parse_constructor_declaration;
-use crate::parsers::declarations::event_declaration_parser::parse_event_declaration;
-use crate::parsers::declarations::indexer_declaration_parser::parse_indexer_declaration;
-use crate::parsers::declarations::operator_declaration_parser::parse_operator_declaration;
 use crate::parsers::declarations::destructor_declaration_parser::parse_destructor_declaration;
 use crate::parsers::declarations::enum_declaration_parser::parse_enum_declaration;
+use crate::parsers::declarations::event_declaration_parser::parse_event_declaration;
+use crate::parsers::declarations::field_declaration_parser::parse_field_declaration;
+use crate::parsers::declarations::indexer_declaration_parser::parse_indexer_declaration;
+use crate::parsers::declarations::method_declaration_parser::parse_method_declaration;
+use crate::parsers::declarations::modifier_parser::parse_modifiers;
+use crate::parsers::declarations::operator_declaration_parser::parse_operator_declaration;
 use crate::parsers::declarations::parameter_parser::parse_parameter_list;
+use crate::parsers::declarations::property_declaration_parser::parse_property_declaration;
+use crate::parsers::declarations::type_declaration_helpers::{at_end_of_body, parse_close_brace};
+use crate::parsers::declarations::type_parameter_parser::opt_parse_type_parameter_list;
+use crate::parsers::identifier_parser::parse_identifier;
 
 // Re-export the specific type parsers that are now consolidated or managed by this module
 // Add other re-exports here as needed, e.g.:
@@ -182,20 +182,21 @@ fn skip_to_recovery_point(input: &str) -> &str {
 /// Helper function for parsing class members (fields, methods, properties, constructors, events, indexers, operators, destructors, nested types)
 fn parse_class_member(input: &str) -> BResult<&str, ClassBodyDeclaration> {
     alt((
-        map(parse_field_declaration, ClassBodyDeclaration::Field),
-        map(parse_method_declaration, ClassBodyDeclaration::Method),
-        map(parse_property_declaration, ClassBodyDeclaration::Property),
-        map(parse_constructor_declaration, ClassBodyDeclaration::Constructor),
-        map(parse_event_declaration, ClassBodyDeclaration::Event),
-        map(parse_indexer_declaration, ClassBodyDeclaration::Indexer),
-        map(parse_operator_declaration, ClassBodyDeclaration::Operator),
-        map(parse_destructor_declaration, ClassBodyDeclaration::Destructor),
-        // Nested type declarations
+        // Try type declarations first to prevent keywords like 'record' from being parsed as return types
+        map(parse_record_declaration, ClassBodyDeclaration::NestedRecord),
         map(parse_class_declaration, ClassBodyDeclaration::NestedClass),
         map(parse_struct_declaration, ClassBodyDeclaration::NestedStruct),
         map(parse_interface_declaration, ClassBodyDeclaration::NestedInterface),
         map(parse_enum_declaration, ClassBodyDeclaration::NestedEnum),
-        map(parse_record_declaration, ClassBodyDeclaration::NestedRecord),
+        // Then try other member types
+        map(parse_constructor_declaration, ClassBodyDeclaration::Constructor),
+        map(parse_destructor_declaration, ClassBodyDeclaration::Destructor),
+        map(parse_property_declaration, ClassBodyDeclaration::Property),
+        map(parse_indexer_declaration, ClassBodyDeclaration::Indexer),
+        map(parse_event_declaration, ClassBodyDeclaration::Event),
+        map(parse_operator_declaration, ClassBodyDeclaration::Operator),
+        map(parse_method_declaration, ClassBodyDeclaration::Method),
+        map(parse_field_declaration, ClassBodyDeclaration::Field),
     ))(input)
 }
 
@@ -307,7 +308,7 @@ pub fn parse_record_class_declaration<'a>(input: &'a str) -> BResult<&'a str, Re
         modifiers,
         name: identifier,
         is_struct: false,
-        parameters: Some(parameters),
+        parameters: if parameters.is_empty() { None } else { Some(parameters) },
         base_types,
         body_declarations: members,
     };
@@ -399,8 +400,7 @@ pub fn parse_record_struct_declaration(input: &str) -> BResult<&str, RecordDecla
         modifiers,
         name: identifier,
         is_struct: true, 
-        parameters: Some(parameters),
-        // type_parameters, // Removed, RecordDeclaration has no such field
+        parameters: if parameters.is_empty() { None } else { Some(parameters) },
         base_types,
         body_declarations: members, 
     };
@@ -485,10 +485,9 @@ fn parse_interface_member(input: &str) -> BResult<&str, InterfaceBodyDeclaration
         map(|i| {
             let (remaining, mut method_decl) = parse_method_declaration(i)?;
             
-            // Interface methods cannot have a body, but for error recovery,
-            // we'll allow it and just ignore the body (set it to None)
+            // Interface methods cannot have a body - use error recovery
+            // Instead of failing, we ignore the body and set it to None
             if method_decl.body.is_some() {
-                // Log or handle the error as needed, but don't fail parsing
                 method_decl.body = None;
             }
             

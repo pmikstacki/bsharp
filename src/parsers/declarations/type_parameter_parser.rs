@@ -1,15 +1,15 @@
-use nom::{
-    branch::alt,
-    character::complete::char as nom_char,
-    bytes::complete::tag,
-    combinator::value,
-};
 use crate::parser::errors::BResult;
-use crate::parser::nodes::types::{TypeParameter, Variance};
 use crate::parser::nodes::declarations::{TypeParameterConstraint, TypeParameterConstraintClause};
-use crate::parser::parser_helpers::{bws, nom_to_bs, bdelimited, bseparated_list0, bopt};
+use crate::parser::nodes::types::{TypeParameter, Variance};
+use crate::parser::parser_helpers::{bdelimited, bopt, bseparated_list0, bseparated_list1, bws, nom_to_bs};
 use crate::parsers::identifier_parser::parse_identifier;
 use crate::parsers::types::type_parser::parse_type_expression;
+use nom::{
+    branch::alt,
+    bytes::complete::tag,
+    character::complete::char as nom_char,
+    combinator::value,
+};
 
 // Parse variance keyword (in/out)
 fn parse_variance(input: &str) -> BResult<&str, Variance> {
@@ -35,7 +35,7 @@ fn parse_single_type_parameter(input: &str) -> BResult<&str, TypeParameter> {
 pub fn parse_type_parameter_list(input: &str) -> BResult<&str, Vec<TypeParameter>> {
     bdelimited(
         bws(nom_to_bs(nom_char::<&str, nom::error::Error<&str>>('<'))),
-        bseparated_list0(bws(nom_to_bs(nom_char::<&str, nom::error::Error<&str>>(','))), bws(parse_single_type_parameter)),
+        bseparated_list1(bws(nom_to_bs(nom_char::<&str, nom::error::Error<&str>>(','))), bws(parse_single_type_parameter)),
         bws(nom_to_bs(nom_char::<&str, nom::error::Error<&str>>('>')))
     )(input)
 }

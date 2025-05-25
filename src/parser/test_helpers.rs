@@ -1,9 +1,9 @@
+use crate::parser::errors::{BResult, BSharpParseError};
+use crate::parser::nodes::statements::statement::Statement;
+use crate::parsers::statement_parser::parse_statement;
+use nom::combinator::all_consuming;
 // src/parser/test_helpers.rs
 use nom::IResult;
-use nom::combinator::all_consuming;
-use crate::parser::errors::{BSharpParseError, BResult};
-use crate::parsers::statement_parser::parse_statement;
-use crate::parser::nodes::statements::statement::Statement;
 
 /// Ensures the entire input is parsed by the given parser.
 /// Returns an IResult with BSharpParseError as the error type.

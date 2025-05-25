@@ -1,5 +1,6 @@
-use serde::{Serialize, Deserialize};
-use crate::parser::nodes::statements::statement::Statement; // For the block
+use crate::parser::nodes::statements::statement::Statement;
+use serde::{Deserialize, Serialize};
+// For the block
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct FinallyClause {

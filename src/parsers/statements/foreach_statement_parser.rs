@@ -8,11 +8,11 @@ use nom::{
 
 use crate::parser::errors::BResult;
 use crate::parser::nodes::statements::*;
-use crate::parser::parser_helpers::{bchar, bs_context, keyword, nom_to_bs, bws};
+use crate::parser::parser_helpers::{bchar, bs_context, bws, keyword, nom_to_bs};
 use crate::parsers::expressions::expression_parser::parse_expression;
 use crate::parsers::identifier_parser::parse_identifier;
-use crate::parsers::types::type_parser::parse_type_expression;
 use crate::parsers::statement_parser::parse_statement_ws;
+use crate::parsers::types::type_parser::parse_type_expression;
 
 // Parse a foreach statement following Roslyn's structure:
 // foreach (<type> <identifier> in <expression>) <statement>

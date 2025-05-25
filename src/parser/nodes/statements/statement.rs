@@ -1,7 +1,9 @@
-use serde::{Serialize, Deserialize};
-use crate::parser::nodes::expressions::expression::Expression; // Use absolute path
+use crate::parser::nodes::expressions::expression::Expression;
+use serde::{Deserialize, Serialize};
+use super::{BreakStatement, CheckedStatement, ContinueStatement, DoWhileStatement, FixedStatement, ForEachStatement, ForStatement, GotoCaseStatement, GotoStatement, IfStatement, LabelStatement, LockStatement, SwitchStatement, TryStatement, UncheckedStatement, UnsafeStatement, UsingStatement, WhileStatement, YieldStatement};
+// Use absolute path
 use crate::parser::nodes::declarations::LocalVariableDeclaration;
-use super::{IfStatement, WhileStatement, ForStatement, BreakStatement, ContinueStatement, DoWhileStatement, SwitchStatement, ForEachStatement, TryStatement, GotoStatement, GotoCaseStatement, LabelStatement, CheckedStatement, UncheckedStatement, LockStatement, UsingStatement, YieldStatement, UnsafeStatement, FixedStatement}; // Use items from same directory's mod.rs
+// Use items from same directory's mod.rs
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub enum Statement {

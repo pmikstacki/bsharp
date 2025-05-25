@@ -2,14 +2,14 @@ use crate::parser::nodes::statements::statement::Statement;
 // Parser for do-while statements
 
 use nom::{
-    character::complete::multispace0, 
+    character::complete::multispace0,
     combinator::map,
     sequence::{delimited, tuple},
 };
 
 use crate::parser::errors::BResult;
 use crate::parser::nodes::statements::do_while_statement::DoWhileStatement;
-use crate::parser::parser_helpers::{bchar, bs_context, keyword}; 
+use crate::parser::parser_helpers::{bchar, bs_context, keyword};
 use crate::parsers::expressions::expression_parser::parse_expression;
 use crate::parsers::statement_parser::parse_statement_ws;
 

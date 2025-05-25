@@ -1,4 +1,4 @@
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 /// Represents modifier categories in C#
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]

@@ -1,13 +1,13 @@
-use nom::{
-    branch::alt,
-    character::complete::{char as nom_char, multispace0},
-    combinator::{map},
-    sequence::{delimited},
-};
 use crate::parser::errors::BResult;
 use crate::parser::nodes::expressions::expression::Expression;
 use crate::parsers::expressions::literal_parser::parse_literal;
 use crate::parsers::identifier_parser::parse_identifier;
+use nom::{
+    branch::alt,
+    character::complete::{char as nom_char, multispace0},
+    combinator::map,
+    sequence::delimited,
+};
 
 // Helper for optional whitespace
 fn ws<'a, F: 'a, O>(inner: F) -> impl FnMut(&'a str) -> BResult<&'a str, O>

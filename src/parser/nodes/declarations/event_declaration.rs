@@ -1,8 +1,8 @@
-use serde::{Serialize, Deserialize};
-use crate::parser::nodes::types::Type;
 use crate::parser::nodes::declarations::{AttributeList, Modifier};
 use crate::parser::nodes::identifier::Identifier;
 use crate::parser::nodes::statements::statement::Statement;
+use crate::parser::nodes::types::Type;
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct EventDeclaration {

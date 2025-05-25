@@ -1,15 +1,15 @@
-use nom::error::ErrorKind;
-use crate::parser::parser_helpers::{bws, nom_to_bs};
 use crate::parser::errors::{BResult, BSharpParseError, CustomErrorKind};
 use crate::parser::nodes::declarations::MethodDeclaration;
 use crate::parser::nodes::statements::statement::Statement;
-use crate::parsers::identifier_parser::parse_identifier;
-use crate::parsers::types::type_parser::parse_type_expression;
-use crate::parsers::declarations::type_parameter_parser::{opt_parse_type_parameter_list, parse_type_parameter_constraints_clauses};
-use crate::parsers::declarations::parameter_parser::parse_parameter_list;
+use crate::parser::parser_helpers::{bws, nom_to_bs};
 use crate::parsers::declarations::modifier_parser::parse_modifiers_for_decl_type;
+use crate::parsers::declarations::parameter_parser::parse_parameter_list;
+use crate::parsers::declarations::type_parameter_parser::{opt_parse_type_parameter_list, parse_type_parameter_constraints_clauses};
+use crate::parsers::identifier_parser::parse_identifier;
 use crate::parsers::statements::block_statement_parser::parse_block_statement;
+use crate::parsers::types::type_parser::parse_type_expression;
 use nom::combinator::opt;
+use nom::error::ErrorKind;
 
 // Updated to parse into Option<Statement>
 fn parse_method_body(input: &str) -> BResult<&str, Option<Statement>> {

@@ -7,7 +7,7 @@ pub mod analysis;     // AST analysis functionality (replaces factories)
 pub mod navigation;   // AST navigation functionality (replaces ast_node)
 pub mod comment_parser;
 // Re-export the new idiomatic traits for easy access
-pub use analysis::{AstAnalyze, AstAnalysis};
+pub use analysis::{AstAnalysis, AstAnalyze};
 pub use navigation::{AstNavigate, FindDeclarations};
 
 //------------------------------------------------------------------------------

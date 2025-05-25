@@ -1,16 +1,16 @@
 use nom::{
+    branch::alt,
     character::complete::char as nom_char,
     combinator::map,
-    branch::alt,
 };
 
 use crate::parser::errors::BResult;
 use crate::parser::nodes::declarations::DestructorDeclaration;
 use crate::parser::parser_helpers::{bws, nom_to_bs};
-use crate::parsers::identifier_parser::parse_identifier;
 use crate::parsers::declarations::attribute_parser::parse_attribute_lists;
-use crate::parsers::declarations::type_declaration_parser::convert_attributes;
 use crate::parsers::declarations::modifier_parser::parse_modifiers;
+use crate::parsers::declarations::type_declaration_parser::convert_attributes;
+use crate::parsers::identifier_parser::parse_identifier;
 use crate::parsers::statements::block_statement_parser::parse_block_statement;
 
 /// Parse a C# destructor declaration

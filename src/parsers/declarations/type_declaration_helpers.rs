@@ -8,14 +8,14 @@ use crate::parser::nodes::declarations::{
     attribute::AttributeList,
     modifier::Modifier,
 };
-use crate::parser::nodes::types::{Type, TypeParameter};
 use crate::parser::nodes::identifier::Identifier;
+use crate::parser::nodes::types::{Type, TypeParameter};
 use crate::parser::parser_helpers::{bws, nom_to_bs};
-use crate::parsers::identifier_parser::parse_identifier;
-use crate::parsers::declarations::type_parameter_parser::opt_parse_type_parameter_list;
-use crate::parsers::declarations::modifier_parser::parse_modifiers_for_decl_type;
-use crate::parsers::declarations::base_types_parser::parse_base_type_list;
 use crate::parsers::declarations::attribute_parser::parse_attribute_lists;
+use crate::parsers::declarations::base_types_parser::parse_base_type_list;
+use crate::parsers::declarations::modifier_parser::parse_modifiers_for_decl_type;
+use crate::parsers::declarations::type_parameter_parser::opt_parse_type_parameter_list;
+use crate::parsers::identifier_parser::parse_identifier;
 
 /// Core structure for type declarations (class, struct, interface, record)
 /// Contains the common elements shared by all these declaration types

@@ -4,7 +4,7 @@ pub mod declarations;
 pub mod statements;
 pub mod expressions;
 pub mod identifier;
-pub use identifier::Identifier; 
+pub use identifier::Identifier;
 pub mod preprocessor; // Declare preprocessor module
 pub mod xml_documentation; // Added for XML documentation
 

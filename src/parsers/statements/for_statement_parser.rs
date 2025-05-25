@@ -8,14 +8,14 @@ use nom::{
 };
 
 use crate::parser::errors::BResult;
-use crate::parser::nodes::statements::statement::Statement;
-use crate::parser::nodes::statements::{ForStatement, ForInitializer};
 use crate::parser::nodes::declarations::local_variable_declaration::LocalVariableDeclaration;
-use crate::parser::parser_helpers::{bs_context, bws, bchar, keyword, nom_to_bs};
+use crate::parser::nodes::statements::statement::Statement;
+use crate::parser::nodes::statements::{ForInitializer, ForStatement};
+use crate::parser::parser_helpers::{bchar, bs_context, bws, keyword, nom_to_bs};
+use crate::parsers::declarations::variable_declaration_parser::parse_variable_declarator;
 use crate::parsers::expressions::expression_parser::parse_expression;
 use crate::parsers::statement_parser::parse_statement_ws;
 use crate::parsers::types::type_parser::parse_type_expression;
-use crate::parsers::declarations::variable_declaration_parser::parse_variable_declarator;
 
 // Parse the initializer part of a for loop statement - can be a variable declaration
 // or a comma-separated list of expressions

@@ -1,7 +1,7 @@
-use serde::{Serialize, Deserialize};
-// Import PrimitiveType from the same directory's mod.rs 
+// Import PrimitiveType from the same directory's mod.rs
 use super::PrimitiveType;
 use crate::parser::nodes::identifier::Identifier;
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub enum Type {

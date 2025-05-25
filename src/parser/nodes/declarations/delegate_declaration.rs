@@ -1,6 +1,7 @@
-use serde::{Serialize, Deserialize};
 use crate::parser::nodes::identifier::Identifier;
-use crate::parser::nodes::types::{TypeParameter, Type, Parameter}; // Need Parameter too
+use crate::parser::nodes::types::{Parameter, Type, TypeParameter};
+use serde::{Deserialize, Serialize};
+// Need Parameter too
 use super::{AttributeList, Modifier, TypeParameterConstraintClause};
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]

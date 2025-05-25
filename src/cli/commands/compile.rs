@@ -1,5 +1,5 @@
+use anyhow::{anyhow, Result};
 use std::path::PathBuf;
-use anyhow::{Result, anyhow};
 
 // Import from containing crate
 use crate::compiler;

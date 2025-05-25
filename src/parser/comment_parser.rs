@@ -1,11 +1,11 @@
 use crate::parser::errors::BResult;
 use crate::parser::parser_helpers::{bs_context, nom_to_bs};
-use nom::bytes::complete::{take_until, tag};
-use nom::character::complete::{multispace0, multispace1};
-use nom::combinator::{recognize, map};
-use nom::sequence::{tuple, delimited, preceded};
 use nom::branch::alt;
+use nom::bytes::complete::{tag, take_until};
+use nom::character::complete::{multispace0, multispace1};
+use nom::combinator::{map, recognize};
 use nom::multi::many0;
+use nom::sequence::{delimited, preceded, tuple};
 
 /// Parse a C-style block comment /* ... */
 pub fn parse_block_comment(input: &str) -> BResult<&str, &str> {

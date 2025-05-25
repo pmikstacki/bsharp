@@ -2,15 +2,14 @@ use crate::parser::nodes::statements::statement::Statement;
 // Parser for return statements
 
 use nom::{
-    character::complete::multispace0, 
+    character::complete::multispace0,
     combinator::{map, opt},
     sequence::tuple,
 };
 
 use crate::parser::errors::BResult;
-use crate::parser::parser_helpers::{bchar, bs_context, keyword}; 
-use crate::parsers::expressions::expression_parser::parse_expression; 
-
+use crate::parser::parser_helpers::{bchar, bs_context, keyword};
+use crate::parsers::expressions::expression_parser::parse_expression;
 
 
 // Parse a return statement with an optional expression

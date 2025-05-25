@@ -1,16 +1,16 @@
-use crate::parsers::identifier_parser::parse_identifier;
-use crate::parser::nodes::expressions::expression::Expression;
-use crate::parsers::declarations::modifier_parser::parse_modifiers;
-use nom::{
-    character::complete::{char as nom_char},
-    sequence::{preceded},
-    combinator::{map, opt},
-};
 use crate::parser::errors::BResult;
 use crate::parser::nodes::declarations::FieldDeclaration;
-use crate::parsers::types::type_parser::parse_type_expression;
-use crate::parsers::expressions::expression_parser::parse_expression;
+use crate::parser::nodes::expressions::expression::Expression;
 use crate::parser::parser_helpers::{bws, nom_to_bs};
+use crate::parsers::declarations::modifier_parser::parse_modifiers;
+use crate::parsers::expressions::expression_parser::parse_expression;
+use crate::parsers::identifier_parser::parse_identifier;
+use crate::parsers::types::type_parser::parse_type_expression;
+use nom::{
+    character::complete::char as nom_char,
+    combinator::{map, opt},
+    sequence::preceded,
+};
 
 // Removed local ws helper, using bws from parser_helpers instead
 

@@ -1,4 +1,6 @@
+use crate::parser::errors::BResult;
 use crate::parser::nodes::identifier::Identifier;
+use crate::parser::parser_helpers::{bws, nom_to_bs};
 use nom::{
     branch::alt,
     character::complete::{alpha1, alphanumeric1, char as nom_char},
@@ -6,8 +8,6 @@ use nom::{
     multi::many0,
     sequence::{pair, preceded},
 };
-use crate::parser::errors::BResult;
-use crate::parser::parser_helpers::{bws, nom_to_bs};
 
 // Parse a C# identifier (letters, digits, underscore, but must start with letter or underscore)
 pub fn parse_identifier(input: &str) -> BResult<&str, Identifier> {

@@ -1,6 +1,7 @@
-use serde::{Serialize, Deserialize};
 use crate::parser::nodes::expressions::expression::Expression;
-use crate::parser::nodes::statements::statement::Statement; // Use StatementSyntax from the same directory's mod.rs
+use crate::parser::nodes::statements::statement::Statement;
+use serde::{Deserialize, Serialize};
+// Use StatementSyntax from the same directory's mod.rs
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct IfStatement { 

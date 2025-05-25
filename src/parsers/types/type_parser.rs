@@ -1,48 +1,49 @@
+use crate::parser::errors::BResult;
 use crate::parser::nodes::identifier::Identifier;
+use crate::parser::nodes::types::{PrimitiveType, Type};
+use crate::parser::parser_helpers::{bdelimited, bopt, bseparated_list0, bws, nom_to_bs};
+use crate::parsers::identifier_parser::parse_qualified_name;
 use nom::{
     branch::alt,
-    character::complete::{char as nom_char, multispace0},
     bytes::complete::tag,
+    character::complete::{char as nom_char, multispace0},
+    combinator::map,
     combinator::value,
 };
-use crate::parser::nodes::types::{PrimitiveType, Type};
-use crate::parser::errors::BResult;
-use crate::parser::parser_helpers::{bws, nom_to_bs, bdelimited, bseparated_list0, bopt};
-use crate::parsers::identifier_parser::parse_qualified_name;
 
 // Parse primitive types like int, bool, string
 fn parse_primitive_type(input: &str) -> BResult<&str, Type> {
-    nom_to_bs(alt((
-        // Void type
-        value(Type::Primitive(PrimitiveType::Void), tag::<&str, &str, nom::error::Error<&str>>("void")),
+    alt((
+        // Void type - revert to Type::Primitive(PrimitiveType::Void) for consistency with other tests
+        map(nom_to_bs(tag::<&str, &str, nom::error::Error<&str>>("void")), |_| Type::Primitive(PrimitiveType::Void)),
         
         // Boolean type
-        value(Type::Primitive(PrimitiveType::Bool), tag::<&str, &str, nom::error::Error<&str>>("bool")),
+        map(nom_to_bs(tag::<&str, &str, nom::error::Error<&str>>("bool")), |_| Type::Primitive(PrimitiveType::Bool)),
         
         // Integral types
-        value(Type::Primitive(PrimitiveType::Byte), tag::<&str, &str, nom::error::Error<&str>>("byte")),
-        value(Type::Primitive(PrimitiveType::SByte), tag::<&str, &str, nom::error::Error<&str>>("sbyte")),
-        value(Type::Primitive(PrimitiveType::Short), tag::<&str, &str, nom::error::Error<&str>>("short")),
-        value(Type::Primitive(PrimitiveType::UShort), tag::<&str, &str, nom::error::Error<&str>>("ushort")),
-        value(Type::Primitive(PrimitiveType::Int), tag::<&str, &str, nom::error::Error<&str>>("int")),
-        value(Type::Primitive(PrimitiveType::UInt), tag::<&str, &str, nom::error::Error<&str>>("uint")),
-        value(Type::Primitive(PrimitiveType::Long), tag::<&str, &str, nom::error::Error<&str>>("long")),
-        value(Type::Primitive(PrimitiveType::ULong), tag::<&str, &str, nom::error::Error<&str>>("ulong")),
+        map(nom_to_bs(tag::<&str, &str, nom::error::Error<&str>>("byte")), |_| Type::Primitive(PrimitiveType::Byte)),
+        map(nom_to_bs(tag::<&str, &str, nom::error::Error<&str>>("sbyte")), |_| Type::Primitive(PrimitiveType::SByte)),
+        map(nom_to_bs(tag::<&str, &str, nom::error::Error<&str>>("short")), |_| Type::Primitive(PrimitiveType::Short)),
+        map(nom_to_bs(tag::<&str, &str, nom::error::Error<&str>>("ushort")), |_| Type::Primitive(PrimitiveType::UShort)),
+        map(nom_to_bs(tag::<&str, &str, nom::error::Error<&str>>("int")), |_| Type::Primitive(PrimitiveType::Int)),
+        map(nom_to_bs(tag::<&str, &str, nom::error::Error<&str>>("uint")), |_| Type::Primitive(PrimitiveType::UInt)),
+        map(nom_to_bs(tag::<&str, &str, nom::error::Error<&str>>("long")), |_| Type::Primitive(PrimitiveType::Long)),
+        map(nom_to_bs(tag::<&str, &str, nom::error::Error<&str>>("ulong")), |_| Type::Primitive(PrimitiveType::ULong)),
         
         // Floating-point types
-        value(Type::Primitive(PrimitiveType::Float), tag::<&str, &str, nom::error::Error<&str>>("float")),
-        value(Type::Primitive(PrimitiveType::Double), tag::<&str, &str, nom::error::Error<&str>>("double")),
-        value(Type::Primitive(PrimitiveType::Decimal), tag::<&str, &str, nom::error::Error<&str>>("decimal")),
+        map(nom_to_bs(tag::<&str, &str, nom::error::Error<&str>>("float")), |_| Type::Primitive(PrimitiveType::Float)),
+        map(nom_to_bs(tag::<&str, &str, nom::error::Error<&str>>("double")), |_| Type::Primitive(PrimitiveType::Double)),
+        map(nom_to_bs(tag::<&str, &str, nom::error::Error<&str>>("decimal")), |_| Type::Primitive(PrimitiveType::Decimal)),
         
         // Character and string types
-        value(Type::Primitive(PrimitiveType::Char), tag::<&str, &str, nom::error::Error<&str>>("char")),
-        value(Type::Primitive(PrimitiveType::String), tag::<&str, &str, nom::error::Error<&str>>("string")),
-        value(Type::Primitive(PrimitiveType::Object), tag::<&str, &str, nom::error::Error<&str>>("object")),
+        map(nom_to_bs(tag::<&str, &str, nom::error::Error<&str>>("char")), |_| Type::Primitive(PrimitiveType::Char)),
+        map(nom_to_bs(tag::<&str, &str, nom::error::Error<&str>>("string")), |_| Type::Primitive(PrimitiveType::String)),
+        map(nom_to_bs(tag::<&str, &str, nom::error::Error<&str>>("object")), |_| Type::Primitive(PrimitiveType::Object)),
         
         // Special types
-        value(Type::Dynamic, tag::<&str, &str, nom::error::Error<&str>>("dynamic")),
-        value(Type::Var, tag::<&str, &str, nom::error::Error<&str>>("var")),
-    )))(input)
+        map(nom_to_bs(tag::<&str, &str, nom::error::Error<&str>>("dynamic")), |_| Type::Dynamic),
+        map(nom_to_bs(tag::<&str, &str, nom::error::Error<&str>>("var")), |_| Type::Var),
+    ))(input)
 }
 
 // Parse an identifier (qualified, e.g., System.Console)

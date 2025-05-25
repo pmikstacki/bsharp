@@ -1,9 +1,9 @@
-use serde::{Serialize, Deserialize};
 // Make these re-exports public so other modules (like codegen) can use ast::TypeName
 pub use super::nodes::declarations::{
-    UsingDirective, NamespaceDeclaration, ClassDeclaration, StructDeclaration, RecordDeclaration,
-    InterfaceDeclaration, EnumDeclaration, DelegateDeclaration, // Added DelegateDeclaration
+    ClassDeclaration, DelegateDeclaration, EnumDeclaration, InterfaceDeclaration, NamespaceDeclaration,
+    RecordDeclaration, StructDeclaration, UsingDirective, // Added DelegateDeclaration
 };
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct CompilationUnit {

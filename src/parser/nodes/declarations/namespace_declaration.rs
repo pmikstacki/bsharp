@@ -1,9 +1,9 @@
-use serde::{Serialize, Deserialize};
-use crate::parser::nodes::identifier::Identifier;
 use crate::parser::nodes::declarations::{
-    ClassDeclaration, StructDeclaration, InterfaceDeclaration, EnumDeclaration, DelegateDeclaration, RecordDeclaration, GlobalAttribute, UsingDirective
+    ClassDeclaration, DelegateDeclaration, EnumDeclaration, GlobalAttribute, InterfaceDeclaration, RecordDeclaration, StructDeclaration, UsingDirective
 };
+use crate::parser::nodes::identifier::Identifier;
 use crate::parser::nodes::preprocessor::PreprocessorDirective;
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct NamespaceDeclaration {

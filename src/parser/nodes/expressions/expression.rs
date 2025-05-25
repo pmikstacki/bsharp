@@ -1,13 +1,14 @@
-use serde::{Serialize, Deserialize};
-use crate::parser::nodes::identifier::Identifier;
-use crate::parser::nodes::expressions::BinaryOperator;
-use crate::parser::nodes::expressions::literal::Literal;
-use crate::parser::nodes::expressions::{
-    AssignmentExpression, ConditionalExpression, InvocationExpression, MemberAccessExpression,
-    NewExpression, AnonymousObjectCreationExpression, TupleExpression, Pattern, DeconstructionExpression
-};
-use crate::parser::nodes::expressions::UnaryOperator;
 use crate::parser::nodes::expressions::indexing_expression::IndexingExpression;
+use crate::parser::nodes::expressions::literal::Literal;
+use crate::parser::nodes::expressions::BinaryOperator;
+use crate::parser::nodes::expressions::UnaryOperator;
+use crate::parser::nodes::expressions::{
+    AnonymousMethodExpression, AnonymousObjectCreationExpression, AssignmentExpression, AwaitExpression,
+    ConditionalExpression, DeconstructionExpression, InvocationExpression, LambdaExpression, MemberAccessExpression,
+    NewExpression, Pattern, TupleExpression
+};
+use crate::parser::nodes::identifier::Identifier;
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub enum Expression {
@@ -31,6 +32,9 @@ pub enum Expression {
     },
     This, // Added 'this' keyword expression
     Base, // Added 'base' keyword expression
+    Lambda(Box<LambdaExpression>), // Lambda expressions: x => x * 2
+    AnonymousMethod(Box<AnonymousMethodExpression>), // Anonymous methods: delegate(int x) { return x * 2; }
+    Await(Box<AwaitExpression>), // Await expressions: await SomeMethodAsync()
     // TODO: Add variants for other C# expressions as needed:
-    // e.g., New, Cast, TypeOf, Default, Lambda, Query, etc.
+    // e.g., Cast, TypeOf, Default, Query, etc.
 }

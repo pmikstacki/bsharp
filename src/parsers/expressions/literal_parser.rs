@@ -1,12 +1,12 @@
+use crate::parser::errors::BResult;
+use crate::parser::nodes::expressions::literal::Literal;
 use nom::{
     branch::alt,
-    bytes::complete::{is_not, tag_no_case, escaped_transform},
+    bytes::complete::{escaped_transform, is_not, tag_no_case},
     character::complete::{char as nom_char, digit1, multispace0, none_of},
-    combinator::{map, value, opt, map_res, recognize},
+    combinator::{map, map_res, opt, recognize, value},
     sequence::{delimited, tuple},
 };
-use crate::parser::nodes::expressions::literal::Literal;
-use crate::parser::errors::BResult;
 
 // Helper for optional whitespace
 fn ws<'a, F: 'a, O>(inner: F) -> impl FnMut(&'a str) -> BResult<&'a str, O>

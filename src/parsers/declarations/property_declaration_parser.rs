@@ -1,20 +1,20 @@
-use crate::parser::parser_helpers::{bws, nom_to_bs};
-use nom::bytes::complete::tag_no_case;
+use crate::parser::errors::BResult;
+use crate::parser::nodes::declarations::{PropertyAccessor, PropertyDeclaration};
 use crate::parser::nodes::expressions::expression::Expression;
+use crate::parser::parser_helpers::{bws, nom_to_bs};
+use crate::parsers::declarations::modifier_parser::parse_modifiers_for_decl_type;
+use crate::parsers::expressions::expression_parser::parse_expression;
+use crate::parsers::identifier_parser::parse_identifier;
+use crate::parsers::types::type_parser::parse_type_expression;
+use nom::bytes::complete::tag_no_case;
 use nom::{
     branch::alt,
     bytes::complete::take_until,
     character::complete::{char as nom_char, multispace0},
     combinator::{map, opt},
-    multi::many0, 
+    multi::many0,
     sequence::{delimited, preceded, tuple}, // Keep for internal nom usage if any
 };
-use crate::parser::errors::BResult;
-use crate::parser::nodes::declarations::{PropertyAccessor, PropertyDeclaration}; 
-use crate::parsers::expressions::expression_parser::parse_expression;
-use crate::parsers::identifier_parser::parse_identifier;
-use crate::parsers::types::type_parser::parse_type_expression;
-use crate::parsers::declarations::modifier_parser::parse_modifiers_for_decl_type;
 
 // Parse get accessor
 fn parse_get_accessor(input: &str) -> BResult<&str, PropertyAccessor> {

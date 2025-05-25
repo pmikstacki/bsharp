@@ -1,5 +1,5 @@
-use serde::{Serialize, Deserialize};
 use crate::parser::nodes::identifier::Identifier;
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub enum Variance {

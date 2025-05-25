@@ -1,11 +1,10 @@
 use crate::parser::errors::BResult;
 use crate::parser::nodes::types::Type;
-use crate::parser::parser_helpers::{bws, nom_to_bs, bchar};
+use crate::parser::parser_helpers::{bchar, bws, nom_to_bs};
 use crate::parsers::types::type_parser::parse_type_expression;
 use nom::{
-    character::complete::char as nom_char,
-    multi::separated_list1,
     combinator::opt,
+    multi::separated_list1,
 };
 
 /// Parses a base type list for declarations like classes, structs, interfaces, and records.

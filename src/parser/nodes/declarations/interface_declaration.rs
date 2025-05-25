@@ -1,7 +1,8 @@
-use serde::{Serialize, Deserialize};
+use super::{attribute::AttributeList, modifier::Modifier, InterfaceBodyDeclaration};
 use crate::parser::nodes::identifier::Identifier;
-use crate::parser::nodes::types::{TypeParameter, Type};
-use super::{modifier::Modifier, attribute::AttributeList, InterfaceBodyDeclaration}; // Changed Attribute to AttributeList
+use crate::parser::nodes::types::{Type, TypeParameter};
+use serde::{Deserialize, Serialize};
+// Changed Attribute to AttributeList
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct InterfaceDeclaration {

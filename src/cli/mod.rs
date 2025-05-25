@@ -1,10 +1,10 @@
 pub mod commands;
 
-use clap::{Parser, Subcommand};
 use anyhow::Result;
+use clap::{Parser, Subcommand};
 use std::path::PathBuf;
 
-use self::commands::{parse, tree, compile};
+use self::commands::{compile, parse, tree};
 
 #[derive(Parser)]
 #[command(name = "bsharp")]

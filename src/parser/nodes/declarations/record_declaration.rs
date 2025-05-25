@@ -1,8 +1,8 @@
-use serde::{Serialize, Deserialize};
-use crate::parser::nodes::types::{Type, Parameter};
-use crate::parser::nodes::identifier::Identifier;
-use crate::parser::nodes::declarations::modifier::Modifier;
 use crate::parser::nodes::declarations::attribute::AttributeList;
+use crate::parser::nodes::declarations::modifier::Modifier;
+use crate::parser::nodes::identifier::Identifier;
+use crate::parser::nodes::types::{Parameter, Type};
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct RecordDeclaration {

@@ -1,6 +1,6 @@
+use anyhow::{anyhow, Context, Result};
 use std::fs;
 use std::path::{Path, PathBuf};
-use anyhow::{Result, Context, anyhow};
 
 // Import from containing crate
 use crate::parser;

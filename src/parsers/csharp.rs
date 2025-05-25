@@ -5,15 +5,15 @@ use nom::branch::alt;
 use nom::character::complete::multispace0;
 use nom::combinator::map;
 
-use crate::parser::errors::BResult;
 use crate::parser::ast::{CompilationUnit, TopLevelDeclaration};
+use crate::parser::errors::BResult;
+use crate::parser::nodes::declarations::TypeDeclaration;
 use crate::parser::nodes::declarations::UsingDirective;
 use crate::parser::nodes::identifier::Identifier;
-use crate::parser::parser_helpers::{bchar, keyword, bws};
-use crate::parsers::declarations::type_declaration_parser::parse_type_declaration;
+use crate::parser::parser_helpers::{bchar, bws, keyword};
 use crate::parsers::declarations::namespace_declaration_parser::parse_namespace_declaration;
+use crate::parsers::declarations::type_declaration_parser::parse_type_declaration;
 use crate::parsers::identifier_parser::parse_qualified_name;
-use crate::parser::nodes::declarations::TypeDeclaration;
 
 /// Parse a C# source file following Roslyn's model where a source file contains:
 /// - using directives (imports)

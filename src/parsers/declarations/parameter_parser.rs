@@ -1,11 +1,9 @@
-use nom::{
-    character::complete::char as nom_char,
-};
 use crate::parser::errors::BResult;
 use crate::parser::nodes::types::Parameter;
-use crate::parser::parser_helpers::{bws, nom_to_bs, bseparated_list0};
+use crate::parser::parser_helpers::{bseparated_list0, bws, nom_to_bs};
 use crate::parsers::identifier_parser::parse_identifier;
 use crate::parsers::types::type_parser::parse_type_expression;
+use nom::character::complete::char as nom_char;
 
 // Parse a single parameter
 pub fn parse_parameter(input: &str) -> BResult<&str, Parameter> {

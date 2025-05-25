@@ -1,13 +1,13 @@
 //! Helper utilities for nom parser error conversion to BSharpParseError
 use crate::parser::errors::{BResult, BSharpParseError, CustomErrorKind};
-use nom::{error::ParseError, Err, IResult, Parser};
 use nom::error::Error as NomError;
+use nom::{error::ParseError, Err, IResult, Parser};
 
+use nom::branch;
+use nom::bytes::complete as bytes_complete;
 // Import nom modules we'll use directly
 use nom::character::complete as char_complete;
-use nom::bytes::complete as bytes_complete;
 use nom::sequence;
-use nom::branch;
 //use nom::combinator::value;
 
 // TypeSyntax alias for standard nom error that we'll convert from
@@ -262,6 +262,41 @@ where
                 }
             }
         }
+    }
+}
+
+/// Wrap separated_list1 with explicit error type
+pub fn bseparated_list1<I, O, OSep, F, G>(
+    mut sep: G,
+    mut f: F,
+) -> impl FnMut(I) -> BResult<I, Vec<O>>
+where
+    I: Clone + nom::InputLength + std::fmt::Display + std::fmt::Debug,
+    F: FnMut(I) -> BResult<I, O>,
+    G: FnMut(I) -> BResult<I, OSep>,
+{
+    move |input: I| {
+        let mut results = Vec::new();
+        let (input, first) = f(input)?;
+        results.push(first);
+        
+        let mut current = input;
+        loop {
+            match sep(current.clone()) {
+                Ok((after_sep, _)) => {
+                    match f(after_sep) {
+                        Ok((after_item, item)) => {
+                            results.push(item);
+                            current = after_item;
+                        },
+                        Err(_) => break,
+                    }
+                },
+                Err(_) => break,
+            }
+        }
+        
+        Ok((current, results))
     }
 }
 

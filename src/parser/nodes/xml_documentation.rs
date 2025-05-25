@@ -1,7 +1,8 @@
 // Located at /Users/mikserek/Projects/bsharp/src/parser/nodes/xml_documentation.rs
 
-use crate::parser::nodes::Identifier; // Assuming Identifier is in parser::nodes
-use serde::{Serialize, Deserialize};
+use crate::parser::nodes::Identifier;
+// Assuming Identifier is in parser::nodes
+use serde::{Deserialize, Serialize};
 
 /// Represents an attribute in an XML element (e.g., name="value").
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]

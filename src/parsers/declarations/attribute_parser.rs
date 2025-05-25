@@ -1,15 +1,15 @@
+use crate::parser::errors::BResult;
+use crate::parser::nodes::declarations::attribute::{Attribute, AttributeList};
+use crate::parser::nodes::expressions::expression::Expression;
+use crate::parser::parser_helpers::{bchar, bs_context, bws, nom_to_bs};
+use crate::parsers::expressions::expression_parser::parse_expression;
+use crate::parsers::identifier_parser::parse_identifier;
 use nom::{
     character::complete::{char as nom_char, multispace0},
     combinator::{map, opt},
     multi::{many0, separated_list0},
     sequence::{delimited, terminated, tuple},
 };
-use crate::parser::errors::BResult;
-use crate::parser::nodes::declarations::attribute::{Attribute, AttributeList};
-use crate::parser::nodes::expressions::expression::Expression;
-use crate::parser::parser_helpers::{bws, nom_to_bs, bchar, bs_context};
-use crate::parsers::identifier_parser::parse_identifier;
-use crate::parsers::expressions::expression_parser::parse_expression;
 
 /// Parses an attribute argument which can be any expression
 fn parse_attribute_argument(input: &str) -> BResult<&str, Expression> {

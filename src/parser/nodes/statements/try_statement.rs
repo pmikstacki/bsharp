@@ -1,6 +1,6 @@
-use serde::{Serialize, Deserialize};
 use super::{CatchClause, FinallyClause};
 use crate::parser::nodes::statements::statement::Statement;
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct TryStatement {

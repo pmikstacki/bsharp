@@ -1,8 +1,8 @@
-use serde::{Serialize, Deserialize};
+use crate::parser::nodes::declarations::Modifier;
+use crate::parser::nodes::expressions::expression::Expression;
 use crate::parser::nodes::identifier::Identifier;
 use crate::parser::nodes::types::Type;
-use crate::parser::nodes::expressions::expression::Expression;
-use crate::parser::nodes::declarations::Modifier;
+use serde::{Deserialize, Serialize};
 
 /// Represents a getter or setter accessors for a property
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
