@@ -1,11 +1,14 @@
 use crate::parser::errors::BResult;
-use crate::parser::nodes::expressions::literal::Literal;
+use crate::parser::nodes::expressions::literal::{Literal, InterpolatedStringLiteral, InterpolatedStringPart};
+use crate::parser::nodes::expressions::expression::Expression;
+use crate::parsers::expressions::expression_parser::parse_expression;
 use nom::{
     branch::alt,
-    bytes::complete::{escaped_transform, is_not, tag_no_case},
-    character::complete::{char as nom_char, digit1, multispace0, none_of},
-    combinator::{map, map_res, opt, recognize, value},
-    sequence::{delimited, tuple},
+    bytes::complete::{escaped_transform, is_not, tag, tag_no_case, take_until, take_while1},
+    character::complete::{char as nom_char, digit1, multispace0, none_of, anychar},
+    combinator::{map, map_res, opt, recognize, value, not, peek},
+    sequence::{delimited, tuple, pair, preceded},
+    multi::{many0, many1},
 };
 
 // Helper for optional whitespace
@@ -67,6 +70,90 @@ pub fn parse_string(input: &str) -> BResult<&str, Literal> {
     )(input)
 }
 
+// Parse a verbatim string literal (@"...")
+pub fn parse_verbatim_string(input: &str) -> BResult<&str, Literal> {
+    map(
+        preceded(
+            nom_char('@'),
+            delimited(
+                nom_char('"'),
+                opt(take_until("\"")), // Take everything until closing quote
+                nom_char('"')
+            )
+        ),
+        |opt_s: Option<&str>| Literal::VerbatimString(opt_s.unwrap_or_default().to_string()),
+    )(input)
+}
+
+// Parse a raw string literal ("""text""")
+pub fn parse_raw_string(input: &str) -> BResult<&str, Literal> {
+    map(
+        delimited(
+            tag("\"\"\""),
+            opt(take_until("\"\"\"")), // Take everything until closing triple quote
+            tag("\"\"\"")
+        ),
+        |opt_s: Option<&str>| Literal::RawString(opt_s.unwrap_or_default().to_string()),
+    )(input)
+}
+
+// Parse interpolated string ($"..." or $@"..." or @$"...")
+pub fn parse_interpolated_string(input: &str) -> BResult<&str, Literal> {
+    // Try both $@ and @$ prefixes, as well as just $
+    let (input, is_verbatim) = alt((
+        map(tag("$@"), |_| true),
+        map(tag("@$"), |_| true),
+        map(tag("$"), |_| false),
+    ))(input)?;
+    
+    let (input, parts) = delimited(
+        nom_char('"'),
+        many0(parse_interpolated_part),
+        nom_char('"')
+    )(input)?;
+    
+    Ok((input, Literal::InterpolatedString(InterpolatedStringLiteral {
+        parts,
+        is_verbatim,
+    })))
+}
+
+// Parse a single part of an interpolated string (text or interpolation)
+fn parse_interpolated_part(input: &str) -> BResult<&str, InterpolatedStringPart> {
+    alt((
+        parse_interpolation,
+        parse_interpolated_text,
+    ))(input)
+}
+
+// Parse text part of interpolated string
+fn parse_interpolated_text(input: &str) -> BResult<&str, InterpolatedStringPart> {
+    map(
+        take_while1(|c| c != '{' && c != '"'),
+        |s: &str| InterpolatedStringPart::Text(s.to_string())
+    )(input)
+}
+
+// Parse interpolation part {expression}
+fn parse_interpolation(input: &str) -> BResult<&str, InterpolatedStringPart> {
+    map(
+        delimited(
+            nom_char('{'),
+            tuple((
+                parse_expression,
+                opt(preceded(nom_char(','), parse_expression)), // alignment
+                opt(preceded(nom_char(':'), take_until("}"))), // format string
+            )),
+            nom_char('}')
+        ),
+        |(expression, alignment, format_string)| InterpolatedStringPart::Interpolation {
+            expression,
+            alignment,
+            format_string: format_string.map(|s| s.to_string()),
+        }
+    )(input)
+}
+
 // Parse a char literal (e.g., 'a', '\n')
 pub fn parse_char_literal(input: &str) -> BResult<&str, Literal> {
     map(
@@ -83,10 +170,15 @@ pub fn parse_char_literal(input: &str) -> BResult<&str, Literal> {
 pub fn parse_literal(input: &str) -> BResult<&str, Literal> {
     ws(alt((
         parse_boolean,
+        // null keyword - treat as a special literal
+        map(tag_no_case("null"), |_| Literal::Null),
         // Try float before integer to handle cases like "3.14"
         // which would otherwise be partially parsed as integer "3"
         parse_float,
         parse_integer,
+        parse_interpolated_string, // Try interpolated strings before regular strings
+        parse_verbatim_string,     // Try verbatim strings before regular strings
+        parse_raw_string,          // Try raw strings before regular strings
         parse_string,
         parse_char_literal,
         // Add other literal types here (null, etc.) if needed

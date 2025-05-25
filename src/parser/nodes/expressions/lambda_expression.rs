@@ -1,6 +1,7 @@
 use crate::parser::nodes::expressions::expression::Expression;
 use crate::parser::nodes::identifier::Identifier;
 use crate::parser::nodes::types::Type;
+use crate::parser::nodes::statements::statement::Statement;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
@@ -29,7 +30,7 @@ pub enum LambdaParameterModifier {
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub enum LambdaBody {
     ExpressionSyntax(Expression),
-    Block(Vec<Expression>),
+    Block(Vec<Statement>),
 }
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]

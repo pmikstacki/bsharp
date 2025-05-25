@@ -1,28 +1,36 @@
 use nom::{
     branch::alt,
-    combinator::{map, opt},
+    bytes::complete::tag,
+    character::complete::alpha1,
+    combinator::{map, not, opt, peek},
     multi::separated_list0,
-    sequence::{delimited, tuple},
+    sequence::{delimited, terminated, tuple},
 };
 
 use crate::parser::errors::BResult;
 use crate::parser::nodes::expressions::expression::Expression;
 use crate::parser::nodes::expressions::lambda_expression::{AnonymousMethodExpression, LambdaBody, LambdaExpression, LambdaParameter, LambdaParameterModifier};
-use crate::parser::parser_helpers::{bchar, bs_context, bws, keyword};
+use crate::parser::parser_helpers::{bchar, bs_context, bws, keyword, nom_to_bs};
 use crate::parsers::expressions::expression_parser::parse_expression;
 use crate::parsers::identifier_parser::parse_identifier;
 use crate::parsers::statements::block_statement_parser::parse_block_statement;
 use crate::parsers::types::type_parser::parse_type_expression;
 
+// Helper to ensure we match complete words, not prefixes
+fn word_boundary(input: &str) -> nom::IResult<&str, (), nom::error::Error<&str>> {
+    // Check that the next character is not alphanumeric or underscore, without consuming it
+    peek(not(alpha1))(input)
+}
+
 /// Parse a lambda parameter modifier (ref, out, in)
 fn parse_lambda_parameter_modifier(input: &str) -> BResult<&str, LambdaParameterModifier> {
     bs_context(
         "lambda parameter modifier",
-        alt((
-            map(keyword("ref"), |_| LambdaParameterModifier::Ref),
-            map(keyword("out"), |_| LambdaParameterModifier::Out),
-            map(keyword("in"), |_| LambdaParameterModifier::In),
-        )),
+        nom_to_bs(alt((
+            map(terminated(tag("ref"), word_boundary), |_| LambdaParameterModifier::Ref),
+            map(terminated(tag("out"), word_boundary), |_| LambdaParameterModifier::Out),
+            map(terminated(tag("in"), word_boundary), |_| LambdaParameterModifier::In),
+        ))),
     )(input)
 }
 
@@ -117,10 +125,18 @@ fn parse_lambda_body(input: &str) -> BResult<&str, LambdaBody> {
         "lambda body",
         alt((
             // Block body: { statements... }
-            map(parse_block_statement, |_block| {
-                // Convert Statement::Block to Vec<Expression> - simplified for now
-                // In a real implementation, you'd need proper statement-to-expression conversion
-                LambdaBody::Block(vec![])
+            map(parse_block_statement, |block| {
+                // Extract the statements from the Statement::Block
+                match block {
+                    crate::parser::nodes::statements::statement::Statement::Block(statements) => {
+                        LambdaBody::Block(statements)
+                    }
+                    _ => {
+                        // This shouldn't happen since parse_block_statement should always return Statement::Block,
+                        // but handle it gracefully just in case
+                        LambdaBody::Block(vec![block])
+                    }
+                }
             }),
             // Expression body: expression
             map(parse_expression, |expr| LambdaBody::ExpressionSyntax(expr)),

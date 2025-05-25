@@ -8,20 +8,25 @@ use crate::parser::nodes::expressions::invocation_expression::InvocationExpressi
 use crate::parser::nodes::expressions::literal::Literal;
 use crate::parser::nodes::expressions::member_access_expression::MemberAccessExpression;
 use crate::parser::nodes::expressions::new_expression::NewExpression;
+use crate::parser::nodes::expressions::anonymous_object_creation_expression::{AnonymousObjectCreationExpression, AnonymousObjectMember};
+use crate::parser::nodes::expressions::null_conditional_expression::NullConditionalExpression;
 use crate::parser::nodes::expressions::BinaryOperator;
 use crate::parser::nodes::expressions::UnaryOperator;
 use crate::parser::nodes::identifier::Identifier;
 use crate::parser::parser_helpers::{bchar, bs_context, bws, keyword};
 use crate::parsers::expressions::lambda_expression_parser::parse_lambda_or_anonymous_method;
 use crate::parsers::expressions::literal_parser::parse_literal;
+use crate::parsers::expressions::query_expression_parser::parse_query_expression;
+use crate::parsers::expressions::switch_expression_parser::parse_switch_expression;
 use crate::parsers::identifier_parser::parse_identifier;
 use crate::parsers::types::type_parser::parse_type_expression;
 
 use nom::{
     branch::alt,
-    combinator::{cut, map, opt, recognize},
+    combinator::{map, opt, recognize},
     multi::{separated_list0, separated_list1},
     sequence::{delimited, pair, preceded, tuple},
+    character::complete::multispace0,
 };
 
 /// Parse any expression - the main entry point for expression parsing
@@ -39,6 +44,7 @@ fn parse_assignment_expression_or_higher(input: &str) -> BResult<&str, Expressio
     // Check for assignment operators - order matters, longer operators first
     let (input, assignment_op) = opt(bws(alt((
         // Multi-character assignment operators first
+        map(tuple((bchar('?'), bchar('?'), bchar('='))), |_| BinaryOperator::NullCoalescingAssign),
         map(tuple((bchar('<'), bchar('<'), bchar('='))), |_| BinaryOperator::LeftShiftAssign),
         map(tuple((bchar('>'), bchar('>'), bchar('='))), |_| BinaryOperator::RightShiftAssign),
         map(tuple((bchar('+'), bchar('='))), |_| BinaryOperator::AddAssign),
@@ -72,29 +78,39 @@ fn parse_conditional_expression_or_higher(input: &str) -> BResult<&str, Expressi
     let (input, condition) = parse_null_coalescing_expression_or_higher(input)?;
     
     // Check for ternary operator: condition ? true_expr : false_expr
-    let (input, ternary_result) = opt(tuple((
-        bws(bchar('?')),
-        bws(parse_expression), // true expression
-        bws(bchar(':')),
-        bws(parse_conditional_expression_or_higher), // false expression (right-associative)
-    )))(input)?;
+    // We need to be careful not to consume ?. or ?[ (null-conditional operators)
+    // or ?? (null-coalescing operators)
     
-    if let Some((_, true_expr, _, false_expr)) = ternary_result {
-        Ok((input, Expression::Conditional(Box::new(ConditionalExpression {
-            condition: Box::new(condition),
-            consequence: Box::new(true_expr),
-            alternative: Box::new(false_expr),
-        }))))
-    } else {
-        Ok((input, condition))
+    // First, try to parse whitespace and then ?
+    let (after_ws, _) = multispace0(input)?;
+    
+    // Check if we have a ? that's not followed by . or [ or ?
+    if let Ok((after_q, _)) = bchar('?')(after_ws) {
+        // Use peek to check what comes next without consuming
+        if nom::combinator::peek(nom::combinator::not(alt((bchar('.'), bchar('['), bchar('?')))))(after_q).is_ok() {
+            // It's a ternary operator, not null-conditional or null-coalescing
+            let (input, _) = bws(bchar('?'))(input)?;
+            let (input, true_expr) = bws(parse_expression)(input)?;
+            let (input, _) = bws(bchar(':'))(input)?;
+            let (input, false_expr) = bws(parse_conditional_expression_or_higher)(input)?;
+            
+            return Ok((input, Expression::Conditional(Box::new(ConditionalExpression {
+                condition: Box::new(condition),
+                consequence: Box::new(true_expr),
+                alternative: Box::new(false_expr),
+            }))));
+        }
     }
+    
+    // Not a ternary operator, just return the condition
+    Ok((input, condition))
 }
 
 fn parse_null_coalescing_expression_or_higher(input: &str) -> BResult<&str, Expression> {
     let (mut input, mut left) = parse_logical_or_expression_or_higher(input)?;
     
-    // Handle ?? (null coalescing) - right associative
-    while let Ok((new_input, _)) = bws(recognize(pair(bchar('?'), bchar('?'))))(input) {
+    // Handle ?? (null coalescing) - right associative, but avoid consuming if followed by =
+    while let Ok((new_input, _)) = bws(tuple((bchar('?'), bchar('?'), nom::combinator::not(bchar('=')))))(input) {
         let (new_input, right) = parse_null_coalescing_expression_or_higher(new_input)?;
         left = Expression::Binary {
             left: Box::new(left),
@@ -305,7 +321,9 @@ fn parse_range_expression_or_higher(input: &str) -> BResult<&str, Expression> {
 enum PostfixOpKind { 
     Invocation(Vec<Expression>), 
     MemberAccess(Identifier),
+    NullConditionalMemberAccess(Identifier),
     Indexing(Box<Expression>), 
+    NullConditionalIndexing(Box<Expression>),
     PostfixIncrement,
     PostfixDecrement,
     NullForgiving,
@@ -333,22 +351,26 @@ fn parse_unary_expression_or_higher(input: &str) -> BResult<&str, Expression> {
     // Try await expression (reverted to opt + cut version)
     let (input_after_opt_await, opt_await_keyword) = opt(bws(keyword("await")))(input)?;
     if opt_await_keyword.is_some() {
-        let (input_after_operand, operand) = cut(parse_unary_expression_or_higher)(input_after_opt_await)?;
+        let (input_after_operand, operand) = parse_unary_expression_or_higher(input_after_opt_await)?;
         return Ok((input_after_operand, Expression::Await(Box::new(AwaitExpression {
             expr: Box::new(operand),
         }))));
     }
     
-    // Try cast expression: (Type)expression
-    if let Ok((input, _)) = bws(bchar('('))(input) {
-        // Try to parse as a type
-        if let Ok((input, _ty)) = parse_type_expression(input) {
-            if let Ok((input, _)) = bws(bchar(')'))(input) {
-                let (input, operand) = parse_unary_expression_or_higher(input)?;
-                return Ok((input, Expression::Unary {
-                    op: UnaryOperator::Cast,
-                    expr: Box::new(operand),
-                }));
+    // Try cast expression: (Type)expression - but be more careful to avoid conflicts with parenthesized expressions
+    if let Ok((input_after_paren, _)) = bws(bchar('('))(input) {
+        // Try to parse as a type, but only if it's followed by something that looks like an expression
+        if let Ok((input_after_type, _ty)) = parse_type_expression(input_after_paren) {
+            if let Ok((input_after_close_paren, _)) = bws(bchar(')'))(input_after_type) {
+                // Only treat as cast if there's actually something after the closing parenthesis
+                // that could be an expression (not end of input)
+                if !input_after_close_paren.trim().is_empty() {
+                    let (input, operand) = parse_unary_expression_or_higher(input_after_close_paren)?;
+                    return Ok((input, Expression::Unary {
+                        op: UnaryOperator::Cast,
+                        expr: Box::new(operand),
+                    }));
+                }
             }
         }
     }
@@ -383,6 +405,8 @@ fn parse_postfix_expression_or_higher(input: &str) -> BResult<&str, Expression> 
     loop {
         // Try to parse various postfix operations
         if let Ok((new_input, op)) = bws(alt((
+            // Null-conditional member access: ?.member
+            map(preceded(tuple((bchar('?'), bchar('.'))), bws(parse_identifier)), |id| PostfixOpKind::NullConditionalMemberAccess(id)),
             // Member access: .member
             map(preceded(bchar('.'), bws(parse_identifier)), |id| PostfixOpKind::MemberAccess(id)),
             // Method call: (args...)
@@ -393,6 +417,14 @@ fn parse_postfix_expression_or_higher(input: &str) -> BResult<&str, Expression> 
                     bws(bchar(')'))
                 ),
                 |args| PostfixOpKind::Invocation(args)
+            ),
+            // Null-conditional indexing: ?[index]
+            map(
+                preceded(
+                    bchar('?'),
+                    delimited(bchar('['), bws(parse_expression), bws(bchar(']')))
+                ),
+                |index| PostfixOpKind::NullConditionalIndexing(Box::new(index))
             ),
             // Array indexing: [index]
             map(
@@ -412,6 +444,12 @@ fn parse_postfix_expression_or_higher(input: &str) -> BResult<&str, Expression> 
                     object: Box::new(expr),
                     member,
                 })),
+                PostfixOpKind::NullConditionalMemberAccess(member) => Expression::NullConditional(Box::new(NullConditionalExpression {
+                    target: Box::new(expr),
+                    member,
+                    is_element_access: false,
+                    argument: None,
+                })),
                 PostfixOpKind::Invocation(args) => Expression::Invocation(Box::new(InvocationExpression {
                     callee: Box::new(expr),
                     arguments: args,
@@ -419,6 +457,12 @@ fn parse_postfix_expression_or_higher(input: &str) -> BResult<&str, Expression> 
                 PostfixOpKind::Indexing(index) => Expression::Indexing(Box::new(IndexingExpression {
                     target: Box::new(expr),
                     index,
+                })),
+                PostfixOpKind::NullConditionalIndexing(index) => Expression::NullConditional(Box::new(NullConditionalExpression {
+                    target: Box::new(expr),
+                    member: Identifier::new(""), // Empty for indexing
+                    is_element_access: true,
+                    argument: Some(index),
                 })),
                 PostfixOpKind::PostfixIncrement => Expression::PostfixUnary {
                     op: UnaryOperator::Increment,
@@ -447,6 +491,10 @@ fn parse_primary_expression(input: &str) -> BResult<&str, Expression> {
     bs_context(
         "primary expression",
         alt((
+            // LINQ Query expressions - must come before variables/identifiers
+            parse_query_expression,
+            // Switch expressions - must come before variables/identifiers  
+            parse_switch_expression,
             // Literals
             map(parse_literal, |lit| Expression::Literal(lit)),
             // this keyword
@@ -459,6 +507,8 @@ fn parse_primary_expression(input: &str) -> BResult<&str, Expression> {
             parse_lambda_or_anonymous_method,
             // Variables/identifiers
             map(parse_identifier, |id| Expression::Variable(id)),
+            // Anonymous object creation
+            parse_anonymous_object_creation,
         )),
     )(input)
 }
@@ -529,4 +579,49 @@ fn parse_initializer(input: &str) -> BResult<&str, InitializerKind> {
         )),
         bws(bchar('}'))
     )(input)
+}
+
+fn parse_anonymous_object_creation(input: &str) -> BResult<&str, Expression> {
+    map(
+        preceded(
+            keyword("new"),
+            bs_context(
+                "anonymous object creation",
+                delimited(
+                    bws(bchar('{')),
+                    separated_list0(bws(bchar(',')), bws(parse_anonymous_object_member)),
+                    bws(bchar('}'))
+                ),
+            )
+        ),
+        |members| Expression::AnonymousObject(AnonymousObjectCreationExpression {
+            initializers: members,
+        })
+    )(input)
+}
+
+fn parse_anonymous_object_member(input: &str) -> BResult<&str, AnonymousObjectMember> {
+    // Handle both explicit (Name = value) and implicit (expression) initializers
+    alt((
+        // Explicit initializer: Name = value
+        map(
+            tuple((
+                bws(parse_identifier),
+                bws(bchar('=')),
+                bws(parse_expression),
+            )),
+            |(name, _, value)| AnonymousObjectMember {
+                name: Some(name),
+                value,
+            }
+        ),
+        // Implicit initializer: just an expression (for projection)
+        map(
+            bws(parse_expression),
+            |value| AnonymousObjectMember {
+                name: None,
+                value,
+            }
+        ),
+    ))(input)
 }

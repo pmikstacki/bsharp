@@ -5,7 +5,7 @@ use crate::parser::nodes::expressions::UnaryOperator;
 use crate::parser::nodes::expressions::{
     AnonymousMethodExpression, AnonymousObjectCreationExpression, AssignmentExpression, AwaitExpression,
     ConditionalExpression, DeconstructionExpression, InvocationExpression, LambdaExpression, MemberAccessExpression,
-    NewExpression, Pattern, TupleExpression
+    NewExpression, NullConditionalExpression, Pattern, TupleExpression, QueryExpression
 };
 use crate::parser::nodes::identifier::Identifier;
 use serde::{Deserialize, Serialize};
@@ -19,6 +19,7 @@ pub enum Expression {
     Conditional(Box<ConditionalExpression>),
     New(Box<NewExpression>),
     MemberAccess(Box<MemberAccessExpression>),
+    NullConditional(Box<NullConditionalExpression>),
     Invocation(Box<InvocationExpression>),
     Assignment(Box<AssignmentExpression>),
     Literal(Literal),
@@ -35,6 +36,29 @@ pub enum Expression {
     Lambda(Box<LambdaExpression>), // Lambda expressions: x => x * 2
     AnonymousMethod(Box<AnonymousMethodExpression>), // Anonymous methods: delegate(int x) { return x * 2; }
     Await(Box<AwaitExpression>), // Await expressions: await SomeMethodAsync()
+    Query(Box<QueryExpression>), // LINQ query expressions: from x in collection select x
+    SwitchExpression(Box<SwitchExpression>), // Switch expressions: x switch { 1 => "one", _ => "other" }
+    IsPattern { 
+        expression: Box<Expression>, 
+        pattern: Box<Pattern> 
+    }, // Pattern matching: x is int y
+    Cast { 
+        expression: Box<Expression>, 
+        target_type: crate::parser::nodes::types::Type 
+    }, // Type casting: (int)x
     // TODO: Add variants for other C# expressions as needed:
-    // e.g., Cast, TypeOf, Default, Query, etc.
+    // e.g., TypeOf, Default, etc.
+}
+
+#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+pub struct SwitchExpression {
+    pub expression: Expression,
+    pub arms: Vec<SwitchExpressionArm>,
+}
+
+#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+pub struct SwitchExpressionArm {
+    pub pattern: Pattern,
+    pub when_clause: Option<Expression>,
+    pub expression: Expression,
 }

@@ -1,8 +1,11 @@
-pub mod literal_parser;
 pub mod expression_parser;
-pub mod primary_parser; // Added for primary expressions
-pub mod lambda_expression_parser; // Added for lambda expressions
-pub mod await_expression_parser; // Added for await expressions
+pub mod literal_parser;
+pub mod primary_parser;
+pub mod lambda_expression_parser;
+pub mod await_expression_parser;
+pub mod query_expression_parser;
+pub mod pattern_parser;
+pub mod switch_expression_parser;
 
 pub use expression_parser::parse_expression;
 // Re-export key parser functions

@@ -15,6 +15,12 @@ pub enum Type {
     Void, // void keyword
     ImplicitArray, // For implicitly typed arrays like new[] { ... }
     Var, // For 'var' keyword used in implicitly typed local variables
+    FunctionPointer {
+        calling_convention: Option<String>, // "managed", "unmanaged", etc.
+        parameter_types: Vec<Type>,
+        return_type: Box<Type>,
+    },
+    NullableReference(Box<Type>), // C# 8+ nullable reference types (string?)
 }
 
 // Helper functions can be added here, e.g., for checking type compatibility

@@ -140,3 +140,48 @@ fn test_assignment_associativity() {
     let (_, actual) = parse_expression(code).unwrap();
     assert_eq!(actual, expected);
 }
+
+#[test]
+fn test_null_coalescing_assignment_expression() {
+    let input = "x ??= 42";
+    let expected = Expression::Assignment(Box::new(AssignmentExpression {
+        target: Box::new(Expression::Variable(Identifier { name: "x".to_string() })),
+        op: BinaryOperator::NullCoalescingAssign,
+        value: Box::new(Expression::Literal(Literal::Integer(42))),
+    }));
+    let (_, actual) = parse_expression(input).unwrap();
+    assert_eq!(actual, expected);
+}
+
+#[test]
+fn test_null_coalescing_assignment_chain() {
+    let input = "a ??= b ??= c";
+    let expected = Expression::Assignment(Box::new(AssignmentExpression {
+        target: Box::new(Expression::Variable(Identifier { name: "a".to_string() })),
+        op: BinaryOperator::NullCoalescingAssign,
+        value: Box::new(Expression::Assignment(Box::new(AssignmentExpression {
+            target: Box::new(Expression::Variable(Identifier { name: "b".to_string() })),
+            op: BinaryOperator::NullCoalescingAssign,
+            value: Box::new(Expression::Variable(Identifier { name: "c".to_string() })),
+        }))),
+    }));
+    let (_, actual) = parse_expression(input).unwrap();
+    assert_eq!(actual, expected);
+}
+
+#[test]
+fn test_null_coalescing_vs_null_coalescing_assignment() {
+    // Test that ?? and ??= are parsed correctly and don't interfere with each other
+    let input = "result = x ?? y";
+    let expected = Expression::Assignment(Box::new(AssignmentExpression {
+        target: Box::new(Expression::Variable(Identifier { name: "result".to_string() })),
+        op: BinaryOperator::Assign,
+        value: Box::new(Expression::Binary {
+            left: Box::new(Expression::Variable(Identifier { name: "x".to_string() })),
+            op: BinaryOperator::NullCoalescing,
+            right: Box::new(Expression::Variable(Identifier { name: "y".to_string() })),
+        }),
+    }));
+    let (_, actual) = parse_expression(input).unwrap();
+    assert_eq!(actual, expected);
+}
