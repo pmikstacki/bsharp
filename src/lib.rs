@@ -10,7 +10,3 @@ pub mod codegen;
 pub mod compiler;
 pub mod parsers;
 pub mod cli; // Export the CLI module
-
-#[cfg(test)]
-mod tests {
-}

@@ -1,7 +1,7 @@
 #![cfg(test)]
-use crate::parsers::declarations::attribute_parser::*;
-use crate::parser::nodes::expressions::expression::Expression;
-use crate::parser::nodes::expressions::literal::Literal;
+use bsharp::parsers::declarations::attribute_parser::*;
+use bsharp::parser::nodes::expressions::expression::Expression;
+use bsharp::parser::nodes::expressions::literal::Literal;
 
 #[test]
 fn test_single_attribute_no_args() {

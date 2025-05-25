@@ -37,8 +37,8 @@ fn test_parse_command_creates_valid_json() -> Result<()> {
         assert!(json_result.is_object(), "JSON output is not a valid object");
         
         // Verify basic structure of the AST JSON
-        assert!(json_result.get("usings").is_some(), "JSON missing 'usings' field");
-        assert!(json_result.get("members").is_some(), "JSON missing 'members' field");
+        assert!(json_result.get("using_directives").is_some(), "JSON missing 'using_directives' field");
+        assert!(json_result.get("declarations").is_some(), "JSON missing 'declarations' field");
     }
     
     // Clean up temporary files

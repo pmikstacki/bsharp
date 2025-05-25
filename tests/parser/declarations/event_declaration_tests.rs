@@ -1,22 +1,86 @@
 // Tests for parsing event declarations
 
-use bsharp::parser::nodes::declarations::EventDeclaration;
-use bsharp::parser::nodes::identifier::Identifier;
+use bsharp::parsers::declarations::event_declaration_parser::parse_event_declaration;
+use bsharp::parser::nodes::declarations::Modifier;
 
-fn parse_event_declaration(code: &str) -> Result<EventDeclaration, String> {
-    Err(format!("Parser not yet implemented: {}", code))
+#[test]
+fn test_simple_event() {
+    let input = "public event EventHandler MyEvent;";
+    let (rest, event) = parse_event_declaration(input).unwrap();
+    assert_eq!(rest, "");
+    assert_eq!(event.name.name, "MyEvent");
+    assert_eq!(event.modifiers.len(), 1);
+    assert_eq!(event.modifiers[0], Modifier::Public);
+    assert!(event.accessor_list.is_none());
 }
 
 #[test]
-fn test_parse_simple_event() {
-    let code = "public event EventHandler MyEvent;";
-    let expected = EventDeclaration {
-        attributes: vec![],
-        modifiers: vec!["public".to_string()],
-        ty: todo!("TypeSyntax representation here"), // Replace with actual type
-        name: Identifier { name: "MyEvent".to_string() },
-        accessor_list: todo!("Accessor list here"), // Replace with actual accessor list
-    };
-    // assert_eq!(parse_event_declaration(code), Ok(expected));
-    assert!(parse_event_declaration(code).is_err());
+fn test_event_with_accessors() {
+    let input = "public event EventHandler MyEvent { add; remove; }";
+    let (rest, event) = parse_event_declaration(input).unwrap();
+    assert_eq!(rest, "");
+    assert_eq!(event.name.name, "MyEvent");
+    assert!(event.accessor_list.is_some());
+    let accessors = event.accessor_list.unwrap();
+    assert!(accessors.add_accessor.is_some());
+    assert!(accessors.remove_accessor.is_some());
+    
+    // Check that both accessors have no body (semicolon style)
+    assert!(accessors.add_accessor.unwrap().body.is_none());
+    assert!(accessors.remove_accessor.unwrap().body.is_none());
+}
+
+#[test]
+fn test_static_event() {
+    let input = "public static event EventHandler StaticEvent;";
+    let (rest, event) = parse_event_declaration(input).unwrap();
+    assert_eq!(rest, "");
+    assert_eq!(event.name.name, "StaticEvent");
+    assert_eq!(event.modifiers.len(), 2);
+    assert!(event.modifiers.contains(&Modifier::Public));
+    assert!(event.modifiers.contains(&Modifier::Static));
+}
+
+#[test]
+fn test_virtual_event() {
+    let input = "protected virtual event EventHandler VirtualEvent;";
+    let (rest, event) = parse_event_declaration(input).unwrap();
+    assert_eq!(rest, "");
+    assert_eq!(event.name.name, "VirtualEvent");
+    assert_eq!(event.modifiers.len(), 2);
+    assert!(event.modifiers.contains(&Modifier::Protected));
+    assert!(event.modifiers.contains(&Modifier::Virtual));
+}
+
+#[test]
+fn test_event_with_attributes() {
+    let input = "[Obsolete] public event EventHandler AttributedEvent;";
+    let (rest, event) = parse_event_declaration(input).unwrap();
+    assert_eq!(rest, "");
+    assert_eq!(event.name.name, "AttributedEvent");
+    assert_eq!(event.attributes.len(), 1);
+    assert_eq!(event.attributes[0].attributes.len(), 1);
+    assert_eq!(event.attributes[0].attributes[0].name.name, "Obsolete");
+}
+
+#[test]
+fn test_abstract_event() {
+    let input = "public abstract event EventHandler AbstractEvent;";
+    let (rest, event) = parse_event_declaration(input).unwrap();
+    assert_eq!(rest, "");
+    assert_eq!(event.name.name, "AbstractEvent");
+    assert_eq!(event.modifiers.len(), 2);
+    assert!(event.modifiers.contains(&Modifier::Public));
+    assert!(event.modifiers.contains(&Modifier::Abstract));
+}
+
+#[test]
+fn test_override_event() {
+    let input = "public override event EventHandler OverrideEvent;";
+    let (rest, event) = parse_event_declaration(input).unwrap();
+    assert_eq!(rest, "");
+    assert_eq!(event.name.name, "OverrideEvent");
+    assert_eq!(event.modifiers.len(), 2);
+    assert!(event.modifiers.contains(&Modifier::Public));
+    assert!(event.modifiers.contains(&Modifier::Override));
 }

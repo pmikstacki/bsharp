@@ -1,7 +1,7 @@
 use serde::{Serialize, Deserialize};
 use crate::parser::nodes::identifier::Identifier;
 use crate::parser::nodes::types::{TypeParameter, Type, Parameter}; // Need Parameter too
-use super::{AttributeList, Modifier};
+use super::{AttributeList, Modifier, TypeParameterConstraintClause};
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct DelegateDeclaration {
@@ -11,5 +11,5 @@ pub struct DelegateDeclaration {
     pub name: Identifier,
     pub type_parameters: Vec<TypeParameter>,
     pub parameters: Vec<Parameter>,
-    // TODO: Add constraints
+    pub constraints: Option<Vec<TypeParameterConstraintClause>>,
 }

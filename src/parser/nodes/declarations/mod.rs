@@ -33,7 +33,7 @@ pub use property_declaration::{PropertyDeclaration, PropertyAccessor};
 pub use local_variable_declaration::LocalVariableDeclaration;
 pub use using_directive::UsingDirective;
 pub use namespace_declaration::{NamespaceDeclaration, NamespaceBodyDeclaration};
-pub use event_declaration::{EventDeclaration, EventAccessorList};
+pub use event_declaration::{EventDeclaration, EventAccessorList, EventAccessor};
 pub use indexer_declaration::{IndexerDeclaration, IndexerAccessorList};
 pub use operator_declaration::{OperatorDeclaration, OperatorKind, ConversionKind};
 pub use constructor_declaration::ConstructorDeclaration;

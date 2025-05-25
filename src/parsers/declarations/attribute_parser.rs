@@ -1,13 +1,13 @@
 use nom::{
     character::complete::{char as nom_char, multispace0},
-    combinator::opt,
+    combinator::{map, opt},
     multi::{many0, separated_list0},
-    sequence::{delimited, terminated},
+    sequence::{delimited, terminated, tuple},
 };
 use crate::parser::errors::BResult;
 use crate::parser::nodes::declarations::attribute::{Attribute, AttributeList};
 use crate::parser::nodes::expressions::expression::Expression;
-use crate::parser::parser_helpers::{bws, nom_to_bs};
+use crate::parser::parser_helpers::{bws, nom_to_bs, bchar, bs_context};
 use crate::parsers::identifier_parser::parse_identifier;
 use crate::parsers::expressions::expression_parser::parse_expression;
 
@@ -60,79 +60,48 @@ pub fn parse_attribute_lists(input: &str) -> BResult<&str, Vec<AttributeList>> {
     many0(terminated(nom_to_bs(parse_attribute_group), multispace0))(input)
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use crate::parser::nodes::expressions::expression::Expression;
-    use crate::parser::nodes::expressions::literal::Literal;
-    
-    #[test]
-    fn test_single_attribute_no_args() {
-        let input = "[Serializable]";
-        let (rest, lists) = parse_attribute_lists(input).unwrap();
-        assert_eq!(rest, "");
-        assert_eq!(lists.len(), 1);
-        assert_eq!(lists[0].attributes.len(), 1);
-        assert_eq!(lists[0].attributes[0].name.name, "Serializable");
-        assert!(lists[0].attributes[0].arguments.is_empty());
-    }
-    
-    #[test]
-    fn test_multiple_attribute_lists() {
-        let input = "[Serializable] [DataContract] class";
-        let (rest, lists) = parse_attribute_lists(input).unwrap();
-        assert_eq!(rest, "class");
-        assert_eq!(lists.len(), 2);
-        assert_eq!(lists[0].attributes[0].name.name, "Serializable");
-        assert_eq!(lists[1].attributes[0].name.name, "DataContract");
-    }
-    
-    #[test]
-    fn test_attribute_with_argument() {
-        let input = "[DataMember(1)]";
-        let (rest, lists) = parse_attribute_lists(input).unwrap();
-        assert_eq!(rest, "");
-        assert_eq!(lists.len(), 1);
-        assert_eq!(lists[0].attributes[0].name.name, "DataMember");
-        assert_eq!(lists[0].attributes[0].arguments.len(), 1);
-        
-        // Verify the argument is a literal with value 1
-        if let Expression::Literal(Literal::Integer(val)) = &lists[0].attributes[0].arguments[0] {
-            assert_eq!(*val, 1);
-        } else {
-            panic!("Expected integer literal");
-        }
-    }
-    
-    #[test]
-    fn test_attribute_with_named_argument() {
-        let _input = "[DataMember(Name = \"firstName\")]";
-        // Further assertions would go here if we were testing the output
-    }
-    
-    #[test]
-    fn test_empty_attribute_list() {
-        // No attributes in source code
-        let input = "public class MyClass {}";
-        let (rest, lists) = parse_attribute_lists(input).unwrap();
-        assert_eq!(rest, "public class MyClass {}");
-        assert!(lists.is_empty());
-    }
-    
-    #[test]
-    fn test_multiple_attributes_in_one_list() {
-        let input = "[Serializable, DataContract]";
-        let (rest, lists) = parse_attribute_lists(input).unwrap();
-        assert_eq!(rest, "");
-        assert_eq!(lists.len(), 1);
-        assert_eq!(lists[0].attributes.len(), 2);
-        assert_eq!(lists[0].attributes[0].name.name, "Serializable");
-        assert_eq!(lists[0].attributes[1].name.name, "DataContract");
-    }
-    
-    #[test]
-    fn test_complex_attribute_with_multiple_arguments() {
-        let _input = "[DebuggerDisplay(\"Count = {Count}\", Type = \"MyType\")]";
-        // Further assertions for complex attributes
-    }
+// Parse a single attribute: MyAttribute or MyAttribute(arg1, arg2)
+pub fn parse_attribute(input: &str) -> BResult<&str, Attribute> {
+    bs_context(
+        "attribute",
+        map(
+            tuple((
+                // Attribute name
+                parse_identifier,
+                // Optional argument list
+                opt(delimited(
+                    bws(bchar('(')),
+                    separated_list0(bws(bchar(',')), bws(parse_expression)),
+                    bws(bchar(')')),
+                )),
+            )),
+            |(name, arguments)| Attribute {
+                name,
+                arguments: arguments.unwrap_or_default(),
+            },
+        ),
+    )(input)
+}
+
+// Parse a single attribute list: [Attr1, Attr2]
+pub fn parse_attribute_list(input: &str) -> BResult<&str, AttributeList> {
+    bs_context(
+        "attribute list",
+        map(
+            delimited(
+                bws(bchar('[')),
+                separated_list0(bws(bchar(',')), bws(parse_attribute)),
+                bws(bchar(']')),
+            ),
+            |attributes| AttributeList { attributes },
+        ),
+    )(input)
+}
+
+// Parse multiple attribute lists: [Attr1] [Attr2] [Attr3, Attr4]
+pub fn parse_attribute_lists_new(input: &str) -> BResult<&str, Vec<AttributeList>> {
+    bs_context(
+        "attribute lists",
+        many0(bws(parse_attribute_list)),
+    )(input)
 }

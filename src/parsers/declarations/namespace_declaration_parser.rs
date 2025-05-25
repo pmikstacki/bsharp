@@ -67,7 +67,7 @@ pub fn parse_namespace_declaration(input: &str) -> BResult<&str, NamespaceDeclar
     Ok((input, NamespaceDeclaration {
         name: Identifier { name: name_str },
         using_directives: vec![], // Namespaces in C# don't directly contain 'using' directives in their body
-        declarations: vec![], // Stub for parsing namespace members - replace with actual member parsers
+        declarations: members, // Use the actual parsed members instead of empty vector
     }))
 }
 
@@ -77,38 +77,3 @@ pub fn parse_namespace_declaration(input: &str) -> BResult<&str, NamespaceDeclar
 //     // For now, let's assume it consumes nothing and returns a dummy member or an error.
 //     Err(nom::Err::Error(crate::parser::errors::BSharpParseError::new(input, crate::parser::errors::CustomErrorKind::NotYetImplemented("NamespaceBodyDeclaration"))))
 // }
-
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    
-    // Local test helper to avoid import issues
-    fn parse_full_input<'a, O, F>(input: &'a str, parser: F) -> Result<(&'a str, O), String>
-    where
-        F: FnOnce(&'a str) -> crate::parser::errors::BResult<&'a str, O>,
-    {
-        match parser(input) {
-            Ok((remaining, result)) => Ok((remaining, result)),
-            Err(err) => Err(format!("Parse error: {:?}", err)),
-        }
-    }
-
-    #[test]
-    fn test_simple_namespace_declaration() {
-        let input = "namespace MyNamespace { }";
-        let result = parse_full_input(input, parse_namespace_declaration);
-        assert!(result.is_ok());
-        let (_remaining, decl) = result.unwrap();
-        assert_eq!(decl.name.name, "MyNamespace");
-    }
-
-    #[test]
-    fn test_qualified_namespace_declaration() {
-        let input = "namespace System.Collections { }";
-        let result = parse_full_input(input, parse_namespace_declaration);
-        assert!(result.is_ok());
-        let (_remaining, decl) = result.unwrap();
-        assert_eq!(decl.name.name, "System.Collections");
-    }
-}

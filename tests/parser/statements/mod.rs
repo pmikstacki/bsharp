@@ -1,11 +1,12 @@
-// Declare all statement test modules
-
+// Declare the test modules in this directory
+mod statement_tests;
 mod block_statement_tests;
 mod break_statement_tests;
 mod catch_clause_tests;
 mod checked_statement_tests;
 mod continue_statement_tests;
 mod do_while_statement_tests;
+mod empty_statement_tests;
 mod expression_statement_tests;
 mod finally_clause_tests;
 mod fixed_statement_tests;
@@ -19,7 +20,6 @@ mod label_statement_tests;
 mod local_declaration_statement_tests;
 mod lock_statement_tests;
 mod return_statement_tests;
-mod statement_tests;
 mod switch_label_tests;
 mod switch_section_tests;
 mod switch_statement_tests;

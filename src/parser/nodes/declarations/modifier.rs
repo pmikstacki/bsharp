@@ -191,6 +191,18 @@ impl Modifier {
             "constructor" => vec![
                 Modifier::Public, Modifier::Private, Modifier::Protected, Modifier::Internal, Modifier::Static,
             ],
+            "delegate" => vec![
+                Modifier::Public, Modifier::Private, Modifier::Protected, Modifier::Internal,
+                Modifier::New, Modifier::Unsafe,
+            ],
+            "event" => vec![
+                Modifier::Public, Modifier::Private, Modifier::Protected, Modifier::Internal,
+                Modifier::Static, Modifier::Abstract, Modifier::Virtual, Modifier::Override,
+                Modifier::New, Modifier::Sealed,
+            ],
+            "event_accessor" => vec![
+                // Event accessors typically don't have modifiers
+            ],
             _ => Vec::new(),
         }
     }

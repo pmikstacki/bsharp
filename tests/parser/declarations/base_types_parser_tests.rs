@@ -1,7 +1,7 @@
 #![cfg(test)]
-use crate::parsers::declarations::base_types_parser::*;
-use crate::parser::nodes::identifier::Identifier;
-use crate::parser::nodes::types::Type;
+use bsharp::parsers::declarations::base_types_parser::*;
+use bsharp::parser::nodes::identifier::Identifier;
+use bsharp::parser::nodes::types::Type;
 
 #[test]
 fn test_no_base_types() {

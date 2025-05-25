@@ -159,3 +159,66 @@ fn test_parse_local_variable_declaration_const_modifier() {
         }),
     );
 }
+
+#[test]
+fn test_parse_local_variable_declaration_var_with_new_expression() {
+    assert_statement_parses(
+        "var list = new List<string>();",
+        Statement::Declaration(LocalVariableDeclaration {
+            is_const: false,
+            ty: Type::Var,
+            declarators: vec![
+                VariableDeclarator {
+                    name: Identifier { name: "list".to_string() },
+                    initializer: Some(Expression::New(Box::new(NewExpression {
+                        ty: Type::Generic {
+                            base: Identifier { name: "List".to_string() },
+                            args: vec![Type::Primitive(PrimitiveType::String)],
+                        },
+                        arguments: vec![],
+                        object_initializer: None,
+                        collection_initializer: None,
+                    }))),
+                }
+            ],
+        }),
+    );
+}
+
+#[test]
+fn test_parse_local_variable_declaration_var_with_numeric_literal() {
+    assert_statement_parses(
+        "var count = 42;",
+        Statement::Declaration(LocalVariableDeclaration {
+            is_const: false,
+            ty: Type::Var,
+            declarators: vec![
+                VariableDeclarator {
+                    name: Identifier { name: "count".to_string() },
+                    initializer: Some(Expression::Literal(Literal::Integer(42))),
+                }
+            ],
+        }),
+    );
+}
+
+#[test]
+fn test_parse_local_variable_declaration_var_multiple_declarators() {
+    assert_statement_parses(
+        "var x = 1, y = 2;",
+        Statement::Declaration(LocalVariableDeclaration {
+            is_const: false,
+            ty: Type::Var,
+            declarators: vec![
+                VariableDeclarator {
+                    name: Identifier { name: "x".to_string() },
+                    initializer: Some(Expression::Literal(Literal::Integer(1))),
+                },
+                VariableDeclarator {
+                    name: Identifier { name: "y".to_string() },
+                    initializer: Some(Expression::Literal(Literal::Integer(2))),
+                },
+            ],
+        }),
+    );
+}

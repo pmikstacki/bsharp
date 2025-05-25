@@ -1,319 +1,304 @@
-use nom::{
-    branch::alt,
-    character::complete::{multispace0, char as bchar}, 
-    combinator::{map, opt},
-    multi::{fold_many0, separated_list0},
-    sequence::{preceded, tuple, delimited},
-};
-
-use crate::parser::errors::{BResult, BSharpParseError};
+use crate::parser::errors::BResult;
+use crate::parser::nodes::expressions::expression::Expression;
+use crate::parser::nodes::expressions::literal::Literal;
+use crate::parser::nodes::expressions::new_expression::NewExpression;
 use crate::parser::nodes::expressions::assignment_expression::AssignmentExpression;
 use crate::parser::nodes::expressions::conditional_expression::ConditionalExpression;
-use crate::parser::nodes::expressions::expression::Expression;
-use crate::parser::nodes::expressions::indexing_expression::IndexingExpression;
-use crate::parser::nodes::expressions::invocation_expression::InvocationExpression;
 use crate::parser::nodes::expressions::member_access_expression::MemberAccessExpression;
-use crate::parser::nodes::expressions::NewExpression;
-use crate::parser::nodes::expressions::{BinaryOperator, UnaryOperator};
+use crate::parser::nodes::expressions::invocation_expression::InvocationExpression;
+use crate::parser::nodes::expressions::indexing_expression::IndexingExpression;
+use crate::parser::nodes::expressions::BinaryOperator;
+use crate::parser::nodes::expressions::UnaryOperator;
 use crate::parser::nodes::identifier::Identifier;
-use crate::parser::parser_helpers::{keyword, bws};
-
-use crate::parsers::identifier_parser::parse_identifier;
+use crate::parser::parser_helpers::{bchar, bs_context, bws, keyword};
 use crate::parsers::expressions::literal_parser::parse_literal;
+use crate::parsers::identifier_parser::parse_identifier;
 use crate::parsers::types::type_parser::parse_type_expression;
 
-/// Parses a C# expression.
-/// This is the main entry point for parsing expressions.
+use nom::{
+    combinator::{map, opt, recognize},
+    multi::separated_list0,
+    sequence::{delimited, pair, preceded, tuple},
+    branch::alt,
+};
+
+/// Parse any expression - the main entry point for expression parsing
 pub fn parse_expression(input: &str) -> BResult<&str, Expression> {
-    // Start with the lowest precedence level (assignment or lambda expressions)
-    parse_assignment_expression_or_higher(input)
+    bs_context(
+        "expression",
+        parse_assignment_expression_or_higher,
+    )(input)
 }
 
-// Level 16: Assignment, Compound Assignment, Null-Coalescing Assignment, Lambda
 fn parse_assignment_expression_or_higher(input: &str) -> BResult<&str, Expression> {
-    // TODO: Handle lambdas here as well, as they have the lowest precedence along with assignments.
-    // Assignment is right-associative: a = b = c  is a = (b = c)
-    // Try parsing a conditional expression first (LHS of a potential assignment)
-    let (i, lhs) = parse_conditional_expression_or_higher(input)?;
-
-    // Check for an assignment operator
-    let assign_op_parser = alt((
+    // Try to parse a conditional expression first
+    let (input, left) = parse_conditional_expression_or_higher(input)?;
+    
+    // Check for assignment operators - order matters, longer operators first
+    let (input, assignment_op) = opt(bws(alt((
+        // Multi-character assignment operators first
+        map(tuple((bchar('<'), bchar('<'), bchar('='))), |_| BinaryOperator::LeftShiftAssign),
+        map(tuple((bchar('>'), bchar('>'), bchar('='))), |_| BinaryOperator::RightShiftAssign),
+        map(tuple((bchar('+'), bchar('='))), |_| BinaryOperator::AddAssign),
+        map(tuple((bchar('-'), bchar('='))), |_| BinaryOperator::SubtractAssign),
+        map(tuple((bchar('*'), bchar('='))), |_| BinaryOperator::MultiplyAssign),
+        map(tuple((bchar('/'), bchar('='))), |_| BinaryOperator::DivideAssign),
+        map(tuple((bchar('%'), bchar('='))), |_| BinaryOperator::ModuloAssign),
+        map(tuple((bchar('&'), bchar('='))), |_| BinaryOperator::AndAssign),
+        map(tuple((bchar('|'), bchar('='))), |_| BinaryOperator::OrAssign),
+        map(tuple((bchar('^'), bchar('='))), |_| BinaryOperator::XorAssign),
+        // Simple assignment last
         map(bchar('='), |_| BinaryOperator::Assign),
-        map(keyword("+="), |_| BinaryOperator::AddAssign),
-        map(keyword("-="), |_| BinaryOperator::SubtractAssign),
-        map(keyword("*="), |_| BinaryOperator::MultiplyAssign),
-        map(keyword("/="), |_| BinaryOperator::DivideAssign),
-        map(keyword("%="), |_| BinaryOperator::ModuloAssign),
-        map(keyword("&="), |_| BinaryOperator::AndAssign),
-        map(keyword("|="), |_| BinaryOperator::OrAssign),
-        map(keyword("^="), |_| BinaryOperator::XorAssign),
-        map(keyword("<<="), |_| BinaryOperator::LeftShiftAssign),
-        map(keyword(">>="), |_| BinaryOperator::RightShiftAssign),
-        // map(keyword(">>>="), |_| BinaryOperator::UnsignedRightShiftAssign), // Need 3-char keyword helper
-        map(keyword("??="), |_| BinaryOperator::NullCoalescingAssign),
-    ));
-
-    if let Ok((i_after_op, op)) = preceded(multispace0::<&str, BSharpParseError<&str>>, assign_op_parser)(i) {
-        // If an assignment operator is found, parse the RHS recursively.
-        // The RHS itself can be another assignment expression.
-        let (i_final, rhs) = parse_assignment_expression_or_higher(preceded(multispace0::<&str, BSharpParseError<&str>>, |s| Ok((s,())))(i_after_op)?.0)?;
+    ))))(input)?;
+    
+    if let Some(op) = assignment_op {
+        // Parse the right side of the assignment (right-associative)
+        let (input, right) = parse_assignment_expression_or_higher(input)?;
         
-        Ok((
-            i_final,
-            Expression::Assignment(Box::new(AssignmentExpression {
-                target: Box::new(lhs),
-                op, // This needs to be an AssignmentOperator if your AST distinguishes it for stricter typing
-                value: Box::new(rhs),
-            })),
-        ))
+        Ok((input, Expression::Assignment(Box::new(AssignmentExpression {
+            target: Box::new(left),
+            op,
+            value: Box::new(right),
+        }))))
     } else {
-        // Not an assignment, return the LHS as is.
-        Ok((i, lhs))
+        Ok((input, left))
     }
 }
 
-// Level 15: Conditional (Ternary) Operator `?:` (Right-associative)
 fn parse_conditional_expression_or_higher(input: &str) -> BResult<&str, Expression> {
-    let (i, condition_expr) = parse_null_coalescing_expression_or_higher(input)?;
-
-    if let Ok((i_after_q, _)) = preceded(multispace0::<&str, BSharpParseError<&str>>, bchar('?'))(i) {
-        // The 'true' part can be any expression up to assignment (or full expression by C# spec)
-        let (i_after_true, true_expr) = parse_assignment_expression_or_higher(preceded(multispace0::<&str, BSharpParseError<&str>>, |s| Ok((s,())))(i_after_q)?.0)?;
-        
-        if let Ok((i_after_colon, _)) = preceded(multispace0::<&str, BSharpParseError<&str>>, bchar(':'))(i_after_true) {
-            // The 'false' part is recursively a conditional_expression_or_higher for right-associativity
-            let (i_final, false_expr) = parse_conditional_expression_or_higher(preceded(multispace0::<&str, BSharpParseError<&str>>, |s| Ok((s,())))(i_after_colon)?.0)?;
-            
-            return Ok((
-                i_final,
-                Expression::Conditional(Box::new(ConditionalExpression {
-                    condition: Box::new(condition_expr),
-                    consequence: Box::new(true_expr),
-                    alternative: Box::new(false_expr),
-                })),
-            ));
-        }
-    }
-    // Not a conditional expression, return the condition_expr as is.
-    Ok((i, condition_expr))
-}
-
-// Level 14: Null Coalescing Operator `??` (Right-associative)
-fn parse_null_coalescing_expression_or_higher(input: &str) -> BResult<&str, Expression> {
-    let (i, lhs) = parse_logical_or_expression_or_higher(input)?;
-
-    if let Ok((i_after_op, _)) = preceded(multispace0::<&str, BSharpParseError<&str>>, keyword("??"))(i) {
-        // Parse RHS recursively for right-associativity
-        let (i_final, rhs) = parse_null_coalescing_expression_or_higher(preceded(multispace0::<&str, BSharpParseError<&str>>, |s| Ok((s,())))(i_after_op)?.0)?;
-        Ok((
-            i_final,
-            Expression::Binary {
-                left: Box::new(lhs),
-                op: BinaryOperator::NullCoalescing,
-                right: Box::new(rhs),
-            }
-        ))
+    // Parse the condition (left side)
+    let (input, condition) = parse_null_coalescing_expression_or_higher(input)?;
+    
+    // Check for ternary operator: condition ? true_expr : false_expr
+    let (input, ternary_result) = opt(tuple((
+        bws(bchar('?')),
+        bws(parse_expression), // true expression
+        bws(bchar(':')),
+        bws(parse_conditional_expression_or_higher), // false expression (right-associative)
+    )))(input)?;
+    
+    if let Some((_, true_expr, _, false_expr)) = ternary_result {
+        Ok((input, Expression::Conditional(Box::new(ConditionalExpression {
+            condition: Box::new(condition),
+            consequence: Box::new(true_expr),
+            alternative: Box::new(false_expr),
+        }))))
     } else {
-        Ok((i, lhs))
+        Ok((input, condition))
     }
 }
 
-// Level 13: Logical OR `||`
+fn parse_null_coalescing_expression_or_higher(input: &str) -> BResult<&str, Expression> {
+    let (mut input, mut left) = parse_logical_or_expression_or_higher(input)?;
+    
+    // Handle ?? (null coalescing) - right associative
+    while let Ok((new_input, _)) = bws(recognize(pair(bchar('?'), bchar('?'))))(input) {
+        let (new_input, right) = parse_null_coalescing_expression_or_higher(new_input)?;
+        left = Expression::Binary {
+            left: Box::new(left),
+            op: BinaryOperator::NullCoalescing,
+            right: Box::new(right),
+        };
+        input = new_input;
+    }
+    
+    Ok((input, left))
+}
+
 fn parse_logical_or_expression_or_higher(input: &str) -> BResult<&str, Expression> {
-    let (i, initial) = parse_logical_and_expression_or_higher(input)?;
-    fold_many0(
-        tuple((
-            multispace0::<&str, BSharpParseError<&str>>,
-            map(keyword("||"), |_| BinaryOperator::LogicalOr),
-            multispace0::<&str, BSharpParseError<&str>>,
-            parse_logical_and_expression_or_higher
-        )),
-        move || initial.clone(),
-        |acc, (_, op, _, right)| Expression::Binary { left: Box::new(acc), op, right: Box::new(right) }
-    )(i)
-}
-
-// Level 12: Logical AND `&&`
-fn parse_logical_and_expression_or_higher(input: &str) -> BResult<&str, Expression> {
-    let (i, initial) = parse_bitwise_or_expression_or_higher(input)?;
-    fold_many0(
-        tuple((
-            multispace0::<&str, BSharpParseError<&str>>,
-            map(keyword("&&"), |_| BinaryOperator::LogicalAnd),
-            multispace0::<&str, BSharpParseError<&str>>,
-            parse_bitwise_or_expression_or_higher
-        )),
-        move || initial.clone(),
-        |acc, (_, op, _, right)| Expression::Binary { left: Box::new(acc), op, right: Box::new(right) }
-    )(i)
-}
-
-// Level 11: Bitwise OR `|`
-fn parse_bitwise_or_expression_or_higher(input: &str) -> BResult<&str, Expression> {
-    let (i, initial) = parse_bitwise_xor_expression_or_higher(input)?;
-    fold_many0(
-        tuple((
-            multispace0::<&str, BSharpParseError<&str>>,
-            map(bchar('|'), |_| BinaryOperator::BitwiseOr), 
-            multispace0::<&str, BSharpParseError<&str>>,
-            parse_bitwise_xor_expression_or_higher
-        )),
-        move || initial.clone(),
-        |acc, (_, op, _, right)| Expression::Binary { left: Box::new(acc), op, right: Box::new(right) }
-    )(i)
-}
-
-// Level 10: Bitwise XOR `^`
-fn parse_bitwise_xor_expression_or_higher(input: &str) -> BResult<&str, Expression> {
-    let (i, initial) = parse_bitwise_and_expression_or_higher(input)?;
-    fold_many0(
-        tuple((
-            multispace0::<&str, BSharpParseError<&str>>,
-            map(bchar('^'), |_| BinaryOperator::BitwiseXor), 
-            multispace0::<&str, BSharpParseError<&str>>,
-            parse_bitwise_and_expression_or_higher
-        )),
-        move || initial.clone(),
-        |acc, (_, op, _, right)| Expression::Binary { left: Box::new(acc), op, right: Box::new(right) }
-    )(i)
-}
-
-// Level 9: Bitwise AND `&`
-fn parse_bitwise_and_expression_or_higher(input: &str) -> BResult<&str, Expression> {
-    let (i, initial) = parse_equality_expression_or_higher(input)?;
-    fold_many0(
-        tuple((
-            multispace0::<&str, BSharpParseError<&str>>,
-            map(bchar('&'), |_| BinaryOperator::BitwiseAnd), 
-            multispace0::<&str, BSharpParseError<&str>>,
-            parse_equality_expression_or_higher
-        )),
-        move || initial.clone(),
-        |acc, (_, op, _, right)| Expression::Binary { left: Box::new(acc), op, right: Box::new(right) }
-    )(i)
-}
-
-// Level 8: Equality `==`, `!=`
-fn parse_equality_expression_or_higher(input: &str) -> BResult<&str, Expression> {
-    let (i, initial) = parse_relational_expression_or_higher(input)?;
-    fold_many0(
-        tuple((
-            multispace0::<&str, BSharpParseError<&str>>,
-            alt((
-                map(keyword("=="), |_| BinaryOperator::Equal),
-                map(keyword("!="), |_| BinaryOperator::NotEqual),
-            )),
-            multispace0::<&str, BSharpParseError<&str>>,
-            parse_relational_expression_or_higher
-        )),
-        move || initial.clone(),
-        |acc, (_, op, _, right)| Expression::Binary { left: Box::new(acc), op, right: Box::new(right) }
-    )(i)
-}
-
-// Level 7: Relational `<`, `>`, `<=`, `>=`, `is`, `as`
-fn parse_relational_expression_or_higher(input: &str) -> BResult<&str, Expression> {
-    let (i, initial) = parse_shift_expression_or_higher(input)?;
-    fold_many0(
-        tuple((
-            multispace0::<&str, BSharpParseError<&str>>,
-            alt((
-                map(keyword("<="), |_| BinaryOperator::LessEqual),
-                map(keyword(">="), |_| BinaryOperator::GreaterEqual),
-                map(keyword("<"), |_| BinaryOperator::LessThan), 
-                map(keyword(">"), |_| BinaryOperator::GreaterThan), 
-                map(keyword("is"), |_| BinaryOperator::Is), 
-                map(keyword("as"), |_| BinaryOperator::As), 
-            )),
-            multispace0::<&str, BSharpParseError<&str>>,
-            parse_shift_expression_or_higher 
-        )),
-        move || initial.clone(),
-        |acc, (_, op, _, right)| Expression::Binary { left: Box::new(acc), op, right: Box::new(right) }
-    )(i)
-}
-
-// Level 6: Shift `<<`, `>>`, `>>>`
-fn parse_shift_expression_or_higher(input: &str) -> BResult<&str, Expression> {
-    let (i, initial) = parse_additive_expression_or_higher(input)?;
-    fold_many0(
-        tuple((
-            multispace0::<&str, BSharpParseError<&str>>,
-            alt((
-                map(keyword("<<"), |_| BinaryOperator::LeftShift),
-                map(keyword(">>"), |_| BinaryOperator::RightShift),
-            )),
-            multispace0::<&str, BSharpParseError<&str>>,
-            parse_additive_expression_or_higher
-        )),
-        move || initial.clone(),
-        |acc, (_, op, _, right)| Expression::Binary { left: Box::new(acc), op, right: Box::new(right) }
-    )(i)
-}
-
-// Level 5: Additive `+`, `-` (Original parse_additive_expression will be adapted)
-fn parse_additive_expression_or_higher(input: &str) -> BResult<&str, Expression> {
-    let (i, initial) = parse_multiplicative_expression_or_higher(input)?;
-
-    fold_many0(
-        tuple((
-            multispace0::<&str, BSharpParseError<&str>>,
-            alt((
-                map(bchar('+'), |_| BinaryOperator::Add),
-                map(bchar('-'), |_| BinaryOperator::Subtract),
-            )),
-            multispace0::<&str, BSharpParseError<&str>>,
-            parse_multiplicative_expression_or_higher
-        )),
-        move || initial.clone(),
-        |acc, (_, op, _, right)| Expression::Binary { left: Box::new(acc), op, right: Box::new(right) }
-    )(i)
-}
-
-// Level 4: Multiplicative `*`, `/`, `%` (Original parse_multiplicative_expression will be adapted)
-fn parse_multiplicative_expression_or_higher(input: &str) -> BResult<&str, Expression> {
-    let (i, initial) = parse_range_expression_or_higher(input)?;
-
-    fold_many0(
-        tuple((
-            multispace0::<&str, BSharpParseError<&str>>,
-            alt((
-                map(bchar('*'), |_| BinaryOperator::Multiply),
-                map(bchar('/'), |_| BinaryOperator::Divide),
-                map(bchar('%'), |_| BinaryOperator::Modulo),
-            )),
-            multispace0::<&str, BSharpParseError<&str>>,
-            parse_range_expression_or_higher 
-        )),
-        move || initial.clone(),
-        |acc, (_, op, _, right)| Expression::Binary { left: Box::new(acc), op, right: Box::new(right) }
-    )(i)
-}
-
-// Level 3: Range `..` (New level)
-fn parse_range_expression_or_higher(input: &str) -> BResult<&str, Expression> {
-    let (i, initial) = parse_unary_expression_or_higher(input)?;
-
-    let res_opt = opt(tuple((
-        multispace0::<&str, BSharpParseError<&str>>,
-        map(keyword(".."), |_| BinaryOperator::Range),
-        multispace0::<&str, BSharpParseError<&str>>,
-        parse_unary_expression_or_higher 
-    )))(i);
-
-    match res_opt {
-        Ok((i_final, Some((_, op, _, right_expr)))) => {
-            Ok((i_final, Expression::Binary {
-                left: Box::new(initial),
-                op,
-                right: Box::new(right_expr),
-            }))
-        }
-        _ => Ok((i, initial)), 
+    let (mut input, mut left) = parse_logical_and_expression_or_higher(input)?;
+    
+    // Handle || (logical OR) - left associative
+    while let Ok((new_input, _)) = bws(recognize(pair(bchar('|'), bchar('|'))))(input) {
+        let (new_input, right) = parse_logical_and_expression_or_higher(new_input)?;
+        left = Expression::Binary {
+            left: Box::new(left),
+            op: BinaryOperator::LogicalOr,
+            right: Box::new(right),
+        };
+        input = new_input;
     }
+    
+    Ok((input, left))
 }
 
-// Level 2: Unary `+ - ! ~ ++ -- (T) await ^ & *` (New level)
+fn parse_logical_and_expression_or_higher(input: &str) -> BResult<&str, Expression> {
+    let (mut input, mut left) = parse_bitwise_or_expression_or_higher(input)?;
+    
+    // Handle && (logical AND) - left associative
+    while let Ok((new_input, _)) = bws(recognize(pair(bchar('&'), bchar('&'))))(input) {
+        let (new_input, right) = parse_bitwise_or_expression_or_higher(new_input)?;
+        left = Expression::Binary {
+            left: Box::new(left),
+            op: BinaryOperator::LogicalAnd,
+            right: Box::new(right),
+        };
+        input = new_input;
+    }
+    
+    Ok((input, left))
+}
+
+fn parse_bitwise_or_expression_or_higher(input: &str) -> BResult<&str, Expression> {
+    let (mut input, mut left) = parse_bitwise_xor_expression_or_higher(input)?;
+    
+    // Handle | (bitwise OR) - left associative, but avoid consuming if followed by = or |
+    while let Ok((new_input, _)) = bws(tuple((bchar('|'), nom::combinator::not(alt((bchar('='), bchar('|')))))))(input) {
+        let (new_input, right) = parse_bitwise_xor_expression_or_higher(new_input)?;
+        left = Expression::Binary {
+            left: Box::new(left),
+            op: BinaryOperator::BitwiseOr,
+            right: Box::new(right),
+        };
+        input = new_input;
+    }
+    
+    Ok((input, left))
+}
+
+fn parse_bitwise_xor_expression_or_higher(input: &str) -> BResult<&str, Expression> {
+    let (mut input, mut left) = parse_bitwise_and_expression_or_higher(input)?;
+    
+    // Handle ^ (bitwise XOR) - left associative, but avoid consuming if followed by =
+    while let Ok((new_input, _)) = bws(tuple((bchar('^'), nom::combinator::not(bchar('=')))))(input) {
+        let (new_input, right) = parse_bitwise_and_expression_or_higher(new_input)?;
+        left = Expression::Binary {
+            left: Box::new(left),
+            op: BinaryOperator::BitwiseXor,
+            right: Box::new(right),
+        };
+        input = new_input;
+    }
+    
+    Ok((input, left))
+}
+
+fn parse_bitwise_and_expression_or_higher(input: &str) -> BResult<&str, Expression> {
+    let (mut input, mut left) = parse_equality_expression_or_higher(input)?;
+    
+    // Handle & (bitwise AND) - left associative, but avoid consuming if followed by = or &
+    while let Ok((new_input, _)) = bws(tuple((bchar('&'), nom::combinator::not(alt((bchar('='), bchar('&')))))))(input) {
+        let (new_input, right) = parse_equality_expression_or_higher(new_input)?;
+        left = Expression::Binary {
+            left: Box::new(left),
+            op: BinaryOperator::BitwiseAnd,
+            right: Box::new(right),
+        };
+        input = new_input;
+    }
+    
+    Ok((input, left))
+}
+
+fn parse_equality_expression_or_higher(input: &str) -> BResult<&str, Expression> {
+    let (mut input, mut left) = parse_relational_expression_or_higher(input)?;
+    
+    // Handle == and != - left associative
+    while let Ok((new_input, op)) = bws(alt((
+        map(recognize(pair(bchar('='), bchar('='))), |_| BinaryOperator::Equal),
+        map(recognize(pair(bchar('!'), bchar('='))), |_| BinaryOperator::NotEqual),
+    )))(input) {
+        let (new_input, right) = parse_relational_expression_or_higher(new_input)?;
+        left = Expression::Binary {
+            left: Box::new(left),
+            op,
+            right: Box::new(right),
+        };
+        input = new_input;
+    }
+    
+    Ok((input, left))
+}
+
+fn parse_relational_expression_or_higher(input: &str) -> BResult<&str, Expression> {
+    let (mut input, mut left) = parse_shift_expression_or_higher(input)?;
+    
+    // Handle <, >, <=, >= - left associative
+    while let Ok((new_input, op)) = bws(alt((
+        map(recognize(pair(bchar('<'), bchar('='))), |_| BinaryOperator::LessEqual),
+        map(recognize(pair(bchar('>'), bchar('='))), |_| BinaryOperator::GreaterEqual),
+        map(bchar('<'), |_| BinaryOperator::LessThan),
+        map(bchar('>'), |_| BinaryOperator::GreaterThan),
+    )))(input) {
+        let (new_input, right) = parse_shift_expression_or_higher(new_input)?;
+        left = Expression::Binary {
+            left: Box::new(left),
+            op,
+            right: Box::new(right),
+        };
+        input = new_input;
+    }
+    
+    Ok((input, left))
+}
+
+fn parse_shift_expression_or_higher(input: &str) -> BResult<&str, Expression> {
+    let (mut input, mut left) = parse_additive_expression_or_higher(input)?;
+    
+    // Handle << and >> - left associative, but avoid consuming if followed by =
+    while let Ok((new_input, op)) = bws(alt((
+        map(tuple((bchar('<'), bchar('<'), nom::combinator::not(bchar('=')))), |_| BinaryOperator::LeftShift),
+        map(tuple((bchar('>'), bchar('>'), nom::combinator::not(bchar('=')))), |_| BinaryOperator::RightShift),
+    )))(input) {
+        let (new_input, right) = parse_additive_expression_or_higher(new_input)?;
+        left = Expression::Binary {
+            left: Box::new(left),
+            op,
+            right: Box::new(right),
+        };
+        input = new_input;
+    }
+    
+    Ok((input, left))
+}
+
+fn parse_additive_expression_or_higher(input: &str) -> BResult<&str, Expression> {
+    let (mut input, mut left) = parse_multiplicative_expression_or_higher(input)?;
+    
+    // Handle + and - - left associative, but avoid consuming if followed by =
+    while let Ok((new_input, op)) = bws(alt((
+        map(tuple((bchar('+'), nom::combinator::not(bchar('=')))), |_| BinaryOperator::Add),
+        map(tuple((bchar('-'), nom::combinator::not(bchar('=')))), |_| BinaryOperator::Subtract),
+    )))(input) {
+        let (new_input, right) = parse_multiplicative_expression_or_higher(new_input)?;
+        left = Expression::Binary {
+            left: Box::new(left),
+            op,
+            right: Box::new(right),
+        };
+        input = new_input;
+    }
+    
+    Ok((input, left))
+}
+
+fn parse_multiplicative_expression_or_higher(input: &str) -> BResult<&str, Expression> {
+    let (mut input, mut left) = parse_range_expression_or_higher(input)?;
+    
+    // Handle *, /, % - left associative, but avoid consuming if followed by =
+    while let Ok((new_input, op)) = bws(alt((
+        map(tuple((bchar('*'), nom::combinator::not(bchar('=')))), |_| BinaryOperator::Multiply),
+        map(tuple((bchar('/'), nom::combinator::not(bchar('=')))), |_| BinaryOperator::Divide),
+        map(tuple((bchar('%'), nom::combinator::not(bchar('=')))), |_| BinaryOperator::Modulo),
+    )))(input) {
+        let (new_input, right) = parse_range_expression_or_higher(new_input)?;
+        left = Expression::Binary {
+            left: Box::new(left),
+            op,
+            right: Box::new(right),
+        };
+        input = new_input;
+    }
+    
+    Ok((input, left))
+}
+
+fn parse_range_expression_or_higher(input: &str) -> BResult<&str, Expression> {
+    // For now, just pass through to unary
+    // TODO: Implement range expressions (.., ..^, ^..)
+    parse_unary_expression_or_higher(input)
+}
+
 #[derive(Debug, Clone)]
 enum PostfixOpKind { 
     Invocation(Vec<Expression>), 
@@ -325,247 +310,217 @@ enum PostfixOpKind {
 }
 
 fn parse_unary_expression_or_higher(input: &str) -> BResult<&str, Expression> {
-    alt((
-        map(
-            tuple((keyword("++"), multispace0::<&str, BSharpParseError<&str>>, parse_unary_expression_or_higher)),
-            |(_, _, expr)| Expression::Unary {
-                op: UnaryOperator::Increment,
-                expr: Box::new(expr),
+    // Try prefix unary operators first
+    if let Ok((input, op)) = bws(alt((
+        map(bchar('+'), |_| UnaryOperator::Plus),
+        map(bchar('-'), |_| UnaryOperator::Minus),
+        map(bchar('!'), |_| UnaryOperator::LogicalNot),
+        map(bchar('~'), |_| UnaryOperator::BitwiseNot),
+        map(recognize(pair(bchar('+'), bchar('+'))), |_| UnaryOperator::Increment),
+        map(recognize(pair(bchar('-'), bchar('-'))), |_| UnaryOperator::Decrement),
+        map(bchar('&'), |_| UnaryOperator::AddressOf),
+        map(bchar('*'), |_| UnaryOperator::PointerIndirection),
+    )))(input) {
+        let (input, operand) = parse_unary_expression_or_higher(input)?;
+        return Ok((input, Expression::Unary {
+            op,
+            expr: Box::new(operand),
+        }));
+    }
+    
+    // Try await expression
+    if let Ok((input, _)) = bws(keyword("await"))(input) {
+        let (input, operand) = parse_unary_expression_or_higher(input)?;
+        return Ok((input, Expression::Unary {
+            op: UnaryOperator::Await,
+            expr: Box::new(operand),
+        }));
+    }
+    
+    // Try cast expression: (Type)expression
+    if let Ok((input, _)) = bws(bchar('('))(input) {
+        // Try to parse as a type
+        if let Ok((input, _ty)) = parse_type_expression(input) {
+            if let Ok((input, _)) = bws(bchar(')'))(input) {
+                let (input, operand) = parse_unary_expression_or_higher(input)?;
+                return Ok((input, Expression::Unary {
+                    op: UnaryOperator::Cast,
+                    expr: Box::new(operand),
+                }));
             }
-        ),
-        map(
-            tuple((keyword("--"), multispace0::<&str, BSharpParseError<&str>>, parse_unary_expression_or_higher)),
-            |(_, _, expr)| Expression::Unary {
-                op: UnaryOperator::Decrement,
-                expr: Box::new(expr),
-            }
-        ),
-        map(
-            tuple((bchar('+'), multispace0::<&str, BSharpParseError<&str>>, parse_unary_expression_or_higher)),
-            |(_, _, expr)| Expression::Unary {
-                op: UnaryOperator::Plus,
-                expr: Box::new(expr),
-            }
-        ),
-        map(
-            tuple((bchar('-'), multispace0::<&str, BSharpParseError<&str>>, parse_unary_expression_or_higher)),
-            |(_, _, expr)| Expression::Unary {
-                op: UnaryOperator::Minus,
-                expr: Box::new(expr),
-            }
-        ),
-        map(
-            tuple((bchar('!'), multispace0::<&str, BSharpParseError<&str>>, parse_unary_expression_or_higher)), 
-            |(_, _, expr)| Expression::Unary {
-                op: UnaryOperator::LogicalNot,
-                expr: Box::new(expr),
-            }
-        ),
-        map(
-            tuple((bchar('~'), multispace0::<&str, BSharpParseError<&str>>, parse_unary_expression_or_higher)),
-            |(_, _, expr)| Expression::Unary {
-                op: UnaryOperator::BitwiseNot,
-                expr: Box::new(expr),
-            }
-        ),
-        map(
-            tuple((bchar('^'), multispace0::<&str, BSharpParseError<&str>>, parse_unary_expression_or_higher)),
-            |(_, _, expr)| Expression::Unary {
-                op: UnaryOperator::IndexFromEnd,
-                expr: Box::new(expr),
-            }
-        ),
-        map(
-            tuple((keyword("await"), multispace0::<&str, BSharpParseError<&str>>, parse_unary_expression_or_higher)),
-            |(_, _, expr)| Expression::Unary { 
-                op: UnaryOperator::Await,
-                expr: Box::new(expr),
-            }
-        ),
-        parse_postfix_expression_or_higher,
-    ))(input)
+        }
+    }
+    
+    // Try sizeof expression - for now, treat as unary operator
+    if let Ok((input, _)) = bws(keyword("sizeof"))(input) {
+        let (input, _) = bws(bchar('('))(input)?;
+        let (input, _ty) = bws(parse_type_expression)(input)?;
+        let (input, _) = bws(bchar(')'))(input)?;
+        // For now, create a dummy expression since we don't have a proper sizeof AST node
+        return Ok((input, Expression::Literal(Literal::Integer(0))));
+    }
+    
+    // Try typeof expression - for now, treat as unary operator  
+    if let Ok((input, _)) = bws(keyword("typeof"))(input) {
+        let (input, _) = bws(bchar('('))(input)?;
+        let (input, _ty) = bws(parse_type_expression)(input)?;
+        let (input, _) = bws(bchar(')'))(input)?;
+        // For now, create a dummy expression since we don't have a proper typeof AST node
+        return Ok((input, Expression::Literal(Literal::Integer(0))));
+    }
+    
+    // If none of the above work, try postfix expressions
+    parse_postfix_expression_or_higher(input)
 }
 
-// Level 1: Postfix (member access, invocation, indexing, postfix `++ -- !`)
 fn parse_postfix_expression_or_higher(input: &str) -> BResult<&str, Expression> { 
-    let (i, initial_expr): (&str, Expression) = parse_primary_expression(input)?;
-
-    fold_many0(
-        alt::<_, _, BSharpParseError<&str>, _>((
+    // Start with a primary expression
+    let (mut input, mut expr) = parse_primary_expression(input)?;
+    
+    // Parse zero or more postfix operations
+    loop {
+        // Try to parse various postfix operations
+        if let Ok((new_input, op)) = bws(alt((
+            // Member access: .member
+            map(preceded(bchar('.'), bws(parse_identifier)), |id| PostfixOpKind::MemberAccess(id)),
+            // Method call: (args...)
             map(
-                tuple((
-                    bws(bchar('(')),
-                    separated_list0(bws(bchar(',')), parse_expression),
-                    bws(bchar(')')),
-                )),
-                |(_, args, _): (_, Vec<Expression>, _)| PostfixOpKind::Invocation(args)
+                delimited(
+                    bchar('('),
+                    separated_list0(bws(bchar(',')), bws(parse_expression)),
+                    bws(bchar(')'))
+                ),
+                |args| PostfixOpKind::Invocation(args)
             ),
+            // Array indexing: [index]
             map(
-                preceded(bchar('.'), preceded(multispace0::<&str, BSharpParseError<&str>>, parse_identifier)),
-                |name: Identifier| PostfixOpKind::MemberAccess(name)
+                delimited(bchar('['), bws(parse_expression), bws(bchar(']'))),
+                |index| PostfixOpKind::Indexing(Box::new(index))
             ),
-            map(
-                tuple((bws(bchar('[')), parse_expression, bws(bchar(']')))),
-                |(_, index_val, _): (_, Expression, _)| PostfixOpKind::Indexing(Box::new(index_val))
-            ),
-            map(preceded(multispace0::<&str, BSharpParseError<&str>>, keyword("++")),
-                |_| PostfixOpKind::PostfixIncrement
-            ),
-            map(preceded(multispace0::<&str, BSharpParseError<&str>>, keyword("--")),
-                |_| PostfixOpKind::PostfixDecrement
-            ),
-            map(preceded(multispace0::<&str, BSharpParseError<&str>>, bchar('!')),
-                |_| PostfixOpKind::NullForgiving
-            ),
-        )),
-        move || initial_expr.clone(), 
-        |acc_expr: Expression, op_kind: PostfixOpKind| -> Expression { 
-            match op_kind {
+            // Postfix increment: ++
+            map(recognize(pair(bchar('+'), bchar('+'))), |_| PostfixOpKind::PostfixIncrement),
+            // Postfix decrement: --
+            map(recognize(pair(bchar('-'), bchar('-'))), |_| PostfixOpKind::PostfixDecrement),
+            // Null-forgiving: !
+            map(bchar('!'), |_| PostfixOpKind::NullForgiving),
+        )))(input) {
+            // Apply the postfix operation to the current expression
+            expr = match op {
+                PostfixOpKind::MemberAccess(member) => Expression::MemberAccess(Box::new(MemberAccessExpression {
+                    object: Box::new(expr),
+                    member,
+                })),
                 PostfixOpKind::Invocation(args) => Expression::Invocation(Box::new(InvocationExpression {
-                    callee: Box::new(acc_expr),
+                    callee: Box::new(expr),
                     arguments: args,
                 })),
-                PostfixOpKind::MemberAccess(name) => Expression::MemberAccess(Box::new(MemberAccessExpression {
-                    object: Box::new(acc_expr),
-                    member: name, 
-                })),
-                PostfixOpKind::Indexing(index_expr) => Expression::Indexing(Box::new(IndexingExpression {
-                    target: Box::new(acc_expr),
-                    index: index_expr,
+                PostfixOpKind::Indexing(index) => Expression::Indexing(Box::new(IndexingExpression {
+                    target: Box::new(expr),
+                    index,
                 })),
                 PostfixOpKind::PostfixIncrement => Expression::PostfixUnary {
                     op: UnaryOperator::Increment,
-                    expr: Box::new(acc_expr),
+                    expr: Box::new(expr),
                 },
                 PostfixOpKind::PostfixDecrement => Expression::PostfixUnary {
                     op: UnaryOperator::Decrement,
-                    expr: Box::new(acc_expr),
+                    expr: Box::new(expr),
                 },
                 PostfixOpKind::NullForgiving => Expression::PostfixUnary {
                     op: UnaryOperator::NullForgiving,
-                    expr: Box::new(acc_expr),
+                    expr: Box::new(expr),
                 },
-            }
+            };
+            input = new_input;
+        } else {
+            // No more postfix operations
+            break;
         }
-    )(i)
+    }
+    
+    Ok((input, expr))
 }
 
-// Level 0: Primary (literals, identifiers, parenthesized expressions, `new`, `typeof`, `default`)
 fn parse_primary_expression(input: &str) -> BResult<&str, Expression> {
-    bws(alt((
-        map(parse_literal, Expression::Literal),
-        map(parse_identifier, Expression::Variable),
-        // Parenthesized expression: ( expression )
-        delimited(bchar('('), parse_expression, bchar(')')),
-        // New expression: new Type(...)
+    bs_context(
+        "primary expression",
+        alt((
+            // Literals
+            map(parse_literal, |lit| Expression::Literal(lit)),
+            // this keyword
+            map(keyword("this"), |_| Expression::This),
+            // New expressions
+            parse_new_expression,
+            // Parenthesized expressions - for now, just unwrap the inner expression
+            delimited(bws(bchar('(')), bws(parse_expression), bws(bchar(')'))),
+            // Variables/identifiers
+            map(parse_identifier, |id| Expression::Variable(id)),
+        )),
+    )(input)
+}
+
+fn parse_new_expression(input: &str) -> BResult<&str, Expression> {
+    bs_context(
+        "new expression",
         map(
             tuple((
                 keyword("new"),
-                parse_type_expression,
-                bws(delimited(
-                    bchar('('),
-                    separated_list0(bws(bchar(',')), parse_expression),
-                    bchar(')')
-                ))
+                bws(parse_type_expression),
+                opt(delimited(
+                    bws(bchar('(')),
+                    separated_list0(bws(bchar(',')), bws(parse_expression)),
+                    bws(bchar(')'))
+                )),
+                opt(bws(parse_initializer)),
             )),
-            |(_, ty, arguments)| Expression::New(Box::new(NewExpression {
-                ty,
-                arguments,
-                object_initializer: None, // TODO: Implement object initializers
-                collection_initializer: None, // TODO: Implement collection initializers
-            }))
+            |(_new_kw, ty, arguments, initializer)| {
+                let (object_initializer, collection_initializer) = match initializer {
+                    Some(InitializerKind::Object(obj)) => (Some(obj), None),
+                    Some(InitializerKind::Collection(coll)) => (None, Some(coll)),
+                    None => (None, None),
+                };
+                
+                Expression::New(Box::new(NewExpression {
+                    ty,
+                    arguments: arguments.unwrap_or_default(),
+                    object_initializer,
+                    collection_initializer,
+                }))
+            },
         ),
-        // `this` keyword
-        map(keyword("this"), |_| Expression::This),
-        // `base` keyword - often for calling base class constructors or methods
-        map(keyword("base"), |_| Expression::Base),
-        // TODO: typeof, default, etc.
-    )))(input)
+    )(input)
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use crate::parser::nodes::expressions::literal::Literal;
-    use crate::parser::nodes::types::Type;
+#[derive(Debug, Clone)]
+enum InitializerKind {
+    Object(Vec<(String, Expression)>),
+    Collection(Vec<Expression>),
+}
 
-    #[test]
-    fn test_parse_simple_new_expression() {
-        let input = "new Exception(\"Error\")";
-        let result = parse_expression(input);
-        assert!(result.is_ok(), "Failed to parse 'new Exception(\"Error\")': {:?}", result.err());
-        let (remaining, expr) = result.unwrap();
-        assert_eq!(remaining, "");
-        match expr {
-            Expression::New(boxed_new_expr) => {
-                match &boxed_new_expr.ty {
-                    Type::Reference(ident) => assert_eq!(ident.name, "Exception"),
-                    _ => panic!("Expected Type::Reference for new expression type"),
-                }
-                assert_eq!(boxed_new_expr.arguments.len(), 1);
-                match &boxed_new_expr.arguments[0] {
-                    Expression::Literal(Literal::String(s)) => assert_eq!(s, "Error"),
-                    _ => panic!("Expected string literal argument"),
-                }
-                assert!(boxed_new_expr.object_initializer.is_none());
-                assert!(boxed_new_expr.collection_initializer.is_none());
-            }
-            _ => panic!("Expected Expression::New, got {:?}", expr),
-        }
-    }
-
-    #[test]
-    fn test_parse_new_expression_no_args() {
-        let input = "new Object()";
-        let result = parse_expression(input);
-        assert!(result.is_ok(), "Failed to parse 'new Object()': {:?}", result.err());
-        let (remaining, expr) = result.unwrap();
-        assert_eq!(remaining, "");
-        match expr {
-            Expression::New(boxed_new_expr) => {
-                match &boxed_new_expr.ty {
-                    Type::Reference(ident) => assert_eq!(ident.name, "Object"),
-                    _ => panic!("Expected Type::Reference for new expression type"),
-                }
-                assert!(boxed_new_expr.arguments.is_empty());
-            }
-            _ => panic!("Expected Expression::New, got {:?}", expr),
-        }
-    }
-
-    #[test]
-    fn test_parse_new_expression_multiple_args() {
-        let input = "new Data(42, \"test\", true)";
-        let result = parse_expression(input);
-        assert!(result.is_ok(), "Failed to parse 'new Data(42, \"test\", true)': {:?}", result.err());
-        let (remaining, expr) = result.unwrap();
-        assert_eq!(remaining, "");
-        match expr {
-            Expression::New(boxed_new_expr) => {
-                match &boxed_new_expr.ty {
-                    Type::Reference(ident) => assert_eq!(ident.name, "Data"),
-                    _ => panic!("Expected Type::Reference for new expression type"),
-                }
-                assert_eq!(boxed_new_expr.arguments.len(), 3);
-                match &boxed_new_expr.arguments[0] {
-                    Expression::Literal(Literal::Integer(i)) => assert_eq!(*i, 42),
-                    _ => panic!("Expected integer literal for first argument"),
-                }
-                match &boxed_new_expr.arguments[1] {
-                    Expression::Literal(Literal::String(s)) => assert_eq!(s, "test"),
-                    _ => panic!("Expected string literal for second argument"),
-                }
-                match &boxed_new_expr.arguments[2] {
-                    Expression::Literal(Literal::Boolean(b)) => assert_eq!(*b, true),
-                    _ => panic!("Expected boolean literal for third argument"),
-                }
-            }
-            _ => panic!("Expected Expression::New, got {:?}", expr),
-        }
-    }
-
-    #[test]
-    fn test_basic_identifier() {
-        // ... tests ...
-    }
+fn parse_initializer(input: &str) -> BResult<&str, InitializerKind> {
+    delimited(
+        bchar('{'),
+        alt((
+            // Try object initializer first: { prop = value, prop2 = value2 }
+            map(
+                separated_list0(
+                    bws(bchar(',')),
+                    tuple((
+                        bws(parse_identifier),
+                        bws(bchar('=')),
+                        bws(parse_expression),
+                    ))
+                ),
+                |pairs| InitializerKind::Object(
+                    pairs.into_iter().map(|(id, _, expr)| (id.name, expr)).collect()
+                )
+            ),
+            // Collection initializer: { expr1, expr2, expr3 }
+            map(
+                separated_list0(bws(bchar(',')), bws(parse_expression)),
+                InitializerKind::Collection
+            )
+        )),
+        bchar('}')
+    )(input)
 }

@@ -1,7 +1,7 @@
-use crate::parser::nodes::expressions::expression::Expression;
-use crate::parser::nodes::expressions::literal::Literal;
-use crate::parser::nodes::types::Type;
-use crate::parsers::expressions::expression_parser::*; // Adjust if parse_expression is not public or in a submodule
+use bsharp::parser::nodes::expressions::expression::Expression;
+use bsharp::parser::nodes::expressions::literal::Literal;
+use bsharp::parser::nodes::types::Type;
+use bsharp::parsers::expressions::expression_parser::*; // Adjust if parse_expression is not public or in a submodule
 
 #[test]
 fn test_parse_simple_new_expression() {

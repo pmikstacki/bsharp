@@ -12,6 +12,7 @@ pub mod switch_statement_parser;
 pub mod block_statement_parser;
 pub mod expression_statement_parser;
 pub mod empty_statement_parser;
+pub mod using_statement_parser;
 // Removed duplicate statement_parser
 // Add other statement parser modules here as they are created
 
@@ -29,5 +30,6 @@ pub use switch_statement_parser::parse_switch_statement;
 pub use block_statement_parser::parse_block_statement;
 pub use expression_statement_parser::parse_expression_statement;
 pub use empty_statement_parser::parse_empty_statement;
+pub use using_statement_parser::parse_using_statement;
 // Removed duplicate statement_parser import
 // Add other pub use statements here

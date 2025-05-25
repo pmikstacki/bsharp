@@ -1,7 +1,6 @@
 #![cfg(test)]
-use bsharp::parser::nodes::declarations::{InterfaceDeclaration, Modifier, InterfaceBodyDeclaration};
-use bsharp::parser::nodes::identifier::Identifier;
-use bsharp::parser::nodes::types::{TypeParameter, Type, PrimitiveType, Variance};
+use bsharp::parser::nodes::declarations::{Modifier, InterfaceBodyDeclaration};
+use bsharp::parser::nodes::types::Type;
 use bsharp::parsers::declarations::type_declaration_parser::parse_interface_declaration;
 
 #[test]

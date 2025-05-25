@@ -9,7 +9,10 @@ fn parse_record_decl_test(code: &str) -> Result<RecordDeclaration, String> {
     match parse_record_declaration(code) {
         Ok((rest, decl)) if rest.trim().is_empty() => Ok(decl),
         Ok((rest, _)) => Err(format!("Unparsed input: {}", rest)),
-        Err(e) => Err(format!("Parse error: {:?}", e)),
+        Err(e) => {
+            println!("Parse error for '{}': {:?}", code, e);
+            Err(format!("Parse error: {:?}", e))
+        }
     }
 }
 
@@ -52,6 +55,9 @@ fn test_parse_positional_record_with_multiple_parameters() {
 fn test_parse_positional_record_with_base() {
     let code = "record Employee(string Name) : Person;";
     let result = parse_record_decl_test(code);
+    if result.is_err() {
+        println!("Error parsing '{}': {}", code, result.as_ref().unwrap_err());
+    }
     assert!(result.is_ok());
     let record = result.unwrap();
     assert_eq!(record.name.name, "Employee");

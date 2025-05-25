@@ -21,6 +21,7 @@ use crate::parsers::statements::try_catch_finally_parser::parse_try_statement;
 use crate::parsers::statements::throw_statement_parser::parse_throw_statement;
 use crate::parsers::statements::break_statement_parser::parse_break_statement;
 use crate::parsers::statements::continue_statement_parser::parse_continue_statement;
+use crate::parsers::statements::using_statement_parser::parse_using_statement;
 
 /// Main statement parser - handles all types of statements
 /// This function correctly handles recursion by dispatching to specific statement parsers
@@ -35,6 +36,7 @@ pub fn parse_statement(input: &str) -> BResult<&str, Statement> {
         parse_foreach_statement, // Foreach loop
         parse_switch_statement, // Switch statement
         parse_try_statement, // Try-catch-finally statement
+        parse_using_statement, // Using statement
         parse_return_statement, // Return statement
         parse_throw_statement, // Throw statement
         // Declaration statement must be tried before expression statement

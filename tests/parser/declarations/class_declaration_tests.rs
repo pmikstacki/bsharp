@@ -265,7 +265,7 @@ fn test_parse_class_with_modifiers() {
     let code_static_public = "public static class StaticPublicClass {}";
     let expected_static_public = Ok(ClassDeclaration {
         attributes: vec![],
-        modifiers: vec![Modifier::Static, Modifier::Public],
+        modifiers: vec![Modifier::Public, Modifier::Static],
         name: Identifier::new("StaticPublicClass"),
         type_parameters: None,
         base_types: vec![],

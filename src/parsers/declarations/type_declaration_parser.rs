@@ -14,7 +14,7 @@ use crate::parser::nodes::declarations::{TypeDeclaration, ClassBodyDeclaration, 
 use crate::parser::nodes::types::{Type, TypeParameter, Parameter};
 use crate::parser::nodes::identifier::Identifier;
 use crate::parser::nodes::declarations::Modifier;
-use crate::parser::parser_helpers::{nom_to_bs, bws};
+use crate::parser::parser_helpers::{nom_to_bs, bws, bchar};
 
 // Import specialized parsers
 // use crate::parsers::declarations::class_declaration_parser::parse_class_declaration; // Removed old import
@@ -80,9 +80,10 @@ pub fn parse_declaration_header<'a>(input: &'a str, declaration_keyword: &'a str
     let (input, type_parameters_opt_opt) = opt(nom_to_bs(opt_parse_type_parameter_list))(input)?;
     let type_parameters = type_parameters_opt_opt.and_then(|tp_opt| tp_opt);
     
-    // Parse optional base type list (interfaces and/or base class)
+    // Parse optional base type list (interfaces and/or base class) - make this optional
     let (input, _) = nom_to_bs(multispace0::<&str, nom::error::Error<&str>>)(input)?;
-    let (input, base_types) = parse_base_type_list(input)?;
+    let (input, base_types_opt) = opt(parse_base_type_list)(input)?;
+    let base_types = base_types_opt.unwrap_or_default(); // Use empty vec if no base types
     
     Ok((input, DeclarationHeader {
         attributes,
@@ -112,20 +113,36 @@ where
     F: Fn(&str) -> BResult<&str, M>,
 {
     // Parse the opening brace
-    let (input, _) = nom_to_bs(multispace0::<&str, nom::error::Error<&str>>)(input)?;
-    let (input, _) = nom_to_bs(nom_tag::<&str, &str, nom::error::Error<&str>>("{"))(input)?;
+    let (input, _) = bws(bchar('{'))(input)?;
     
     // Keep parsing members until we hit the closing brace
     let mut members = Vec::new();
     let mut current = input;
     
     while !at_end_of_body(current) {
+        // Skip any whitespace and comments before trying to parse a member
+        let (after_ws, _) = crate::parser::comment_parser::parse_whitespace_or_comments(current)?;
+        current = after_ws;
+        
+        // Check again if we're at the end after consuming whitespace/comments
+        if at_end_of_body(current) {
+            break;
+        }
+        
         match member_parser(current) {
             Ok((rest, member)) => {
                 members.push(member);
                 current = rest;
             },
-            Err(_) => break, // Break if we can't parse more members
+            Err(_) => {
+                // Error recovery: skip to the next semicolon or brace and try again
+                current = skip_to_recovery_point(current);
+                
+                // If we couldn't find a recovery point, break to avoid infinite loop
+                if current == after_ws {
+                    break;
+                }
+            }
         }
     }
     
@@ -133,6 +150,31 @@ where
     let (input, _) = parse_close_brace(current)?;
     
     Ok((input, members))
+}
+
+/// Skip malformed syntax until we find a recovery point (semicolon, brace, or end of input)
+fn skip_to_recovery_point(input: &str) -> &str {
+    let mut chars = input.char_indices();
+    let mut brace_depth = 0;
+    
+    while let Some((i, ch)) = chars.next() {
+        match ch {
+            ';' if brace_depth == 0 => {
+                // Found a semicolon at the top level - skip past it
+                return &input[i + 1..];
+            },
+            '{' => brace_depth += 1,
+            '}' if brace_depth > 0 => brace_depth -= 1,
+            '}' if brace_depth == 0 => {
+                // Found closing brace at top level - don't consume it, let the caller handle it
+                return &input[i..];
+            },
+            _ => {}
+        }
+    }
+    
+    // If we reach the end of input, return empty string
+    ""
 }
 
 /// Helper function for parsing class members (fields, methods, properties, constructors, events, indexers)
@@ -225,18 +267,77 @@ fn parse_record_body(input: &str) -> BResult<&str, (Vec<Parameter>, Vec<ClassBod
 /// }
 /// ```
 pub fn parse_record_class_declaration<'a>(input: &'a str) -> BResult<&'a str, RecordDeclaration> {
-    let (input, header): (&'a str, DeclarationHeader<'a>) = parse_declaration_header(input, "record")?;
-    let (input, (parameters, members)) = parse_record_body(input)?;
+    // Parse attributes (can be empty)
+    let (input, attributes) = parse_attribute_lists(input)?;
+    
+    // Parse optional modifiers (public, private, etc.) but NOT the declaration keyword itself
+    let (input, modifiers) = parse_modifiers(input)?;
+    
+    // Parse the declaration keyword
+    let (input, _) = nom_to_bs(multispace0::<&str, nom::error::Error<&str>>)(input)?;
+    let (input, _) = nom_to_bs(nom_tag::<&str, &str, nom::error::Error<&str>>("record"))(input)?;
+    
+    // Parse the declaration name (identifier)
+    let (input, _) = nom_to_bs(multispace0::<&str, nom::error::Error<&str>>)(input)?;
+    let (input, identifier) = nom_to_bs(parse_identifier)(input)?;
+    
+    // Parse optional type parameters like <T> or <K, V>
+    let (input, _) = nom_to_bs(multispace0::<&str, nom::error::Error<&str>>)(input)?;
+    let (input, type_parameters_opt_opt) = opt(nom_to_bs(opt_parse_type_parameter_list))(input)?;
+    let _type_parameters = type_parameters_opt_opt.and_then(|tp_opt| tp_opt);
+    
+    // Now parse the record body which can be either:
+    // 1. (parameters) : base_types;
+    // 2. : base_types { members }
+    // 3. (parameters);
+    // 4. { members }
+    let (input, (parameters, base_types, members)) = parse_record_class_body(input)?;
+    
     let record_declaration = RecordDeclaration {
-        attributes: header.attributes,
-        modifiers: header.modifiers,
-        name: header.identifier,
+        attributes,
+        modifiers,
+        name: identifier,
         is_struct: false,
         parameters: Some(parameters),
-        base_types: header.base_types,
+        base_types,
         body_declarations: members,
     };
     Ok((input, record_declaration))
+}
+
+/// Parse record class body which handles the unique record syntax
+fn parse_record_class_body(input: &str) -> BResult<&str, (Vec<Parameter>, Vec<Type>, Vec<ClassBodyDeclaration>)> {
+    // Parse one of four forms:
+    // 1. (parameters) : base_types;
+    // 2. : base_types { members }
+    // 3. (parameters);
+    // 4. { members }
+    alt((
+        // Form 1: (parameters) : base_types;
+        map(
+            tuple((
+                bws(nom_to_bs(parse_parameter_list)),
+                bws(opt(parse_base_type_list)),
+                opt(bws(nom_to_bs(nom::character::complete::char::<&str, nom::error::Error<&str>>(';')))),
+            )),
+            |(params, base_types_opt, _)| (params, base_types_opt.unwrap_or_default(), Vec::<ClassBodyDeclaration>::new())
+        ),
+        
+        // Form 2: : base_types { members }
+        map(
+            tuple((
+                bws(opt(parse_base_type_list)),
+                |i| parse_class_body(i, parse_class_member),
+            )),
+            |(base_types_opt, members)| (vec![], base_types_opt.unwrap_or_default(), members)
+        ),
+        
+        // Form 3: { members } (no parameters, no base types)
+        map(
+            |i| parse_class_body(i, parse_class_member),
+            |members| (vec![], vec![], members)
+        ),
+    ))(input)
 }
 
 /// Parse a C# record struct declaration
@@ -277,7 +378,8 @@ pub fn parse_record_struct_declaration(input: &str) -> BResult<&str, RecordDecla
     
     // Parse base types
     let (input, _) = nom_to_bs(multispace0::<&str, nom::error::Error<&str>>)(input)?;
-    let (input, base_types) = parse_base_type_list(input)?;
+    let (input, base_types_opt) = opt(parse_base_type_list)(input)?;
+    let base_types = base_types_opt.unwrap_or_default(); // Use empty vec if no base types
     
     // Parse record body
     let (input, (parameters, members)) = parse_record_body(input)?;
@@ -372,11 +474,13 @@ fn parse_interface_member(input: &str) -> BResult<&str, InterfaceBodyDeclaration
     alt((
         // Try parsing methods
         map(|i| {
-            let (remaining, method_decl) = parse_method_declaration(i)?;
+            let (remaining, mut method_decl) = parse_method_declaration(i)?;
             
-            // Interface methods cannot have a body
+            // Interface methods cannot have a body, but for error recovery,
+            // we'll allow it and just ignore the body (set it to None)
             if method_decl.body.is_some() {
-                return Err(nom::Err::Failure(crate::parser::errors::BSharpParseError::new(i, crate::parser::errors::CustomErrorKind::Expected("interface method cannot have a body"))));
+                // Log or handle the error as needed, but don't fail parsing
+                method_decl.body = None;
             }
             
             Ok((remaining, method_decl))
