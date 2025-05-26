@@ -1,0 +1,26 @@
+
+[book]
+authors = ["BSharp Contributors"]
+language = "en"
+multilingual = false
+src = "."
+title = "BSharp C# Parser Documentation"
+description = "Comprehensive documentation for the BSharp C# parser and analysis toolkit"
+
+[preprocessor.links]
+
+[output.html]
+additional-css = ["custom.css"]
+git-repository-url = "https://github.com/your-repo/bsharp"
+edit-url-template = "https://github.com/your-repo/bsharp/edit/main/docs/{path}"
+
+[output.html.fold]
+enable = true
+level = 0
+
+[output.html.playground]
+editable = false
+copyable = true
+copy-js = true
+line-numbers = false
+runnable = false
