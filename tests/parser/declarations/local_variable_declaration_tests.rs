@@ -20,6 +20,7 @@ fn test_parse_local_variable_with_initializer() {
     let code = "int x = 5;";
     let expected = LocalVariableDeclaration {
         is_const: false,
+        is_ref: false,
         declaration_type: Type::Primitive(PrimitiveType::Int),
         declarators: vec![
             VariableDeclarator {
@@ -36,6 +37,7 @@ fn test_parse_local_variable_without_initializer() {
     let code = "string name;";
     let expected = LocalVariableDeclaration {
         is_const: false,
+        is_ref: false,
         declaration_type: Type::Primitive(PrimitiveType::String),
         declarators: vec![
             VariableDeclarator {

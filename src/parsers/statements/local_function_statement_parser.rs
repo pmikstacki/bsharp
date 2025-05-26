@@ -1,7 +1,7 @@
 use crate::parser::errors::BResult;
 use crate::parser::nodes::statements::local_function_statement::LocalFunctionStatement;
 use crate::parser::nodes::statements::statement::Statement;
-use crate::parser::parser_helpers::{bchar, bs_context, bws, nom_to_bs};
+use crate::parser::parser_helpers::{bs_context, bws, nom_to_bs};
 use crate::parsers::declarations::modifier_parser::parse_modifiers;
 use crate::parsers::declarations::parameter_parser::parse_parameter_list;
 use crate::parsers::declarations::type_parameter_parser::{opt_parse_type_parameter_list, parse_type_parameter_constraints_clauses};

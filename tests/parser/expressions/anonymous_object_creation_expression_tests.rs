@@ -1,6 +1,6 @@
 // Tests for parsing anonymous object creation expressions
 
-use bsharp::parser::nodes::expressions::{Expression, AnonymousObjectCreationExpression, AnonymousObjectMember};
+use bsharp::parser::nodes::expressions::Expression;
 use bsharp::parser::nodes::expressions::literal::Literal;
 use bsharp::parsers::expressions::expression_parser::parse_expression;
 

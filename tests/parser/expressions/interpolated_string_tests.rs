@@ -1,4 +1,4 @@
-use bsharp::parser::nodes::expressions::literal::{Literal, InterpolatedStringLiteral, InterpolatedStringPart};
+use bsharp::parser::nodes::expressions::literal::{Literal, InterpolatedStringPart};
 use bsharp::parser::nodes::expressions::expression::Expression;
 use bsharp::parsers::expressions::literal_parser::parse_literal;
 

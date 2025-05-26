@@ -56,6 +56,7 @@ pub enum Expression {
     Sizeof(Box<SizeofExpression>), // Sizeof expressions: sizeof(int)
     Default(Box<DefaultExpression>), // Default expressions: default(int) or default
     StackAlloc(Box<StackAllocExpression>), // Stackalloc expressions: stackalloc int[10]
+    Ref(Box<Expression>), // Ref expressions: ref field, ref array[index]
 }
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]

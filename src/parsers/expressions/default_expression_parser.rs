@@ -1,12 +1,12 @@
 use crate::parser::errors::BResult;
-use crate::parser::nodes::expressions::expression::Expression;
 use crate::parser::nodes::expressions::default_expression::DefaultExpression;
+use crate::parser::nodes::expressions::expression::Expression;
 use crate::parser::parser_helpers::{bchar, bs_context, bws, keyword};
 use crate::parsers::types::type_parser::parse_type_expression;
 
 use nom::{
     branch::alt,
-    combinator::{map, opt},
+    combinator::{map},
     sequence::{delimited, preceded},
 };
 

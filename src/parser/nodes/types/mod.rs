@@ -14,7 +14,7 @@ pub mod type_argument_list;
 // pub use expression_type::ExpressionType;
 // pub use identifier_type::IdentifierType;
 // pub use nullable_type::NullableType;
-pub use parameter::Parameter;
+pub use parameter::{Parameter, ParameterModifier};
 pub use primitive_type::PrimitiveType;
 pub use type_::Type;
 pub use type_argument_list::TypeArgumentList;

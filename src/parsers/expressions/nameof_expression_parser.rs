@@ -2,11 +2,9 @@ use crate::parser::errors::BResult;
 use crate::parser::nodes::expressions::expression::Expression;
 use crate::parser::nodes::expressions::nameof_expression::NameofExpression;
 use crate::parser::parser_helpers::{bchar, bs_context, bws, keyword};
-use crate::parser::nodes::identifier::Identifier;
 use crate::parsers::identifier_parser::parse_identifier;
 
 use nom::{
-    branch::alt,
     combinator::map,
     multi::separated_list1,
     sequence::{delimited, preceded},

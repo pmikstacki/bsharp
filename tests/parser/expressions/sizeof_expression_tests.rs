@@ -1,9 +1,7 @@
 // Tests for parsing sizeof expressions
 
 use bsharp::parser::nodes::expressions::expression::Expression;
-use bsharp::parser::nodes::expressions::sizeof_expression::SizeofExpression;
 use bsharp::parser::nodes::types::{Type, PrimitiveType};
-use bsharp::parser::nodes::identifier::Identifier;
 use bsharp::parsers::expressions::expression_parser::parse_expression;
 use bsharp::parsers::expressions::sizeof_expression_parser::parse_sizeof_expression;
 

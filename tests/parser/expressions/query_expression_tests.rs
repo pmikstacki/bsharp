@@ -75,7 +75,7 @@ fn test_parse_query_with_where_clause() {
         
         if let QueryClause::Where(where_clause) = &query.body[0] {
             // The where condition should be a binary expression (x > 5)
-            if let Expression::Binary { left, right, .. } = &where_clause.condition {
+            if let Expression::Binary { left,  .. } = &where_clause.condition {
                 if let Expression::Variable(var) = left.as_ref() {
                     assert_eq!(var.name, "x");
                 } else {
@@ -105,7 +105,7 @@ fn test_parse_query_with_let_clause() {
             assert_eq!(let_clause.identifier.name, "doubled");
             
             // The let expression should be a binary expression (x * 2)
-            if let Expression::Binary { left, right, .. } = &let_clause.expression {
+            if let Expression::Binary { left,  .. } = &let_clause.expression {
                 if let Expression::Variable(var) = left.as_ref() {
                     assert_eq!(var.name, "x");
                 } else {

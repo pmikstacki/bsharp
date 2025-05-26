@@ -1,6 +1,7 @@
 use crate::parser::errors::BResult;
 use crate::parser::nodes::statements::statement::Statement;
 use crate::parsers::expressions::expression_parser::parse_expression;
+use crate::parsers::statements::deconstruction_statement_parser::parse_deconstruction_statement;
 use nom::error::ParseError;
 use nom::{
     branch::alt,
@@ -38,10 +39,11 @@ pub fn parse_block_statement(input: &str) -> BResult<&str, Statement> {
     )(input)
 }
 
-// Main statement parser (for now: block or expression statement)
+// Main statement parser
 pub fn parse_statement(input: &str) -> BResult<&str, Statement> {
     alt((
         parse_block_statement,
+        parse_deconstruction_statement, // Try deconstruction before expression statements
         parse_expression_statement,
     ))(input)
 }

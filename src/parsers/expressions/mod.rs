@@ -13,6 +13,8 @@ pub mod typeof_expression_parser;
 pub mod sizeof_expression_parser;
 pub mod default_expression_parser;
 pub mod stackalloc_expression_parser;
+pub mod ref_expression_parser;
+pub mod deconstruction_expression_parser;
 
 pub use expression_parser::parse_expression;
 // Re-export key parser functions

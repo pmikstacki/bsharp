@@ -1,14 +1,14 @@
 use crate::parser::errors::BResult;
 use crate::parser::nodes::expressions::literal::{Literal, InterpolatedStringLiteral, InterpolatedStringPart};
-use crate::parser::nodes::expressions::expression::Expression;
-use crate::parsers::expressions::expression_parser::parse_expression;
+// use crate::parser::nodes::expressions::expression::Expression; // Unused
+use crate::parsers::expressions::expression_parser::parse_expression; // This is used by parse_interpolation
 use nom::{
     branch::alt,
     bytes::complete::{escaped_transform, is_not, tag, tag_no_case, take_until, take_while1},
-    character::complete::{char as nom_char, digit1, multispace0, none_of, anychar},
-    combinator::{map, map_res, opt, recognize, value, not, peek},
-    sequence::{delimited, tuple, pair, preceded},
-    multi::{many0, many1},
+    character::complete::{char as nom_char, digit1, multispace0, none_of /* anychar */}, // anychar was unused
+    combinator::{map, map_res, opt, recognize, value /* not, peek */}, // not, peek were unused
+    sequence::{delimited, tuple, /* pair, */ preceded}, // pair was unused
+    multi::{many0 /* many1 */}, // many1 was unused
 };
 
 // Helper for optional whitespace
@@ -140,7 +140,7 @@ fn parse_interpolation(input: &str) -> BResult<&str, InterpolatedStringPart> {
         delimited(
             nom_char('{'),
             tuple((
-                parse_expression,
+                parse_expression, // This is where parse_expression is used
                 opt(preceded(nom_char(','), parse_expression)), // alignment
                 opt(preceded(nom_char(':'), take_until("}"))), // format string
             )),

@@ -9,4 +9,6 @@ pub mod parser;
 pub mod codegen;
 pub mod compiler;
 pub mod parsers;
-pub mod cli; // Export the CLI module
+pub mod cli;
+pub mod analysis;
+// Export the CLI module

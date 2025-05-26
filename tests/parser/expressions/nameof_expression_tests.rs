@@ -1,8 +1,6 @@
 // Tests for parsing nameof expressions
 
 use bsharp::parser::nodes::expressions::expression::Expression;
-use bsharp::parser::nodes::expressions::nameof_expression::NameofExpression;
-use bsharp::parser::nodes::identifier::Identifier;
 use bsharp::parsers::expressions::expression_parser::parse_expression;
 use bsharp::parsers::expressions::nameof_expression_parser::parse_nameof_expression;
 

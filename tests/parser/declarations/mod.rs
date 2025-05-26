@@ -25,6 +25,7 @@ mod struct_declaration_tests;
 mod namespace_tests;
 mod operator_declaration_tests;
 mod parameter_tests;
+mod parameter_modifier_tests;
 mod property_declaration_tests;
 mod record_declaration_parser_tests;
 mod modifier_tests;

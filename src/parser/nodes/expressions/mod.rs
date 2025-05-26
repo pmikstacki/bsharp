@@ -36,7 +36,7 @@ pub use await_expression::AwaitExpression;
 pub use binary_operator::BinaryOperator;
 pub use checked_expression::{CheckedExpression, UncheckedExpression};
 pub use conditional_expression::ConditionalExpression;
-pub use deconstruction_expression::DeconstructionExpression;
+pub use deconstruction_expression::{DeconstructionExpression, DeconstructionTarget};
 pub use default_expression::DefaultExpression;
 pub use expression::Expression;
 pub use invocation_expression::InvocationExpression;

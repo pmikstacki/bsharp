@@ -1,9 +1,11 @@
 use crate::parser::nodes::expressions::expression::Expression;
 use serde::{Deserialize, Serialize};
-use super::{BreakStatement, CheckedStatement, ContinueStatement, DoWhileStatement, FixedStatement, ForEachStatement, ForStatement, GotoCaseStatement, GotoStatement, IfStatement, LabelStatement, LockStatement, SwitchStatement, TryStatement, UncheckedStatement, UnsafeStatement, UsingStatement, WhileStatement, YieldStatement, LocalFunctionStatement};
+use super::{BreakStatement, CheckedStatement, ContinueStatement, DoWhileStatement, FixedStatement, ForEachStatement, ForStatement, GotoCaseStatement, GotoStatement, IfStatement, LabelStatement, LockStatement, SwitchStatement, TryStatement, UncheckedStatement, UnsafeStatement, UsingStatement, WhileStatement, YieldStatement};
 // Use absolute path
 use crate::parser::nodes::declarations::LocalVariableDeclaration;
 // Use items from same directory's mod.rs
+use crate::parser::nodes::expressions::DeconstructionExpression;
+use crate::parser::nodes::statements::local_function_statement::LocalFunctionStatement;
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub enum Statement {
@@ -33,4 +35,5 @@ pub enum Statement {
     Throw(Option<Box<Expression>>), 
     Block(Vec<Statement>), // Recursive definition
     Empty, // Added Empty variant for empty statements
+    Deconstruction(Box<DeconstructionExpression>), // Added for tuple deconstruction
 }

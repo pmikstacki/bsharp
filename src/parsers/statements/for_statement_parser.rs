@@ -37,6 +37,7 @@ fn parse_for_initializer(input: &str) -> BResult<&str, ForInitializer> {
                 |(const_modifier, ty, declarators)| {
                     ForInitializer::Declaration(LocalVariableDeclaration {
                         is_const: const_modifier.is_some(),
+                        is_ref: false, // For now, ref locals in for loops are not supported
                         declaration_type: ty,
                         declarators,
                     })

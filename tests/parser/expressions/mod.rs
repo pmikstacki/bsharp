@@ -28,6 +28,7 @@ mod pattern_tests;
 mod primary_expression_tests;
 mod query_expression_tests;
 mod range_expression_tests; // New file
+mod ref_expression_tests; // New file for ref expressions
 mod sizeof_expression_tests;
 mod stackalloc_expression_tests;
 // mod switch_expression_tests; // File doesn't exist yet

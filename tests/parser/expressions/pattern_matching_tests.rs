@@ -1,6 +1,5 @@
 use bsharp::parser::nodes::expressions::pattern::*;
 use bsharp::parser::nodes::expressions::expression::Expression;
-use bsharp::parser::nodes::identifier::Identifier;
 use bsharp::parsers::expressions::pattern_parser::parse_pattern;
 use bsharp::parsers::expressions::switch_expression_parser::{parse_switch_expression, parse_is_pattern_expression};
 
@@ -323,5 +322,309 @@ fn test_parse_list_pattern_with_slice() {
         assert!(matches!(patterns[2], ListPatternElement::Pattern(Pattern::Var(_))));
     } else {
         panic!("Expected list pattern with slice, got: {:?}", result);
+    }
+}
+
+// ===== COMPREHENSIVE RECORD PATTERN TESTS =====
+
+#[test]
+fn test_parse_record_pattern_property_syntax() {
+    let result = parse_pattern_test("Person { FirstName: \"John\" }");
+    assert!(result.is_ok(), "Failed to parse record pattern with property syntax: {:?}", result);
+    
+    if let Ok(Pattern::Property { type_name, subpatterns }) = result {
+        assert!(type_name.is_some(), "Expected type name for record pattern");
+        assert_eq!(subpatterns.len(), 1);
+        assert_eq!(subpatterns[0].member_name.name, "FirstName");
+        assert!(matches!(subpatterns[0].pattern, Pattern::Constant(_)));
+    } else {
+        panic!("Expected record property pattern, got: {:?}", result);
+    }
+}
+
+#[test]
+fn test_parse_record_pattern_multiple_properties() {
+    let result = parse_pattern_test("Person { FirstName: \"John\", LastName: \"Doe\", Age: > 18 }");
+    assert!(result.is_ok(), "Failed to parse record pattern with multiple properties: {:?}", result);
+    
+    if let Ok(Pattern::Property { type_name, subpatterns }) = result {
+        assert!(type_name.is_some(), "Expected type name for record pattern");
+        assert_eq!(subpatterns.len(), 3);
+        
+        assert_eq!(subpatterns[0].member_name.name, "FirstName");
+        assert!(matches!(subpatterns[0].pattern, Pattern::Constant(_)));
+        
+        assert_eq!(subpatterns[1].member_name.name, "LastName");
+        assert!(matches!(subpatterns[1].pattern, Pattern::Constant(_)));
+        
+        assert_eq!(subpatterns[2].member_name.name, "Age");
+        assert!(matches!(subpatterns[2].pattern, Pattern::Relational { .. }));
+    } else {
+        panic!("Expected record property pattern, got: {:?}", result);
+    }
+}
+
+#[test]
+fn test_parse_record_pattern_with_var_patterns() {
+    let result = parse_pattern_test("Person { FirstName: var first, LastName: var last }");
+    assert!(result.is_ok(), "Failed to parse record pattern with var patterns: {:?}", result);
+    
+    if let Ok(Pattern::Property { type_name, subpatterns }) = result {
+        assert!(type_name.is_some(), "Expected type name for record pattern");
+        assert_eq!(subpatterns.len(), 2);
+        
+        assert_eq!(subpatterns[0].member_name.name, "FirstName");
+        assert!(matches!(subpatterns[0].pattern, Pattern::Var(_)));
+        
+        assert_eq!(subpatterns[1].member_name.name, "LastName");
+        assert!(matches!(subpatterns[1].pattern, Pattern::Var(_)));
+    } else {
+        panic!("Expected record property pattern with var patterns, got: {:?}", result);
+    }
+}
+
+#[test]
+fn test_parse_record_pattern_positional_syntax() {
+    let result = parse_pattern_test("Person(\"John\", \"Doe\")");
+    assert!(result.is_ok(), "Failed to parse record pattern with positional syntax: {:?}", result);
+    
+    if let Ok(Pattern::Positional { type_name, subpatterns }) = result {
+        assert!(type_name.is_some(), "Expected type name for record pattern");
+        assert_eq!(subpatterns.len(), 2);
+        assert!(subpatterns.iter().all(|p| matches!(p, Pattern::Constant(_))));
+    } else {
+        panic!("Expected record positional pattern, got: {:?}", result);
+    }
+}
+
+#[test]
+fn test_parse_record_pattern_positional_with_var() {
+    let result = parse_pattern_test("Person(var first, var last)");
+    assert!(result.is_ok(), "Failed to parse record pattern with positional var: {:?}", result);
+    
+    if let Ok(Pattern::Positional { type_name, subpatterns }) = result {
+        assert!(type_name.is_some(), "Expected type name for record pattern");
+        assert_eq!(subpatterns.len(), 2);
+        assert!(subpatterns.iter().all(|p| matches!(p, Pattern::Var(_))));
+    } else {
+        panic!("Expected record positional pattern with var, got: {:?}", result);
+    }
+}
+
+#[test]
+fn test_parse_record_pattern_positional_mixed() {
+    let result = parse_pattern_test("Person(\"John\", var last, > 18)");
+    assert!(result.is_ok(), "Failed to parse record pattern with mixed positional: {:?}", result);
+    
+    if let Ok(Pattern::Positional { type_name, subpatterns }) = result {
+        assert!(type_name.is_some(), "Expected type name for record pattern");
+        assert_eq!(subpatterns.len(), 3);
+        assert!(matches!(subpatterns[0], Pattern::Constant(_)));
+        assert!(matches!(subpatterns[1], Pattern::Var(_)));
+        assert!(matches!(subpatterns[2], Pattern::Relational { .. }));
+    } else {
+        panic!("Expected record positional pattern with mixed patterns, got: {:?}", result);
+    }
+}
+
+#[test]
+fn test_parse_nested_record_pattern() {
+    let result = parse_pattern_test("Person { Address: { City: \"NYC\" } }");
+    assert!(result.is_ok(), "Failed to parse nested record pattern: {:?}", result);
+    
+    if let Ok(Pattern::Property { type_name, subpatterns }) = result {
+        assert!(type_name.is_some(), "Expected type name for record pattern");
+        assert_eq!(subpatterns.len(), 1);
+        assert_eq!(subpatterns[0].member_name.name, "Address");
+        assert!(matches!(subpatterns[0].pattern, Pattern::Property { .. }));
+    } else {
+        panic!("Expected nested record pattern, got: {:?}", result);
+    }
+}
+
+#[test]
+fn test_parse_record_pattern_with_discard() {
+    let result = parse_pattern_test("Person { FirstName: var name, LastName: _ }");
+    assert!(result.is_ok(), "Failed to parse record pattern with discard: {:?}", result);
+    
+    if let Ok(Pattern::Property { type_name, subpatterns }) = result {
+        assert!(type_name.is_some(), "Expected type name for record pattern");
+        assert_eq!(subpatterns.len(), 2);
+        
+        assert_eq!(subpatterns[0].member_name.name, "FirstName");
+        assert!(matches!(subpatterns[0].pattern, Pattern::Var(_)));
+        
+        assert_eq!(subpatterns[1].member_name.name, "LastName");
+        assert!(matches!(subpatterns[1].pattern, Pattern::Discard));
+    } else {
+        panic!("Expected record pattern with discard, got: {:?}", result);
+    }
+}
+
+#[test]
+fn test_parse_generic_record_pattern() {
+    let result = parse_pattern_test("Result<string>(var value)");
+    assert!(result.is_ok(), "Failed to parse generic record pattern: {:?}", result);
+    
+    if let Ok(Pattern::Positional { type_name, subpatterns }) = result {
+        assert!(type_name.is_some(), "Expected type name for generic record pattern");
+        assert_eq!(subpatterns.len(), 1);
+        assert!(matches!(subpatterns[0], Pattern::Var(_)));
+    } else {
+        panic!("Expected generic record pattern, got: {:?}", result);
+    }
+}
+
+#[test]
+fn test_parse_qualified_record_pattern() {
+    let result = parse_pattern_test("MyNamespace.Person { Name: var name }");
+    assert!(result.is_ok(), "Failed to parse qualified record pattern: {:?}", result);
+    
+    if let Ok(Pattern::Property { type_name, subpatterns }) = result {
+        assert!(type_name.is_some(), "Expected type name for qualified record pattern");
+        assert_eq!(subpatterns.len(), 1);
+        assert_eq!(subpatterns[0].member_name.name, "Name");
+        assert!(matches!(subpatterns[0].pattern, Pattern::Var(_)));
+    } else {
+        panic!("Expected qualified record pattern, got: {:?}", result);
+    }
+}
+
+#[test]
+fn test_parse_record_pattern_in_switch_expression() {
+    let result = parse_switch_test("person switch { Person { Age: > 18 } => \"adult\", Person { Age: <= 18 } => \"minor\", _ => \"unknown\" }");
+    assert!(result.is_ok(), "Failed to parse switch expression with record patterns: {:?}", result);
+    
+    if let Ok(Expression::SwitchExpression(switch_expr)) = result {
+        assert_eq!(switch_expr.arms.len(), 3);
+        
+        // Check first arm has record pattern
+        assert!(matches!(switch_expr.arms[0].pattern, Pattern::Property { .. }));
+        
+        // Check second arm has record pattern
+        assert!(matches!(switch_expr.arms[1].pattern, Pattern::Property { .. }));
+        
+        // Check third arm is discard
+        assert!(matches!(switch_expr.arms[2].pattern, Pattern::Discard));
+    } else {
+        panic!("Expected switch expression with record patterns, got: {:?}", result);
+    }
+}
+
+#[test]
+fn test_parse_record_pattern_with_relational_and_logical() {
+    let result = parse_pattern_test("Person { Age: > 18 and < 65, Name: not null }");
+    assert!(result.is_ok(), "Failed to parse record pattern with complex sub-patterns: {:?}", result);
+    
+    if let Ok(Pattern::Property { type_name, subpatterns }) = result {
+        assert!(type_name.is_some(), "Expected type name for record pattern");
+        assert_eq!(subpatterns.len(), 2);
+        
+        assert_eq!(subpatterns[0].member_name.name, "Age");
+        assert!(matches!(subpatterns[0].pattern, Pattern::LogicalAnd(_, _)));
+        
+        assert_eq!(subpatterns[1].member_name.name, "Name");
+        assert!(matches!(subpatterns[1].pattern, Pattern::Not(_)));
+    } else {
+        panic!("Expected record pattern with complex sub-patterns, got: {:?}", result);
+    }
+}
+
+#[test]
+fn test_parse_record_pattern_empty() {
+    let result = parse_pattern_test("Person { }");
+    assert!(result.is_ok(), "Failed to parse empty record pattern: {:?}", result);
+    
+    if let Ok(Pattern::Property { type_name, subpatterns }) = result {
+        assert!(type_name.is_some(), "Expected type name for record pattern");
+        assert_eq!(subpatterns.len(), 0);
+    } else {
+        panic!("Expected empty record pattern, got: {:?}", result);
+    }
+}
+
+#[test]
+fn test_parse_positional_record_pattern_empty() {
+    let result = parse_pattern_test("Person()");
+    assert!(result.is_ok(), "Failed to parse empty positional record pattern: {:?}", result);
+    
+    if let Ok(Pattern::Positional { type_name, subpatterns }) = result {
+        assert!(type_name.is_some(), "Expected type name for record pattern");
+        assert_eq!(subpatterns.len(), 0);
+    } else {
+        panic!("Expected empty positional record pattern, got: {:?}", result);
+    }
+}
+
+#[test]
+fn test_parse_complex_nested_record_pattern() {
+    let result = parse_pattern_test("Order { Customer: Person { Name: var customerName }, Items: [var first, ..] }");
+    assert!(result.is_ok(), "Failed to parse complex nested record pattern: {:?}", result);
+    
+    if let Ok(Pattern::Property { type_name, subpatterns }) = result {
+        assert!(type_name.is_some(), "Expected type name for record pattern");
+        assert_eq!(subpatterns.len(), 2);
+        
+        // Check Customer property has nested record pattern
+        assert_eq!(subpatterns[0].member_name.name, "Customer");
+        assert!(matches!(subpatterns[0].pattern, Pattern::Property { .. }));
+        
+        // Check Items property has list pattern
+        assert_eq!(subpatterns[1].member_name.name, "Items");
+        assert!(matches!(subpatterns[1].pattern, Pattern::List { .. }));
+    } else {
+        panic!("Expected complex nested record pattern, got: {:?}", result);
+    }
+}
+
+#[test]
+fn test_parse_record_pattern_is_expression() {
+    let result = parse_is_pattern_test("obj is Person { Name: var name }");
+    assert!(result.is_ok(), "Failed to parse is expression with record pattern: {:?}", result);
+    
+    if let Ok(Expression::IsPattern { expression, pattern }) = result {
+        assert!(matches!(expression.as_ref(), Expression::Variable(_)));
+        assert!(matches!(pattern.as_ref(), Pattern::Property { .. }));
+    } else {
+        panic!("Expected is expression with record pattern, got: {:?}", result);
+    }
+}
+
+#[test]
+fn test_parse_record_pattern_whitespace_variations() {
+    let inputs = vec![
+        "Person{Name:var name}",
+        "Person { Name : var name }",
+        "Person{\n    Name: var name\n}",
+        "Person\n{\n    Name:\n        var name\n}",
+    ];
+    
+    for input in inputs {
+        let result = parse_pattern_test(input);
+        assert!(result.is_ok(), "Failed to parse record pattern with whitespace variation '{}': {:?}", input, result);
+        
+        if let Ok(Pattern::Property { type_name, subpatterns }) = result {
+            assert!(type_name.is_some(), "Expected type name for record pattern");
+            assert_eq!(subpatterns.len(), 1);
+            assert_eq!(subpatterns[0].member_name.name, "Name");
+        } else {
+            panic!("Expected record pattern for input '{}', got: {:?}", input, result);
+        }
+    }
+}
+
+#[test]
+fn test_parse_record_pattern_errors() {
+    let invalid_inputs = vec![
+        "Person { : var name }",  // Missing property name
+        "Person { Name }",        // Missing pattern
+        "Person { Name: }",       // Missing pattern after colon
+        "Person Name: var name }", // Missing opening brace
+        "Person { Name: var name", // Missing closing brace
+    ];
+    
+    for input in invalid_inputs {
+        let result = parse_pattern_test(input);
+        assert!(result.is_err(), "Expected error for invalid record pattern '{}', got: {:?}", input, result);
     }
 } 

@@ -167,11 +167,42 @@ impl CodeGenerator {
         // TODO: Implement compilation logic
         // For now, just process the AST structure and perhaps define functions
 
+        // Handle global attributes (assembly and module metadata)
+        if !ast.global_attributes.is_empty() {
+            println!("Processing {} global attributes", ast.global_attributes.len());
+            for global_attr in &ast.global_attributes {
+                println!("Global attribute: {} -> {}", 
+                    global_attr.target.name, 
+                    global_attr.attribute.name.name);
+                // TODO: Implement metadata handling for assembly/module attributes
+                // These typically affect metadata generation rather than code generation
+            }
+        }
+
+        // Handle file-scoped namespace first if present
+        if let Some(file_scoped_ns) = &ast.file_scoped_namespace {
+            println!("Compiling file-scoped namespace: {}", file_scoped_ns.name.name);
+            for ns_member in &file_scoped_ns.declarations {
+                if let NamespaceBodyDeclaration::Class(class_decl) = ns_member {
+                    do_compile_class(class_decl, &mut self.module, &mut self.builder_context, &mut self.context)?;
+                }
+            }
+        }
+
+        // Handle top-level declarations
         for declaration in &ast.declarations {
             match declaration {
                 ast::TopLevelDeclaration::Namespace(ns) => {
                     // TODO: Handle namespace scoping in bytecode
                     for ns_member in &ns.declarations {
+                        if let NamespaceBodyDeclaration::Class(class_decl) = ns_member {
+                            do_compile_class(class_decl, &mut self.module, &mut self.builder_context, &mut self.context)?;
+                        }
+                    }
+                }
+                ast::TopLevelDeclaration::FileScopedNamespace(file_scoped_ns) => {
+                    println!("Compiling file-scoped namespace declaration: {}", file_scoped_ns.name.name);
+                    for ns_member in &file_scoped_ns.declarations {
                         if let NamespaceBodyDeclaration::Class(class_decl) = ns_member {
                             do_compile_class(class_decl, &mut self.module, &mut self.builder_context, &mut self.context)?;
                         }
@@ -195,6 +226,21 @@ impl CodeGenerator {
                 ast::TopLevelDeclaration::Delegate(_delegate_decl) => {
                     return Err("Delegate compilation not implemented yet".to_string());
                 }
+                ast::TopLevelDeclaration::GlobalAttribute(_global_attr) => {
+                    // Global attributes are already processed above
+                    // They don't generate code directly, just metadata
+                    continue;
+                }
+            }
+        }
+
+        // Handle top-level statements (C# 9+)
+        if !ast.top_level_statements.is_empty() {
+            println!("Compiling {} top-level statements", ast.top_level_statements.len());
+            // TODO: Create a synthetic Main method for top-level statements
+            // For now, just log that we found them
+            for (i, _stmt) in ast.top_level_statements.iter().enumerate() {
+                println!("Top-level statement {}: (compilation not yet implemented)", i + 1);
             }
         }
 

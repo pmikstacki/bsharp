@@ -59,25 +59,36 @@ fn parse_single_modifier(input: &str) -> BResult<&str, Modifier> {
 
 /// Parse and validate modifiers for a specific declaration type
 pub fn parse_modifiers_for_decl_type<'a>(input: &'a str, decl_type: &str) -> BResult<&'a str, Vec<Modifier>> {
-    // Reverted to many0(bws(parse_single_modifier))
-    // bws around parse_single_modifier handles spaces between and potentially after the list.
-    let (input, mut modifiers) = many0(bws(parse_single_modifier))(input)?;
+    let mut modifiers = Vec::new();
+    let mut current_input = input;
     
     // Get compatible modifiers for this declaration type
     let compatible_modifiers = Modifier::get_compatible_modifiers_for(decl_type);
     
-    // Check if all parsed modifiers are compatible with the declaration type
-    for modifier in &modifiers {
-        if !compatible_modifiers.contains(modifier) {
-            return Err(nom::Err::Error(BSharpParseError::from_error_kind(input, nom::error::ErrorKind::Tag)));
-        }
-    }
-    
-    // Check for incompatible modifier combinations
-    for (i, mod1) in modifiers.iter().enumerate() {
-        for (j, mod2) in modifiers.iter().enumerate() {
-            if i != j && mod1.is_incompatible_with(mod2) {
-                return Err(nom::Err::Error(BSharpParseError::from_error_kind(input, nom::error::ErrorKind::Tag)));
+    // Parse modifiers one by one and validate compatibility immediately
+    loop {
+        // Try to parse a modifier with whitespace
+        match bws(parse_single_modifier)(current_input) {
+            Ok((remaining_input, modifier)) => {
+                // Check if this modifier is compatible with the declaration type
+                if !compatible_modifiers.contains(&modifier) {
+                    // Incompatible modifier found - stop parsing and don't consume it
+                    break;
+                }
+                
+                // Check for incompatible modifier combinations with already parsed modifiers
+                for existing_modifier in &modifiers {
+                    if modifier.is_incompatible_with(existing_modifier) {
+                        return Err(nom::Err::Error(BSharpParseError::from_error_kind(current_input, nom::error::ErrorKind::Tag)));
+                    }
+                }
+                
+                modifiers.push(modifier);
+                current_input = remaining_input;
+            }
+            Err(_) => {
+                // No more modifiers to parse
+                break;
             }
         }
     }
@@ -85,7 +96,7 @@ pub fn parse_modifiers_for_decl_type<'a>(input: &'a str, decl_type: &str) -> BRe
     // Order modifiers according to C# conventions
     Modifier::order_modifiers(&mut modifiers);
     
-    Ok((input, modifiers))
+    Ok((current_input, modifiers))
 }
 
 // Parse zero or more modifiers (for backward compatibility or general use)

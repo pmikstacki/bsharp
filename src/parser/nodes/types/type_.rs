@@ -21,6 +21,7 @@ pub enum Type {
         return_type: Box<Type>,
     },
     NullableReference(Box<Type>), // C# 8+ nullable reference types (string?)
+    RefReturn(Box<Type>), // ref return types (ref int, ref MyClass)
 }
 
 // Helper functions can be added here, e.g., for checking type compatibility

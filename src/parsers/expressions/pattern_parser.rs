@@ -1,9 +1,6 @@
 use crate::parser::errors::BResult;
 use crate::parser::nodes::expressions::expression::Expression;
 use crate::parser::nodes::expressions::pattern::*;
-use crate::parser::nodes::expressions::literal::Literal;
-use crate::parser::nodes::identifier::Identifier;
-use crate::parser::nodes::types::Type;
 use crate::parser::parser_helpers::{bws, keyword};
 use crate::parsers::expressions::literal_parser::parse_literal;
 use crate::parsers::identifier_parser::parse_identifier;
@@ -12,9 +9,9 @@ use crate::parsers::types::type_parser::parse_type_expression;
 use nom::{
     branch::alt,
     bytes::complete::tag,
-    character::complete::char as nom_char,
+    character::complete::{char as nom_char},
     combinator::{map, opt},
-    multi::{separated_list0, separated_list1},
+    multi::{separated_list0},
     sequence::{delimited, preceded, tuple},
 };
 

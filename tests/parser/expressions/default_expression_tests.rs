@@ -1,9 +1,7 @@
 // Tests for parsing default expressions
 
 use bsharp::parser::nodes::expressions::expression::Expression;
-use bsharp::parser::nodes::expressions::default_expression::DefaultExpression;
 use bsharp::parser::nodes::types::{Type, PrimitiveType};
-use bsharp::parser::nodes::identifier::Identifier;
 use bsharp::parsers::expressions::expression_parser::parse_expression;
 use bsharp::parsers::expressions::default_expression_parser::parse_default_expression;
 

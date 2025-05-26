@@ -113,12 +113,14 @@ fn generate_svg_ast(ast: &ast::CompilationUnit, _output_path: &Path) -> Result<S
 
         let member_label = match member {
             ast::TopLevelDeclaration::Namespace(ns) => format!("Namespace: {}", ns.name.name),
+            ast::TopLevelDeclaration::FileScopedNamespace(file_scoped_ns) => format!("File-Scoped Namespace: {}", file_scoped_ns.name.name),
             ast::TopLevelDeclaration::Class(cl) => format!("Class: {}", cl.name.name),
             ast::TopLevelDeclaration::Interface(iface) => format!("Interface: {}", iface.name.name),
             ast::TopLevelDeclaration::Struct(st) => format!("Struct: {}", st.name.name),
             ast::TopLevelDeclaration::Enum(enum_decl) => format!("Enum: {}", enum_decl.name.name),
             ast::TopLevelDeclaration::Record(rec) => format!("Record: {}", rec.name.name),
             ast::TopLevelDeclaration::Delegate(del) => format!("Delegate: {}", del.name.name),
+            ast::TopLevelDeclaration::GlobalAttribute(global_attr) => format!("Global Attribute: {} -> {}", global_attr.target.name, global_attr.attribute.name.name),
         };
 
         let member_node = svg::node::element::Rectangle::new()

@@ -35,19 +35,21 @@ pub fn parse_variable_declarator(input: &str) -> BResult<&str, VariableDeclarato
     )(input)
 }
 
-// Parse a local variable declaration: [const] <type> <declarator> (, <declarator>)* ;
+// Parse a local variable declaration: [const] [ref] <type> <declarator> (, <declarator>)* ;
 pub fn parse_local_variable_declaration(input: &str) -> BResult<&str, LocalVariableDeclaration> {
     bs_context(
         "local variable declaration",
         map(
             tuple((
                 opt(keyword("const")), // Optionally parse "const"
+                opt(keyword("ref")), // Optionally parse "ref"
                 bws(nom_to_bs(parse_type_expression)),
                 separated_list1(bws(bchar(',')), parse_variable_declarator),
                 bws(bchar(';')) 
             )),
-            |(const_modifier, ty, declarators, _)| LocalVariableDeclaration {
+            |(const_modifier, ref_modifier, ty, declarators, _)| LocalVariableDeclaration {
                 is_const: const_modifier.is_some(), // Check if 'const' was present
+                is_ref: ref_modifier.is_some(), // Check if 'ref' was present
                 declaration_type: ty,
                 declarators
             }

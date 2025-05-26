@@ -2,11 +2,7 @@
 
 use bsharp::parser::nodes::declarations::{GlobalAttribute, Attribute};
 use bsharp::parser::nodes::identifier::Identifier;
-
-// Placeholder parser function
-fn parse_global_attribute(code: &str) -> Result<GlobalAttribute, String> {
-    Err(format!("Parser not yet implemented: {}", code))
-}
+use bsharp::parsers::declarations::global_attribute_parser::parse_global_attribute;
 
 #[test]
 fn test_parse_global_attribute() {
@@ -15,6 +11,37 @@ fn test_parse_global_attribute() {
         target: Identifier { name: "assembly".to_string() },
         attribute: Attribute { name: Identifier { name: "MyAttr".to_string() }, arguments: vec![] },
     };
-    // assert_eq!(parse_global_attribute(code), Ok(expected)); // Uncomment when implemented
-    assert!(parse_global_attribute(code).is_err());
+    
+    let result = parse_global_attribute(code);
+    assert!(result.is_ok(), "Failed to parse global attribute: {:?}", result);
+    
+    let (remaining, actual) = result.unwrap();
+    assert_eq!(remaining, "");
+    assert_eq!(actual, expected);
+}
+
+#[test]
+fn test_parse_module_attribute() {
+    let code = "[module: TestAttribute]";
+    let result = parse_global_attribute(code);
+    assert!(result.is_ok(), "Failed to parse module attribute: {:?}", result);
+    
+    let (remaining, attr) = result.unwrap();
+    assert_eq!(remaining, "");
+    assert_eq!(attr.target.name, "module");
+    assert_eq!(attr.attribute.name.name, "TestAttribute");
+    assert!(attr.attribute.arguments.is_empty());
+}
+
+#[test]
+fn test_parse_assembly_attribute_with_arguments() {
+    let code = "[assembly: AssemblyVersion(\"1.0.0.0\")]";
+    let result = parse_global_attribute(code);
+    assert!(result.is_ok(), "Failed to parse assembly attribute with arguments: {:?}", result);
+    
+    let (remaining, attr) = result.unwrap();
+    assert_eq!(remaining, "");
+    assert_eq!(attr.target.name, "assembly");
+    assert_eq!(attr.attribute.name.name, "AssemblyVersion");
+    assert_eq!(attr.attribute.arguments.len(), 1);
 }

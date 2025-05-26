@@ -1,9 +1,7 @@
 // Tests for parsing throw expressions
 
 use bsharp::parser::nodes::expressions::expression::Expression;
-use bsharp::parser::nodes::expressions::throw_expression::ThrowExpression;
 use bsharp::parser::nodes::expressions::literal::Literal;
-use bsharp::parser::nodes::identifier::Identifier;
 use bsharp::parsers::expressions::expression_parser::parse_expression;
 use bsharp::parsers::expressions::throw_expression_parser::parse_throw_expression;
 

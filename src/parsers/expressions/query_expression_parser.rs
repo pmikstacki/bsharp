@@ -9,10 +9,10 @@ use crate::parsers::identifier_parser::parse_identifier;
 use nom::{
     branch::alt,
     bytes::complete::tag,
-    character::complete::alpha1,
+    character::complete::{alpha1},
     combinator::{map, not, opt, peek},
     multi::{many0, separated_list1},
-    sequence::{pair, preceded, terminated, tuple},
+    sequence::{preceded, terminated, tuple},
 };
 
 // Helper to ensure we match complete words, not prefixes
@@ -203,12 +203,12 @@ fn parse_ordering(input: &str) -> BResult<&str, OrderByOrdering> {
         |(expression, direction)| OrderByOrdering {
             expression,
             direction,
-            identifier: Identifier::new(""), // This might need to be adjusted based on the actual AST structure
+            identifier: Identifier::new(""),
         }
     )(input)
 }
 
-/// Parse 'select' or 'group' clause that concludes the query
+/// Parse 'select' or 'group' clause
 fn parse_select_or_group_clause(input: &str) -> BResult<&str, QuerySelectOrGroup> {
     alt((
         parse_select_clause,
@@ -220,7 +220,7 @@ fn parse_select_or_group_clause(input: &str) -> BResult<&str, QuerySelectOrGroup
 fn parse_select_clause(input: &str) -> BResult<&str, QuerySelectOrGroup> {
     map(
         preceded(keyword("select"), bws(parse_expression)),
-        QuerySelectOrGroup::Select
+        |expression| QuerySelectOrGroup::Select(expression)
     )(input)
 }
 
@@ -229,9 +229,9 @@ fn parse_group_clause(input: &str) -> BResult<&str, QuerySelectOrGroup> {
     map(
         tuple((
             keyword("group"),
-            bws(parse_expression), // Element expression
-            keyword("by"),
-            bws(parse_expression), // Key expression
+            bws(parse_expression),
+            bws(keyword("by")),
+            bws(parse_expression),
         )),
         |(_, element, _, by)| QuerySelectOrGroup::Group { element, by }
     )(input)
@@ -246,10 +246,12 @@ fn parse_query_continuation(input: &str) -> BResult<&str, QueryContinuation> {
             many0(parse_query_clause),
             parse_select_or_group_clause,
         )),
-        |(_, identifier, body, select_or_group)| QueryContinuation {
-            identifier,
-            body,
-            select_or_group,
+        |(_, identifier, body, select_or_group)| {
+            QueryContinuation {
+                identifier,
+                body,
+                select_or_group,
+            }
         }
     )(input)
 } 

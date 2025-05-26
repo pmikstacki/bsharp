@@ -3,7 +3,7 @@ use crate::parser::nodes::declarations::attribute::{Attribute, AttributeList};
 use crate::parser::nodes::expressions::expression::Expression;
 use crate::parser::parser_helpers::{bchar, bs_context, bws, nom_to_bs};
 use crate::parsers::expressions::expression_parser::parse_expression;
-use crate::parsers::identifier_parser::parse_identifier;
+use crate::parsers::identifier_parser::{parse_identifier, parse_qualified_name};
 use nom::{
     character::complete::{char as nom_char, multispace0},
     combinator::{map, opt},
@@ -66,8 +66,8 @@ pub fn parse_attribute(input: &str) -> BResult<&str, Attribute> {
         "attribute",
         map(
             tuple((
-                // Attribute name
-                parse_identifier,
+                // Attribute name (qualified name like System.Reflection.AssemblyVersion)
+                parse_qualified_name,
                 // Optional argument list
                 opt(delimited(
                     bws(bchar('(')),
@@ -75,9 +75,13 @@ pub fn parse_attribute(input: &str) -> BResult<&str, Attribute> {
                     bws(bchar(')')),
                 )),
             )),
-            |(name, arguments)| Attribute {
-                name,
-                arguments: arguments.unwrap_or_default(),
+            |(name_parts, arguments)| {
+                // Convert qualified name to single identifier by joining with dots
+                let name_str = name_parts.iter().map(|id| id.name.clone()).collect::<Vec<_>>().join(".");
+                Attribute {
+                    name: crate::parser::nodes::identifier::Identifier { name: name_str },
+                    arguments: arguments.unwrap_or_default(),
+                }
             },
         ),
     )(input)

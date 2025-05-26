@@ -5,7 +5,6 @@ use crate::parser::nodes::expressions::conditional_expression::ConditionalExpres
 use crate::parser::nodes::expressions::expression::Expression;
 use crate::parser::nodes::expressions::indexing_expression::IndexingExpression;
 use crate::parser::nodes::expressions::invocation_expression::InvocationExpression;
-use crate::parser::nodes::expressions::literal::Literal;
 use crate::parser::nodes::expressions::member_access_expression::MemberAccessExpression;
 use crate::parser::nodes::expressions::new_expression::NewExpression;
 use crate::parser::nodes::expressions::anonymous_object_creation_expression::{AnonymousObjectCreationExpression, AnonymousObjectMember};
@@ -26,6 +25,7 @@ use crate::parsers::expressions::typeof_expression_parser::parse_typeof_expressi
 use crate::parsers::expressions::sizeof_expression_parser::parse_sizeof_expression;
 use crate::parsers::expressions::default_expression_parser::parse_default_expression;
 use crate::parsers::expressions::stackalloc_expression_parser::parse_stackalloc_expression;
+use crate::parsers::expressions::ref_expression_parser::parse_ref_expression;
 use crate::parsers::identifier_parser::parse_identifier;
 use crate::parsers::types::type_parser::parse_type_expression;
 
@@ -370,6 +370,11 @@ enum PostfixOpKind {
 }
 
 fn parse_unary_expression_or_higher(input: &str) -> BResult<&str, Expression> {
+    // Try ref expression first
+    if let Ok((input, ref_expr)) = parse_ref_expression(input) {
+        return Ok((input, ref_expr));
+    }
+    
     // Try prefix unary operators first
     if let Ok((input, op)) = bws(alt((
         map(bchar('+'), |_| UnaryOperator::Plus),

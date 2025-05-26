@@ -141,11 +141,19 @@ fn parse_pointer_suffix(input: &str) -> BResult<&str, ()> {
     value((), nom_char('*'))(input)
 }
 
+// Parse a ref return type (ref Type)
+fn parse_ref_return_type(input: &str) -> BResult<&str, Type> {
+    let (input, _) = bws(nom_to_bs(terminated(tag::<&str, &str, nom::error::Error<&str>>("ref"), word_boundary)))(input)?;
+    let (input, inner_type) = parse_type_expression(input)?;
+    Ok((input, Type::RefReturn(Box::new(inner_type))))
+}
+
 // Main type parser: handles primitives, identifiers, arrays, nullables, pointers, function pointers
 pub fn parse_type_expression(input: &str) -> BResult<&str, Type> {
-    // Try function pointer first, then primitive, then identifier
+    // Try function pointer first, then ref return, then primitive, then identifier
     let (input, ty) = alt((
         parse_function_pointer_type,
+        parse_ref_return_type,
         parse_primitive_type,
         parse_identifier_type,
     ))(input)?;

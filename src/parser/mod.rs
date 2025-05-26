@@ -3,11 +3,11 @@ pub mod nodes;
 pub mod errors;
 pub mod parser_helpers;
 pub mod test_helpers;
-pub mod analysis;     // AST analysis functionality (replaces factories)
+// pub mod analysis;     // AST analysis functionality (replaces factories) - MOVED TO src/analysis/
 pub mod navigation;   // AST navigation functionality (replaces ast_node)
 pub mod comment_parser;
 // Re-export the new idiomatic traits for easy access
-pub use analysis::{AstAnalysis, AstAnalyze};
+// pub use analysis::{AstAnalysis, AstAnalyze}; // MOVED TO src/analysis/
 pub use navigation::{AstNavigate, FindDeclarations};
 
 //------------------------------------------------------------------------------
