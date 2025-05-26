@@ -1,11 +1,11 @@
 
 # Parser Overview
 
-The BSharp parser is the core component responsible for transforming C# source code into a structured Abstract Syntax Tree (AST). Built using the `nom` parser combinator library, it provides a robust and extensible foundation for parsing modern C# syntax.
+The BSharp parser is the core component of an alternative C# compiler implementation, responsible for transforming C# source code into a structured Abstract Syntax Tree (AST). Built using the `nom` parser combinator library, it provides a robust and extensible foundation for parsing modern C# syntax as part of a complete compiler toolchain.
 
 ## Architecture
 
-The parser follows a modular architecture with clear separation of concerns:
+As part of the BSharp compiler, the parser follows a modular architecture with clear separation of concerns. The parser serves as the frontend of the compiler pipeline, feeding structured AST data to subsequent compilation phases:
 
 ### Core Parser Infrastructure (`src/parser/`)
 
@@ -152,4 +152,4 @@ The parser uses a multi-layered error handling approach:
 3. **Recovery Mechanisms**: Ability to continue parsing after certain types of errors
 4. **User-Friendly Messages**: Clear, actionable error messages for developers
 
-This design makes the parser both robust for production use and helpful for development and debugging.
+This design makes the parser both robust for production compiler use and helpful for development and debugging. While the complete compiler backend is still under development, the parser provides a solid foundation for the full C# compilation pipeline that BSharp aims to deliver.
