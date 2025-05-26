@@ -3,6 +3,7 @@ run = "cargo run"
 
 [nix]
 channel = "stable-24_05"
+packages = ["mdbook"]
 
 [deployment]
 run = ["sh", "-c", "cargo run"]
