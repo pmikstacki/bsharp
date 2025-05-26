@@ -117,6 +117,8 @@ fn test_analyze_simple_class() {
         base_types: Vec::new(),
         body_declarations: vec![
             ClassBodyDeclaration::Method(MethodDeclaration {
+                documentation: None,
+                attributes: Vec::new(),
                 modifiers: vec![bsharp::parser::nodes::declarations::Modifier::Public],
                 return_type: Type::Primitive(PrimitiveType::Void),
                 name: create_test_identifier("TestMethod"),
@@ -126,8 +128,10 @@ fn test_analyze_simple_class() {
                 body: None,
             }),
             ClassBodyDeclaration::Field(FieldDeclaration {
+                documentation: None,
+                attributes: Vec::new(),
                 modifiers: vec![bsharp::parser::nodes::declarations::Modifier::Private],
-                ty: Type::Primitive(PrimitiveType::Int),
+                field_type: Type::Primitive(PrimitiveType::Int),
                 name: create_test_identifier("testField"),
                 initializer: None,
             }),
@@ -179,6 +183,8 @@ fn test_analyze_complex_class() {
         body_declarations: vec![
             // Multiple public methods without documentation
             ClassBodyDeclaration::Method(MethodDeclaration {
+                documentation: None,
+                attributes: Vec::new(),
                 modifiers: vec![bsharp::parser::nodes::declarations::Modifier::Public],
                 return_type: Type::Primitive(PrimitiveType::Void),
                 name: create_test_identifier("Method1"),
@@ -188,6 +194,8 @@ fn test_analyze_complex_class() {
                 body: None,
             }),
             ClassBodyDeclaration::Method(MethodDeclaration {
+                documentation: None,
+                attributes: Vec::new(),
                 modifiers: vec![bsharp::parser::nodes::declarations::Modifier::Public],
                 return_type: Type::Primitive(PrimitiveType::Void),
                 name: create_test_identifier("Method2"),
@@ -197,6 +205,8 @@ fn test_analyze_complex_class() {
                 body: None,
             }),
             ClassBodyDeclaration::Method(MethodDeclaration {
+                documentation: None,
+                attributes: Vec::new(),
                 modifiers: vec![bsharp::parser::nodes::declarations::Modifier::Public],
                 return_type: Type::Primitive(PrimitiveType::Void),
                 name: create_test_identifier("Method3"),
@@ -207,28 +217,36 @@ fn test_analyze_complex_class() {
             }),
             // Multiple fields
             ClassBodyDeclaration::Field(FieldDeclaration {
+                documentation: None,
+                attributes: Vec::new(),
                 modifiers: vec![bsharp::parser::nodes::declarations::Modifier::Private],
-                ty: Type::Primitive(PrimitiveType::Int),
+                field_type: Type::Primitive(PrimitiveType::Int),
                 name: create_test_identifier("field1"),
                 initializer: None,
             }),
             ClassBodyDeclaration::Field(FieldDeclaration {
+                documentation: None,
+                attributes: Vec::new(),
                 modifiers: vec![bsharp::parser::nodes::declarations::Modifier::Private],
-                ty: Type::Primitive(PrimitiveType::String),
+                field_type: Type::Primitive(PrimitiveType::String),
                 name: create_test_identifier("field2"),
                 initializer: None,
             }),
             // Properties
             ClassBodyDeclaration::Property(PropertyDeclaration {
+                documentation: None,
+                attributes: Vec::new(),
                 modifiers: vec![bsharp::parser::nodes::declarations::Modifier::Public],
-                ty: Type::Primitive(PrimitiveType::String),
+                property_type: Type::Primitive(PrimitiveType::String),
                 name: create_test_identifier("Property1"),
                 accessors: Vec::new(),
                 initializer: None,
             }),
             ClassBodyDeclaration::Property(PropertyDeclaration {
+                documentation: None,
+                attributes: Vec::new(),
                 modifiers: vec![bsharp::parser::nodes::declarations::Modifier::Public],
-                ty: Type::Primitive(PrimitiveType::Int),
+                property_type: Type::Primitive(PrimitiveType::Int),
                 name: create_test_identifier("Property2"),
                 accessors: Vec::new(),
                 initializer: None,
