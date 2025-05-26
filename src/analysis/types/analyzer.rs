@@ -261,22 +261,5 @@ impl TypeAnalyzer {
         _type_usage.chars().filter(|&c| c == '<').count()
     }
     
-    /// Calculate the actual nesting depth of a Type
-    fn calculate_actual_type_nesting_depth(&self, type_ref: &Type) -> usize {
-        match type_ref {
-            Type::Generic { base: _, args } => {
-                1 + args.iter()
-                    .map(|arg| self.calculate_actual_type_nesting_depth(arg))
-                    .max()
-                    .unwrap_or(0)
-            }
-            Type::Array { element_type, rank: _ } => {
-                self.calculate_actual_type_nesting_depth(element_type)
-            }
-            Type::Nullable(inner) => {
-                self.calculate_actual_type_nesting_depth(inner)
-            }
-            _ => 0,
-        }
-    }
+    
 } 

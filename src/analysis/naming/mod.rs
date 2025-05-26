@@ -97,9 +97,7 @@ impl NamingAnalyzer {
         metrics
     }
 
-    fn analyze_using_statement(&self, _using: &UsingStatement, _metrics: &mut NamingMetrics) {
-        // Using statements don't typically have naming violations
-    }
+    
 
     fn analyze_namespace(&self, namespace: &Namespace, metrics: &mut NamingMetrics) {
         self.check_identifier(&namespace.name.name, IdentifierType::Namespace, metrics);

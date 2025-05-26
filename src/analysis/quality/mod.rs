@@ -5,10 +5,7 @@ use crate::analysis::naming::{NamingAnalyzer, NamingViolation};
 use serde::{Deserialize, Serialize};
 
 /// Quality issues and code smells detector
-pub struct QualityAnalyzer {
-    control_flow_analyzer: ControlFlowAnalyzer,
-    naming_analyzer: NamingAnalyzer,
-}
+pub struct QualityAnalyzer;
 
 impl QualityAnalyzer {
     pub fn new() -> Self {
@@ -109,10 +106,7 @@ impl QualityAnalyzer {
 
 impl Default for QualityAnalyzer {
     fn default() -> Self {
-        Self {
-            control_flow_analyzer: ControlFlowAnalyzer::new(),
-            naming_analyzer: NamingAnalyzer::new(),
-        }
+        Self
     }
 }
 
