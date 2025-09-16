@@ -1,7 +1,7 @@
 // Tests for parsing literals
 
-use bsharp::parser::nodes::expressions::literal::Literal;
-use bsharp::parsers::expressions::literal_parser::parse_literal;
+use bsharp::syntax::nodes::expressions::literal::Literal;
+use bsharp::parser::expressions::literal_parser::parse_literal;
 
 #[test]
 fn test_integer_literal() {

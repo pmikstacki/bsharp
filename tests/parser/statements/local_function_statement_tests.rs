@@ -1,9 +1,9 @@
 // Tests for parsing local function statements
 
-use bsharp::parser::nodes::declarations::Modifier;
-use bsharp::parser::nodes::statements::statement::Statement;
-use bsharp::parser::nodes::types::{PrimitiveType, Type, Variance};
-use bsharp::parsers::statements::local_function_statement_parser::parse_local_function_statement;
+use bsharp::syntax::nodes::declarations::Modifier;
+use bsharp::syntax::nodes::statements::statement::Statement;
+use bsharp::syntax::nodes::types::{PrimitiveType, Type, Variance};
+use bsharp::parser::statements::local_function_statement_parser::parse_local_function_statement;
 
 fn parse_local_function_stmt(code: &str) -> Result<Statement, String> {
     match parse_local_function_statement(code) {

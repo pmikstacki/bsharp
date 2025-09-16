@@ -1,6 +1,6 @@
-use crate::parser::ast::CompilationUnit;
-use crate::parser::nodes::declarations::{ClassDeclaration, MethodDeclaration};
-use crate::parser::nodes::statements::statement::Statement;
+use crate::syntax::ast::CompilationUnit;
+use crate::syntax::nodes::declarations::{ClassDeclaration, MethodDeclaration};
+use crate::syntax::nodes::statements::statement::Statement;
 use serde::{Deserialize, Serialize};
 
 /// Basic code metrics for counting fundamental elements
@@ -134,20 +134,20 @@ impl BasicMetricsCollector {
         // Count members and analyze their bodies
         for member in &class.body_declarations {
             match member {
-                crate::parser::nodes::declarations::ClassBodyDeclaration::Method(method) => {
+                crate::syntax::nodes::declarations::ClassBodyDeclaration::Method(method) => {
                     self.metrics.total_methods += 1;
                     self.collect_from_method(method);
                 }
-                crate::parser::nodes::declarations::ClassBodyDeclaration::Field(_) => {
+                crate::syntax::nodes::declarations::ClassBodyDeclaration::Field(_) => {
                     self.metrics.total_fields += 1;
                 }
-                crate::parser::nodes::declarations::ClassBodyDeclaration::Property(_) => {
+                crate::syntax::nodes::declarations::ClassBodyDeclaration::Property(_) => {
                     self.metrics.total_properties += 1;
                 }
-                crate::parser::nodes::declarations::ClassBodyDeclaration::Event(_) => {
+                crate::syntax::nodes::declarations::ClassBodyDeclaration::Event(_) => {
                     self.metrics.total_events += 1;
                 }
-                crate::parser::nodes::declarations::ClassBodyDeclaration::Constructor(constructor) => {
+                crate::syntax::nodes::declarations::ClassBodyDeclaration::Constructor(constructor) => {
                     self.metrics.total_constructors += 1;
                     if let Some(body) = &constructor.body {
                         self.collect_from_statement(body);

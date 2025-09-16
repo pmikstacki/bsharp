@@ -1,6 +1,6 @@
-use crate::parser::ast::CompilationUnit;
-use crate::parser::nodes::declarations::ClassDeclaration;
-use crate::parser::nodes::types::Type;
+use crate::syntax::ast::CompilationUnit;
+use crate::syntax::nodes::declarations::ClassDeclaration;
+use crate::syntax::nodes::types::Type;
 use std::collections::HashMap;
 
 // Structs and enums from definitions.rs
@@ -169,8 +169,8 @@ impl TypeAnalyzer {
         cohesion
     }
     
-    fn analyze_class_member(&self, member: &crate::parser::nodes::declarations::ClassBodyDeclaration, metrics: &mut TypeMetrics) {
-        use crate::parser::nodes::declarations::ClassBodyDeclaration;
+    fn analyze_class_member(&self, member: &crate::syntax::nodes::declarations::ClassBodyDeclaration, metrics: &mut TypeMetrics) {
+        use crate::syntax::nodes::declarations::ClassBodyDeclaration;
         
         match member {
             ClassBodyDeclaration::Field(field) => {
@@ -201,8 +201,8 @@ impl TypeAnalyzer {
                     // Check parameter modifiers
                     if let Some(modifier) = &param.modifier {
                         match modifier {
-                            crate::parser::nodes::types::ParameterModifier::Ref => metrics.ref_parameters += 1,
-                            crate::parser::nodes::types::ParameterModifier::Out => metrics.out_parameters += 1,
+                            crate::syntax::nodes::types::ParameterModifier::Ref => metrics.ref_parameters += 1,
+                            crate::syntax::nodes::types::ParameterModifier::Out => metrics.out_parameters += 1,
                             _ => {}
                         }
                     }

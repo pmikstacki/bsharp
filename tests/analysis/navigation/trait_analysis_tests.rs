@@ -1,6 +1,6 @@
 // Tests for trait-based AST analysis functionality
 
-use bsharp::parser::Parser;
+use bsharp::syntax::Parser;
 use bsharp::analysis::{AstAnalyze, AstAnalysis};
 
 #[test]

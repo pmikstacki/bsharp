@@ -1,7 +1,7 @@
-use bsharp::parser::nodes::expressions::expression::Expression;
-use bsharp::parser::nodes::expressions::literal::Literal;
-use bsharp::parser::nodes::types::Type;
-use bsharp::parsers::expressions::expression_parser::*; // Adjust if parse_expression is not public or in a submodule
+use bsharp::syntax::nodes::expressions::expression::Expression;
+use bsharp::syntax::nodes::expressions::literal::Literal;
+use bsharp::syntax::nodes::types::Type;
+use bsharp::parser::expressions::expression_parser::*; // Adjust if parse_expression is not public or in a submodule
 
 #[test]
 fn test_parse_simple_new_expression() {

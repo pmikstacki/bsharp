@@ -1,7 +1,7 @@
 // Tests for parsing type parameters
-use bsharp::parser::nodes::types; 
-use bsharp::parser::nodes::identifier::Identifier;
-use bsharp::parsers::declarations::type_parameter_parser::parse_type_parameter_list;
+use bsharp::syntax::nodes::types;
+use bsharp::syntax::nodes::identifier::Identifier;
+use bsharp::parser::declarations::type_parameter_parser::parse_type_parameter_list;
 
 fn parse_test(code: &str) -> Result<Vec<types::TypeParameter>, String> { 
     match parse_type_parameter_list(code) {
@@ -58,8 +58,8 @@ fn test_parse_type_parameter_with_variance() {
 #[test]
 fn test_parse_empty_type_parameter_list() {
     // This should technically fail parsing, as <> is not valid C#
-    // The parser expects at least one identifier if <> are present.
-    // However, let's ensure our list parser fails correctly.
+    // The syntax expects at least one identifier if <> are present.
+    // However, let's ensure our list syntax fails correctly.
     let code = "<>";
     assert!(parse_test(code).is_err());
 }

@@ -1,10 +1,10 @@
-use bsharp::parser::nodes::identifier::Identifier;
-use bsharp::parser::nodes::statements::FinallyClause;
-use bsharp::parser::nodes::statements::statement::Statement;
-use bsharp::parser::nodes::types::Type;
-use bsharp::parsers::statements::parse_try_statement;
-use bsharp::parsers::statements::try_catch_finally_parser::{parse_catch_clause, parse_finally_clause};
-use bsharp::parser::test_helpers::{parse_input_unwrap, parse_all};
+use bsharp::syntax::nodes::identifier::Identifier;
+use bsharp::syntax::nodes::statements::FinallyClause;
+use bsharp::syntax::nodes::statements::statement::Statement;
+use bsharp::syntax::nodes::types::Type;
+use bsharp::parser::statements::parse_try_statement;
+use bsharp::parser::statements::try_catch_finally_parser::{parse_catch_clause, parse_finally_clause};
+use bsharp::syntax::test_helpers::{parse_input_unwrap, parse_all};
 
 #[test]
 fn test_parse_specific_catch_clause() {
@@ -87,7 +87,7 @@ fn test_parse_try_catch_finally() {
         _ => panic!("Expected Try statement"),
     }
 
-    // Note: The parser was updated to allow try-finally without catch.
+    // Note: The syntax was updated to allow try-finally without catch.
     let input_try_finally = "try { x = 1; } finally { CleanUp(); }";
     let result_try_finally = parse_all(parse_try_statement, input_try_finally);
     assert!(result_try_finally.is_ok());

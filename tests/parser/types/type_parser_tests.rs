@@ -1,9 +1,9 @@
 // use nom::IResult; // Removing unused import
-use bsharp::parser::nodes::identifier::Identifier;
-use bsharp::parser::nodes::types::{PrimitiveType, Type};
-use bsharp::parsers::types::type_parser::parse_type_expression;
+use bsharp::syntax::nodes::identifier::Identifier;
+use bsharp::syntax::nodes::types::{PrimitiveType, Type};
+use bsharp::parser::types::type_parser::parse_type_expression;
 
-// Helper function for unwrapping parser results
+// Helper function for unwrapping syntax results
 fn parse_test(code: &str) -> Result<Type, String> {
     match parse_type_expression(code) {
         Ok((remaining, ty)) if remaining.is_empty() => Ok(ty),

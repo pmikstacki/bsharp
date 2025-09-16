@@ -1,6 +1,6 @@
 // Tests for parsing struct declarations
 
-use bsharp::parser::nodes::declarations::StructDeclaration;
+use bsharp::syntax::nodes::declarations::StructDeclaration;
 
 fn parse_struct_declaration(code: &str) -> Result<StructDeclaration, String> {
     Err(format!("Parser not yet implemented: {}", code))

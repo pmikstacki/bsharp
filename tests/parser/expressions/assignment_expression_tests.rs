@@ -1,11 +1,11 @@
 // Tests for parsing assignment expressions
 
-use bsharp::parser::nodes::Identifier;
-use bsharp::parser::nodes::expressions::assignment_expression::AssignmentExpression;
-use bsharp::parser::nodes::expressions::expression::Expression;
-use bsharp::parser::nodes::expressions::literal::Literal;
-use bsharp::parser::nodes::expressions::BinaryOperator;
-use bsharp::parsers::expressions::expression_parser::parse_expression;
+use bsharp::syntax::nodes::Identifier;
+use bsharp::syntax::nodes::expressions::assignment_expression::AssignmentExpression;
+use bsharp::syntax::nodes::expressions::expression::Expression;
+use bsharp::syntax::nodes::expressions::literal::Literal;
+use bsharp::syntax::nodes::expressions::BinaryOperator;
+use bsharp::parser::expressions::expression_parser::parse_expression;
 
 fn parse_assignment_expr_helper(code: &str) -> Result<AssignmentExpression, String> {
     match parse_expression(code) {

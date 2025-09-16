@@ -1,6 +1,6 @@
 // Tests for parsing foreach statements
 
-use bsharp::parser::nodes::statements::ForEachStatement;
+use bsharp::syntax::nodes::statements::ForEachStatement;
 
 fn parse_for_each_statement(code: &str) -> Result<ForEachStatement, String> {
     Err(format!("Parser not yet implemented: {}", code))

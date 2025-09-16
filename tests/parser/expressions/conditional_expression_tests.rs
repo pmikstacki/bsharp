@@ -1,6 +1,6 @@
 // Tests for parsing conditional expressions
 
-use bsharp::parser::nodes::expressions::ConditionalExpression;
+use bsharp::syntax::nodes::expressions::ConditionalExpression;
 
 fn parse_conditional_expr(code: &str) -> Result<ConditionalExpression, String> {
     Err(format!("Parser not yet implemented: {}", code))

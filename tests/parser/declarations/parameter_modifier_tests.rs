@@ -1,8 +1,8 @@
 // Tests for parameter modifiers with full semantics
 
-use bsharp::parser::nodes::types::{Parameter, ParameterModifier, Type, PrimitiveType};
-use bsharp::parser::nodes::identifier::Identifier;
-use bsharp::parsers::declarations::parameter_parser::parse_parameter;
+use bsharp::syntax::nodes::types::{Parameter, ParameterModifier, Type, PrimitiveType};
+use bsharp::syntax::nodes::identifier::Identifier;
+use bsharp::parser::declarations::parameter_parser::parse_parameter;
 
 fn parse_parameter_test(code: &str) -> Result<Parameter, String> {
     match parse_parameter(code) {
@@ -107,7 +107,7 @@ fn test_parameter_modifier_semantics() {
 
 #[test]
 fn test_parameter_modifier_from_modifier() {
-    use bsharp::parser::nodes::declarations::Modifier;
+    use bsharp::syntax::nodes::declarations::Modifier;
 
     assert_eq!(ParameterModifier::from_modifier(&Modifier::Ref), Some(ParameterModifier::Ref));
     assert_eq!(ParameterModifier::from_modifier(&Modifier::Out), Some(ParameterModifier::Out));

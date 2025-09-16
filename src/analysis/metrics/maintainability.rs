@@ -1,4 +1,4 @@
-use crate::parser::ast::CompilationUnit;
+use crate::syntax::ast::CompilationUnit;
 use super::complexity::ComplexityMetrics;
 use super::basic::BasicMetrics;
 use serde::{Deserialize, Serialize};

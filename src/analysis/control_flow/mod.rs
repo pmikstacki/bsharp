@@ -1,6 +1,6 @@
-use crate::parser::ast::CompilationUnit;
-use crate::parser::nodes::declarations::MethodDeclaration;
-use crate::parser::nodes::statements::statement::Statement;
+use crate::syntax::ast::CompilationUnit;
+use crate::syntax::nodes::declarations::MethodDeclaration;
+use crate::syntax::nodes::statements::statement::Statement;
 use serde::{Deserialize, Serialize};
 
 /// Control flow analyzer for analyzing program flow

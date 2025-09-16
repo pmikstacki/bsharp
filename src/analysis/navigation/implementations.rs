@@ -1,10 +1,25 @@
 use super::traits::{AstNavigate, FindDeclarations, DeclarationInfo, DeclarationType};
-use crate::parser::ast::CompilationUnit;
-use crate::parser::nodes::{
+use crate::syntax::ast::CompilationUnit;
+use crate::syntax::nodes::{
     declarations::{ClassDeclaration, MethodDeclaration, InterfaceDeclaration, StructDeclaration, EnumDeclaration, RecordDeclaration, DelegateDeclaration},
     statements::statement::Statement,
     expressions::expression::Expression,
 };
+
+// Internal helpers to streamline iteration over declarations across namespaces and file-scoped namespaces
+fn iter_namespace_members<'a>(cu: &'a CompilationUnit) -> impl Iterator<Item = &'a crate::syntax::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration> + 'a {
+    let top_level = cu.declarations.iter().filter_map(|member| {
+        if let crate::syntax::ast::TopLevelDeclaration::Namespace(ns) = member {
+            Some(ns.declarations.iter())
+        } else {
+            None
+        }
+    }).flatten();
+
+    let file_scoped = cu.file_scoped_namespace.iter().flat_map(|fs| fs.declarations.iter());
+
+    top_level.chain(file_scoped)
+}
 
 impl AstNavigate for CompilationUnit {
     fn find_if_statements(&self) -> Vec<&Statement> {
@@ -70,33 +85,21 @@ impl AstNavigate for CompilationUnit {
 impl FindDeclarations for CompilationUnit {
     fn find_classes(&self) -> Vec<&ClassDeclaration> {
         let mut classes = Vec::new();
-        
-        // Search top-level declarations
+
+        // Direct top-level classes
         for member in &self.declarations {
-            match member {
-                crate::parser::ast::TopLevelDeclaration::Namespace(ns) => {
-                    for ns_member in &ns.declarations {
-                        if let crate::parser::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration::Class(class) = ns_member {
-                            classes.push(class);
-                        }
-                    }
-                }
-                crate::parser::ast::TopLevelDeclaration::Class(class) => {
-                    classes.push(class);
-                }
-                _ => {}
+            if let crate::syntax::ast::TopLevelDeclaration::Class(class) = member {
+                classes.push(class);
             }
         }
-        
-        // Search file-scoped namespace
-        if let Some(file_scoped_ns) = &self.file_scoped_namespace {
-            for declaration in &file_scoped_ns.declarations {
-                if let crate::parser::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration::Class(class) = declaration {
-                    classes.push(class);
-                }
+
+        // Classes inside namespaces (including file-scoped)
+        for ns_member in iter_namespace_members(self) {
+            if let crate::syntax::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration::Class(class) = ns_member {
+                classes.push(class);
             }
         }
-        
+
         classes
     }
     
@@ -114,14 +117,14 @@ impl FindDeclarations for CompilationUnit {
         // Search top-level declarations
         for member in &self.declarations {
             match member {
-                crate::parser::ast::TopLevelDeclaration::Namespace(ns) => {
+                crate::syntax::ast::TopLevelDeclaration::Namespace(ns) => {
                     for ns_member in &ns.declarations {
-                        if let crate::parser::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration::Interface(interface) = ns_member {
+                        if let crate::syntax::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration::Interface(interface) = ns_member {
                             interfaces.push(interface);
                         }
                     }
                 }
-                crate::parser::ast::TopLevelDeclaration::Interface(interface) => {
+                crate::syntax::ast::TopLevelDeclaration::Interface(interface) => {
                     interfaces.push(interface);
                 }
                 _ => {}
@@ -131,7 +134,7 @@ impl FindDeclarations for CompilationUnit {
         // Search file-scoped namespace
         if let Some(file_scoped_ns) = &self.file_scoped_namespace {
             for declaration in &file_scoped_ns.declarations {
-                if let crate::parser::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration::Interface(interface) = declaration {
+                if let crate::syntax::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration::Interface(interface) = declaration {
                     interfaces.push(interface);
                 }
             }
@@ -145,14 +148,14 @@ impl FindDeclarations for CompilationUnit {
         
         for member in &self.declarations {
             match member {
-                crate::parser::ast::TopLevelDeclaration::Namespace(ns) => {
+                crate::syntax::ast::TopLevelDeclaration::Namespace(ns) => {
                     for ns_member in &ns.declarations {
-                        if let crate::parser::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration::Struct(struct_decl) = ns_member {
+                        if let crate::syntax::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration::Struct(struct_decl) = ns_member {
                             structs.push(struct_decl);
                         }
                     }
                 }
-                crate::parser::ast::TopLevelDeclaration::Struct(struct_decl) => {
+                crate::syntax::ast::TopLevelDeclaration::Struct(struct_decl) => {
                     structs.push(struct_decl);
                 }
                 _ => {}
@@ -161,7 +164,7 @@ impl FindDeclarations for CompilationUnit {
         
         if let Some(file_scoped_ns) = &self.file_scoped_namespace {
             for declaration in &file_scoped_ns.declarations {
-                if let crate::parser::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration::Struct(struct_decl) = declaration {
+                if let crate::syntax::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration::Struct(struct_decl) = declaration {
                     structs.push(struct_decl);
                 }
             }
@@ -175,14 +178,14 @@ impl FindDeclarations for CompilationUnit {
         
         for member in &self.declarations {
             match member {
-                crate::parser::ast::TopLevelDeclaration::Namespace(ns) => {
+                crate::syntax::ast::TopLevelDeclaration::Namespace(ns) => {
                     for ns_member in &ns.declarations {
-                        if let crate::parser::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration::Enum(enum_decl) = ns_member {
+                        if let crate::syntax::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration::Enum(enum_decl) = ns_member {
                             enums.push(enum_decl);
                         }
                     }
                 }
-                crate::parser::ast::TopLevelDeclaration::Enum(enum_decl) => {
+                crate::syntax::ast::TopLevelDeclaration::Enum(enum_decl) => {
                     enums.push(enum_decl);
                 }
                 _ => {}
@@ -191,7 +194,7 @@ impl FindDeclarations for CompilationUnit {
         
         if let Some(file_scoped_ns) = &self.file_scoped_namespace {
             for declaration in &file_scoped_ns.declarations {
-                if let crate::parser::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration::Enum(enum_decl) = declaration {
+                if let crate::syntax::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration::Enum(enum_decl) = declaration {
                     enums.push(enum_decl);
                 }
             }
@@ -205,14 +208,14 @@ impl FindDeclarations for CompilationUnit {
         
         for member in &self.declarations {
             match member {
-                crate::parser::ast::TopLevelDeclaration::Namespace(ns) => {
+                crate::syntax::ast::TopLevelDeclaration::Namespace(ns) => {
                     for ns_member in &ns.declarations {
-                        if let crate::parser::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration::Record(record_decl) = ns_member {
+                        if let crate::syntax::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration::Record(record_decl) = ns_member {
                             records.push(record_decl);
                         }
                     }
                 }
-                crate::parser::ast::TopLevelDeclaration::Record(record_decl) => {
+                crate::syntax::ast::TopLevelDeclaration::Record(record_decl) => {
                     records.push(record_decl);
                 }
                 _ => {}
@@ -221,7 +224,7 @@ impl FindDeclarations for CompilationUnit {
         
         if let Some(file_scoped_ns) = &self.file_scoped_namespace {
             for declaration in &file_scoped_ns.declarations {
-                if let crate::parser::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration::Record(record_decl) = declaration {
+                if let crate::syntax::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration::Record(record_decl) = declaration {
                     records.push(record_decl);
                 }
             }
@@ -235,14 +238,14 @@ impl FindDeclarations for CompilationUnit {
         
         for member in &self.declarations {
             match member {
-                crate::parser::ast::TopLevelDeclaration::Namespace(ns) => {
+                crate::syntax::ast::TopLevelDeclaration::Namespace(ns) => {
                     for ns_member in &ns.declarations {
-                        if let crate::parser::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration::Delegate(delegate_decl) = ns_member {
+                        if let crate::syntax::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration::Delegate(delegate_decl) = ns_member {
                             delegates.push(delegate_decl);
                         }
                     }
                 }
-                crate::parser::ast::TopLevelDeclaration::Delegate(delegate_decl) => {
+                crate::syntax::ast::TopLevelDeclaration::Delegate(delegate_decl) => {
                     delegates.push(delegate_decl);
                 }
                 _ => {}
@@ -251,7 +254,7 @@ impl FindDeclarations for CompilationUnit {
         
         if let Some(file_scoped_ns) = &self.file_scoped_namespace {
             for declaration in &file_scoped_ns.declarations {
-                if let crate::parser::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration::Delegate(delegate_decl) = declaration {
+                if let crate::syntax::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration::Delegate(delegate_decl) = declaration {
                     delegates.push(delegate_decl);
                 }
             }
@@ -369,7 +372,7 @@ impl FindDeclarations for ClassDeclaration {
     fn find_methods(&self) -> Vec<&MethodDeclaration> {
         let mut methods = Vec::new();
         for member in &self.body_declarations {
-            if let crate::parser::nodes::declarations::ClassBodyDeclaration::Method(method) = member {
+            if let crate::syntax::nodes::declarations::ClassBodyDeclaration::Method(method) = member {
                 methods.push(method);
             }
         }

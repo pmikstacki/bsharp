@@ -1,6 +1,6 @@
 // Tests for parsing goto case statements
 
-use bsharp::parser::nodes::statements::GotoCaseStatement;
+use bsharp::syntax::nodes::statements::GotoCaseStatement;
 
 fn parse_goto_case_statement(code: &str) -> Result<GotoCaseStatement, String> {
     Err(format!("Parser not yet implemented: {}", code))

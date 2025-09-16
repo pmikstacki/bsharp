@@ -1,6 +1,6 @@
 // Tests for parsing invocation expressions
 
-use bsharp::parser::nodes::expressions::InvocationExpression;
+use bsharp::syntax::nodes::expressions::InvocationExpression;
 
 fn parse_invocation_expr(code: &str) -> Result<InvocationExpression, String> {
     Err(format!("Parser not yet implemented: {}", code))

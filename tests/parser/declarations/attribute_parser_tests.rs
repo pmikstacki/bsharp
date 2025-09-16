@@ -1,7 +1,7 @@
 #![cfg(test)]
-use bsharp::parsers::declarations::attribute_parser::*;
-use bsharp::parser::nodes::expressions::expression::Expression;
-use bsharp::parser::nodes::expressions::literal::Literal;
+use bsharp::parser::declarations::attribute_parser::*;
+use bsharp::syntax::nodes::expressions::expression::Expression;
+use bsharp::syntax::nodes::expressions::literal::Literal;
 
 #[test]
 fn test_single_attribute_no_args() {
@@ -43,11 +43,11 @@ fn test_attribute_with_argument() {
 
 #[test]
 fn test_attribute_with_named_arguments() {
-    // Note: This test will fail until the expression parser fully supports
-    // named arguments/assignments. We will need to enhance the expression parser
+    // Note: This test will fail until the expression syntax fully supports
+    // named arguments/assignments. We will need to enhance the expression syntax
     // to handle these. For now, adding as a placeholder.
     let input = "[DataMember(Name = \"firstName\")]";
-    // Implementation will need to be updated when expression parser supports assignments
+    // Implementation will need to be updated when expression syntax supports assignments
 }
 
 #[test]
@@ -73,5 +73,5 @@ fn test_multiple_attributes_in_one_list() {
 #[test]
 fn test_attribute_with_multiple_arguments() {
     let input = "[DebuggerDisplay(\"Count = {Count}\", Type = \"MyType\")]";
-    // Will need to be updated when expression parser supports string literals and assignments
+    // Will need to be updated when expression syntax supports string literals and assignments
 }

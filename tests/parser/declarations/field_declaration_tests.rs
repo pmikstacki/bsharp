@@ -1,11 +1,11 @@
 // Tests for parsing field declarations
 
-use bsharp::parser::nodes::declarations::FieldDeclaration;
-use bsharp::parser::nodes::expressions::expression::Expression;
-use bsharp::parser::nodes::expressions::literal::Literal;
-use bsharp::parser::nodes::types::{Type, PrimitiveType};
-use bsharp::parser::nodes::identifier::Identifier;
-use bsharp::parsers::declarations::field_declaration_parser::parse_field_declaration;
+use bsharp::syntax::nodes::declarations::FieldDeclaration;
+use bsharp::syntax::nodes::expressions::expression::Expression;
+use bsharp::syntax::nodes::expressions::literal::Literal;
+use bsharp::syntax::nodes::types::{Type, PrimitiveType};
+use bsharp::syntax::nodes::identifier::Identifier;
+use bsharp::parser::declarations::field_declaration_parser::parse_field_declaration;
 
 fn parse_field_decl_test(code: &str) -> Result<FieldDeclaration, String> {
     match parse_field_declaration(code) {

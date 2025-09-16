@@ -1,9 +1,9 @@
 // Tests for parsing record declarations
 
-use bsharp::parser::nodes::declarations::{RecordDeclaration, Modifier};
-use bsharp::parser::nodes::identifier::Identifier;
-use bsharp::parser::nodes::types::{Parameter, Type, PrimitiveType};
-use bsharp::parsers::declarations::type_declaration_parser::parse_record_declaration;
+use bsharp::syntax::nodes::declarations::{RecordDeclaration, Modifier};
+use bsharp::syntax::nodes::identifier::Identifier;
+use bsharp::syntax::nodes::types::{Parameter, Type, PrimitiveType};
+use bsharp::parser::declarations::type_declaration_parser::parse_record_declaration;
 
 fn parse_record_decl_test(code: &str) -> Result<RecordDeclaration, String> {
     match parse_record_declaration(code) {

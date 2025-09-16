@@ -1,12 +1,12 @@
 // Tests for parsing stackalloc expressions
 
 // use nom::error::{Error, ErrorKind};
-// use bsharp::parser::nodes::types::{PrimitiveType, Type};
-use bsharp::parser::nodes::expressions::expression::Expression;
-use bsharp::parser::nodes::expressions::literal::Literal;
-use bsharp::parser::nodes::types::{PrimitiveType, Type};
-use bsharp::parsers::expressions::stackalloc_expression_parser::parse_stackalloc_expression;
-// use bsharp::parsers::expressions::primary_expression_parser::parse_primary_expression;
+// use bsharp::syntax::nodes::types::{PrimitiveType, Type};
+use bsharp::syntax::nodes::expressions::expression::Expression;
+use bsharp::syntax::nodes::expressions::literal::Literal;
+use bsharp::syntax::nodes::types::{PrimitiveType, Type};
+use bsharp::parser::expressions::stackalloc_expression_parser::parse_stackalloc_expression;
+// use bsharp::parser::expressions::primary_expression_parser::parse_primary_expression;
 
 fn parse_stackalloc_expr(code: &str) -> Result<Expression, String> {
     println!("Parsing stackalloc: '{}'", code);

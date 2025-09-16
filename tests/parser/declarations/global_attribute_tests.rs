@@ -1,8 +1,8 @@
 // Tests for parsing global attribute declarations
 
-use bsharp::parser::nodes::declarations::{GlobalAttribute, Attribute};
-use bsharp::parser::nodes::identifier::Identifier;
-use bsharp::parsers::declarations::global_attribute_parser::parse_global_attribute;
+use bsharp::syntax::nodes::declarations::{GlobalAttribute, Attribute};
+use bsharp::syntax::nodes::identifier::Identifier;
+use bsharp::parser::declarations::global_attribute_parser::parse_global_attribute;
 
 #[test]
 fn test_parse_global_attribute() {

@@ -1,7 +1,7 @@
-use bsharp::parser::nodes::expressions::pattern::*;
-use bsharp::parser::nodes::expressions::expression::Expression;
-use bsharp::parsers::expressions::pattern_parser::parse_pattern;
-use bsharp::parsers::expressions::switch_expression_parser::{parse_switch_expression, parse_is_pattern_expression};
+use bsharp::syntax::nodes::expressions::pattern::*;
+use bsharp::syntax::nodes::expressions::expression::Expression;
+use bsharp::parser::expressions::pattern_parser::parse_pattern;
+use bsharp::parser::expressions::switch_expression_parser::{parse_switch_expression, parse_is_pattern_expression};
 
 fn parse_pattern_test(code: &str) -> Result<Pattern, String> {
     match parse_pattern(code) {

@@ -1,9 +1,9 @@
 // Tests for parsing sizeof expressions
 
-use bsharp::parser::nodes::expressions::expression::Expression;
-use bsharp::parser::nodes::types::{Type, PrimitiveType};
-use bsharp::parsers::expressions::expression_parser::parse_expression;
-use bsharp::parsers::expressions::sizeof_expression_parser::parse_sizeof_expression;
+use bsharp::syntax::nodes::expressions::expression::Expression;
+use bsharp::syntax::nodes::types::{Type, PrimitiveType};
+use bsharp::parser::expressions::expression_parser::parse_expression;
+use bsharp::parser::expressions::sizeof_expression_parser::parse_sizeof_expression;
 
 fn parse_sizeof_expr_helper(code: &str) -> Result<Expression, String> {
     match parse_sizeof_expression(code) {
@@ -191,10 +191,10 @@ fn test_parse_invalid_sizeof_expressions() {
     
     for code in invalid_cases {
         let result = parse_sizeof_expr_helper(code);
-        // Note: Some of these might actually parse successfully depending on the type parser
-        // The "string" case might parse but would be a semantic error, not a syntax error
+        // Note: Some of these might actually parse successfully depending on the type syntax
+        // The "string" case might parse but would be a semantic error, not a parser error
         if code == "sizeof(string)" {
-            // This might actually parse successfully as a syntax, but would be a semantic error
+            // This might actually parse successfully as a parser, but would be a semantic error
             continue;
         }
         assert!(result.is_err(), "Expected parse error for invalid syntax: '{}'", code);

@@ -1,10 +1,10 @@
 // Integration tests for break_statement_parser.rs
-// Content moved from src/parsers/statements/break_statement_parser.rs
+// Content moved from src/parser/statements/break_statement_parser.rs
 
-use bsharp::parser::nodes::statements::statement::Statement;
-use bsharp::parser::nodes::statements::break_statement::BreakStatement;
-use bsharp::parser::test_helpers::parse_all;
-use bsharp::parsers::statements::break_statement_parser::parse_break_statement;
+use bsharp::syntax::nodes::statements::statement::Statement;
+use bsharp::syntax::nodes::statements::break_statement::BreakStatement;
+use bsharp::syntax::test_helpers::parse_all;
+use bsharp::parser::statements::break_statement_parser::parse_break_statement;
 
 #[test]
 fn test_parse_break_statement() {

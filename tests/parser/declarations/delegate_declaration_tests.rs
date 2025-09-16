@@ -1,6 +1,6 @@
-use bsharp::parsers::declarations::delegate_declaration_parser::parse_delegate_declaration;
-use bsharp::parser::nodes::declarations::Modifier;
-use bsharp::parser::nodes::types::{Type, PrimitiveType};
+use bsharp::parser::declarations::delegate_declaration_parser::parse_delegate_declaration;
+use bsharp::syntax::nodes::declarations::Modifier;
+use bsharp::syntax::nodes::types::{Type, PrimitiveType};
 
 #[test]
 fn test_simple_delegate() {

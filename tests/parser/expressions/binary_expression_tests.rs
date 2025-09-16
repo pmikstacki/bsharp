@@ -1,10 +1,10 @@
-use bsharp::parser::nodes::expressions::{
+use bsharp::syntax::nodes::expressions::{
     AssignmentExpression, BinaryOperator,
 };
-use bsharp::parser::nodes::expressions::expression::Expression;
-use bsharp::parser::nodes::expressions::literal::Literal;
-use bsharp::parser::nodes::identifier::Identifier;
-use bsharp::parsers::expressions::expression_parser::parse_expression;
+use bsharp::syntax::nodes::expressions::expression::Expression;
+use bsharp::syntax::nodes::expressions::literal::Literal;
+use bsharp::syntax::nodes::identifier::Identifier;
+use bsharp::parser::expressions::expression_parser::parse_expression;
 
 #[test]
 fn test_simple_binary_expression() {

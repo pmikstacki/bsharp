@@ -1,8 +1,8 @@
 // Tests for parsing anonymous object creation expressions
 
-use bsharp::parser::nodes::expressions::Expression;
-use bsharp::parser::nodes::expressions::literal::Literal;
-use bsharp::parsers::expressions::expression_parser::parse_expression;
+use bsharp::syntax::nodes::expressions::Expression;
+use bsharp::syntax::nodes::expressions::literal::Literal;
+use bsharp::parser::expressions::expression_parser::parse_expression;
 
 // Helper function for parsing anonymous object expressions
 fn parse_anon_obj_expr(code: &str) -> Result<Expression, String> {

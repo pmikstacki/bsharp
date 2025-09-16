@@ -1,10 +1,11 @@
-use crate::parser::ast::{CompilationUnit, TopLevelDeclaration};
-use crate::parser::nodes::declarations::{ClassDeclaration, MethodDeclaration, NamespaceDeclaration};
-use crate::analysis::control_flow::ControlFlowAnalyzer;
-use crate::analysis::naming::{NamingAnalyzer, NamingViolation};
+use crate::syntax::ast::{CompilationUnit, TopLevelDeclaration};
+use crate::syntax::nodes::declarations::{ClassDeclaration, MethodDeclaration, NamespaceDeclaration};
+use crate::analysis::naming::NamingViolation;
+use crate::analysis::metrics::complexity::ComplexityAnalyzer;
 use serde::{Deserialize, Serialize};
 
 /// Quality issues and code smells detector
+#[derive(Debug, PartialEq)]
 pub struct QualityAnalyzer;
 
 impl QualityAnalyzer {
@@ -34,7 +35,7 @@ impl QualityAnalyzer {
     
     fn analyze_namespace(&self, namespace: &NamespaceDeclaration, report: &mut QualityReport) {
         for member in &namespace.declarations {
-            if let crate::parser::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration::Class(class_decl) = member {
+            if let crate::syntax::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration::Class(class_decl) = member {
                 self.analyze_class(&class_decl, report);
             }
             // Add other namespace members analysis if needed
@@ -48,33 +49,40 @@ impl QualityAnalyzer {
     
     fn calculate_class_metrics(&self, class: &ClassDeclaration) -> ClassQualityReport {
         let method_count = class.body_declarations.iter()
-            .filter(|m| matches!(m, crate::parser::nodes::declarations::ClassBodyDeclaration::Method(_)))
+            .filter(|m| matches!(m, crate::syntax::nodes::declarations::ClassBodyDeclaration::Method(_)))
             .count();
             
         let field_count = class.body_declarations.iter()
-            .filter(|m| matches!(m, crate::parser::nodes::declarations::ClassBodyDeclaration::Field(_)))
+            .filter(|m| matches!(m, crate::syntax::nodes::declarations::ClassBodyDeclaration::Field(_)))
             .count();
             
         let property_count = class.body_declarations.iter()
-            .filter(|m| matches!(m, crate::parser::nodes::declarations::ClassBodyDeclaration::Property(_)))
+            .filter(|m| matches!(m, crate::syntax::nodes::declarations::ClassBodyDeclaration::Property(_)))
             .count();
             
-        ClassQualityReport {
+        let issues = self.collect_class_issues(class);
+        
+        let mut class_report = ClassQualityReport {
             class_name: class.name.name.clone(),
             method_count,
             field_count,
             property_count,
             cyclomatic_complexity: 0,
             lines_of_code: 0,
-            issues: self.collect_class_issues(class),
+            issues,
             quality_score: 100.0,
-        }
+        };
+        
+        // Calculate the quality score based on issues
+        class_report.calculate_score();
+        
+        class_report
     }
     
     fn collect_class_issues(&self, class: &ClassDeclaration) -> Vec<QualityIssue> {
         let mut issues = Vec::new();
         for member in &class.body_declarations {
-            if let crate::parser::nodes::declarations::ClassBodyDeclaration::Method(method) = member {
+            if let crate::syntax::nodes::declarations::ClassBodyDeclaration::Method(method) = member {
                 self.analyze_method(method, &mut issues);
             }
             // Add analysis for other class members like fields, properties if needed
@@ -83,13 +91,34 @@ impl QualityAnalyzer {
     }
     
     fn analyze_method(&self, method: &MethodDeclaration, issues: &mut Vec<QualityIssue>) {
-        // Example: Check for missing documentation on public methods
-        // Placeholder for actual documentation check - MethodDeclaration does not have documentation field
+        // Check for missing documentation on public methods
         if method.modifiers.iter().any(|m| format!("{:?}", m).to_lowercase() == "public") {
             issues.push(QualityIssue::MissingDocumentation {
                 member_name: method.name.name.clone(),
                 member_type: "Method".to_string(),
             });
+        }
+        
+        // Check for too many parameters (threshold: 7 parameters)
+        let parameter_count = method.parameters.len();
+        if parameter_count > 7 {
+            issues.push(QualityIssue::TooManyParameters {
+                method_name: method.name.name.clone(),
+                parameter_count,
+            });
+        }
+        
+        // Check for high cyclomatic complexity (threshold: 10)
+        if let Some(body) = &method.body {
+            let complexity_analyzer = ComplexityAnalyzer::new();
+            let complexity = complexity_analyzer.calculate_cyclomatic_complexity(body, 1);
+            
+            if complexity > 10 {
+                issues.push(QualityIssue::HighComplexity {
+                    method_name: method.name.name.clone(),
+                    complexity,
+                });
+            }
         }
         
         // Example: Check for long methods (e.g., > 50 lines)
@@ -205,13 +234,15 @@ impl QualityReport {
                         QualityIssue::MissingDocumentation { .. } => 5.0,
                         QualityIssue::LongMethod { .. } => 10.0,
                         QualityIssue::HighComplexity { .. } => 15.0,
+                        QualityIssue::TooManyParameters { .. } => 8.0,
                         QualityIssue::NamingViolation(_) => 2.0,
                         _ => 1.0, // Default penalty
                     };
                 }
                 self.overall_score = (100.0f64 - penalty).max(0.0f64);
             } else {
-                self.overall_score = 100.0;
+                // No classes and no issues means empty file - score should be 0
+                self.overall_score = 0.0;
             }
             
             // Assign grade based on score
@@ -236,6 +267,7 @@ impl QualityReport {
                     QualityIssue::MissingDocumentation { .. } => 5.0,
                     QualityIssue::LongMethod { .. } => 10.0,
                     QualityIssue::HighComplexity { .. } => 15.0,
+                    QualityIssue::TooManyParameters { .. } => 8.0,
                     QualityIssue::NamingViolation(_) => 2.0,
                     _ => 1.0, // Default penalty
                 };
@@ -274,6 +306,7 @@ impl ClassQualityReport {
                 QualityIssue::MissingDocumentation { .. } => 5.0,
                 QualityIssue::LongMethod { .. } => 10.0,
                 QualityIssue::HighComplexity { .. } => 15.0,
+                QualityIssue::TooManyParameters { .. } => 8.0,
                 QualityIssue::NamingViolation(_) => 2.0,
                 _ => 1.0, // Default penalty
             };
@@ -334,7 +367,7 @@ pub enum QualityGrade {
 
 impl Default for QualityGrade {
     fn default() -> Self {
-        QualityGrade::A
+        QualityGrade::F
     }
 }
 
@@ -374,7 +407,7 @@ mod tests {
             complexity: 25,
         };
         
-        assert_eq!(report.grade, QualityGrade::A);
+        assert_eq!(report.grade, QualityGrade::F);
     }
     
     #[test]

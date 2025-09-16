@@ -1,13 +1,13 @@
 // Integration tests for switch_statement_parser.rs
-// Content moved from src/parsers/statements/switch_statement_parser.rs
+// Content moved from src/parser/statements/switch_statement_parser.rs
 
-use bsharp::parser::nodes::expressions::expression::Expression;
+use bsharp::syntax::nodes::expressions::expression::Expression;
 
-use bsharp::parser::nodes::identifier::Identifier;
-use bsharp::parser::nodes::statements::statement::Statement;
-use bsharp::parser::nodes::statements::switch_label::SwitchLabel;
-use bsharp::parser::test_helpers::parse_all;
-use bsharp::parsers::statements::switch_statement_parser::parse_switch_statement;
+use bsharp::syntax::nodes::identifier::Identifier;
+use bsharp::syntax::nodes::statements::statement::Statement;
+use bsharp::syntax::nodes::statements::switch_label::SwitchLabel;
+use bsharp::syntax::test_helpers::parse_all;
+use bsharp::parser::statements::switch_statement_parser::parse_switch_statement;
 
 #[test]
 fn test_parse_switch_statement() {

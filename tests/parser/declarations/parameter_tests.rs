@@ -1,6 +1,6 @@
 // Tests for parsing parameters
 
-use bsharp::parser::nodes::types::Parameter;
+use bsharp::syntax::nodes::types::Parameter;
 
 fn parse_parameter(code: &str) -> Result<Parameter, String> {
     Err(format!("Parser not yet implemented: {}", code))

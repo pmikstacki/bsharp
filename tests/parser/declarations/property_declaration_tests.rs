@@ -1,9 +1,9 @@
 // Tests for parsing property declarations
 
-use bsharp::parser::nodes::declarations::{PropertyDeclaration, PropertyAccessor, Modifier};
-use bsharp::parser::nodes::identifier::Identifier;
-use bsharp::parser::nodes::types::{Type, PrimitiveType};
-use bsharp::parsers::declarations::property_declaration_parser::parse_property_declaration;
+use bsharp::syntax::nodes::declarations::{PropertyDeclaration, PropertyAccessor, Modifier};
+use bsharp::syntax::nodes::identifier::Identifier;
+use bsharp::syntax::nodes::types::{Type, PrimitiveType};
+use bsharp::parser::declarations::property_declaration_parser::parse_property_declaration;
 
 fn parse_property_decl_test(code: &str) -> Result<PropertyDeclaration, String> {
     match parse_property_declaration(code) {

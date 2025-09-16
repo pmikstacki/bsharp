@@ -1,16 +1,16 @@
 // Integration tests for expression_statement_parser.rs
-// Content moved from src/parsers/statements/expression_statement_parser.rs
+// Content moved from src/parser/statements/expression_statement_parser.rs
 
-use bsharp::parser::test_helpers::parse_all;
-use bsharp::parser::nodes::statements::statement::Statement;
-use bsharp::parser::nodes::expressions::expression::Expression;
-use bsharp::parser::nodes::expressions::literal::Literal;
-use bsharp::parser::nodes::expressions::assignment_expression::AssignmentExpression;
-use bsharp::parser::nodes::expressions::BinaryOperator;
-use bsharp::parser::nodes::expressions::invocation_expression::InvocationExpression;
-use bsharp::parser::nodes::identifier::Identifier;
-use bsharp::parsers::statements::expression_statement_parser::parse_expression_statement;
-use bsharp::parsers::statement_parser::parse_statement;
+use bsharp::syntax::test_helpers::parse_all;
+use bsharp::syntax::nodes::statements::statement::Statement;
+use bsharp::syntax::nodes::expressions::expression::Expression;
+use bsharp::syntax::nodes::expressions::literal::Literal;
+use bsharp::syntax::nodes::expressions::assignment_expression::AssignmentExpression;
+use bsharp::syntax::nodes::expressions::BinaryOperator;
+use bsharp::syntax::nodes::expressions::invocation_expression::InvocationExpression;
+use bsharp::syntax::nodes::identifier::Identifier;
+use bsharp::parser::statements::expression_statement_parser::parse_expression_statement;
+use bsharp::parser::statement_parser::parse_statement;
 use nom::combinator::all_consuming;
 use nom::Finish;
 

@@ -1,8 +1,8 @@
 // Include the CLI tests module
 mod cli;
 
-// Include the main parser tests module
-mod parser; // This will load tests/parser/mod.rs
+// Include the main syntax tests module
+mod parser; // This will load tests/syntax/mod.rs
 
 // Include the analysis tests module
 mod analysis; // This will load tests/analysis/mod.rs

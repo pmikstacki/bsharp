@@ -1,8 +1,8 @@
 // Tests for parsing destructor declarations
 
-use bsharp::parser::nodes::declarations::{DestructorDeclaration, Modifier};
-use bsharp::parser::nodes::identifier::Identifier;
-use bsharp::parsers::declarations::destructor_declaration_parser::parse_destructor_declaration;
+use bsharp::syntax::nodes::declarations::{DestructorDeclaration, Modifier};
+use bsharp::syntax::nodes::identifier::Identifier;
+use bsharp::parser::declarations::destructor_declaration_parser::parse_destructor_declaration;
 
 fn parse_destructor_declaration_helper(code: &str) -> Result<DestructorDeclaration, String> {
     match parse_destructor_declaration(code) {

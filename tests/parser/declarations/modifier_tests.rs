@@ -1,11 +1,19 @@
-use bsharp::parsers::declarations::modifier_parser::{parse_modifiers, parse_modifiers_for_decl_type};
-use bsharp::parser::nodes::declarations::Modifier;
+use bsharp::parser::declarations::modifier_parser::{parse_modifiers, parse_modifiers_for_decl_type};
+use bsharp::syntax::nodes::declarations::Modifier;
 
 #[test]
 fn test_parse_single_modifier() {
-    assert_eq!(parse_modifiers("public"), Ok(("", vec![Modifier::Public])));
-    assert_eq!(parse_modifiers("static"), Ok(("", vec![Modifier::Static])));
-    assert_eq!(parse_modifiers("private"), Ok(("", vec![Modifier::Private])));
+    let result = parse_modifiers("public").unwrap();
+    assert_eq!(result.0, "");
+    assert_eq!(result.1, vec![Modifier::Public]);
+    
+    let result = parse_modifiers("static").unwrap();
+    assert_eq!(result.0, "");
+    assert_eq!(result.1, vec![Modifier::Static]);
+    
+    let result = parse_modifiers("private").unwrap();
+    assert_eq!(result.0, "");
+    assert_eq!(result.1, vec![Modifier::Private]);
 }
 
 #[test]

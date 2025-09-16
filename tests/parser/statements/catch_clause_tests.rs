@@ -1,6 +1,6 @@
 // Tests for parsing catch clauses
 
-use bsharp::parser::nodes::statements::CatchClause;
+use bsharp::syntax::nodes::statements::CatchClause;
 
 fn parse_catch_clause(code: &str) -> Result<CatchClause, String> {
     Err(format!("Parser not yet implemented: {}", code))

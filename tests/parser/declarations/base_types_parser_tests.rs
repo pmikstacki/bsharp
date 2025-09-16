@@ -1,6 +1,6 @@
 #![cfg(test)]
-use bsharp::parsers::declarations::base_types_parser::*;
-use bsharp::parser::nodes::types::Type;
+use bsharp::parser::declarations::base_types_parser::*;
+use bsharp::syntax::nodes::types::Type;
 
 #[test]
 fn test_no_base_types() {

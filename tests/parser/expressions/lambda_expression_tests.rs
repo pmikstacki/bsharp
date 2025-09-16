@@ -1,11 +1,11 @@
 // Tests for parsing lambda expressions
 
-use bsharp::parser::nodes::expressions::expression::Expression;
-use bsharp::parser::nodes::expressions::lambda_expression::{LambdaBody, LambdaParameterModifier};
-use bsharp::parser::nodes::statements::statement::Statement;
-use bsharp::parser::nodes::types::{PrimitiveType, Type};
-use bsharp::parsers::expressions::lambda_expression_parser::*;
-use bsharp::parsers::types::type_parser::parse_type_expression;
+use bsharp::syntax::nodes::expressions::expression::Expression;
+use bsharp::syntax::nodes::expressions::lambda_expression::{LambdaBody, LambdaParameterModifier};
+use bsharp::syntax::nodes::statements::statement::Statement;
+use bsharp::syntax::nodes::types::{PrimitiveType, Type};
+use bsharp::parser::expressions::lambda_expression_parser::*;
+use bsharp::parser::types::type_parser::parse_type_expression;
 
 fn parse_lambda_expr(code: &str) -> Result<Expression, String> {
     match parse_lambda_expression(code) {
@@ -214,7 +214,7 @@ fn debug_type_parsing() {
 
 #[test]
 fn debug_lambda_parameter_parsing() {
-    use bsharp::parsers::expressions::lambda_expression_parser::parse_lambda_or_anonymous_method;
+    use bsharp::parser::expressions::lambda_expression_parser::parse_lambda_or_anonymous_method;
     
     let result = parse_lambda_or_anonymous_method("(int x) => x");
     println!("Lambda parameter parsing result for '(int x) => x': {:?}", result);

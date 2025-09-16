@@ -1,7 +1,7 @@
 use bsharp::analysis::dependencies::*;
-use bsharp::parser::nodes::declarations::{ClassDeclaration, InterfaceDeclaration, ClassBodyDeclaration, FieldDeclaration, MethodDeclaration};
-use bsharp::parser::nodes::identifier::Identifier;
-use bsharp::parser::nodes::types::{Type, Parameter};
+use bsharp::syntax::nodes::declarations::{ClassDeclaration, InterfaceDeclaration, ClassBodyDeclaration, FieldDeclaration, MethodDeclaration};
+use bsharp::syntax::nodes::identifier::Identifier;
+use bsharp::syntax::nodes::types::{Type, Parameter};
 
 fn create_test_identifier(name: &str) -> Identifier {
     Identifier {

@@ -1,8 +1,8 @@
 // Tests for parsing nested type declarations
 
-use bsharp::parser::nodes::declarations::{ClassDeclaration, ClassBodyDeclaration, Modifier};
-use bsharp::parser::nodes::identifier::Identifier;
-use bsharp::parsers::declarations::type_declaration_parser::parse_class_declaration;
+use bsharp::syntax::nodes::declarations::{ClassDeclaration, ClassBodyDeclaration, Modifier};
+use bsharp::syntax::nodes::identifier::Identifier;
+use bsharp::parser::declarations::type_declaration_parser::parse_class_declaration;
 
 fn parse_class_declaration_helper(code: &str) -> Result<ClassDeclaration, String> {
     match parse_class_declaration(code) {

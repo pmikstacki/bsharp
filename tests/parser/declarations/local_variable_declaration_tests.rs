@@ -1,11 +1,11 @@
 // Tests for parsing local variable declarations
 
-use bsharp::parser::nodes::declarations::LocalVariableDeclaration;
-use bsharp::parser::nodes::declarations::local_variable_declaration::VariableDeclarator;
-use bsharp::parser::nodes::types::{Type, PrimitiveType};
-use bsharp::parser::nodes::identifier::Identifier;
-use bsharp::parser::nodes::expressions::{Expression, Literal};
-use bsharp::parsers::declarations::variable_declaration_parser::parse_local_variable_declaration;
+use bsharp::syntax::nodes::declarations::LocalVariableDeclaration;
+use bsharp::syntax::nodes::declarations::local_variable_declaration::VariableDeclarator;
+use bsharp::syntax::nodes::types::{Type, PrimitiveType};
+use bsharp::syntax::nodes::identifier::Identifier;
+use bsharp::syntax::nodes::expressions::{Expression, Literal};
+use bsharp::parser::declarations::variable_declaration_parser::parse_local_variable_declaration;
 
 fn parse_local_var_decl_test(code: &str) -> Result<LocalVariableDeclaration, String> {
     match parse_local_variable_declaration(code) {

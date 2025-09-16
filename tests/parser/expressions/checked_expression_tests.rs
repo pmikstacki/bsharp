@@ -1,6 +1,6 @@
 // Tests for parsing checked expressions
 
-use bsharp::parser::nodes::expressions::CheckedExpression;
+use bsharp::syntax::nodes::expressions::CheckedExpression;
 
 fn parse_checked_expr(code: &str) -> Result<CheckedExpression, String> {
     Err(format!("Parser not yet implemented: {}", code))

@@ -1,6 +1,6 @@
 // Tests for parsing fixed statements
 
-use bsharp::parser::nodes::statements::FixedStatement;
+use bsharp::syntax::nodes::statements::FixedStatement;
 
 fn parse_fixed_statement(code: &str) -> Result<FixedStatement, String> {
     Err(format!("Parser not yet implemented: {}", code))

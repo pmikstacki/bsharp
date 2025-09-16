@@ -1,9 +1,9 @@
 // Tests for parsing deconstruction expressions
 
-use bsharp::parser::nodes::expressions::{DeconstructionExpression, DeconstructionTarget, Expression};
-use bsharp::parser::nodes::types::{Type, PrimitiveType};
-use bsharp::parser::nodes::identifier::Identifier;
-use bsharp::parsers::expressions::deconstruction_expression_parser::parse_deconstruction_expression;
+use bsharp::syntax::nodes::expressions::{DeconstructionExpression, DeconstructionTarget, Expression};
+use bsharp::syntax::nodes::types::{Type, PrimitiveType};
+use bsharp::syntax::nodes::identifier::Identifier;
+use bsharp::parser::expressions::deconstruction_expression_parser::parse_deconstruction_expression;
 
 fn parse_deconstruction_expr(code: &str) -> Result<DeconstructionExpression, String> {
     match parse_deconstruction_expression(code) {
@@ -51,7 +51,7 @@ fn test_parse_typed_deconstruction() {
             },
         ],
         value: Box::new(Expression::Invocation(Box::new(
-            bsharp::parser::nodes::expressions::InvocationExpression {
+            bsharp::syntax::nodes::expressions::InvocationExpression {
                 callee: Box::new(Expression::Variable(Identifier::new("GetTuple"))),
                 arguments: vec![],
             }

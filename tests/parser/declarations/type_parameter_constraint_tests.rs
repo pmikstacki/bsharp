@@ -1,6 +1,6 @@
 // Tests for parsing type parameter constraints
 
-use bsharp::parser::nodes::declarations::TypeParameterConstraintClause;
+use bsharp::syntax::nodes::declarations::TypeParameterConstraintClause;
 
 fn parse_type_parameter_constraint(code: &str) -> Result<TypeParameterConstraintClause, String> {
     Err(format!("Parser not yet implemented: {}", code))

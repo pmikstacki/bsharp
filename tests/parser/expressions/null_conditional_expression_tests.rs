@@ -1,8 +1,8 @@
 // Tests for parsing null-conditional expressions
 
-use bsharp::parser::nodes::expressions::expression::Expression;
-use bsharp::parser::nodes::expressions::literal::Literal;
-use bsharp::parsers::expressions::expression_parser::parse_expression;
+use bsharp::syntax::nodes::expressions::expression::Expression;
+use bsharp::syntax::nodes::expressions::literal::Literal;
+use bsharp::parser::expressions::expression_parser::parse_expression;
 
 fn parse_null_conditional_expr_helper(code: &str) -> Result<Expression, String> {
     match parse_expression(code) {

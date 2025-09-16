@@ -1,10 +1,11 @@
 // Tests for advanced type system features
 
-use bsharp::parser::nodes::identifier::Identifier;
-use bsharp::parser::nodes::types::{PrimitiveType, Type};
-use bsharp::parsers::types::type_parser::parse_type_expression;
+use bsharp::syntax::nodes::identifier::Identifier;
+use bsharp::syntax::nodes::types::{PrimitiveType, Type};
+use bsharp::parser::types::type_parser::parse_type_expression;
+use bsharp::syntax::nodes::types::CallingConvention;
 
-// Helper function for unwrapping parser results
+// Helper function for unwrapping syntax results
 fn parse_test(code: &str) -> Result<Type, String> {
     match parse_type_expression(code) {
         Ok((remaining, ty)) if remaining.trim().is_empty() => Ok(ty),
@@ -117,7 +118,7 @@ fn test_parse_function_pointer_with_return_type() {
 fn test_parse_managed_function_pointer() {
     // delegate* managed<int, void> - managed function pointer
     let expected = Type::FunctionPointer {
-        calling_convention: Some("managed".to_string()),
+        calling_convention: Some(CallingConvention::Managed),
         parameter_types: vec![Type::Primitive(PrimitiveType::Int)],
         return_type: Box::new(Type::Primitive(PrimitiveType::Void)),
     };
@@ -128,7 +129,7 @@ fn test_parse_managed_function_pointer() {
 fn test_parse_unmanaged_function_pointer() {
     // delegate* unmanaged<string, bool> - unmanaged function pointer
     let expected = Type::FunctionPointer {
-        calling_convention: Some("unmanaged".to_string()),
+        calling_convention: Some(CallingConvention::Unmanaged),
         parameter_types: vec![Type::Primitive(PrimitiveType::String)],
         return_type: Box::new(Type::Primitive(PrimitiveType::Bool)),
     };
@@ -233,9 +234,9 @@ fn test_parse_errors() {
     // Empty function pointer should fail
     assert!(parse_test("delegate*<>").is_err());
     
-    // Invalid function pointer syntax should fail
+    // Invalid function pointer parser should fail
     assert!(parse_test("delegate*").is_err());
     
-    // Invalid generic syntax should fail
+    // Invalid generic parser should fail
     assert!(parse_test("List<>").is_err());
 } 

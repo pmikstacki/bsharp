@@ -1,7 +1,7 @@
 // Tests for parsing empty statements
 
-use bsharp::parser::nodes::statements::statement::Statement;
-use bsharp::parsers::statements::empty_statement_parser::parse_empty_statement;
+use bsharp::syntax::nodes::statements::statement::Statement;
+use bsharp::parser::statements::empty_statement_parser::parse_empty_statement;
 
 #[test]
 fn test_parse_empty_statement_simple() {

@@ -1,8 +1,8 @@
 // Tests for parsing general expressions (ExpressionSyntax enum)
 
-use bsharp::parser::nodes::expressions::Expression;
+use bsharp::syntax::nodes::expressions::Expression;
 
-use bsharp::parsers::expressions::expression_parser::parse_expression as real_parse_expression;
+use bsharp::parser::expressions::expression_parser::parse_expression as real_parse_expression;
 
 fn parse_expression(code: &str) -> Result<Expression, String> {
     match real_parse_expression(code) {
@@ -22,7 +22,7 @@ fn test_binary_operator_precedence() {
 #[test]
 fn test_assignment_expression() {
     let expr = parse_expression("x = 42").unwrap();
-    use bsharp::parser::nodes::expressions::Expression;
+    use bsharp::syntax::nodes::expressions::Expression;
     match expr {
         Expression::Assignment(assign) => {
             assert!(matches!(*assign.target, Expression::Variable(_)));
@@ -61,14 +61,14 @@ fn test_object_initializer() {
 fn test_parse_integer_literal() {
     let input = "123";
     let expr = parse_expression(input).unwrap();
-    assert_eq!(expr, Expression::Literal(bsharp::parser::nodes::expressions::Literal::Integer(123)));
+    assert_eq!(expr, Expression::Literal(bsharp::syntax::nodes::expressions::Literal::Integer(123)));
 }
 
 #[test]
 fn test_parse_identifier() {
     let input = "myVariable";
     let expr = parse_expression(input).unwrap();
-    assert_eq!(expr, Expression::Variable(bsharp::parser::nodes::identifier::Identifier::new("myVariable")));
+    assert_eq!(expr, Expression::Variable(bsharp::syntax::nodes::identifier::Identifier::new("myVariable")));
 }
 
 #[test]
@@ -83,5 +83,5 @@ fn test_parse_parenthesized_expression() {
     let input = "(42)";
     let expr = parse_expression(input).unwrap();
     // Parenthesized expressions just resolve to the inner expression
-    assert_eq!(expr, Expression::Literal(bsharp::parser::nodes::expressions::Literal::Integer(42)));
+    assert_eq!(expr, Expression::Literal(bsharp::syntax::nodes::expressions::Literal::Integer(42)));
 }

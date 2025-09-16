@@ -1,10 +1,10 @@
 use bsharp::analysis::metrics::basic::{BasicMetrics, BasicMetricsCollector};
-use bsharp::parser::ast::*;
-use bsharp::parser::nodes::declarations::*;
-use bsharp::parser::nodes::statements::statement::*;
-use bsharp::parser::nodes::Identifier;
-use bsharp::parser::nodes::statements::{CatchClause, DoWhileStatement, ForStatement, IfStatement, WhileStatement, SwitchStatement, SwitchSection, SwitchLabel, TryStatement, BreakStatement};
-use bsharp::parser::nodes::types::{PrimitiveType, Type};
+use bsharp::syntax::ast::*;
+use bsharp::syntax::nodes::declarations::*;
+use bsharp::syntax::nodes::statements::statement::*;
+use bsharp::syntax::nodes::Identifier;
+use bsharp::syntax::nodes::statements::{CatchClause, DoWhileStatement, ForStatement, IfStatement, WhileStatement, SwitchStatement, SwitchSection, SwitchLabel, TryStatement, BreakStatement};
+use bsharp::syntax::nodes::types::{PrimitiveType, Type};
 
 fn create_test_identifier(name: &str) -> Identifier {
     Identifier {
@@ -180,8 +180,8 @@ fn test_collect_from_statement() {
     let mut collector = BasicMetricsCollector::new();
     
     let if_stmt = Statement::If(Box::new(IfStatement {
-        condition: bsharp::parser::nodes::expressions::expression::Expression::Literal(
-            bsharp::parser::nodes::expressions::literal::Literal::Boolean(true)
+        condition: bsharp::syntax::nodes::expressions::expression::Expression::Literal(
+            bsharp::syntax::nodes::expressions::literal::Literal::Boolean(true)
         ),
         consequence: Box::new(Statement::Block(vec![
             Statement::For(Box::new(ForStatement {
@@ -229,25 +229,25 @@ fn test_collect_various_statement_types() {
     
     let statements = vec![
         Statement::While(Box::new(WhileStatement {
-            condition: Box::new(bsharp::parser::nodes::expressions::expression::Expression::Literal(
-                bsharp::parser::nodes::expressions::literal::Literal::Boolean(true)
+            condition: Box::new(bsharp::syntax::nodes::expressions::expression::Expression::Literal(
+                bsharp::syntax::nodes::expressions::literal::Literal::Boolean(true)
             )),
             body: Box::new(Statement::Block(Vec::new())),
         })),
         Statement::DoWhile(Box::new(DoWhileStatement {
             body: Box::new(Statement::Block(Vec::new())),
-            condition: bsharp::parser::nodes::expressions::expression::Expression::Literal(
-                bsharp::parser::nodes::expressions::literal::Literal::Boolean(true)
+            condition: bsharp::syntax::nodes::expressions::expression::Expression::Literal(
+                bsharp::syntax::nodes::expressions::literal::Literal::Boolean(true)
             ),
         })),
         Statement::Switch(Box::new(SwitchStatement {
-            expression: bsharp::parser::nodes::expressions::expression::Expression::Literal(
-                bsharp::parser::nodes::expressions::literal::Literal::Integer(1)
+            expression: bsharp::syntax::nodes::expressions::expression::Expression::Literal(
+                bsharp::syntax::nodes::expressions::literal::Literal::Integer(1)
             ),
             sections: vec![
                 SwitchSection {
-                    labels: vec![SwitchLabel::Case(bsharp::parser::nodes::expressions::expression::Expression::Literal(
-                        bsharp::parser::nodes::expressions::literal::Literal::Integer(1)
+                    labels: vec![SwitchLabel::Case(bsharp::syntax::nodes::expressions::expression::Expression::Literal(
+                        bsharp::syntax::nodes::expressions::literal::Literal::Integer(1)
                     ))],
                     statements: vec![Statement::Break(BreakStatement)],
                 }
@@ -302,8 +302,8 @@ fn test_metrics_accuracy_with_real_code() {
                 constraints: Some(Vec::new()),
                 body: Some(Statement::Block(vec![
                     Statement::If(Box::new(IfStatement {
-                        condition: bsharp::parser::nodes::expressions::expression::Expression::Literal(
-                            bsharp::parser::nodes::expressions::literal::Literal::Boolean(true)
+                        condition: bsharp::syntax::nodes::expressions::expression::Expression::Literal(
+                            bsharp::syntax::nodes::expressions::literal::Literal::Boolean(true)
                         ),
                         consequence: Box::new(Statement::Block(vec![
                             Statement::For(Box::new(ForStatement {
@@ -326,8 +326,8 @@ fn test_metrics_accuracy_with_real_code() {
                             }))
                         ])),
                         alternative: Some(Box::new(Statement::While(Box::new(WhileStatement {
-                            condition: Box::new(bsharp::parser::nodes::expressions::expression::Expression::Literal(
-                                bsharp::parser::nodes::expressions::literal::Literal::Boolean(false)
+                            condition: Box::new(bsharp::syntax::nodes::expressions::expression::Expression::Literal(
+                                bsharp::syntax::nodes::expressions::literal::Literal::Boolean(false)
                             )),
                             body: Box::new(Statement::Block(Vec::new())),
                         })))),
@@ -423,8 +423,8 @@ fn test_collector_integration() {
     // Create statements with different control structures
     let statements = vec![
         Statement::If(Box::new(IfStatement {
-            condition: bsharp::parser::nodes::expressions::expression::Expression::Literal(
-                bsharp::parser::nodes::expressions::literal::Literal::Boolean(false)
+            condition: bsharp::syntax::nodes::expressions::expression::Expression::Literal(
+                bsharp::syntax::nodes::expressions::literal::Literal::Boolean(false)
             ),
             consequence: Box::new(Statement::Block(vec![
                 Statement::For(Box::new(ForStatement {
@@ -437,15 +437,15 @@ fn test_collector_integration() {
             alternative: None,
         })),
         Statement::While(Box::new(WhileStatement {
-            condition: Box::new(bsharp::parser::nodes::expressions::expression::Expression::Literal(
-                bsharp::parser::nodes::expressions::literal::Literal::Boolean(true)
+            condition: Box::new(bsharp::syntax::nodes::expressions::expression::Expression::Literal(
+                bsharp::syntax::nodes::expressions::literal::Literal::Boolean(true)
             )),
             body: Box::new(Statement::Block(Vec::new())),
         })),
         Statement::DoWhile(Box::new(DoWhileStatement {
             body: Box::new(Statement::Block(Vec::new())),
-            condition: bsharp::parser::nodes::expressions::expression::Expression::Literal(
-                bsharp::parser::nodes::expressions::literal::Literal::Boolean(true)
+            condition: bsharp::syntax::nodes::expressions::expression::Expression::Literal(
+                bsharp::syntax::nodes::expressions::literal::Literal::Boolean(true)
             ),
         })),
     ];
@@ -463,8 +463,8 @@ fn test_collector_integration() {
 fn create_complex_method_for_analysis() -> MethodDeclaration {
     let complex_body = Statement::Block(vec![
         Statement::If(Box::new(IfStatement {
-            condition: bsharp::parser::nodes::expressions::expression::Expression::Literal(
-                bsharp::parser::nodes::expressions::literal::Literal::Boolean(true)
+            condition: bsharp::syntax::nodes::expressions::expression::Expression::Literal(
+                bsharp::syntax::nodes::expressions::literal::Literal::Boolean(true)
             ),
             consequence: Box::new(Statement::Block(vec![
                 Statement::For(Box::new(ForStatement {
@@ -487,8 +487,8 @@ fn create_complex_method_for_analysis() -> MethodDeclaration {
                 }))
             ])),
             alternative: Some(Box::new(Statement::While(Box::new(WhileStatement {
-                condition: Box::new(bsharp::parser::nodes::expressions::expression::Expression::Literal(
-                    bsharp::parser::nodes::expressions::literal::Literal::Boolean(false)
+                condition: Box::new(bsharp::syntax::nodes::expressions::expression::Expression::Literal(
+                    bsharp::syntax::nodes::expressions::literal::Literal::Boolean(false)
                 )),
                 body: Box::new(Statement::Block(Vec::new())),
             })))),

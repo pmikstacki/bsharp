@@ -33,7 +33,7 @@ for cs_file in debug_cases/*.cs; do
         echo "Testing: $filename"
         echo "Output: $json_output"
         
-        # Run bsharp parser on the file
+        # Run bsharp syntax on the file
         if ./target/release/bsharp parse "$cs_file" --output "$json_output" 2>&1; then
             echo "✅ SUCCESS: $filename"
             success=$((success + 1))

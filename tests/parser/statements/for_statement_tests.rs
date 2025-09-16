@@ -1,16 +1,16 @@
 // Tests for parsing for statements
 
-// Tests originally from src/parsers/statements/for_statement_parser.rs
+// Tests originally from src/parser/statements/for_statement_parser.rs
 #[test]
 fn test_parse_for_statement_logic() { 
-    use bsharp::parser::nodes::expressions::expression::Expression;
+    use bsharp::syntax::nodes::expressions::expression::Expression;
     
     
-    use bsharp::parser::nodes::statements::{ForInitializer, statement::Statement}; 
-    use bsharp::parser::nodes::declarations::LocalVariableDeclaration; 
+    use bsharp::syntax::nodes::statements::{ForInitializer, statement::Statement};
+    use bsharp::syntax::nodes::declarations::LocalVariableDeclaration;
     
     
-    use bsharp::parsers::statements::for_statement_parser::parse_for_statement; 
+    use bsharp::parser::statements::for_statement_parser::parse_for_statement;
 
     let input_simple = "for (int i = 0; i < 10; i++) { Write(i); }";
     let result_simple = parse_for_statement(input_simple);

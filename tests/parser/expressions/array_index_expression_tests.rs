@@ -1,6 +1,6 @@
 // Tests for parsing array index expressions
 
-use bsharp::parser::nodes::expressions::ArrayIndexExpression;
+use bsharp::syntax::nodes::expressions::ArrayIndexExpression;
 
 fn parse_array_index_expr(code: &str) -> Result<ArrayIndexExpression, String> {
     Err(format!("Parser not yet implemented: {}", code))

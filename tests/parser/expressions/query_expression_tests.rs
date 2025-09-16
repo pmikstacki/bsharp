@@ -1,8 +1,8 @@
 // Tests for parsing query expressions
 
-use bsharp::parser::nodes::expressions::expression::Expression;
-use bsharp::parser::nodes::expressions::query_expression::*;
-use bsharp::parsers::expressions::query_expression_parser::parse_query_expression;
+use bsharp::syntax::nodes::expressions::expression::Expression;
+use bsharp::syntax::nodes::expressions::query_expression::*;
+use bsharp::parser::expressions::query_expression_parser::parse_query_expression;
 
 fn parse_query_test(code: &str) -> Result<Expression, String> {
     match parse_query_expression(code) {

@@ -1,6 +1,6 @@
 // Tests for parsing unsafe statements
 
-use bsharp::parser::nodes::statements::UnsafeStatement;
+use bsharp::syntax::nodes::statements::UnsafeStatement;
 
 fn parse_unsafe_statement(code: &str) -> Result<UnsafeStatement, String> {
     Err(format!("Parser not yet implemented: {}", code))

@@ -1,11 +1,11 @@
-use crate::parser::ast::*;
-use crate::parser::nodes::statements::{UsingStatement, ForInitializer};
-use crate::parser::nodes::statements::statement::Statement;
-use crate::parser::nodes::declarations::{
+use crate::syntax::ast::*;
+use crate::syntax::nodes::statements::ForInitializer;
+use crate::syntax::nodes::statements::statement::Statement;
+use crate::syntax::nodes::declarations::{
     NamespaceDeclaration as Namespace, ClassBodyDeclaration, InterfaceBodyDeclaration, StructBodyDeclaration,
     MethodDeclaration, PropertyDeclaration, FieldDeclaration, ConstructorDeclaration
 };
-use crate::parser::nodes::expressions::Expression;
+use crate::syntax::nodes::expressions::Expression;
 use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
 
@@ -104,22 +104,22 @@ impl NamingAnalyzer {
         
         for declaration in &namespace.declarations {
             match declaration {
-                crate::parser::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration::Class(class) => {
+                crate::syntax::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration::Class(class) => {
                     self.analyze_class(class, metrics);
                 }
-                crate::parser::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration::Interface(interface) => {
+                crate::syntax::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration::Interface(interface) => {
                     self.analyze_interface(interface, metrics);
                 }
-                crate::parser::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration::Enum(enum_decl) => {
+                crate::syntax::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration::Enum(enum_decl) => {
                     self.analyze_enum(enum_decl, metrics);
                 }
-                crate::parser::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration::Struct(struct_decl) => {
+                crate::syntax::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration::Struct(struct_decl) => {
                     self.analyze_struct(struct_decl, metrics);
                 }
-                crate::parser::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration::Record(record) => {
+                crate::syntax::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration::Record(record) => {
                     self.analyze_record(record, metrics);
                 }
-                crate::parser::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration::Delegate(delegate) => {
+                crate::syntax::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration::Delegate(delegate) => {
                     self.analyze_delegate(delegate, metrics);
                 }
                 _ => {}

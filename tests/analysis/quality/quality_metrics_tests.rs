@@ -164,7 +164,7 @@ fn test_quality_severity_ordering() {
     ];
     
     for i in 0..severities.len() - 1 {
-        assert!(severities[i] as u8 < severities[i + 1] as u8,
+        assert!((severities[i] as u8) < (severities[i + 1] as u8),
             "{:?} should be less severe than {:?}", severities[i], severities[i + 1]);
     }
 }

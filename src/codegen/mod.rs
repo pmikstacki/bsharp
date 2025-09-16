@@ -1,4 +1,4 @@
-use crate::parser::ast;
+use crate::syntax::ast;
 use cranelift_codegen::ir::types;
 use cranelift_codegen::ir::{AbiParam, InstBuilder};
 use cranelift_codegen::settings::{self};
@@ -11,9 +11,9 @@ use cranelift_object::{ObjectBuilder, ObjectModule};
 use std::str::FromStr;
 use target_lexicon::Triple;
 
-use crate::parser::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration;
-use crate::parser::nodes::declarations::{ClassBodyDeclaration, ClassDeclaration, MethodDeclaration};
-use crate::parser::nodes::types::{PrimitiveType, Type};
+use crate::syntax::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration;
+use crate::syntax::nodes::declarations::{ClassBodyDeclaration, ClassDeclaration, MethodDeclaration};
+use crate::syntax::nodes::types::{PrimitiveType, Type};
 
 // Trait for AST nodes that can be compiled
 pub trait Compilable {

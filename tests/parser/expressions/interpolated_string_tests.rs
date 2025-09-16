@@ -1,6 +1,6 @@
-use bsharp::parser::nodes::expressions::literal::{Literal, InterpolatedStringPart};
-use bsharp::parser::nodes::expressions::expression::Expression;
-use bsharp::parsers::expressions::literal_parser::parse_literal;
+use bsharp::syntax::nodes::expressions::literal::{Literal, InterpolatedStringPart};
+use bsharp::syntax::nodes::expressions::expression::Expression;
+use bsharp::parser::expressions::literal_parser::parse_literal;
 
 fn parse_interpolated_string_test(code: &str) -> Result<Literal, String> {
     match parse_literal(code) {

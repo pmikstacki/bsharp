@@ -5,10 +5,10 @@
 //![cfg(feature = "self-rust-tokenize")]
 //use self_rust_tokenize::SelfRustTokenize;
 
-pub mod parser;
+pub mod syntax;
 pub mod codegen;
 pub mod compiler;
-pub mod parsers;
+pub mod parser;
 pub mod cli;
 pub mod analysis;
 // Export the CLI module

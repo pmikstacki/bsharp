@@ -1,9 +1,9 @@
 // Tests for parsing attribute declarations
 
-use bsharp::parser::nodes::declarations::Attribute;
-use bsharp::parser::nodes::identifier::Identifier;
+use bsharp::syntax::nodes::declarations::Attribute;
+use bsharp::syntax::nodes::identifier::Identifier;
 
-// Placeholder parser function
+// Placeholder syntax function
 fn parse_attribute(code: &str) -> Result<Attribute, String> {
     Err(format!("Parser not yet implemented: {}", code))
 }

@@ -1,15 +1,15 @@
 // Tests for parsing enum declarations
 
-use bsharp::parser::nodes::declarations::Modifier;
-use bsharp::parser::nodes::types::{Type, PrimitiveType};
-use bsharp::parser::nodes::expressions::expression::Expression;
-use bsharp::parser::nodes::expressions::literal::Literal;
-use bsharp::parsers::declarations::enum_declaration_parser::parse_enum_declaration;
+use bsharp::syntax::nodes::declarations::Modifier;
+use bsharp::syntax::nodes::types::{Type, PrimitiveType};
+use bsharp::syntax::nodes::expressions::expression::Expression;
+use bsharp::syntax::nodes::expressions::literal::Literal;
+use bsharp::parser::declarations::enum_declaration_parser::parse_enum_declaration;
 
 // Local test helper to avoid import issues
 fn parse_full_input<'a, O, F>(input: &'a str, parser: F) -> Result<(&'a str, O), String>
 where
-    F: FnOnce(&'a str) -> bsharp::parser::errors::BResult<&'a str, O>,
+    F: FnOnce(&'a str) -> bsharp::syntax::errors::BResult<&'a str, O>,
 {
     match parser(input) {
         Ok((remaining, result)) => Ok((remaining, result)),

@@ -1,8 +1,8 @@
 // Tests for parsing nameof expressions
 
-use bsharp::parser::nodes::expressions::expression::Expression;
-use bsharp::parsers::expressions::expression_parser::parse_expression;
-use bsharp::parsers::expressions::nameof_expression_parser::parse_nameof_expression;
+use bsharp::syntax::nodes::expressions::expression::Expression;
+use bsharp::parser::expressions::expression_parser::parse_expression;
+use bsharp::parser::expressions::nameof_expression_parser::parse_nameof_expression;
 
 fn parse_nameof_expr_helper(code: &str) -> Result<Expression, String> {
     match parse_nameof_expression(code) {

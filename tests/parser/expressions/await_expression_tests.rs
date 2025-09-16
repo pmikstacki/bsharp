@@ -1,7 +1,7 @@
 // Tests for parsing await expressions
 
-use bsharp::parser::nodes::expressions::expression::Expression;
-use bsharp::parsers::expressions::expression_parser::parse_expression;
+use bsharp::syntax::nodes::expressions::expression::Expression;
+use bsharp::parser::expressions::expression_parser::parse_expression;
 
 fn parse_await_expr(code: &str) -> Result<Expression, String> {
     match parse_expression(code) {

@@ -1,6 +1,6 @@
 // Tests for trait-based AST navigation functionality
 
-use bsharp::parser::{Parser, AstNavigate, FindDeclarations};
+use bsharp::syntax::{Parser, AstNavigate, FindDeclarations};
 
 #[test]
 fn test_trait_based_navigation() {

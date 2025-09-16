@@ -1,5 +1,5 @@
-use crate::parser::nodes::declarations::MethodDeclaration;
-use crate::parser::nodes::statements::statement::Statement;
+use crate::syntax::nodes::declarations::MethodDeclaration;
+use crate::syntax::nodes::statements::statement::Statement;
 use serde::{Deserialize, Serialize};
 
 /// Advanced complexity metrics beyond basic cyclomatic complexity

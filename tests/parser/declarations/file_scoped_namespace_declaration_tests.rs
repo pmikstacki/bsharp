@@ -1,8 +1,8 @@
 // Tests for parsing file-scoped namespace declarations
 
-use bsharp::parser::nodes::declarations::{FileScopedNamespaceDeclaration, UsingDirective, namespace_declaration::NamespaceBodyDeclaration};
-use bsharp::parser::nodes::identifier::Identifier;
-use bsharp::parsers::declarations::file_scoped_namespace_parser::parse_file_scoped_namespace_declaration;
+use bsharp::syntax::nodes::declarations::{FileScopedNamespaceDeclaration, UsingDirective, namespace_declaration::NamespaceBodyDeclaration};
+use bsharp::syntax::nodes::identifier::Identifier;
+use bsharp::parser::declarations::file_scoped_namespace_parser::parse_file_scoped_namespace_declaration;
 
 fn parse_file_scoped_namespace_declaration_helper(code: &str) -> Result<FileScopedNamespaceDeclaration, String> {
     match parse_file_scoped_namespace_declaration(code) {
@@ -277,7 +277,7 @@ fn test_file_scoped_namespace_vs_block_scoped() {
     let result = parse_file_scoped_namespace_declaration_helper(file_scoped);
     assert!(result.is_ok(), "File-scoped namespace should parse successfully");
     
-    // This should fail for file-scoped parser (has braces, not semicolon)
+    // This should fail for file-scoped syntax (has braces, not semicolon)
     let block_scoped = "namespace MyNs { }";
     let result = parse_file_scoped_namespace_declaration_helper(block_scoped);
     assert!(result.is_err(), "Block-scoped namespace should not parse as file-scoped");

@@ -1,6 +1,6 @@
 // Tests for parsing finally clauses
 
-use bsharp::parser::nodes::statements::FinallyClause;
+use bsharp::syntax::nodes::statements::FinallyClause;
 
 fn parse_finally_clause(code: &str) -> Result<FinallyClause, String> {
     Err(format!("Parser not yet implemented: {}", code))

@@ -1,7 +1,7 @@
 // Tests for parsing top-level statements (C# 9+ feature)
 
-use bsharp::parser::nodes::statements::statement::Statement;
-use bsharp::parsers::statements::top_level_statement_parser::{parse_top_level_statements, parse_top_level_statement};
+use bsharp::syntax::nodes::statements::statement::Statement;
+use bsharp::parser::statements::top_level_statement_parser::{parse_top_level_statements, parse_top_level_statement};
 
 fn parse_top_level_statements_helper(code: &str) -> Result<Vec<Statement>, String> {
     match parse_top_level_statements(code) {
@@ -420,9 +420,9 @@ fn test_parse_top_level_statements_with_whitespace() {
 
 #[test]
 fn test_parse_top_level_statements_error_recovery() {
-    // Test that parser can handle some invalid statements gracefully
+    // Test that syntax can handle some invalid statements gracefully
     let code = r#"Console.WriteLine("Valid");
-invalid syntax here!
+invalid parser here!
 Console.WriteLine("Another valid");"#;
     
     let result = parse_top_level_statements_helper(code);

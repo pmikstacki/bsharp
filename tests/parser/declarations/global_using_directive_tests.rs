@@ -1,6 +1,6 @@
 // Tests for parsing global using directives
 
-use bsharp::parser::nodes::declarations::GlobalUsingDirective;
+use bsharp::syntax::nodes::declarations::GlobalUsingDirective;
 
 fn parse_global_using_directive(code: &str) -> Result<GlobalUsingDirective, String> {
     Err(format!("Parser not yet implemented: {}", code))

@@ -1,7 +1,7 @@
 // Tests for type declaration helpers
 
-use bsharp::parser::nodes::declarations::Modifier;
-use bsharp::parsers::declarations::type_declaration_helpers::{parse_type_declaration_header, at_end_of_body};
+use bsharp::syntax::nodes::declarations::Modifier;
+use bsharp::parser::declarations::type_declaration_helpers::{parse_type_declaration_header, at_end_of_body};
 
 #[test]
 fn test_base_type_declaration() {

@@ -1,8 +1,8 @@
 // Tests for parsing using statements
 
-use bsharp::parser::nodes::statements::statement::Statement;
-use bsharp::parser::nodes::expressions::expression::Expression;
-use bsharp::parsers::statements::using_statement_parser::parse_using_statement;
+use bsharp::syntax::nodes::statements::statement::Statement;
+use bsharp::syntax::nodes::expressions::expression::Expression;
+use bsharp::parser::statements::using_statement_parser::parse_using_statement;
 
 #[test]
 fn test_simple_using_statement() {

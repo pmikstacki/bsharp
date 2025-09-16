@@ -1,9 +1,9 @@
 // Tests for parsing operator declarations
 
-use bsharp::parser::nodes::declarations::{OperatorDeclaration, OperatorKind, ConversionKind, Modifier};
-use bsharp::parser::nodes::identifier::Identifier;
-use bsharp::parser::nodes::types::{Type, PrimitiveType};
-use bsharp::parsers::declarations::operator_declaration_parser::parse_operator_declaration;
+use bsharp::syntax::nodes::declarations::{OperatorDeclaration, OperatorKind, ConversionKind, Modifier};
+use bsharp::syntax::nodes::identifier::Identifier;
+use bsharp::syntax::nodes::types::{Type, PrimitiveType};
+use bsharp::parser::declarations::operator_declaration_parser::parse_operator_declaration;
 
 fn parse_operator_declaration_helper(code: &str) -> Result<OperatorDeclaration, String> {
     match parse_operator_declaration(code) {

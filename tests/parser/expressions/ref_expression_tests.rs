@@ -1,12 +1,12 @@
 // Tests for parsing ref expressions and ref return types
 
-use bsharp::parser::nodes::expressions::expression::Expression;
-use bsharp::parser::nodes::expressions::literal::Literal;
-use bsharp::parser::nodes::identifier::Identifier;
-use bsharp::parser::nodes::types::{Type, PrimitiveType};
-use bsharp::parsers::expressions::ref_expression_parser::parse_ref_expression;
-use bsharp::parsers::expressions::expression_parser::parse_expression;
-use bsharp::parsers::types::type_parser::parse_type_expression;
+use bsharp::syntax::nodes::expressions::expression::Expression;
+use bsharp::syntax::nodes::expressions::literal::Literal;
+use bsharp::syntax::nodes::identifier::Identifier;
+use bsharp::syntax::nodes::types::{Type, PrimitiveType};
+use bsharp::parser::expressions::ref_expression_parser::parse_ref_expression;
+use bsharp::parser::expressions::expression_parser::parse_expression;
+use bsharp::parser::types::type_parser::parse_type_expression;
 
 fn parse_ref_expr_helper(code: &str) -> Result<Expression, String> {
     match parse_ref_expression(code) {
@@ -308,7 +308,7 @@ fn test_parse_ref_as_parameter() {
 
 #[test]
 fn test_parse_ref_locals() {
-    // Test parsing ref local variable declarations (this would need to be implemented in variable declaration parser)
+    // Test parsing ref local variable declarations (this would need to be implemented in variable declaration syntax)
     // For now, we test that ref expressions work in assignment contexts
     let result = parse_expr_helper("refLocal = ref otherVariable");
     assert!(result.is_ok(), "Failed to parse ref local assignment: {:?}", result);

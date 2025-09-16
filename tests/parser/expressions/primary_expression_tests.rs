@@ -1,8 +1,8 @@
 // Tests for parsing primary expressions (variable references, literals, parenthesized expressions)
-use bsharp::parser::nodes::expressions::Expression;
-use bsharp::parser::nodes::identifier::Identifier;
-use bsharp::parser::nodes::expressions::Literal;
-use bsharp::parsers::expressions::primary_parser::parse_primary_expression;
+use bsharp::syntax::nodes::expressions::Expression;
+use bsharp::syntax::nodes::identifier::Identifier;
+use bsharp::syntax::nodes::expressions::Literal;
+use bsharp::parser::expressions::primary_parser::parse_primary_expression;
 
 #[test]
 fn test_parse_variable_reference() {

@@ -1,9 +1,9 @@
 // Tests for parsing deconstruction statements
 
-use bsharp::parser::nodes::statements::statement::Statement;
-use bsharp::parser::nodes::expressions::{DeconstructionTarget, Expression};
-use bsharp::parser::nodes::types::{Type, PrimitiveType};
-use bsharp::parsers::statements::deconstruction_statement_parser::parse_deconstruction_statement;
+use bsharp::syntax::nodes::statements::statement::Statement;
+use bsharp::syntax::nodes::expressions::{DeconstructionTarget, Expression};
+use bsharp::syntax::nodes::types::{Type, PrimitiveType};
+use bsharp::parser::statements::deconstruction_statement_parser::parse_deconstruction_statement;
 
 fn parse_deconstruction_stmt(code: &str) -> Result<Statement, String> {
     match parse_deconstruction_statement(code) {

@@ -1,10 +1,10 @@
 // Tests for parsing indexer declarations
 
-use bsharp::parser::nodes::declarations::{IndexerDeclaration, Modifier};
-use bsharp::parser::nodes::identifier::Identifier;
-use bsharp::parser::nodes::types::{Type, PrimitiveType};
-use bsharp::parser::nodes::types::Type::Primitive;
-use bsharp::parsers::declarations::indexer_declaration_parser::parse_indexer_declaration;
+use bsharp::syntax::nodes::declarations::{IndexerDeclaration, Modifier};
+use bsharp::syntax::nodes::identifier::Identifier;
+use bsharp::syntax::nodes::types::{Type, PrimitiveType};
+use bsharp::syntax::nodes::types::Type::Primitive;
+use bsharp::parser::declarations::indexer_declaration_parser::parse_indexer_declaration;
 
 fn parse_indexer_declaration_helper(code: &str) -> Result<IndexerDeclaration, String> {
     match parse_indexer_declaration(code) {

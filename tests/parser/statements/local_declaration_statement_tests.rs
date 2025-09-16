@@ -1,15 +1,15 @@
 // Integration tests for local variable declaration statements
 // Moved from statement_tests.rs
 
-use bsharp::parser::nodes::statements::statement::Statement;
-use bsharp::parser::nodes::declarations::LocalVariableDeclaration;
-use bsharp::parser::nodes::declarations::local_variable_declaration::VariableDeclarator;
-use bsharp::parser::nodes::expressions::expression::Expression;
-use bsharp::parser::nodes::expressions::literal::Literal;
-use bsharp::parser::nodes::identifier::Identifier;
-use bsharp::parser::nodes::expressions::new_expression::NewExpression;
-use bsharp::parser::nodes::types::{Type, PrimitiveType};
-use bsharp::parsers::statement_parser::parse_statement;
+use bsharp::syntax::nodes::statements::statement::Statement;
+use bsharp::syntax::nodes::declarations::LocalVariableDeclaration;
+use bsharp::syntax::nodes::declarations::local_variable_declaration::VariableDeclarator;
+use bsharp::syntax::nodes::expressions::expression::Expression;
+use bsharp::syntax::nodes::expressions::literal::Literal;
+use bsharp::syntax::nodes::identifier::Identifier;
+use bsharp::syntax::nodes::expressions::new_expression::NewExpression;
+use bsharp::syntax::nodes::types::{Type, PrimitiveType};
+use bsharp::parser::statement_parser::parse_statement;
 use nom::combinator::all_consuming;
 use nom::Finish;
 

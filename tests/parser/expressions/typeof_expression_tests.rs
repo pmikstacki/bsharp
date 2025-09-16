@@ -1,9 +1,9 @@
 // Tests for parsing typeof expressions
 
-use bsharp::parser::nodes::expressions::expression::Expression;
-use bsharp::parser::nodes::types::{Type, PrimitiveType};
-use bsharp::parsers::expressions::expression_parser::parse_expression;
-use bsharp::parsers::expressions::typeof_expression_parser::parse_typeof_expression;
+use bsharp::syntax::nodes::expressions::expression::Expression;
+use bsharp::syntax::nodes::types::{Type, PrimitiveType};
+use bsharp::parser::expressions::expression_parser::parse_expression;
+use bsharp::parser::expressions::typeof_expression_parser::parse_typeof_expression;
 
 fn parse_typeof_expr_helper(code: &str) -> Result<Expression, String> {
     match parse_typeof_expression(code) {

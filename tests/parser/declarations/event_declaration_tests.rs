@@ -1,7 +1,7 @@
 // Tests for parsing event declarations
 
-use bsharp::parsers::declarations::event_declaration_parser::parse_event_declaration;
-use bsharp::parser::nodes::declarations::Modifier;
+use bsharp::parser::declarations::event_declaration_parser::parse_event_declaration;
+use bsharp::syntax::nodes::declarations::Modifier;
 
 #[test]
 fn test_simple_event() {

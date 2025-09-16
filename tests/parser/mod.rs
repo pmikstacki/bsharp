@@ -1,4 +1,4 @@
-// Declare test modules within the parser test suite
+// Declare test modules within the syntax test suite
 mod statements;
 mod declarations;
 mod types;  // Added for type_parser_tests

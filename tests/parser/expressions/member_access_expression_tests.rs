@@ -1,6 +1,6 @@
 // Tests for parsing member access expressions
 
-use bsharp::parser::nodes::expressions::MemberAccessExpression;
+use bsharp::syntax::nodes::expressions::MemberAccessExpression;
 
 fn parse_member_access_expr(code: &str) -> Result<MemberAccessExpression, String> {
     Err(format!("Parser not yet implemented: {}", code))

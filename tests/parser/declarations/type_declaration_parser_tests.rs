@@ -1,6 +1,6 @@
 #![cfg(test)]
-use bsharp::parser::nodes::declarations::{InterfaceBodyDeclaration, TypeDeclaration};
-use bsharp::parsers::declarations::type_declaration_parser::{
+use bsharp::syntax::nodes::declarations::{InterfaceBodyDeclaration, TypeDeclaration};
+use bsharp::parser::declarations::type_declaration_parser::{
     parse_class_declaration,
     parse_interface_declaration,
     parse_record_declaration,
@@ -132,7 +132,7 @@ fn test_interface_with_method() {
 
 #[test]
 fn test_interface_with_method_body_error() {
-    // Interface methods cannot have a body, but parser should use error recovery
+    // Interface methods cannot have a body, but syntax should use error recovery
     let input = "interface IBad { void BadMethod() { return; } }";
 
     match parse_interface_declaration(input) {

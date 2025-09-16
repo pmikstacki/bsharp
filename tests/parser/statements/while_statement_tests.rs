@@ -1,11 +1,11 @@
 // Integration tests for while_statement_parser.rs
-// Content moved from src/parsers/statements/while_statement_parser.rs
+// Content moved from src/parser/statements/while_statement_parser.rs
 
-use bsharp::parser::nodes::expressions::expression::Expression;
-use bsharp::parser::nodes::expressions::literal::Literal;
-use bsharp::parser::nodes::statements::statement::Statement;
-use bsharp::parser::test_helpers::parse_all;
-use bsharp::parsers::statements::while_statement_parser::parse_while_statement;
+use bsharp::syntax::nodes::expressions::expression::Expression;
+use bsharp::syntax::nodes::expressions::literal::Literal;
+use bsharp::syntax::nodes::statements::statement::Statement;
+use bsharp::syntax::test_helpers::parse_all;
+use bsharp::parser::statements::while_statement_parser::parse_while_statement;
 
 #[test]
 fn test_parse_while_statement() {

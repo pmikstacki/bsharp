@@ -1,6 +1,6 @@
 // Tests for parsing label statements
 
-use bsharp::parser::nodes::statements::LabelStatement;
+use bsharp::syntax::nodes::statements::LabelStatement;
 
 fn parse_label_statement(code: &str) -> Result<LabelStatement, String> {
     Err(format!("Parser not yet implemented: {}", code))

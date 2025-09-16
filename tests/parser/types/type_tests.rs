@@ -1,8 +1,8 @@
 // Tests for parsing types
 
-use bsharp::parser::nodes::types::{Type, PrimitiveType};
-use bsharp::parser::nodes::identifier::Identifier;
-use bsharp::parsers::types::type_parser::parse_type_expression;
+use bsharp::syntax::nodes::types::{Type, PrimitiveType};
+use bsharp::syntax::nodes::identifier::Identifier;
+use bsharp::parser::types::type_parser::parse_type_expression;
 
 fn parse_type(code: &str) -> Result<Type, String> {
     match parse_type_expression(code) {

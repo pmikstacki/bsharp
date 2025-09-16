@@ -1,9 +1,9 @@
-use bsharp::parser::nodes::expressions::expression::Expression;
-use bsharp::parser::nodes::expressions::literal::Literal;
-use bsharp::parser::nodes::expressions::range_expression::{IndexExpression, RangeExpression};
-use bsharp::parser::nodes::identifier::Identifier;
-use bsharp::parsers::expressions::expression_parser::parse_expression;
-use bsharp::parser::nodes::expressions::UnaryOperator;
+use bsharp::syntax::nodes::expressions::expression::Expression;
+use bsharp::syntax::nodes::expressions::literal::Literal;
+use bsharp::syntax::nodes::expressions::range_expression::{IndexExpression, RangeExpression};
+use bsharp::syntax::nodes::identifier::Identifier;
+use bsharp::parser::expressions::expression_parser::parse_expression;
+use bsharp::syntax::nodes::expressions::UnaryOperator;
 
 fn check_expr(input: &str, expected_expr: Expression) {
     let (_, expr) = parse_expression(input).unwrap_or_else(|e| panic!("Failed to parse expression '{}': {:?}", input, e));
@@ -77,13 +77,13 @@ fn test_range_with_complex_expressions() {
         r#"GetStart()..array.Length"#,
         Expression::Range(Box::new(RangeExpression {
             start: Some(Box::new(Expression::Invocation(Box::new(
-                bsharp::parser::nodes::expressions::invocation_expression::InvocationExpression {
+                bsharp::syntax::nodes::expressions::invocation_expression::InvocationExpression {
                     callee: Box::new(Expression::Variable(Identifier::new("GetStart"))),
                     arguments: vec![],
                 }
             )))),
             end: Some(Box::new(Expression::MemberAccess(Box::new(
-                bsharp::parser::nodes::expressions::member_access_expression::MemberAccessExpression {
+                bsharp::syntax::nodes::expressions::member_access_expression::MemberAccessExpression {
                     object: Box::new(Expression::Variable(Identifier::new("array"))),
                     member: Identifier::new("Length"),
                 }
@@ -149,12 +149,12 @@ fn test_index_from_end_complex_expression() {
         Expression::Index(Box::new(IndexExpression {
             value: Box::new(Expression::Binary {
                 left: Box::new(Expression::MemberAccess(Box::new(
-                    bsharp::parser::nodes::expressions::member_access_expression::MemberAccessExpression {
+                    bsharp::syntax::nodes::expressions::member_access_expression::MemberAccessExpression {
                         object: Box::new(Expression::Variable(Identifier::new("arr"))),
                         member: Identifier::new("Length"),
                     }
                 ))),
-                op: bsharp::parser::nodes::expressions::BinaryOperator::Subtract,
+                op: bsharp::syntax::nodes::expressions::BinaryOperator::Subtract,
                 right: Box::new(Expression::Literal(Literal::Integer(1))),
             }),
         })),
@@ -177,7 +177,7 @@ fn test_range_in_array_indexer() {
     // Example: myArray[x..y]
     check_expr(
         r#"myArray[x..y]"#,
-        Expression::Indexing(Box::new(bsharp::parser::nodes::expressions::indexing_expression::IndexingExpression {
+        Expression::Indexing(Box::new(bsharp::syntax::nodes::expressions::indexing_expression::IndexingExpression {
             target: Box::new(Expression::Variable(Identifier::new("myArray"))),
             index: Box::new(Expression::Range(Box::new(RangeExpression {
                 start: Some(Box::new(Expression::Variable(Identifier::new("x")))),
@@ -193,7 +193,7 @@ fn test_index_in_array_indexer() {
     // Example: myArray[^1]
     check_expr(
         r#"myArray[^1]"#,
-        Expression::Indexing(Box::new(bsharp::parser::nodes::expressions::indexing_expression::IndexingExpression {
+        Expression::Indexing(Box::new(bsharp::syntax::nodes::expressions::indexing_expression::IndexingExpression {
             target: Box::new(Expression::Variable(Identifier::new("myArray"))),
             index: Box::new(Expression::Index(Box::new(IndexExpression {
                 value: Box::new(Expression::Literal(Literal::Integer(1))),
@@ -207,7 +207,7 @@ fn test_range_as_argument() {
     // Example: MyMethod(x..y)
     check_expr(
         r#"MyMethod(x..y)"#,
-        Expression::Invocation(Box::new(bsharp::parser::nodes::expressions::invocation_expression::InvocationExpression{
+        Expression::Invocation(Box::new(bsharp::syntax::nodes::expressions::invocation_expression::InvocationExpression{
             callee: Box::new(Expression::Variable(Identifier::new("MyMethod"))),
             arguments: vec![
                 Expression::Range(Box::new(RangeExpression {
@@ -225,7 +225,7 @@ fn test_index_as_argument() {
     // Example: MyMethod(^idx)
      check_expr(
         r#"MyMethod(^idx)"#,
-        Expression::Invocation(Box::new(bsharp::parser::nodes::expressions::invocation_expression::InvocationExpression{
+        Expression::Invocation(Box::new(bsharp::syntax::nodes::expressions::invocation_expression::InvocationExpression{
             callee: Box::new(Expression::Variable(Identifier::new("MyMethod"))),
             arguments: vec![
                 Expression::Index(Box::new(IndexExpression {
@@ -240,7 +240,7 @@ fn test_index_as_argument() {
 #[test]
 fn test_range_missing_operand_error() {
     // E.g. x.. or .. (if parsing requires an operand where it's optional by grammar but needed by context)
-    // Current parser logic makes operands optional for `..` and `x..` and `..y`
+    // Current syntax logic makes operands optional for `..` and `x..` and `..y`
     // `..` alone is valid.
     // `x..` alone is valid.
     // `..y` alone is valid.
@@ -259,7 +259,7 @@ fn test_range_missing_operand_error() {
             assert!(!remaining.trim().is_empty(), "Expected unparsed input for x...y but all input was consumed");
         }
         Err(_e) => {
-            // This is also acceptable - if the parser fails completely
+            // This is also acceptable - if the syntax fails completely
         }
     }
     
@@ -281,7 +281,7 @@ fn test_index_operator_not_prefix() {
         r#"x ^ y"#,
         Expression::Binary {
             left: Box::new(Expression::Variable(Identifier::new("x"))),
-            op: bsharp::parser::nodes::expressions::BinaryOperator::BitwiseXor,
+            op: bsharp::syntax::nodes::expressions::BinaryOperator::BitwiseXor,
             right: Box::new(Expression::Variable(Identifier::new("y"))),
         },
     );

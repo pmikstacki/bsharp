@@ -55,7 +55,7 @@ fn test_parse_command_handles_all_syntax_features() -> Result<()> {
     // Get all test files
     let test_files = get_all_test_files();
     
-    // Test each file individually to check specific syntax features
+    // Test each file individually to check specific parser features
     for test_file in test_files {
         let file_name = test_file.file_name().unwrap().to_string_lossy().to_string();
         let mut output_path = temp_dir.clone();
@@ -71,7 +71,7 @@ fn test_parse_command_handles_all_syntax_features() -> Result<()> {
         let json_contents = fs::read_to_string(&output_path)?;
         let json: Value = serde_json::from_str(&json_contents)?;
         
-        // Check for specific syntax features based on filename
+        // Check for specific parser features based on filename
         if file_name.contains("simple_class") {
             check_simple_class_features(&json)?;
         } else if file_name.contains("control_flow") {
@@ -115,7 +115,7 @@ fn check_control_flow_features(json: &Value) -> Result<()> {
 
 fn check_advanced_features(json: &Value) -> Result<()> {
     // Check for advanced C# features
-    // Check for interface and generic related syntax
+    // Check for interface and generic related parser
     assert!(
         find_declaration_in_json(json, "Interface"),
         "No interface declarations found"
@@ -127,7 +127,7 @@ fn check_advanced_features(json: &Value) -> Result<()> {
     assert!(json_str.contains("await") || json_str.contains("Await"), "No await expressions found");
     
     // Note: Try-catch blocks might not be fully parsed yet in all cases
-    // This is a known limitation in the current parser implementation
+    // This is a known limitation in the current syntax implementation
     // So we'll comment this out for now
     // assert!(json_str.contains("try") || json_str.contains("Try"), "No try-catch blocks found");
     

@@ -1,9 +1,9 @@
 // Tests for parsing new expressions
 
-use bsharp::parser::nodes::expressions::expression::Expression;
-use bsharp::parser::nodes::expressions::literal::Literal;
-use bsharp::parser::nodes::types::{PrimitiveType, Type};
-use bsharp::parsers::expressions::expression_parser::parse_expression;
+use bsharp::syntax::nodes::expressions::expression::Expression;
+use bsharp::syntax::nodes::expressions::literal::Literal;
+use bsharp::syntax::nodes::types::{PrimitiveType, Type};
+use bsharp::parser::expressions::expression_parser::parse_expression;
 
 fn parse_new_expr(code: &str) -> Result<Expression, String> {
     match parse_expression(code) {

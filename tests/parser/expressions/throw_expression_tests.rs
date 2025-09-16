@@ -1,9 +1,9 @@
 // Tests for parsing throw expressions
 
-use bsharp::parser::nodes::expressions::expression::Expression;
-use bsharp::parser::nodes::expressions::literal::Literal;
-use bsharp::parsers::expressions::expression_parser::parse_expression;
-use bsharp::parsers::expressions::throw_expression_parser::parse_throw_expression;
+use bsharp::syntax::nodes::expressions::expression::Expression;
+use bsharp::syntax::nodes::expressions::literal::Literal;
+use bsharp::parser::expressions::expression_parser::parse_expression;
+use bsharp::parser::expressions::throw_expression_parser::parse_throw_expression;
 
 fn parse_throw_expr_helper(code: &str) -> Result<Expression, String> {
     match parse_throw_expression(code) {

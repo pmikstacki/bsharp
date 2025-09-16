@@ -1,8 +1,8 @@
 #![cfg(test)]
-use bsharp::parsers::declarations::type_declaration_parser::parse_struct_declaration;
-use bsharp::parser::nodes::declarations::{Modifier, StructDeclaration, StructBodyDeclaration};
-use bsharp::parser::nodes::types::{PrimitiveType, Type, TypeParameter, Variance};
-use bsharp::parser::nodes::identifier::Identifier;
+use bsharp::parser::declarations::type_declaration_parser::parse_struct_declaration;
+use bsharp::syntax::nodes::declarations::{Modifier, StructDeclaration, StructBodyDeclaration};
+use bsharp::syntax::nodes::types::{PrimitiveType, Type, TypeParameter, Variance};
+use bsharp::syntax::nodes::identifier::Identifier;
 
 #[test]
 fn test_simple_struct() {

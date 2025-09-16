@@ -1,9 +1,9 @@
 use bsharp::analysis::quality::*;
-use bsharp::parser::nodes::declarations::{ClassDeclaration, MethodDeclaration, FieldDeclaration, PropertyDeclaration, ClassBodyDeclaration};
-use bsharp::parser::nodes::identifier::Identifier;
-use bsharp::parser::nodes::types::{Type, PrimitiveType};
-use bsharp::parser::ast::{CompilationUnit, TopLevelDeclaration};
-use bsharp::parser::nodes::declarations::{NamespaceDeclaration, namespace_declaration::NamespaceBodyDeclaration};
+use bsharp::syntax::nodes::declarations::{ClassDeclaration, MethodDeclaration, FieldDeclaration, PropertyDeclaration, ClassBodyDeclaration};
+use bsharp::syntax::nodes::identifier::Identifier;
+use bsharp::syntax::nodes::types::{Type, PrimitiveType};
+use bsharp::syntax::ast::{CompilationUnit, TopLevelDeclaration};
+use bsharp::syntax::nodes::declarations::{NamespaceDeclaration, namespace_declaration::NamespaceBodyDeclaration};
 
 fn create_test_identifier(name: &str) -> Identifier {
     Identifier {
@@ -111,15 +111,13 @@ fn test_analyze_simple_class() {
     let class = ClassDeclaration {
         documentation: None,
         attributes: Vec::new(),
-        modifiers: vec![bsharp::parser::nodes::declarations::Modifier::Public],
+        modifiers: vec![bsharp::syntax::nodes::declarations::Modifier::Public],
         name: create_test_identifier("TestClass"),
         type_parameters: None,
         base_types: Vec::new(),
         body_declarations: vec![
             ClassBodyDeclaration::Method(MethodDeclaration {
-                documentation: None,
-                attributes: Vec::new(),
-                modifiers: vec![bsharp::parser::nodes::declarations::Modifier::Public],
+                modifiers: vec![bsharp::syntax::nodes::declarations::Modifier::Public],
                 return_type: Type::Primitive(PrimitiveType::Void),
                 name: create_test_identifier("TestMethod"),
                 type_parameters: None,
@@ -128,10 +126,8 @@ fn test_analyze_simple_class() {
                 body: None,
             }),
             ClassBodyDeclaration::Field(FieldDeclaration {
-                documentation: None,
-                attributes: Vec::new(),
-                modifiers: vec![bsharp::parser::nodes::declarations::Modifier::Private],
-                field_type: Type::Primitive(PrimitiveType::Int),
+                modifiers: vec![bsharp::syntax::nodes::declarations::Modifier::Private],
+                ty: Type::Primitive(PrimitiveType::Int),
                 name: create_test_identifier("testField"),
                 initializer: None,
             }),
@@ -141,15 +137,20 @@ fn test_analyze_simple_class() {
     // Create a minimal compilation unit
     let namespace = NamespaceDeclaration {
         name: create_test_identifier("TestNamespace"),
+        using_directives: Vec::new(),
         declarations: vec![
             NamespaceBodyDeclaration::Class(class),
         ],
     };
     
     let compilation_unit = CompilationUnit {
+        global_attributes: Vec::new(),
+        using_directives: Vec::new(),
         declarations: vec![
             TopLevelDeclaration::Namespace(namespace),
         ],
+        file_scoped_namespace: None,
+        top_level_statements: Vec::new(),
     };
     
     let report = analyzer.analyze(&compilation_unit);
@@ -176,16 +177,14 @@ fn test_analyze_complex_class() {
     let class = ClassDeclaration {
         documentation: None,
         attributes: Vec::new(),
-        modifiers: vec![bsharp::parser::nodes::declarations::Modifier::Public],
+        modifiers: vec![bsharp::syntax::nodes::declarations::Modifier::Public],
         name: create_test_identifier("ComplexClass"),
         type_parameters: None,
         base_types: Vec::new(),
         body_declarations: vec![
             // Multiple public methods without documentation
             ClassBodyDeclaration::Method(MethodDeclaration {
-                documentation: None,
-                attributes: Vec::new(),
-                modifiers: vec![bsharp::parser::nodes::declarations::Modifier::Public],
+                modifiers: vec![bsharp::syntax::nodes::declarations::Modifier::Public],
                 return_type: Type::Primitive(PrimitiveType::Void),
                 name: create_test_identifier("Method1"),
                 type_parameters: None,
@@ -194,9 +193,7 @@ fn test_analyze_complex_class() {
                 body: None,
             }),
             ClassBodyDeclaration::Method(MethodDeclaration {
-                documentation: None,
-                attributes: Vec::new(),
-                modifiers: vec![bsharp::parser::nodes::declarations::Modifier::Public],
+                modifiers: vec![bsharp::syntax::nodes::declarations::Modifier::Public],
                 return_type: Type::Primitive(PrimitiveType::Void),
                 name: create_test_identifier("Method2"),
                 type_parameters: None,
@@ -205,9 +202,7 @@ fn test_analyze_complex_class() {
                 body: None,
             }),
             ClassBodyDeclaration::Method(MethodDeclaration {
-                documentation: None,
-                attributes: Vec::new(),
-                modifiers: vec![bsharp::parser::nodes::declarations::Modifier::Public],
+                modifiers: vec![bsharp::syntax::nodes::declarations::Modifier::Public],
                 return_type: Type::Primitive(PrimitiveType::Void),
                 name: create_test_identifier("Method3"),
                 type_parameters: None,
@@ -217,36 +212,28 @@ fn test_analyze_complex_class() {
             }),
             // Multiple fields
             ClassBodyDeclaration::Field(FieldDeclaration {
-                documentation: None,
-                attributes: Vec::new(),
-                modifiers: vec![bsharp::parser::nodes::declarations::Modifier::Private],
-                field_type: Type::Primitive(PrimitiveType::Int),
+                modifiers: vec![bsharp::syntax::nodes::declarations::Modifier::Private],
+                ty: Type::Primitive(PrimitiveType::Int),
                 name: create_test_identifier("field1"),
                 initializer: None,
             }),
             ClassBodyDeclaration::Field(FieldDeclaration {
-                documentation: None,
-                attributes: Vec::new(),
-                modifiers: vec![bsharp::parser::nodes::declarations::Modifier::Private],
-                field_type: Type::Primitive(PrimitiveType::String),
+                modifiers: vec![bsharp::syntax::nodes::declarations::Modifier::Private],
+                ty: Type::Primitive(PrimitiveType::String),
                 name: create_test_identifier("field2"),
                 initializer: None,
             }),
             // Properties
             ClassBodyDeclaration::Property(PropertyDeclaration {
-                documentation: None,
-                attributes: Vec::new(),
-                modifiers: vec![bsharp::parser::nodes::declarations::Modifier::Public],
-                property_type: Type::Primitive(PrimitiveType::String),
+                modifiers: vec![bsharp::syntax::nodes::declarations::Modifier::Public],
+                ty: Type::Primitive(PrimitiveType::String),
                 name: create_test_identifier("Property1"),
                 accessors: Vec::new(),
                 initializer: None,
             }),
             ClassBodyDeclaration::Property(PropertyDeclaration {
-                documentation: None,
-                attributes: Vec::new(),
-                modifiers: vec![bsharp::parser::nodes::declarations::Modifier::Public],
-                property_type: Type::Primitive(PrimitiveType::Int),
+                modifiers: vec![bsharp::syntax::nodes::declarations::Modifier::Public],
+                ty: Type::Primitive(PrimitiveType::Int),
                 name: create_test_identifier("Property2"),
                 accessors: Vec::new(),
                 initializer: None,
@@ -256,15 +243,20 @@ fn test_analyze_complex_class() {
     
     let namespace = NamespaceDeclaration {
         name: create_test_identifier("TestNamespace"),
+        using_directives: Vec::new(),
         declarations: vec![
             NamespaceBodyDeclaration::Class(class),
         ],
     };
     
     let compilation_unit = CompilationUnit {
+        global_attributes: Vec::new(),
+        using_directives: Vec::new(),
         declarations: vec![
             TopLevelDeclaration::Namespace(namespace),
         ],
+        file_scoped_namespace: None,
+        top_level_statements: Vec::new(),
     };
     
     let report = analyzer.analyze(&compilation_unit);
@@ -366,7 +358,11 @@ fn test_empty_compilation_unit_analysis() {
     let analyzer = QualityAnalyzer::new();
     
     let compilation_unit = CompilationUnit {
+        global_attributes: Vec::new(),
+        using_directives: Vec::new(),
         declarations: Vec::new(),
+        file_scoped_namespace: None,
+        top_level_statements: Vec::new(),
     };
     
     let report = analyzer.analyze(&compilation_unit);

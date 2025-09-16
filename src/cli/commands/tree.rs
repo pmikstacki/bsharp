@@ -3,9 +3,9 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 // Import from containing crate
-use crate::parser;
-use crate::parser::ast;
-use crate::parser::nodes::declarations::UsingDirective;
+use crate::syntax;
+use crate::syntax::ast;
+use crate::syntax::nodes::declarations::UsingDirective;
 
 const SVG_HEADER: &str = "<?xml version=\"1.0\" standalone=\"no\"?>\n<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\">";
 const SVG_FOOTER: &str = "</svg>";
@@ -17,7 +17,7 @@ pub fn execute(input: PathBuf, output: Option<PathBuf>) -> Result<()> {
         .with_context(|| format!("Failed to read file: {}", input.display()))?;
     
     // Parse the source code
-    let parser = parser::Parser::new();
+    let parser = syntax::Parser::new();
     let ast = parser.parse(&source_code)
         .map_err(|e| anyhow!("Parse error: {}", e))?;
     

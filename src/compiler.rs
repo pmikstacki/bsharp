@@ -1,5 +1,5 @@
 use crate::codegen::CodeGenerator;
-use crate::parser::Parser;
+use crate::syntax::Parser;
 use anyhow::{anyhow, Result};
 use log::{debug, error, info};
 use std::{fs, path::Path};

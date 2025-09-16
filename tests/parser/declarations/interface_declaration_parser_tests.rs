@@ -1,7 +1,7 @@
 #![cfg(test)]
-use bsharp::parser::nodes::declarations::{Modifier, InterfaceBodyDeclaration};
-use bsharp::parser::nodes::types::Type;
-use bsharp::parsers::declarations::type_declaration_parser::parse_interface_declaration;
+use bsharp::syntax::nodes::declarations::{Modifier, InterfaceBodyDeclaration};
+use bsharp::syntax::nodes::types::Type;
+use bsharp::parser::declarations::type_declaration_parser::parse_interface_declaration;
 
 #[test]
 fn test_simple_interface_declaration() {
@@ -127,7 +127,7 @@ fn test_interface_with_multiple_method_signatures() {
     assert_eq!(decl.name.name, "IMethods");
     assert_eq!(decl.modifiers, vec![Modifier::Public]);
     
-    // With the enhanced parser, we should now recognize both methods
+    // With the enhanced syntax, we should now recognize both methods
     assert_eq!(decl.body_declarations.len(), 2, "Expected two members with enhanced parser");
 
     // Check the first method
@@ -236,7 +236,7 @@ fn test_complex_interface_with_multiple_methods() {
     assert_eq!(decl.modifiers, vec![Modifier::Public]);
     assert_eq!(decl.base_types.len(), 1);
     
-    // With enhanced parser, we should have all 4 methods
+    // With enhanced syntax, we should have all 4 methods
     assert_eq!(decl.body_declarations.len(), 4, "Expected four methods with enhanced parser");
     
     // Check the first method (Process)
@@ -325,7 +325,7 @@ fn test_error_recovery_with_malformed_member() {
     let input = r#"
     interface IErrorRecovery {
         void Method1();
-        broken syntax here;
+        broken parser here;
         int Method2(int a);
     }
     "#;

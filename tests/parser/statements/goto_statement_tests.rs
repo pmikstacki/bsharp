@@ -1,6 +1,6 @@
 // Tests for parsing goto statements
 
-use bsharp::parser::nodes::statements::GotoStatement;
+use bsharp::syntax::nodes::statements::GotoStatement;
 
 fn parse_goto_statement(code: &str) -> Result<GotoStatement, String> {
     Err(format!("Parser not yet implemented: {}", code))

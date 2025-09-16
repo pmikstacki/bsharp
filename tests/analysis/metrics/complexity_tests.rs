@@ -1,11 +1,11 @@
 use bsharp::analysis::metrics::complexity::*;
-use bsharp::parser::nodes::declarations::MethodDeclaration;
-use bsharp::parser::nodes::statements::statement::*;
-use bsharp::parser::nodes::statements::{BreakStatement, ContinueStatement};
-use bsharp::parser::nodes::identifier::Identifier;
-use bsharp::parser::nodes::expressions::expression::Expression;
-use bsharp::parser::nodes::expressions::literal::Literal;
-use bsharp::parser::nodes::statements::{IfStatement, WhileStatement, ForStatement, SwitchStatement, SwitchSection, SwitchLabel};
+use bsharp::syntax::nodes::declarations::MethodDeclaration;
+use bsharp::syntax::nodes::statements::statement::*;
+use bsharp::syntax::nodes::statements::{BreakStatement, ContinueStatement};
+use bsharp::syntax::nodes::identifier::Identifier;
+use bsharp::syntax::nodes::expressions::expression::Expression;
+use bsharp::syntax::nodes::expressions::literal::Literal;
+use bsharp::syntax::nodes::statements::{IfStatement, WhileStatement, ForStatement, SwitchStatement, SwitchSection, SwitchLabel};
 
 fn create_test_identifier(name: &str) -> Identifier {
     Identifier {
@@ -16,7 +16,7 @@ fn create_test_identifier(name: &str) -> Identifier {
 fn create_test_method(name: &str, body: Option<Statement>) -> MethodDeclaration {
     MethodDeclaration {
         modifiers: Vec::new(),
-        return_type: bsharp::parser::nodes::types::Type::Reference(create_test_identifier("void")),
+        return_type: bsharp::syntax::nodes::types::Type::Reference(create_test_identifier("void")),
         name: create_test_identifier(name),
         type_parameters: None,
         parameters: Vec::new(),

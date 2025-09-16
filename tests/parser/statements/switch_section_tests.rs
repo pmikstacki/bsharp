@@ -1,6 +1,6 @@
 // Tests for parsing switch sections
 
-use bsharp::parser::nodes::statements::SwitchSection;
+use bsharp::syntax::nodes::statements::SwitchSection;
 
 fn parse_switch_section(code: &str) -> Result<SwitchSection, String> {
     Err(format!("Parser not yet implemented: {}", code))

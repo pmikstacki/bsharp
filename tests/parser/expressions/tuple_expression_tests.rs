@@ -1,10 +1,10 @@
 // Tests for parsing tuple expressions
 
-use bsharp::parser::nodes::expressions::expression::Expression;
-use bsharp::parser::nodes::expressions::literal::Literal;
-use bsharp::parser::nodes::expressions::tuple_expression::{TupleExpression, TupleElement};
-use bsharp::parser::nodes::identifier::Identifier;
-use bsharp::parsers::expressions::expression_parser::parse_expression;
+use bsharp::syntax::nodes::expressions::expression::Expression;
+use bsharp::syntax::nodes::expressions::literal::Literal;
+use bsharp::syntax::nodes::expressions::tuple_expression::{TupleExpression, TupleElement};
+use bsharp::syntax::nodes::identifier::Identifier;
+use bsharp::parser::expressions::expression_parser::parse_expression;
 
 fn check_tuple_expr(input: &str, expected_elements: Vec<TupleElement>) {
     let (_, expr) = parse_expression(input).unwrap_or_else(|e| panic!("Failed to parse tuple expression '{}': {:?}", input, e));
@@ -104,7 +104,7 @@ fn test_tuple_with_expressions_as_elements() {
                 name: None,
                 value: Expression::Binary {
                     left: Box::new(Expression::Literal(Literal::Integer(1))),
-                    op: bsharp::parser::nodes::expressions::BinaryOperator::Add,
+                    op: bsharp::syntax::nodes::expressions::BinaryOperator::Add,
                     right: Box::new(Expression::Literal(Literal::Integer(2))),
                 },
             },
@@ -186,7 +186,7 @@ fn test_single_element_not_a_tuple() {
 fn test_empty_tuple_is_error() {
     // C# does not support empty tuples like ()
     // It would be a method call with zero arguments if `()` was a variable of delegate type.
-    // Otherwise, it's a syntax error. Our parser should error.
+    // Otherwise, it's a parser error. Our syntax should error.
     let result = parse_expression("()");
     assert!(result.is_err(), "Expected error for empty tuple. Input: ()");
 }

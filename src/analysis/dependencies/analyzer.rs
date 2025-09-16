@@ -1,5 +1,5 @@
-use crate::parser::ast::CompilationUnit;
-use crate::parser::nodes::declarations::{ClassDeclaration, InterfaceDeclaration};
+use crate::syntax::ast::CompilationUnit;
+use crate::syntax::nodes::declarations::{ClassDeclaration, InterfaceDeclaration};
 use std::collections::HashMap;
 use petgraph::graph::NodeIndex;
 
@@ -33,7 +33,7 @@ impl DependencyAnalyzer {
         
         // Analyze inheritance
         for base_type in &class.base_types {
-            if let crate::parser::nodes::types::Type::Reference(ident) = base_type {
+            if let crate::syntax::nodes::types::Type::Reference(ident) = base_type {
                 // First base type is usually inheritance (in C#, classes can only inherit from one class)
                 if dependencies.inherits_from.is_empty() {
                     dependencies.inherits_from.push(ident.name.clone());
@@ -348,8 +348,8 @@ impl DependencyAnalyzer {
         self.dependency_graph.add_node(name.to_string())
     }
     
-    fn analyze_class_member_dependencies(&self, member: &crate::parser::nodes::declarations::ClassBodyDeclaration, dependencies: &mut ClassDependencies) {
-        use crate::parser::nodes::declarations::ClassBodyDeclaration;
+    fn analyze_class_member_dependencies(&self, member: &crate::syntax::nodes::declarations::ClassBodyDeclaration, dependencies: &mut ClassDependencies) {
+        use crate::syntax::nodes::declarations::ClassBodyDeclaration;
         
         match member {
             ClassBodyDeclaration::Field(field) => {
@@ -371,8 +371,8 @@ impl DependencyAnalyzer {
         }
     }
     
-    fn extract_type_name_from_type(&self, type_ref: &crate::parser::nodes::types::Type) -> String {
-        use crate::parser::nodes::types::Type;
+    fn extract_type_name_from_type(&self, type_ref: &crate::syntax::nodes::types::Type) -> String {
+        use crate::syntax::nodes::types::Type;
         
         match type_ref {
             Type::Reference(ident) => ident.name.clone(),

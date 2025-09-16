@@ -1,15 +1,15 @@
 // Integration tests for parsing record declarations (class and struct)
 
-use bsharp::parser::nodes::identifier::Identifier;
-use bsharp::parser::nodes::declarations::{RecordDeclaration, Modifier};
+use bsharp::syntax::nodes::identifier::Identifier;
+use bsharp::syntax::nodes::declarations::{RecordDeclaration, Modifier};
  // Parameter is in types module
 
-// Assuming a parser function like parse_record_declaration exists
-// use bsharp::parser::parser::parse_record_declaration;
+// Assuming a syntax function like parse_record_declaration exists
+// use bsharp::syntax::syntax::parse_record_declaration;
 
 // Placeholder for the actual parsing function call
 fn parse_record(code: &str) -> Result<RecordDeclaration, String> { 
-    // Replace with actual parser invocation when implemented
+    // Replace with actual syntax invocation when implemented
     Err(format!("Parser function not yet implemented for record: {}", code))
 }
 
@@ -28,7 +28,7 @@ fn test_parse_record_class() {
         body_declarations: vec![], // Use correct field name
     };
 
-    // Check the flag specifically when parser is implemented
+    // Check the flag specifically when syntax is implemented
     // assert_eq!(parse_record(code).map(|r| r.is_struct), Ok(false)); 
     assert!(parse_record(code).is_err(), "Parser should not be implemented yet");
 }
@@ -46,7 +46,7 @@ fn test_parse_record_struct() {
         body_declarations: vec![], // Use correct field name
     };
     
-    // Check the flag specifically when parser is implemented
+    // Check the flag specifically when syntax is implemented
     // assert_eq!(parse_record(code).map(|r| r.is_struct), Ok(true)); 
     assert!(parse_record(code).is_err(), "Parser should not be implemented yet");
 }

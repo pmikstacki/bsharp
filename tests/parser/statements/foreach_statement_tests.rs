@@ -1,11 +1,11 @@
 // Integration tests for foreach_statement_parser.rs
-// Content moved from src/parsers/statements/foreach_statement_parser.rs
+// Content moved from src/parser/statements/foreach_statement_parser.rs
 
-use bsharp::parser::nodes::expressions::expression::Expression;
-use bsharp::parser::nodes::statements::statement::Statement;
-use bsharp::parser::nodes::types::{PrimitiveType, Type};
-use bsharp::parser::test_helpers::parse_all;
-use bsharp::parsers::statements::foreach_statement_parser::parse_foreach_statement;
+use bsharp::syntax::nodes::expressions::expression::Expression;
+use bsharp::syntax::nodes::statements::statement::Statement;
+use bsharp::syntax::nodes::types::{PrimitiveType, Type};
+use bsharp::syntax::test_helpers::parse_all;
+use bsharp::parser::statements::foreach_statement_parser::parse_foreach_statement;
 
 #[test]
 fn test_parse_foreach_statement() {

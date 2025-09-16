@@ -1,6 +1,6 @@
 // Tests for parsing lock statements
 
-use bsharp::parser::nodes::statements::LockStatement;
+use bsharp::syntax::nodes::statements::LockStatement;
 
 fn parse_lock_statement(code: &str) -> Result<LockStatement, String> {
     Err(format!("Parser not yet implemented: {}", code))

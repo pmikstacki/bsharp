@@ -1,6 +1,6 @@
 // Tests for parsing yield statements
 
-use bsharp::parser::nodes::statements::YieldStatement;
+use bsharp::syntax::nodes::statements::YieldStatement;
 
 fn parse_yield_statement(code: &str) -> Result<YieldStatement, String> {
     Err(format!("Parser not yet implemented: {}", code))

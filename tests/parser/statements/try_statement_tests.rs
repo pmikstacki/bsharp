@@ -1,6 +1,6 @@
 // Tests for parsing try statements
 
-use bsharp::parser::nodes::statements::TryStatement;
+use bsharp::syntax::nodes::statements::TryStatement;
 
 fn parse_try_statement(code: &str) -> Result<TryStatement, String> {
     Err(format!("Parser not yet implemented: {}", code))

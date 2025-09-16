@@ -1,6 +1,6 @@
 // Tests for parsing switch labels
 
-use bsharp::parser::nodes::statements::SwitchLabel;
+use bsharp::syntax::nodes::statements::SwitchLabel;
 
 fn parse_switch_label(code: &str) -> Result<SwitchLabel, String> {
     Err(format!("Parser not yet implemented: {}", code))

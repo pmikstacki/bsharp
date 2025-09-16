@@ -1,6 +1,6 @@
 // Tests for parsing unary operators
 
-use bsharp::parser::nodes::expressions::UnaryOperator;
+use bsharp::syntax::nodes::expressions::UnaryOperator;
 
 fn parse_unary_operator(code: &str) -> Result<UnaryOperator, String> {
     Err(format!("Parser not yet implemented: {}", code))

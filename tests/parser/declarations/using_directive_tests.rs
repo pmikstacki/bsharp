@@ -1,14 +1,14 @@
 // Integration tests for parsing using directives (including global)
 
-use bsharp::parser::nodes::identifier::Identifier;
-use bsharp::parser::nodes::declarations::{UsingDirective, GlobalUsingDirective};
+use bsharp::syntax::nodes::identifier::Identifier;
+use bsharp::syntax::nodes::declarations::{UsingDirective, GlobalUsingDirective};
 
-// Assuming a parser function like parse_global_using_directive will exist
-// use bsharp::parser::parser::parse_global_using_directive;
+// Assuming a syntax function like parse_global_using_directive will exist
+// use bsharp::syntax::syntax::parse_global_using_directive;
 
 // Placeholder for the actual parsing function call
 fn parse_global_using(code: &str) -> Result<GlobalUsingDirective, String> { 
-    // Replace with actual parser invocation when implemented
+    // Replace with actual syntax invocation when implemented
     Err(format!("Parser function not yet implemented for global using: {}", code))
 }
 
@@ -20,7 +20,7 @@ fn test_parse_global_using_namespace() {
             namespace: Identifier { name: "System".to_string() }
         }
     };
-    // assert_eq!(parse_global_using(code), Ok(expected)); // Uncomment when parser implemented
+    // assert_eq!(parse_global_using(code), Ok(expected)); // Uncomment when syntax implemented
     assert!(parse_global_using(code).is_err(), "Parser should not be implemented yet");
 }
 
@@ -33,7 +33,7 @@ fn test_parse_global_using_alias() {
             namespace_or_type: Identifier { name: "System.Collections.Generic".to_string() } // Assuming IdentifierNameSyntax handles qualified names for now
         }
     };
-    // assert_eq!(parse_global_using(code), Ok(expected)); // Uncomment when parser implemented
+    // assert_eq!(parse_global_using(code), Ok(expected)); // Uncomment when syntax implemented
     assert!(parse_global_using(code).is_err(), "Parser should not be implemented yet");
 }
 
@@ -45,7 +45,7 @@ fn test_parse_global_using_static() {
             type_name: Identifier { name: "System.Math".to_string() } // Assuming IdentifierNameSyntax handles qualified names
         }
     };
-    // assert_eq!(parse_global_using(code), Ok(expected)); // Uncomment when parser implemented
+    // assert_eq!(parse_global_using(code), Ok(expected)); // Uncomment when syntax implemented
     assert!(parse_global_using(code).is_err(), "Parser should not be implemented yet");
 }
 

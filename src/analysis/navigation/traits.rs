@@ -1,4 +1,4 @@
-use crate::parser::nodes::{
+use crate::syntax::nodes::{
     declarations::{ClassDeclaration, MethodDeclaration, InterfaceDeclaration, StructDeclaration, EnumDeclaration, RecordDeclaration, DelegateDeclaration},
     statements::statement::Statement,
     expressions::expression::Expression,

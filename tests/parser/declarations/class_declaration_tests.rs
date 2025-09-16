@@ -1,13 +1,13 @@
 // Tests for parsing class declarations
 
-use bsharp::parser::nodes::declarations::{ClassDeclaration, Modifier, ClassBodyDeclaration};
-use bsharp::parser::nodes::identifier::Identifier;
-use bsharp::parser::nodes::types::{Type, TypeParameter, PrimitiveType, Variance};
-use bsharp::parser::nodes::declarations::{MethodDeclaration, FieldDeclaration}; 
-use bsharp::parser::nodes::expressions::expression::Expression; 
-use bsharp::parser::nodes::expressions::literal::Literal; 
-use bsharp::parser::nodes::statements::statement::Statement;
-use bsharp::parsers::declarations::type_declaration_parser::parse_class_declaration;
+use bsharp::syntax::nodes::declarations::{ClassDeclaration, Modifier, ClassBodyDeclaration};
+use bsharp::syntax::nodes::identifier::Identifier;
+use bsharp::syntax::nodes::types::{Type, TypeParameter, PrimitiveType, Variance};
+use bsharp::syntax::nodes::declarations::{MethodDeclaration, FieldDeclaration};
+use bsharp::syntax::nodes::expressions::expression::Expression;
+use bsharp::syntax::nodes::expressions::literal::Literal;
+use bsharp::syntax::nodes::statements::statement::Statement;
+use bsharp::parser::declarations::type_declaration_parser::parse_class_declaration;
 
 fn parse_class_decl_test(code: &str) -> Result<ClassDeclaration, String> {
     match parse_class_declaration(code) {

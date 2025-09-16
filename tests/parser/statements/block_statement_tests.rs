@@ -1,13 +1,13 @@
 // Integration tests for block_statement_parser.rs
-// Content moved from src/parsers/statements/block_statement_parser.rs
+// Content moved from src/parser/statements/block_statement_parser.rs
 
-use bsharp::parser::nodes::expressions::expression::Expression;
-use bsharp::parser::nodes::expressions::literal::Literal;
-use bsharp::parser::nodes::statements::statement::Statement;
-use bsharp::parser::nodes::declarations::LocalVariableDeclaration;
-use bsharp::parser::nodes::types::{PrimitiveType, Type};
-use bsharp::parsers::statements::block_statement_parser::parse_block_statement;
-use bsharp::parser::test_helpers::parse_all;
+use bsharp::syntax::nodes::expressions::expression::Expression;
+use bsharp::syntax::nodes::expressions::literal::Literal;
+use bsharp::syntax::nodes::statements::statement::Statement;
+use bsharp::syntax::nodes::declarations::LocalVariableDeclaration;
+use bsharp::syntax::nodes::types::{PrimitiveType, Type};
+use bsharp::parser::statements::block_statement_parser::parse_block_statement;
+use bsharp::syntax::test_helpers::parse_all;
 use nom::combinator::all_consuming;
 use nom::Finish;
 

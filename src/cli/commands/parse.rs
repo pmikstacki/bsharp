@@ -3,8 +3,8 @@ use serde_json::to_string_pretty;
 use std::fs;
 use std::path::PathBuf;
 
-// Import the parser from the containing crate
-use crate::parser;
+// Import the syntax from the containing crate
+use crate::syntax;
 
 /// Execute the parse command: parse C# file and output JSON
 pub fn execute(input: PathBuf, output: Option<PathBuf>) -> Result<()> {
@@ -13,7 +13,7 @@ pub fn execute(input: PathBuf, output: Option<PathBuf>) -> Result<()> {
         .with_context(|| format!("Failed to read file: {}", input.display()))?;
     
     // Parse the source code
-    let parser = parser::Parser::new();
+    let parser = syntax::Parser::new();
     let ast = parser.parse(&source_code)
         .map_err(|e| anyhow!("Parse error: {}", e))?;
     

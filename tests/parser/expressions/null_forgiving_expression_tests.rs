@@ -1,6 +1,6 @@
 // Tests for parsing null-forgiving expressions
 
-use bsharp::parser::nodes::expressions::NullForgivingExpression;
+use bsharp::syntax::nodes::expressions::NullForgivingExpression;
 
 fn parse_null_forgiving_expr(code: &str) -> Result<NullForgivingExpression, String> {
     Err(format!("Parser not yet implemented: {}", code))

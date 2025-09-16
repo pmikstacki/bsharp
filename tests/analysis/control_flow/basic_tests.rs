@@ -1,9 +1,9 @@
 use bsharp::analysis::control_flow::*;
-use bsharp::parser::nodes::statements::statement::*;
-use bsharp::parser::nodes::statements::{BreakStatement, ContinueStatement, CatchClause, IfStatement, WhileStatement, ForStatement, SwitchStatement, SwitchSection, SwitchLabel, TryStatement, FinallyClause};
-use bsharp::parser::nodes::expressions::literal::Literal;
-use bsharp::parser::nodes::identifier::Identifier;
-use bsharp::parser::nodes::expressions::expression::Expression;
+use bsharp::syntax::nodes::statements::statement::*;
+use bsharp::syntax::nodes::statements::{BreakStatement, ContinueStatement, CatchClause, IfStatement, WhileStatement, ForStatement, SwitchStatement, SwitchSection, SwitchLabel, TryStatement, FinallyClause};
+use bsharp::syntax::nodes::expressions::literal::Literal;
+use bsharp::syntax::nodes::identifier::Identifier;
+use bsharp::syntax::nodes::expressions::expression::Expression;
 
 fn create_test_identifier(name: &str) -> Identifier {
     Identifier {

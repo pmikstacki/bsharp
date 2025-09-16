@@ -1,13 +1,13 @@
 #![cfg(test)]
-use bsharp::parsers::declarations::type_declaration_parser::parse_record_declaration;
-use bsharp::parser::nodes::declarations::Modifier;
-use bsharp::parser::nodes::identifier::Identifier;
-use bsharp::parser::nodes::types::Type;
+use bsharp::parser::declarations::type_declaration_parser::parse_record_declaration;
+use bsharp::syntax::nodes::declarations::Modifier;
+use bsharp::syntax::nodes::identifier::Identifier;
+use bsharp::syntax::nodes::types::Type;
 
 // Local test helper to avoid import issues
 fn parse_full_input<'a, O, F>(input: &'a str, parser: F) -> Result<(&'a str, O), String>
 where
-    F: FnOnce(&'a str) -> bsharp::parser::errors::BResult<&'a str, O>,
+    F: FnOnce(&'a str) -> bsharp::syntax::errors::BResult<&'a str, O>,
 {
     match parser(input) {
         Ok((remaining, result)) => Ok((remaining, result)),

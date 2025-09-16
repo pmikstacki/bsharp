@@ -1,9 +1,9 @@
 use bsharp::analysis::quality::*;
-use bsharp::parser::nodes::declarations::{ClassDeclaration, MethodDeclaration, FieldDeclaration};
-use bsharp::parser::nodes::identifier::Identifier;
-use bsharp::parser::nodes::types::{Type, PrimitiveType};
-use bsharp::parser::ast::{CompilationUnit, TopLevelDeclaration};
-use bsharp::parser::nodes::declarations::{NamespaceDeclaration, namespace_declaration::NamespaceBodyDeclaration, ClassBodyDeclaration};
+use bsharp::syntax::nodes::declarations::{ClassDeclaration, MethodDeclaration, FieldDeclaration};
+use bsharp::syntax::nodes::identifier::Identifier;
+use bsharp::syntax::nodes::types::{Type, PrimitiveType};
+use bsharp::syntax::ast::{CompilationUnit, TopLevelDeclaration};
+use bsharp::syntax::nodes::declarations::{NamespaceDeclaration, namespace_declaration::NamespaceBodyDeclaration, ClassBodyDeclaration};
 
 fn create_test_identifier(name: &str) -> Identifier {
     Identifier {
@@ -79,13 +79,13 @@ fn test_quality_report_with_multiple_classes() {
     let class1 = ClassDeclaration {
         documentation: None,
         attributes: Vec::new(),
-        modifiers: vec![bsharp::parser::nodes::declarations::Modifier::Public],
+        modifiers: vec![bsharp::syntax::nodes::declarations::Modifier::Public],
         name: create_test_identifier("FirstClass"),
         type_parameters: None,
         base_types: Vec::new(),
         body_declarations: vec![
             ClassBodyDeclaration::Method(MethodDeclaration {
-                modifiers: vec![bsharp::parser::nodes::declarations::Modifier::Public],
+                modifiers: vec![bsharp::syntax::nodes::declarations::Modifier::Public],
                 return_type: Type::Primitive(PrimitiveType::Void),
                 name: create_test_identifier("Method1"),
                 type_parameters: None,
@@ -99,13 +99,13 @@ fn test_quality_report_with_multiple_classes() {
     let class2 = ClassDeclaration {
         documentation: None,
         attributes: Vec::new(),
-        modifiers: vec![bsharp::parser::nodes::declarations::Modifier::Public],
+        modifiers: vec![bsharp::syntax::nodes::declarations::Modifier::Public],
         name: create_test_identifier("SecondClass"),
         type_parameters: None,
         base_types: Vec::new(),
         body_declarations: vec![
             ClassBodyDeclaration::Method(MethodDeclaration {
-                modifiers: vec![bsharp::parser::nodes::declarations::Modifier::Public],
+                modifiers: vec![bsharp::syntax::nodes::declarations::Modifier::Public],
                 return_type: Type::Primitive(PrimitiveType::Void),
                 name: create_test_identifier("Method2"),
                 type_parameters: None,
@@ -114,7 +114,7 @@ fn test_quality_report_with_multiple_classes() {
                 body: None,
             }),
             ClassBodyDeclaration::Field(FieldDeclaration {
-                modifiers: vec![bsharp::parser::nodes::declarations::Modifier::Private],
+                modifiers: vec![bsharp::syntax::nodes::declarations::Modifier::Private],
                 ty: Type::Primitive(PrimitiveType::Int),
                 name: create_test_identifier("field1"),
                 initializer: None,
@@ -124,6 +124,7 @@ fn test_quality_report_with_multiple_classes() {
     
     let namespace = NamespaceDeclaration {
         name: create_test_identifier("TestNamespace"),
+        using_directives: Vec::new(),
         declarations: vec![
             NamespaceBodyDeclaration::Class(class1),
             NamespaceBodyDeclaration::Class(class2),
@@ -131,9 +132,13 @@ fn test_quality_report_with_multiple_classes() {
     };
     
     let compilation_unit = CompilationUnit {
+        global_attributes: Vec::new(),
+        using_directives: Vec::new(),
         declarations: vec![
             TopLevelDeclaration::Namespace(namespace),
         ],
+        file_scoped_namespace: None,
+        top_level_statements: Vec::new(),
     };
     
     let report = analyzer.analyze(&compilation_unit);
@@ -236,7 +241,11 @@ fn test_quality_report_empty_analysis() {
     
     // Empty compilation unit
     let compilation_unit = CompilationUnit {
+        global_attributes: Vec::new(),
+        using_directives: Vec::new(),
         declarations: Vec::new(),
+        file_scoped_namespace: None,
+        top_level_statements: Vec::new(),
     };
     
     let report = analyzer.analyze(&compilation_unit);
@@ -287,7 +296,7 @@ fn test_complex_quality_analysis_scenario() {
     let complex_class = ClassDeclaration {
         documentation: None,
         attributes: Vec::new(),
-        modifiers: vec![bsharp::parser::nodes::declarations::Modifier::Public],
+        modifiers: vec![bsharp::syntax::nodes::declarations::Modifier::Public],
         name: create_test_identifier("ComplexClass"),
         type_parameters: None,
         base_types: Vec::new(),
@@ -297,7 +306,7 @@ fn test_complex_quality_analysis_scenario() {
             // Add many methods (potential large class issue)
             for i in 1..=10 {
                 declarations.push(ClassBodyDeclaration::Method(MethodDeclaration {
-                    modifiers: vec![bsharp::parser::nodes::declarations::Modifier::Public],
+                    modifiers: vec![bsharp::syntax::nodes::declarations::Modifier::Public],
                     return_type: Type::Primitive(PrimitiveType::Void),
                     name: create_test_identifier(&format!("Method{}", i)),
                     type_parameters: None,
@@ -310,7 +319,7 @@ fn test_complex_quality_analysis_scenario() {
             // Add many fields
             for i in 1..=8 {
                 declarations.push(ClassBodyDeclaration::Field(FieldDeclaration {
-                    modifiers: vec![bsharp::parser::nodes::declarations::Modifier::Private],
+                    modifiers: vec![bsharp::syntax::nodes::declarations::Modifier::Private],
                     ty: Type::Primitive(PrimitiveType::Int),
                     name: create_test_identifier(&format!("field{}", i)),
                     initializer: None,
@@ -323,15 +332,20 @@ fn test_complex_quality_analysis_scenario() {
     
     let namespace = NamespaceDeclaration {
         name: create_test_identifier("TestNamespace"),
+        using_directives: Vec::new(),
         declarations: vec![
             NamespaceBodyDeclaration::Class(complex_class),
         ],
     };
     
     let compilation_unit = CompilationUnit {
+        global_attributes: Vec::new(),
+        using_directives: Vec::new(),
         declarations: vec![
             TopLevelDeclaration::Namespace(namespace),
         ],
+        file_scoped_namespace: None,
+        top_level_statements: Vec::new(),
     };
     
     let report = analyzer.analyze(&compilation_unit);
