@@ -1,9 +1,9 @@
 // Tests for parsing new expressions
 
+use bsharp::parser::expressions::primary_expression_parser::parse_expression;
 use bsharp::syntax::nodes::expressions::expression::Expression;
 use bsharp::syntax::nodes::expressions::literal::Literal;
 use bsharp::syntax::nodes::types::{PrimitiveType, Type};
-use bsharp::parser::expressions::expression_parser::parse_expression;
 
 fn parse_new_expr(code: &str) -> Result<Expression, String> {
     match parse_expression(code) {
@@ -22,8 +22,12 @@ fn parse_new_expr(code: &str) -> Result<Expression, String> {
 fn test_parse_simple_new_expr() {
     let code = "new Exception()";
     let result = parse_new_expr(code);
-    assert!(result.is_ok(), "Failed to parse simple new expression: {:?}", result);
-    
+    assert!(
+        result.is_ok(),
+        "Failed to parse simple new expression: {:?}",
+        result
+    );
+
     if let Ok(Expression::New(new_expr)) = result {
         assert!(matches!(new_expr.ty, Type::Reference(_)));
         if let Type::Reference(id) = &new_expr.ty {
@@ -41,11 +45,18 @@ fn test_parse_simple_new_expr() {
 fn test_parse_new_with_arguments() {
     let code = "new Exception(\"Error message\")";
     let result = parse_new_expr(code);
-    assert!(result.is_ok(), "Failed to parse new with arguments: {:?}", result);
-    
+    assert!(
+        result.is_ok(),
+        "Failed to parse new with arguments: {:?}",
+        result
+    );
+
     if let Ok(Expression::New(new_expr)) = result {
         assert_eq!(new_expr.arguments.len(), 1);
-        assert!(matches!(new_expr.arguments[0], Expression::Literal(Literal::String(_))));
+        assert!(matches!(
+            new_expr.arguments[0],
+            Expression::Literal(Literal::String(_))
+        ));
         if let Expression::Literal(Literal::String(msg)) = &new_expr.arguments[0] {
             assert_eq!(msg, "Error message");
         }
@@ -58,13 +69,17 @@ fn test_parse_new_with_arguments() {
 fn test_parse_new_with_object_initializer() {
     let code = "new Person { Name = \"John\", Age = 30 }";
     let result = parse_new_expr(code);
-    assert!(result.is_ok(), "Failed to parse new with object initializer: {:?}", result);
-    
+    assert!(
+        result.is_ok(),
+        "Failed to parse new with object initializer: {:?}",
+        result
+    );
+
     if let Ok(Expression::New(new_expr)) = result {
         assert!(new_expr.object_initializer.is_some());
         if let Some(obj_init) = &new_expr.object_initializer {
             assert_eq!(obj_init.len(), 2);
-            
+
             // Check that we have Name and Age properties
             let mut has_name = false;
             let mut has_age = false;
@@ -88,8 +103,12 @@ fn test_parse_new_with_object_initializer() {
 fn test_parse_new_with_collection_initializer() {
     let code = "new List<int> { 1, 2, 3, 4, 5 }";
     let result = parse_new_expr(code);
-    assert!(result.is_ok(), "Failed to parse new with collection initializer: {:?}", result);
-    
+    assert!(
+        result.is_ok(),
+        "Failed to parse new with collection initializer: {:?}",
+        result
+    );
+
     if let Ok(Expression::New(new_expr)) = result {
         assert!(new_expr.collection_initializer.is_some());
         if let Some(coll_init) = &new_expr.collection_initializer {
@@ -113,12 +132,16 @@ fn test_parse_new_with_collection_initializer() {
 fn test_parse_new_with_args_and_object_initializer() {
     let code = "new Person(\"firstName\") { LastName = \"Doe\", Age = 25 }";
     let result = parse_new_expr(code);
-    assert!(result.is_ok(), "Failed to parse new with args and object initializer: {:?}", result);
-    
+    assert!(
+        result.is_ok(),
+        "Failed to parse new with args and object initializer: {:?}",
+        result
+    );
+
     if let Ok(Expression::New(new_expr)) = result {
         assert_eq!(new_expr.arguments.len(), 1);
         assert!(new_expr.object_initializer.is_some());
-        
+
         if let Some(obj_init) = &new_expr.object_initializer {
             assert_eq!(obj_init.len(), 2);
         }
@@ -131,8 +154,12 @@ fn test_parse_new_with_args_and_object_initializer() {
 fn test_parse_new_empty_object_initializer() {
     let code = "new Person { }";
     let result = parse_new_expr(code);
-    assert!(result.is_ok(), "Failed to parse new with empty object initializer: {:?}", result);
-    
+    assert!(
+        result.is_ok(),
+        "Failed to parse new with empty object initializer: {:?}",
+        result
+    );
+
     if let Ok(Expression::New(new_expr)) = result {
         // Empty initializers should be treated as collection initializers with empty vec
         assert!(new_expr.collection_initializer.is_some());
@@ -148,8 +175,12 @@ fn test_parse_new_empty_object_initializer() {
 fn test_parse_new_empty_collection_initializer() {
     let code = "new List<string> { }";
     let result = parse_new_expr(code);
-    assert!(result.is_ok(), "Failed to parse new with empty collection initializer: {:?}", result);
-    
+    assert!(
+        result.is_ok(),
+        "Failed to parse new with empty collection initializer: {:?}",
+        result
+    );
+
     if let Ok(Expression::New(new_expr)) = result {
         assert!(new_expr.collection_initializer.is_some());
         if let Some(coll_init) = &new_expr.collection_initializer {
@@ -165,8 +196,12 @@ fn test_parse_new_empty_collection_initializer() {
 fn test_parse_new_primitive_type() {
     let code = "new int()";
     let result = parse_new_expr(code);
-    assert!(result.is_ok(), "Failed to parse new primitive type: {:?}", result);
-    
+    assert!(
+        result.is_ok(),
+        "Failed to parse new primitive type: {:?}",
+        result
+    );
+
     if let Ok(Expression::New(new_expr)) = result {
         assert!(matches!(new_expr.ty, Type::Primitive(PrimitiveType::Int)));
         assert_eq!(new_expr.arguments.len(), 0);
@@ -184,7 +219,9 @@ fn test_parse_new_complex_nested_initializer() {
     if result.is_ok() {
         if let Ok(Expression::New(new_expr)) = result {
             // Should recognize it as a new expression with some kind of initializer
-            assert!(new_expr.object_initializer.is_some() || new_expr.collection_initializer.is_some());
+            assert!(
+                new_expr.object_initializer.is_some() || new_expr.collection_initializer.is_some()
+            );
         }
     }
     // Even if this complex case doesn't fully work, we should not panic

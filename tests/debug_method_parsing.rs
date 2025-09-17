@@ -1,4 +1,4 @@
-use bsharp::parser::declarations::method_declaration_parser::parse_member_declaration;
+use bsharp::parser::expressions::declarations::method_declaration_parser::parse_member_declaration;
 use bsharp::parser::statement_parser::debug_test_individual_parsers;
 
 #[test]
@@ -141,7 +141,10 @@ fn test_method_with_progressive_complexity() {
     println!("Testing method with simple var declaration...");
     match parse_member_declaration(input1) {
         Ok((_remaining, member)) => {
-            println!("✅ Simple var method parsed successfully! Has body: {}", member.body.is_some());
+            println!(
+                "✅ Simple var method parsed successfully! Has body: {}",
+                member.body.is_some()
+            );
         }
         Err(e) => {
             println!("❌ Simple var method parsing failed: {:?}", e);
@@ -164,7 +167,10 @@ fn test_method_with_progressive_complexity() {
     println!("Testing method with await expression...");
     match parse_member_declaration(input2) {
         Ok((_remaining, member)) => {
-            println!("✅ Await method parsed successfully! Has body: {}", member.body.is_some());
+            println!(
+                "✅ Await method parsed successfully! Has body: {}",
+                member.body.is_some()
+            );
         }
         Err(e) => {
             println!("❌ Await method parsing failed: {:?}", e);
@@ -189,7 +195,10 @@ fn test_method_with_progressive_complexity() {
     println!("Testing method with method chaining...");
     match parse_member_declaration(input3) {
         Ok((_remaining, member)) => {
-            println!("✅ Method chaining parsed successfully! Has body: {}", member.body.is_some());
+            println!(
+                "✅ Method chaining parsed successfully! Has body: {}",
+                member.body.is_some()
+            );
         }
         Err(e) => {
             println!("❌ Method chaining parsing failed: {:?}", e);
@@ -216,7 +225,10 @@ fn test_method_with_string_interpolation() {
     println!("Testing method with string interpolation...");
     match parse_member_declaration(input) {
         Ok((_remaining, member)) => {
-            println!("✅ String interpolation method parsed successfully! Has body: {}", member.body.is_some());
+            println!(
+                "✅ String interpolation method parsed successfully! Has body: {}",
+                member.body.is_some()
+            );
         }
         Err(e) => {
             println!("❌ String interpolation method parsing failed: {:?}", e);
@@ -245,7 +257,10 @@ fn test_incremental_complexity() {
     println!("Testing method with first two statements...");
     match parse_member_declaration(input1) {
         Ok((_remaining, member)) => {
-            println!("✅ First two statements parsed successfully! Has body: {}", member.body.is_some());
+            println!(
+                "✅ First two statements parsed successfully! Has body: {}",
+                member.body.is_some()
+            );
         }
         Err(e) => {
             println!("❌ First two statements parsing failed: {:?}", e);
@@ -272,7 +287,10 @@ fn test_incremental_complexity() {
     println!("Testing method with method call...");
     match parse_member_declaration(input2) {
         Ok((_remaining, member)) => {
-            println!("✅ Method call parsed successfully! Has body: {}", member.body.is_some());
+            println!(
+                "✅ Method call parsed successfully! Has body: {}",
+                member.body.is_some()
+            );
         }
         Err(e) => {
             println!("❌ Method call parsing failed: {:?}", e);
@@ -304,7 +322,10 @@ fn test_incremental_complexity() {
     println!("Testing method with if statement...");
     match parse_member_declaration(input3) {
         Ok((_remaining, member)) => {
-            println!("✅ If statement parsed successfully! Has body: {}", member.body.is_some());
+            println!(
+                "✅ If statement parsed successfully! Has body: {}",
+                member.body.is_some()
+            );
         }
         Err(e) => {
             println!("❌ If statement parsing failed: {:?}", e);
@@ -321,4 +342,4 @@ fn test_debug_first_statement() {
 
     println!("Testing the first statement from the complex method...");
     println!("{}", debug_test_individual_parsers(first_statement));
-} 
+}

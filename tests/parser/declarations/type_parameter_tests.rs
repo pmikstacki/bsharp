@@ -1,9 +1,9 @@
 // Tests for parsing type parameters
-use bsharp::syntax::nodes::types;
+use bsharp::parser::expressions::declarations::type_parameter_parser::parse_type_parameter_list;
 use bsharp::syntax::nodes::identifier::Identifier;
-use bsharp::parser::declarations::type_parameter_parser::parse_type_parameter_list;
+use bsharp::syntax::nodes::types;
 
-fn parse_test(code: &str) -> Result<Vec<types::TypeParameter>, String> { 
+fn parse_test(code: &str) -> Result<Vec<types::TypeParameter>, String> {
     match parse_type_parameter_list(code) {
         Ok((rest, params)) if rest.trim().is_empty() => Ok(params),
         Ok((rest, _)) => Err(format!("Unparsed input: {}", rest)),
@@ -14,12 +14,12 @@ fn parse_test(code: &str) -> Result<Vec<types::TypeParameter>, String> {
 #[test]
 fn test_parse_single_type_parameter() {
     let code = "<T>";
-    let expected = vec![
-        types::TypeParameter { 
-            name: Identifier { name: "T".to_string() },
-            variance: types::Variance::None, 
-        }
-    ];
+    let expected = vec![types::TypeParameter {
+        name: Identifier {
+            name: "T".to_string(),
+        },
+        variance: types::Variance::None,
+    }];
     assert_eq!(parse_test(code), Ok(expected));
 }
 
@@ -27,13 +27,17 @@ fn test_parse_single_type_parameter() {
 fn test_parse_multiple_type_parameters() {
     let code = "<K, V>";
     let expected = vec![
-        types::TypeParameter { 
-            name: Identifier { name: "K".to_string() },
-            variance: types::Variance::None, 
+        types::TypeParameter {
+            name: Identifier {
+                name: "K".to_string(),
+            },
+            variance: types::Variance::None,
         },
-        types::TypeParameter { 
-            name: Identifier { name: "V".to_string() },
-            variance: types::Variance::None, 
+        types::TypeParameter {
+            name: Identifier {
+                name: "V".to_string(),
+            },
+            variance: types::Variance::None,
         },
     ];
     assert_eq!(parse_test(code), Ok(expected));
@@ -43,13 +47,17 @@ fn test_parse_multiple_type_parameters() {
 fn test_parse_type_parameter_with_variance() {
     let code = "<in T, out U>";
     let expected = vec![
-        types::TypeParameter { 
-            name: Identifier { name: "T".to_string() },
-            variance: types::Variance::In, 
+        types::TypeParameter {
+            name: Identifier {
+                name: "T".to_string(),
+            },
+            variance: types::Variance::In,
         },
-        types::TypeParameter { 
-            name: Identifier { name: "U".to_string() },
-            variance: types::Variance::Out, 
+        types::TypeParameter {
+            name: Identifier {
+                name: "U".to_string(),
+            },
+            variance: types::Variance::Out,
         },
     ];
     assert_eq!(parse_test(code), Ok(expected));

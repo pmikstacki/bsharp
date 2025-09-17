@@ -1,9 +1,14 @@
 use bsharp::analysis::quality::*;
-use bsharp::syntax::nodes::declarations::{ClassDeclaration, MethodDeclaration, FieldDeclaration, PropertyDeclaration, ClassBodyDeclaration};
-use bsharp::syntax::nodes::identifier::Identifier;
-use bsharp::syntax::nodes::types::{Type, PrimitiveType};
 use bsharp::syntax::ast::{CompilationUnit, TopLevelDeclaration};
-use bsharp::syntax::nodes::declarations::{NamespaceDeclaration, namespace_declaration::NamespaceBodyDeclaration};
+use bsharp::syntax::nodes::declarations::{
+    ClassBodyDeclaration, ClassDeclaration, FieldDeclaration, MethodDeclaration,
+    PropertyDeclaration,
+};
+use bsharp::syntax::nodes::declarations::{
+    NamespaceDeclaration, namespace_declaration::NamespaceBodyDeclaration,
+};
+use bsharp::syntax::nodes::identifier::Identifier;
+use bsharp::syntax::nodes::types::{PrimitiveType, Type};
 
 fn create_test_identifier(name: &str) -> Identifier {
     Identifier {
@@ -34,38 +39,48 @@ fn test_quality_issue_types() {
         method_name: "ComplexMethod".to_string(),
         complexity: 15,
     };
-    
+
     let long_method_issue = QualityIssue::LongMethod {
         method_name: "VeryLongMethod".to_string(),
         line_count: 80,
         threshold: 50,
     };
-    
+
     let missing_doc_issue = QualityIssue::MissingDocumentation {
         member_name: "PublicMethod".to_string(),
         member_type: "Method".to_string(),
     };
-    
+
     // Test that issues are created properly
     match high_complexity_issue {
-        QualityIssue::HighComplexity { method_name, complexity } => {
+        QualityIssue::HighComplexity {
+            method_name,
+            complexity,
+        } => {
             assert_eq!(method_name, "ComplexMethod");
             assert_eq!(complexity, 15);
         }
         _ => panic!("Wrong issue type"),
     }
-    
+
     match long_method_issue {
-        QualityIssue::LongMethod { method_name, line_count, threshold } => {
+        QualityIssue::LongMethod {
+            method_name,
+            line_count,
+            threshold,
+        } => {
             assert_eq!(method_name, "VeryLongMethod");
             assert_eq!(line_count, 80);
             assert_eq!(threshold, 50);
         }
         _ => panic!("Wrong issue type"),
     }
-    
+
     match missing_doc_issue {
-        QualityIssue::MissingDocumentation { member_name, member_type } => {
+        QualityIssue::MissingDocumentation {
+            member_name,
+            member_type,
+        } => {
             assert_eq!(member_name, "PublicMethod");
             assert_eq!(member_type, "Method");
         }
@@ -83,7 +98,7 @@ fn test_quality_grade_classification() {
         duplication_percentage: 2.0,
         test_coverage: 85.0,
     };
-    
+
     let poor_metrics = QualityMetrics {
         maintainability_index: 30.0,
         code_coverage: 40.0,
@@ -91,7 +106,7 @@ fn test_quality_grade_classification() {
         duplication_percentage: 25.0,
         test_coverage: 35.0,
     };
-    
+
     assert_eq!(excellent_metrics.quality_grade(), QualityGrade::A);
     assert_eq!(poor_metrics.quality_grade(), QualityGrade::F);
 }
@@ -106,7 +121,7 @@ fn test_quality_severity_ordering() {
 #[test]
 fn test_analyze_simple_class() {
     let analyzer = QualityAnalyzer::new();
-    
+
     // Create a simple test class
     let class = ClassDeclaration {
         documentation: None,
@@ -133,38 +148,36 @@ fn test_analyze_simple_class() {
             }),
         ],
     };
-    
+
     // Create a minimal compilation unit
     let namespace = NamespaceDeclaration {
         name: create_test_identifier("TestNamespace"),
         using_directives: Vec::new(),
-        declarations: vec![
-            NamespaceBodyDeclaration::Class(class),
-        ],
+        declarations: vec![NamespaceBodyDeclaration::Class(class)],
     };
-    
+
     let compilation_unit = CompilationUnit {
         global_attributes: Vec::new(),
         using_directives: Vec::new(),
-        declarations: vec![
-            TopLevelDeclaration::Namespace(namespace),
-        ],
+        declarations: vec![TopLevelDeclaration::Namespace(namespace)],
         file_scoped_namespace: None,
         top_level_statements: Vec::new(),
     };
-    
+
     let report = analyzer.analyze(&compilation_unit);
-    
+
     // Verify basic analysis
     assert_eq!(report.class_reports.len(), 1);
     assert_eq!(report.class_reports[0].class_name, "TestClass");
     assert_eq!(report.class_reports[0].method_count, 1);
     assert_eq!(report.class_reports[0].field_count, 1);
     assert_eq!(report.class_reports[0].property_count, 0);
-    
+
     // Should detect missing documentation issue for public method
     assert!(!report.class_reports[0].issues.is_empty());
-    let has_missing_doc = report.class_reports[0].issues.iter()
+    let has_missing_doc = report.class_reports[0]
+        .issues
+        .iter()
         .any(|issue| matches!(issue, QualityIssue::MissingDocumentation { .. }));
     assert!(has_missing_doc);
 }
@@ -172,7 +185,7 @@ fn test_analyze_simple_class() {
 #[test]
 fn test_analyze_complex_class() {
     let analyzer = QualityAnalyzer::new();
-    
+
     // Create a class with multiple quality issues
     let class = ClassDeclaration {
         documentation: None,
@@ -240,38 +253,36 @@ fn test_analyze_complex_class() {
             }),
         ],
     };
-    
+
     let namespace = NamespaceDeclaration {
         name: create_test_identifier("TestNamespace"),
         using_directives: Vec::new(),
-        declarations: vec![
-            NamespaceBodyDeclaration::Class(class),
-        ],
+        declarations: vec![NamespaceBodyDeclaration::Class(class)],
     };
-    
+
     let compilation_unit = CompilationUnit {
         global_attributes: Vec::new(),
         using_directives: Vec::new(),
-        declarations: vec![
-            TopLevelDeclaration::Namespace(namespace),
-        ],
+        declarations: vec![TopLevelDeclaration::Namespace(namespace)],
         file_scoped_namespace: None,
         top_level_statements: Vec::new(),
     };
-    
+
     let report = analyzer.analyze(&compilation_unit);
-    
+
     // Verify complex analysis
     assert_eq!(report.class_reports.len(), 1);
     let class_report = &report.class_reports[0];
-    
+
     assert_eq!(class_report.class_name, "ComplexClass");
     assert_eq!(class_report.method_count, 3);
     assert_eq!(class_report.field_count, 2);
     assert_eq!(class_report.property_count, 2);
-    
+
     // Should have multiple missing documentation issues
-    let missing_doc_count = class_report.issues.iter()
+    let missing_doc_count = class_report
+        .issues
+        .iter()
         .filter(|issue| matches!(issue, QualityIssue::MissingDocumentation { .. }))
         .count();
     assert_eq!(missing_doc_count, 3); // 3 public methods without documentation
@@ -280,17 +291,20 @@ fn test_analyze_complex_class() {
 #[test]
 fn test_quality_report_add_issue() {
     let mut report = QualityReport::new();
-    
+
     let issue = QualityIssue::HighComplexity {
         method_name: "ComplexMethod".to_string(),
         complexity: 20,
     };
-    
+
     report.add_issue(issue);
-    
+
     assert_eq!(report.issues.len(), 1);
     match &report.issues[0] {
-        QualityIssue::HighComplexity { method_name, complexity } => {
+        QualityIssue::HighComplexity {
+            method_name,
+            complexity,
+        } => {
             assert_eq!(method_name, "ComplexMethod");
             assert_eq!(*complexity, 20);
         }
@@ -301,27 +315,29 @@ fn test_quality_report_add_issue() {
 #[test]
 fn test_quality_report_overall_score_calculation() {
     let mut report = QualityReport::new();
-    
+
     // Add some quality issues
     report.add_issue(QualityIssue::HighComplexity {
         method_name: "Method1".to_string(),
         complexity: 15,
     });
-    
+
     report.add_issue(QualityIssue::MissingDocumentation {
         member_name: "Method2".to_string(),
         member_type: "Method".to_string(),
     });
-    
+
     report.calculate_overall_score();
-    
+
     // Score should be calculated based on issues
     assert!(report.overall_score <= 100.0);
     assert!(report.overall_score >= 0.0);
-    
+
     // Grade should be assigned based on score
-    assert!(matches!(report.grade, 
-        QualityGrade::A | QualityGrade::B | QualityGrade::C | QualityGrade::D | QualityGrade::F));
+    assert!(matches!(
+        report.grade,
+        QualityGrade::A | QualityGrade::B | QualityGrade::C | QualityGrade::D | QualityGrade::F
+    ));
 }
 
 #[test]
@@ -345,9 +361,9 @@ fn test_class_quality_report_score_calculation() {
         ],
         quality_score: 0.0, // Will be calculated
     };
-    
+
     class_report.calculate_score();
-    
+
     // Score should be reduced based on issues
     assert!(class_report.quality_score < 100.0);
     assert!(class_report.quality_score >= 0.0);
@@ -356,7 +372,7 @@ fn test_class_quality_report_score_calculation() {
 #[test]
 fn test_empty_compilation_unit_analysis() {
     let analyzer = QualityAnalyzer::new();
-    
+
     let compilation_unit = CompilationUnit {
         global_attributes: Vec::new(),
         using_directives: Vec::new(),
@@ -364,9 +380,9 @@ fn test_empty_compilation_unit_analysis() {
         file_scoped_namespace: None,
         top_level_statements: Vec::new(),
     };
-    
+
     let report = analyzer.analyze(&compilation_unit);
-    
+
     assert!(report.class_reports.is_empty());
     assert!(report.issues.is_empty());
     assert_eq!(report.overall_score, 0.0);
@@ -375,7 +391,7 @@ fn test_empty_compilation_unit_analysis() {
 #[test]
 fn test_quality_metrics_default() {
     let metrics = QualityMetrics::new();
-    
+
     assert_eq!(metrics.maintainability_index, 0.0);
     assert_eq!(metrics.code_coverage, 0.0);
     assert_eq!(metrics.technical_debt_ratio, 0.0);
@@ -438,13 +454,14 @@ fn test_all_quality_issue_variants() {
             target_class: "TargetClass".to_string(),
         },
     ];
-    
+
     // All issues should be created successfully
     assert_eq!(issues.len(), 12);
-    
+
     // Test serialization/deserialization
     for issue in issues {
         let serialized = serde_json::to_string(&issue).expect("Failed to serialize issue");
-        let _deserialized: QualityIssue = serde_json::from_str(&serialized).expect("Failed to deserialize issue");
+        let _deserialized: QualityIssue =
+            serde_json::from_str(&serialized).expect("Failed to deserialize issue");
     }
-} 
+}

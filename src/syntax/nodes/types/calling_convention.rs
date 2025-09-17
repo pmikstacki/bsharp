@@ -15,7 +15,7 @@ impl CallingConvention {
             _ => None,
         }
     }
-    
+
     /// Convert calling convention to string
     pub fn as_str(&self) -> &'static str {
         match self {
@@ -23,4 +23,4 @@ impl CallingConvention {
             CallingConvention::Unmanaged => "unmanaged",
         }
     }
-} 
+}

@@ -1,10 +1,12 @@
+use bsharp::parser::expressions::statements::parse_try_statement;
+use bsharp::parser::expressions::statements::try_catch_finally_parser::{
+    parse_catch_clause, parse_finally_clause,
+};
 use bsharp::syntax::nodes::identifier::Identifier;
 use bsharp::syntax::nodes::statements::FinallyClause;
 use bsharp::syntax::nodes::statements::statement::Statement;
 use bsharp::syntax::nodes::types::Type;
-use bsharp::parser::statements::parse_try_statement;
-use bsharp::parser::statements::try_catch_finally_parser::{parse_catch_clause, parse_finally_clause};
-use bsharp::syntax::test_helpers::{parse_input_unwrap, parse_all};
+use bsharp::syntax::test_helpers::{parse_all, parse_input_unwrap};
 
 #[test]
 fn test_parse_specific_catch_clause() {
@@ -12,8 +14,18 @@ fn test_parse_specific_catch_clause() {
     let (remaining_input, catch_clause) = parse_input_unwrap(parse_catch_clause(input));
     // With proper whitespace handling, there's no leading space anymore
     assert_eq!(remaining_input, "CATCH_SPECIFIC_BODY");
-    assert_eq!(catch_clause.exception_type, Some(Type::Reference(Identifier { name: "Exception".to_string() })));
-    assert_eq!(catch_clause.exception_variable, Some(Identifier { name: "e".to_string() }));
+    assert_eq!(
+        catch_clause.exception_type,
+        Some(Type::Reference(Identifier {
+            name: "Exception".to_string()
+        }))
+    );
+    assert_eq!(
+        catch_clause.exception_variable,
+        Some(Identifier {
+            name: "e".to_string()
+        })
+    );
     match *catch_clause.block {
         Statement::Block(ref block_statement) => assert!(block_statement.is_empty()),
         _ => panic!("Expected BlockStatement"),
@@ -40,7 +52,12 @@ fn test_parse_catch_clause_no_identifier() {
     let (remaining_input, catch_clause) = parse_input_unwrap(parse_catch_clause(input));
     // With proper whitespace handling, there's no leading space anymore
     assert_eq!(remaining_input, "CATCH_NO_IDENT_BODY");
-    assert_eq!(catch_clause.exception_type, Some(Type::Reference(Identifier { name: "System.Exception".to_string() })));
+    assert_eq!(
+        catch_clause.exception_type,
+        Some(Type::Reference(Identifier {
+            name: "System.Exception".to_string()
+        }))
+    );
     assert!(catch_clause.exception_variable.is_none());
 }
 
@@ -64,7 +81,7 @@ fn test_parse_try_catch_statement() {
         Statement::Try(ts) => {
             assert_eq!(ts.catches.len(), 1, "Expected 1 catch clause");
             assert!(ts.finally_clause.is_none(), "Expected no finally clause");
-        },
+        }
         _ => panic!("Expected Try statement"),
     }
 }
@@ -80,8 +97,18 @@ fn test_parse_try_catch_finally() {
             assert_eq!(ts.catches.len(), 1);
             assert!(ts.finally_clause.is_none());
             let catch_clause = &ts.catches[0];
-            assert_eq!(catch_clause.exception_type, Some(Type::Reference(Identifier { name: "Exception".to_string() })));
-            assert_eq!(catch_clause.exception_variable, Some(Identifier { name: "e".to_string() }));
+            assert_eq!(
+                catch_clause.exception_type,
+                Some(Type::Reference(Identifier {
+                    name: "Exception".to_string()
+                }))
+            );
+            assert_eq!(
+                catch_clause.exception_variable,
+                Some(Identifier {
+                    name: "e".to_string()
+                })
+            );
             assert!(matches!(*catch_clause.block, Statement::Block(_)));
         }
         _ => panic!("Expected Try statement"),
@@ -97,8 +124,8 @@ fn test_parse_try_catch_finally() {
             assert!(ts.catches.is_empty());
             assert!(ts.finally_clause.is_some());
             match ts.finally_clause {
-                 Some(FinallyClause { block }) => assert!(matches!(*block, Statement::Block(_))),
-                 _ => panic!("Expected Finally clause")
+                Some(FinallyClause { block }) => assert!(matches!(*block, Statement::Block(_))),
+                _ => panic!("Expected Finally clause"),
             }
         }
         _ => panic!("Expected Try statement"),
@@ -113,31 +140,41 @@ fn test_parse_try_catch_finally() {
             assert_eq!(ts.catches.len(), 1);
             assert!(ts.finally_clause.is_some());
             let catch_clause = &ts.catches[0];
-            assert_eq!(catch_clause.exception_type, Some(Type::Reference(Identifier { name: "IOException".to_string() })));
-            assert_eq!(catch_clause.exception_variable, Some(Identifier { name: "ex".to_string() }));
-             match ts.finally_clause {
-                 Some(FinallyClause { block }) => assert!(matches!(*block, Statement::Block(_))),
-                 _ => panic!("Expected Finally clause")
+            assert_eq!(
+                catch_clause.exception_type,
+                Some(Type::Reference(Identifier {
+                    name: "IOException".to_string()
+                }))
+            );
+            assert_eq!(
+                catch_clause.exception_variable,
+                Some(Identifier {
+                    name: "ex".to_string()
+                })
+            );
+            match ts.finally_clause {
+                Some(FinallyClause { block }) => assert!(matches!(*block, Statement::Block(_))),
+                _ => panic!("Expected Finally clause"),
             }
         }
-         _ => panic!("Expected Try statement"),
+        _ => panic!("Expected Try statement"),
     }
 
     let input_try_multiple_catch = "try { } catch (ArgumentException a) { } catch { }";
     let result_try_multiple_catch = parse_all(parse_try_statement, input_try_multiple_catch);
     assert!(result_try_multiple_catch.is_ok());
-     match result_try_multiple_catch.unwrap().1 {
-         Statement::Try(ts) => {
-             assert!(matches!(*ts.try_block, Statement::Block(_)));
-             assert_eq!(ts.catches.len(), 2);
-             assert!(ts.finally_clause.is_none());
-             // First catch has a specific type and identifier
-             assert!(ts.catches[0].exception_type.is_some());
-             assert!(ts.catches[0].exception_variable.is_some());
-             // Second catch is a general catch block (no type or identifier)
-             assert!(ts.catches[1].exception_type.is_none());
-             assert!(ts.catches[1].exception_variable.is_none());
-         }
-         _ => panic!("Expected Try statement"),
-     }
+    match result_try_multiple_catch.unwrap().1 {
+        Statement::Try(ts) => {
+            assert!(matches!(*ts.try_block, Statement::Block(_)));
+            assert_eq!(ts.catches.len(), 2);
+            assert!(ts.finally_clause.is_none());
+            // First catch has a specific type and identifier
+            assert!(ts.catches[0].exception_type.is_some());
+            assert!(ts.catches[0].exception_variable.is_some());
+            // Second catch is a general catch block (no type or identifier)
+            assert!(ts.catches[1].exception_type.is_none());
+            assert!(ts.catches[1].exception_variable.is_none());
+        }
+        _ => panic!("Expected Try statement"),
+    }
 }

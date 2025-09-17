@@ -1,10 +1,10 @@
-use super::super::core::{AstAnalyze, AstAnalysis};
+use super::super::core::{AstAnalysis, AstAnalyze};
 use crate::syntax::nodes::statements::statement::Statement;
 
 impl AstAnalyze for Statement {
     fn analyze(&self) -> AstAnalysis {
         let mut analysis = AstAnalysis::default();
-        
+
         match self {
             Statement::If(if_stmt) => {
                 analysis.total_if_statements += 1;
@@ -41,16 +41,16 @@ impl AstAnalyze for Statement {
             Statement::Try(try_stmt) => {
                 analysis.total_try_statements += 1;
                 analysis.cyclomatic_complexity += 1;
-                
+
                 // Analyze the try block
                 analysis = analysis.combine(try_stmt.try_block.analyze());
-                
+
                 // Analyze each catch block
                 for catch_clause in &try_stmt.catches {
                     analysis.cyclomatic_complexity += 1; // Each catch adds complexity
                     analysis = analysis.combine(catch_clause.block.analyze());
                 }
-                
+
                 // Analyze the finally block if present
                 if let Some(finally_clause) = &try_stmt.finally_clause {
                     analysis = analysis.combine(finally_clause.block.analyze());
@@ -114,7 +114,7 @@ impl AstAnalyze for Statement {
             // TODO: Add analysis for Checked, Unchecked, Lock, Unsafe, Fixed when their structures are defined
             _ => {}
         }
-        
+
         analysis
     }
-} 
+}

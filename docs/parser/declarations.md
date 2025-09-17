@@ -342,6 +342,12 @@ The declaration parser provides comprehensive error reporting:
 - **Accessibility consistency**: Verifying access level consistency
 - **Syntax validation**: Catching malformed declarations
 
+### Recovery for Malformed Members
+
+When a member inside a type body fails to parse, the parser uses a scoped recovery strategy to skip to the next safe boundary without crossing the enclosing type's closing brace. See the dedicated section in Error Handling for details on `skip_to_member_boundary_top_level()` and its contract:
+
+- docs: `docs/parser/error-handling.md` (Declaration Error Recovery subsection)
+
 ## XML Documentation
 
 The parser handles XML documentation comments:

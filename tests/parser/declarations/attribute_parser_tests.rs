@@ -1,5 +1,5 @@
 #![cfg(test)]
-use bsharp::parser::declarations::attribute_parser::*;
+use bsharp::parser::expressions::declarations::attribute_parser::*;
 use bsharp::syntax::nodes::expressions::expression::Expression;
 use bsharp::syntax::nodes::expressions::literal::Literal;
 
@@ -32,7 +32,7 @@ fn test_attribute_with_argument() {
     assert_eq!(lists.len(), 1);
     assert_eq!(lists[0].attributes[0].name.name, "DataMember");
     assert_eq!(lists[0].attributes[0].arguments.len(), 1);
-    
+
     // Verify the argument is a literal with value 1
     if let Expression::Literal(Literal::Integer(val)) = &lists[0].attributes[0].arguments[0] {
         assert_eq!(*val, 1);

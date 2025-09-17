@@ -1,10 +1,10 @@
-use crate::syntax::nodes::types::Type;
-use serde::{Deserialize, Serialize};
+// Added for initializer
+use super::Modifier;
 use crate::syntax::nodes::expressions::expression::Expression;
 // Use absolute path for Type
 use crate::syntax::nodes::identifier::Identifier;
-// Added for initializer
-use super::Modifier;
+use crate::syntax::nodes::types::Type;
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct FieldDeclaration {

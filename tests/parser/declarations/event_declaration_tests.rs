@@ -1,6 +1,6 @@
 // Tests for parsing event declarations
 
-use bsharp::parser::declarations::event_declaration_parser::parse_event_declaration;
+use bsharp::parser::expressions::declarations::event_declaration_parser::parse_event_declaration;
 use bsharp::syntax::nodes::declarations::Modifier;
 
 #[test]
@@ -24,7 +24,7 @@ fn test_event_with_accessors() {
     let accessors = event.accessor_list.unwrap();
     assert!(accessors.add_accessor.is_some());
     assert!(accessors.remove_accessor.is_some());
-    
+
     // Check that both accessors have no body (semicolon style)
     assert!(accessors.add_accessor.unwrap().body.is_none());
     assert!(accessors.remove_accessor.unwrap().body.is_none());

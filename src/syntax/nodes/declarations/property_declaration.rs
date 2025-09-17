@@ -15,7 +15,7 @@ pub enum PropertyAccessor {
 /// Represents a C# property declaration
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct PropertyDeclaration {
-    pub modifiers: Vec<Modifier>,  // Added modifiers
+    pub modifiers: Vec<Modifier>, // Added modifiers
     pub ty: Type,
     pub name: Identifier,
     pub accessors: Vec<PropertyAccessor>,

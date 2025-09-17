@@ -12,7 +12,9 @@ fn parse_attribute(code: &str) -> Result<Attribute, String> {
 fn test_parse_simple_attribute() {
     let code = "#[Obsolete]";
     let expected = Attribute {
-        name: Identifier { name: "Obsolete".to_string() },
+        name: Identifier {
+            name: "Obsolete".to_string(),
+        },
         arguments: vec![],
     };
     // assert_eq!(parse_attribute(code), Ok(expected)); // Uncomment when implemented

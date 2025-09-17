@@ -1,7 +1,9 @@
 // Tests for parsing top-level statements (C# 9+ feature)
 
+use bsharp::parser::expressions::statements::top_level_statement_parser::{
+    parse_top_level_statement, parse_top_level_statements,
+};
 use bsharp::syntax::nodes::statements::statement::Statement;
-use bsharp::parser::statements::top_level_statement_parser::{parse_top_level_statements, parse_top_level_statement};
 
 fn parse_top_level_statements_helper(code: &str) -> Result<Vec<Statement>, String> {
     match parse_top_level_statements(code) {
@@ -32,10 +34,14 @@ fn parse_top_level_statement_helper(code: &str) -> Result<Statement, String> {
 #[test]
 fn test_parse_simple_top_level_statement() {
     let code = r#"Console.WriteLine("Hello, World!");"#;
-    
+
     let result = parse_top_level_statement_helper(code);
-    assert!(result.is_ok(), "Failed to parse simple top-level statement: {:?}", result);
-    
+    assert!(
+        result.is_ok(),
+        "Failed to parse simple top-level statement: {:?}",
+        result
+    );
+
     let statement = result.unwrap();
     match statement {
         Statement::Expression(_) => {
@@ -50,13 +56,17 @@ fn test_parse_multiple_top_level_statements() {
     let code = r#"Console.WriteLine("Hello, World!");
 var name = "Alice";
 Console.WriteLine($"Hello, {name}!");"#;
-    
+
     let result = parse_top_level_statements_helper(code);
-    assert!(result.is_ok(), "Failed to parse multiple top-level statements: {:?}", result);
-    
+    assert!(
+        result.is_ok(),
+        "Failed to parse multiple top-level statements: {:?}",
+        result
+    );
+
     let statements = result.unwrap();
     assert_eq!(statements.len(), 3);
-    
+
     // First statement: Console.WriteLine
     match &statements[0] {
         Statement::Expression(_) => {
@@ -64,7 +74,7 @@ Console.WriteLine($"Hello, {name}!");"#;
         }
         _ => panic!("Expected expression statement, got {:?}", statements[0]),
     }
-    
+
     // Second statement: var name = "Alice"
     match &statements[1] {
         Statement::Declaration(_) => {
@@ -72,7 +82,7 @@ Console.WriteLine($"Hello, {name}!");"#;
         }
         _ => panic!("Expected declaration statement, got {:?}", statements[1]),
     }
-    
+
     // Third statement: Console.WriteLine with interpolation
     match &statements[2] {
         Statement::Expression(_) => {
@@ -87,20 +97,27 @@ fn test_parse_top_level_variable_declarations() {
     let code = r#"int x = 42;
 string message = "Hello";
 var list = new List<int>();"#;
-    
+
     let result = parse_top_level_statements_helper(code);
-    assert!(result.is_ok(), "Failed to parse top-level variable declarations: {:?}", result);
-    
+    assert!(
+        result.is_ok(),
+        "Failed to parse top-level variable declarations: {:?}",
+        result
+    );
+
     let statements = result.unwrap();
     assert_eq!(statements.len(), 3);
-    
+
     // All should be declaration statements
     for (i, statement) in statements.iter().enumerate() {
         match statement {
             Statement::Declaration(_) => {
                 // Expected: local variable declaration
             }
-            _ => panic!("Expected declaration statement at index {}, got {:?}", i, statement),
+            _ => panic!(
+                "Expected declaration statement at index {}, got {:?}",
+                i, statement
+            ),
         }
     }
 }
@@ -116,13 +133,17 @@ if (value > 5) {
 for (int i = 0; i < 3; i++) {
     Console.WriteLine($"Iteration {i}");
 }"#;
-    
+
     let result = parse_top_level_statements_helper(code);
-    assert!(result.is_ok(), "Failed to parse top-level control flow: {:?}", result);
-    
+    assert!(
+        result.is_ok(),
+        "Failed to parse top-level control flow: {:?}",
+        result
+    );
+
     let statements = result.unwrap();
     assert_eq!(statements.len(), 3);
-    
+
     // First: variable declaration
     match &statements[0] {
         Statement::Declaration(_) => {
@@ -130,7 +151,7 @@ for (int i = 0; i < 3; i++) {
         }
         _ => panic!("Expected declaration statement, got {:?}", statements[0]),
     }
-    
+
     // Second: if statement
     match &statements[1] {
         Statement::If(_) => {
@@ -138,7 +159,7 @@ for (int i = 0; i < 3; i++) {
         }
         _ => panic!("Expected if statement, got {:?}", statements[1]),
     }
-    
+
     // Third: for loop
     match &statements[2] {
         Statement::For(_) => {
@@ -153,13 +174,17 @@ fn test_parse_top_level_using_statements() {
     let code = r#"using (fileStream) {
     fileStream.Read(buffer, 0, buffer.Length);
 }"#;
-    
+
     let result = parse_top_level_statements_helper(code);
-    assert!(result.is_ok(), "Failed to parse top-level using statements: {:?}", result);
-    
+    assert!(
+        result.is_ok(),
+        "Failed to parse top-level using statements: {:?}",
+        result
+    );
+
     let statements = result.unwrap();
     assert_eq!(statements.len(), 1);
-    
+
     // Should be a using statement
     match &statements[0] {
         Statement::Using(_) => {
@@ -176,10 +201,14 @@ fn test_parse_top_level_try_catch() {
 } catch {
     Console.WriteLine("error");
 }"#;
-    
+
     let result = parse_top_level_statement_helper(code);
-    assert!(result.is_ok(), "Failed to parse top-level try-catch: {:?}", result);
-    
+    assert!(
+        result.is_ok(),
+        "Failed to parse top-level try-catch: {:?}",
+        result
+    );
+
     let statement = result.unwrap();
     match statement {
         Statement::Try(_) => {
@@ -204,13 +233,17 @@ switch (day) {
         Console.WriteLine("Other day");
         break;
 }"#;
-    
+
     let result = parse_top_level_statements_helper(code);
-    assert!(result.is_ok(), "Failed to parse top-level switch statement: {:?}", result);
-    
+    assert!(
+        result.is_ok(),
+        "Failed to parse top-level switch statement: {:?}",
+        result
+    );
+
     let statements = result.unwrap();
     assert_eq!(statements.len(), 2);
-    
+
     // First: variable declaration
     match &statements[0] {
         Statement::Declaration(_) => {
@@ -218,7 +251,7 @@ switch (day) {
         }
         _ => panic!("Expected declaration statement, got {:?}", statements[0]),
     }
-    
+
     // Second: switch statement
     match &statements[1] {
         Statement::Switch(_) => {
@@ -241,13 +274,17 @@ do {
     Console.WriteLine("At least once");
     counter--;
 } while (counter > 0);"#;
-    
+
     let result = parse_top_level_statements_helper(code);
-    assert!(result.is_ok(), "Failed to parse top-level while loops: {:?}", result);
-    
+    assert!(
+        result.is_ok(),
+        "Failed to parse top-level while loops: {:?}",
+        result
+    );
+
     let statements = result.unwrap();
     assert_eq!(statements.len(), 3);
-    
+
     // First: variable declaration
     match &statements[0] {
         Statement::Declaration(_) => {
@@ -255,7 +292,7 @@ do {
         }
         _ => panic!("Expected declaration statement, got {:?}", statements[0]),
     }
-    
+
     // Second: while loop
     match &statements[1] {
         Statement::While(_) => {
@@ -263,7 +300,7 @@ do {
         }
         _ => panic!("Expected while statement, got {:?}", statements[1]),
     }
-    
+
     // Third: do-while loop
     match &statements[2] {
         Statement::DoWhile(_) => {
@@ -280,13 +317,17 @@ fn test_parse_top_level_foreach_loop() {
 foreach (var number in numbers) {
     Console.WriteLine(number);
 }"#;
-    
+
     let result = parse_top_level_statements_helper(code);
-    assert!(result.is_ok(), "Failed to parse top-level foreach loop: {:?}", result);
-    
+    assert!(
+        result.is_ok(),
+        "Failed to parse top-level foreach loop: {:?}",
+        result
+    );
+
     let statements = result.unwrap();
     assert_eq!(statements.len(), 2);
-    
+
     // First: variable declaration
     match &statements[0] {
         Statement::Declaration(_) => {
@@ -294,7 +335,7 @@ foreach (var number in numbers) {
         }
         _ => panic!("Expected declaration statement, got {:?}", statements[0]),
     }
-    
+
     // Second: foreach loop
     match &statements[1] {
         Statement::ForEach(_) => {
@@ -316,13 +357,17 @@ static void PrintGreeting(string name) {
 
 int result = Add(5, 3);
 PrintGreeting("World");"#;
-    
+
     let result = parse_top_level_statements_helper(code);
-    assert!(result.is_ok(), "Failed to parse top-level local functions: {:?}", result);
-    
+    assert!(
+        result.is_ok(),
+        "Failed to parse top-level local functions: {:?}",
+        result
+    );
+
     let statements = result.unwrap();
     assert_eq!(statements.len(), 4);
-    
+
     // First two: local function declarations
     match &statements[0] {
         Statement::LocalFunction(_) => {
@@ -330,14 +375,14 @@ PrintGreeting("World");"#;
         }
         _ => panic!("Expected local function statement, got {:?}", statements[0]),
     }
-    
+
     match &statements[1] {
         Statement::LocalFunction(_) => {
             // Expected: local function
         }
         _ => panic!("Expected local function statement, got {:?}", statements[1]),
     }
-    
+
     // Third: variable declaration
     match &statements[2] {
         Statement::Declaration(_) => {
@@ -345,7 +390,7 @@ PrintGreeting("World");"#;
         }
         _ => panic!("Expected declaration statement, got {:?}", statements[2]),
     }
-    
+
     // Fourth: function call
     match &statements[3] {
         Statement::Expression(_) => {
@@ -380,10 +425,14 @@ for (int i = 0; i < numbers.Count; i++) {
         Console.WriteLine($"Even number at index {i}: {numbers[i]}");
     }
 }"#;
-    
+
     let result = parse_top_level_statements_helper(code);
-    assert!(result.is_ok(), "Failed to parse complex top-level program: {:?}", result);
-    
+    assert!(
+        result.is_ok(),
+        "Failed to parse complex top-level program: {:?}",
+        result
+    );
+
     let statements = result.unwrap();
     assert_eq!(statements.len(), 5); // var numbers, CalculateSum function, var sum, if statement, for loop
 }
@@ -391,10 +440,14 @@ for (int i = 0; i < numbers.Count; i++) {
 #[test]
 fn test_parse_empty_top_level_statements() {
     let code = "";
-    
+
     let result = parse_top_level_statements_helper(code);
-    assert!(result.is_ok(), "Failed to parse empty top-level statements: {:?}", result);
-    
+    assert!(
+        result.is_ok(),
+        "Failed to parse empty top-level statements: {:?}",
+        result
+    );
+
     let statements = result.unwrap();
     assert_eq!(statements.len(), 0);
 }
@@ -410,10 +463,14 @@ fn test_parse_top_level_statements_with_whitespace() {
     Console.WriteLine(x);
 
 "#;
-    
+
     let result = parse_top_level_statements_helper(code);
-    assert!(result.is_ok(), "Failed to parse top-level statements with whitespace: {:?}", result);
-    
+    assert!(
+        result.is_ok(),
+        "Failed to parse top-level statements with whitespace: {:?}",
+        result
+    );
+
     let statements = result.unwrap();
     assert_eq!(statements.len(), 3);
 }
@@ -424,16 +481,19 @@ fn test_parse_top_level_statements_error_recovery() {
     let code = r#"Console.WriteLine("Valid");
 invalid parser here!
 Console.WriteLine("Another valid");"#;
-    
+
     let result = parse_top_level_statements_helper(code);
     // This should either parse what it can or fail gracefully
     // The exact behavior depends on error recovery implementation
     match result {
         Ok(statements) => {
-            assert!(statements.len() >= 1, "Should parse at least one valid statement");
+            assert!(
+                statements.len() >= 1,
+                "Should parse at least one valid statement"
+            );
         }
         Err(_) => {
             // Error is also acceptable if error recovery isn't implemented
         }
     }
-} 
+}

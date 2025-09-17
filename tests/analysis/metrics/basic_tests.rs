@@ -1,9 +1,12 @@
 use bsharp::analysis::metrics::basic::{BasicMetrics, BasicMetricsCollector};
 use bsharp::syntax::ast::*;
+use bsharp::syntax::nodes::Identifier;
 use bsharp::syntax::nodes::declarations::*;
 use bsharp::syntax::nodes::statements::statement::*;
-use bsharp::syntax::nodes::Identifier;
-use bsharp::syntax::nodes::statements::{CatchClause, DoWhileStatement, ForStatement, IfStatement, WhileStatement, SwitchStatement, SwitchSection, SwitchLabel, TryStatement, BreakStatement};
+use bsharp::syntax::nodes::statements::{
+    BreakStatement, CatchClause, DoWhileStatement, ForStatement, IfStatement, SwitchLabel,
+    SwitchSection, SwitchStatement, TryStatement, WhileStatement,
+};
 use bsharp::syntax::nodes::types::{PrimitiveType, Type};
 
 fn create_test_identifier(name: &str) -> Identifier {
@@ -102,7 +105,7 @@ fn test_code_density() {
     };
 
     assert_eq!(metrics.code_density(), 0.8);
-    
+
     // Test zero division
     let empty_metrics = BasicMetrics::default();
     assert_eq!(empty_metrics.code_density(), 0.0);
@@ -117,7 +120,7 @@ fn test_comment_ratio() {
     };
 
     assert_eq!(metrics.comment_ratio(), 0.25);
-    
+
     // Test zero division
     let empty_metrics = BasicMetrics::default();
     assert_eq!(empty_metrics.comment_ratio(), 0.0);
@@ -132,7 +135,7 @@ fn test_basic_metrics_collector_new() {
 #[test]
 fn test_collect_from_class() {
     let mut collector = BasicMetricsCollector::new();
-    
+
     let class = ClassDeclaration {
         documentation: None,
         attributes: Vec::new(),
@@ -168,7 +171,7 @@ fn test_collect_from_class() {
 
     collector.collect_from_class(&class);
     let metrics = collector.get_metrics();
-    
+
     assert_eq!(metrics.total_classes, 1);
     assert_eq!(metrics.total_methods, 1);
     assert_eq!(metrics.total_fields, 1);
@@ -178,25 +181,25 @@ fn test_collect_from_class() {
 #[test]
 fn test_collect_from_statement() {
     let mut collector = BasicMetricsCollector::new();
-    
+
     let if_stmt = Statement::If(Box::new(IfStatement {
         condition: bsharp::syntax::nodes::expressions::expression::Expression::Literal(
-            bsharp::syntax::nodes::expressions::literal::Literal::Boolean(true)
+            bsharp::syntax::nodes::expressions::literal::Literal::Boolean(true),
         ),
-        consequence: Box::new(Statement::Block(vec![
-            Statement::For(Box::new(ForStatement {
+        consequence: Box::new(Statement::Block(vec![Statement::For(Box::new(
+            ForStatement {
                 initializer: None,
                 condition: None,
                 iterator: vec![],
                 body: Box::new(Statement::Block(Vec::new())),
-            }))
-        ])),
+            },
+        ))])),
         alternative: None,
     }));
 
     collector.collect_from_statement(&if_stmt);
     let metrics = collector.get_metrics();
-    
+
     assert_eq!(metrics.total_if_statements, 1);
     assert_eq!(metrics.total_for_loops, 1);
     assert_eq!(metrics.logical_lines, 3); // if + block + for
@@ -205,7 +208,7 @@ fn test_collect_from_statement() {
 #[test]
 fn test_collector_reset() {
     let mut collector = BasicMetricsCollector::new();
-    
+
     let class = ClassDeclaration {
         documentation: None,
         attributes: Vec::new(),
@@ -218,7 +221,7 @@ fn test_collector_reset() {
 
     collector.collect_from_class(&class);
     assert_eq!(collector.get_metrics().total_classes, 1);
-    
+
     collector.reset();
     assert_eq!(collector.get_metrics().total_classes, 0);
 }
@@ -226,32 +229,34 @@ fn test_collector_reset() {
 #[test]
 fn test_collect_various_statement_types() {
     let mut collector = BasicMetricsCollector::new();
-    
+
     let statements = vec![
         Statement::While(Box::new(WhileStatement {
-            condition: Box::new(bsharp::syntax::nodes::expressions::expression::Expression::Literal(
-                bsharp::syntax::nodes::expressions::literal::Literal::Boolean(true)
-            )),
+            condition: Box::new(
+                bsharp::syntax::nodes::expressions::expression::Expression::Literal(
+                    bsharp::syntax::nodes::expressions::literal::Literal::Boolean(true),
+                ),
+            ),
             body: Box::new(Statement::Block(Vec::new())),
         })),
         Statement::DoWhile(Box::new(DoWhileStatement {
             body: Box::new(Statement::Block(Vec::new())),
             condition: bsharp::syntax::nodes::expressions::expression::Expression::Literal(
-                bsharp::syntax::nodes::expressions::literal::Literal::Boolean(true)
+                bsharp::syntax::nodes::expressions::literal::Literal::Boolean(true),
             ),
         })),
         Statement::Switch(Box::new(SwitchStatement {
             expression: bsharp::syntax::nodes::expressions::expression::Expression::Literal(
-                bsharp::syntax::nodes::expressions::literal::Literal::Integer(1)
+                bsharp::syntax::nodes::expressions::literal::Literal::Integer(1),
             ),
-            sections: vec![
-                SwitchSection {
-                    labels: vec![SwitchLabel::Case(bsharp::syntax::nodes::expressions::expression::Expression::Literal(
-                        bsharp::syntax::nodes::expressions::literal::Literal::Integer(1)
-                    ))],
-                    statements: vec![Statement::Break(BreakStatement)],
-                }
-            ],
+            sections: vec![SwitchSection {
+                labels: vec![SwitchLabel::Case(
+                    bsharp::syntax::nodes::expressions::expression::Expression::Literal(
+                        bsharp::syntax::nodes::expressions::literal::Literal::Integer(1),
+                    ),
+                )],
+                statements: vec![Statement::Break(BreakStatement)],
+            }],
         })),
     ];
 
@@ -268,7 +273,7 @@ fn test_collect_various_statement_types() {
 #[test]
 fn test_metrics_accuracy_with_real_code() {
     let mut collector = BasicMetricsCollector::new();
-    
+
     // Simulate a more realistic class structure
     let class = ClassDeclaration {
         documentation: None,
@@ -300,46 +305,49 @@ fn test_metrics_accuracy_with_real_code() {
                 type_parameters: None,
                 parameters: Vec::new(),
                 constraints: Some(Vec::new()),
-                body: Some(Statement::Block(vec![
-                    Statement::If(Box::new(IfStatement {
-                        condition: bsharp::syntax::nodes::expressions::expression::Expression::Literal(
-                            bsharp::syntax::nodes::expressions::literal::Literal::Boolean(true)
-                        ),
-                        consequence: Box::new(Statement::Block(vec![
-                            Statement::For(Box::new(ForStatement {
+                body: Some(Statement::Block(vec![Statement::If(Box::new(
+                    IfStatement {
+                        condition:
+                            bsharp::syntax::nodes::expressions::expression::Expression::Literal(
+                                bsharp::syntax::nodes::expressions::literal::Literal::Boolean(true),
+                            ),
+                        consequence: Box::new(Statement::Block(vec![Statement::For(Box::new(
+                            ForStatement {
                                 initializer: None,
                                 condition: None,
                                 iterator: vec![],
-                                body: Box::new(Statement::Block(vec![
-                                    Statement::Try(Box::new(TryStatement {
+                                body: Box::new(Statement::Block(vec![Statement::Try(Box::new(
+                                    TryStatement {
                                         try_block: Box::new(Statement::Block(Vec::new())),
-                                        catches: vec![
-                                            CatchClause {
-                                                exception_type: None,
-                                                exception_variable: None,
-                                                block: Box::new(Statement::Block(Vec::new())),
-                                            }
-                                        ],
+                                        catches: vec![CatchClause {
+                                            exception_type: None,
+                                            exception_variable: None,
+                                            block: Box::new(Statement::Block(Vec::new())),
+                                        }],
                                         finally_clause: None,
-                                    }))
-                                ])),
-                            }))
-                        ])),
+                                    },
+                                ))])),
+                            },
+                        ))])),
                         alternative: Some(Box::new(Statement::While(Box::new(WhileStatement {
-                            condition: Box::new(bsharp::syntax::nodes::expressions::expression::Expression::Literal(
-                                bsharp::syntax::nodes::expressions::literal::Literal::Boolean(false)
-                            )),
+                            condition: Box::new(
+                                bsharp::syntax::nodes::expressions::expression::Expression::Literal(
+                                    bsharp::syntax::nodes::expressions::literal::Literal::Boolean(
+                                        false,
+                                    ),
+                                ),
+                            ),
                             body: Box::new(Statement::Block(Vec::new())),
                         })))),
-                    }))
-                ])),
+                    },
+                ))])),
             }),
         ],
     };
 
     collector.collect_from_class(&class);
     let metrics = collector.get_metrics();
-    
+
     // Verify collected metrics
     assert_eq!(metrics.total_classes, 1);
     assert_eq!(metrics.total_fields, 1);
@@ -349,7 +357,7 @@ fn test_metrics_accuracy_with_real_code() {
     assert_eq!(metrics.total_for_loops, 1);
     assert_eq!(metrics.total_while_loops, 1);
     assert_eq!(metrics.total_try_statements, 1);
-    
+
     // Total counts
     assert_eq!(metrics.total_members(), 3); // 1 field + 1 constructor + 1 method
     assert_eq!(metrics.total_control_structures(), 4); // if + for + while + try
@@ -358,7 +366,7 @@ fn test_metrics_accuracy_with_real_code() {
 #[test]
 fn test_collector_with_multiple_classes() {
     let mut collector = BasicMetricsCollector::new();
-    
+
     // First class
     let class1 = ClassDeclaration {
         documentation: None,
@@ -367,19 +375,17 @@ fn test_collector_with_multiple_classes() {
         name: create_test_identifier("Class1"),
         type_parameters: None,
         base_types: Vec::new(),
-        body_declarations: vec![
-            ClassBodyDeclaration::Method(MethodDeclaration {
-                modifiers: Vec::new(),
-                return_type: Type::Primitive(PrimitiveType::Void),
-                name: create_test_identifier("Method1"),
-                type_parameters: None,
-                parameters: Vec::new(),
-                constraints: Some(Vec::new()),
-                body: None,
-            }),
-        ],
+        body_declarations: vec![ClassBodyDeclaration::Method(MethodDeclaration {
+            modifiers: Vec::new(),
+            return_type: Type::Primitive(PrimitiveType::Void),
+            name: create_test_identifier("Method1"),
+            type_parameters: None,
+            parameters: Vec::new(),
+            constraints: Some(Vec::new()),
+            body: None,
+        })],
     };
-    
+
     // Second class
     let class2 = ClassDeclaration {
         documentation: None,
@@ -407,7 +413,7 @@ fn test_collector_with_multiple_classes() {
 
     collector.collect_from_class(&class1);
     collector.collect_from_class(&class2);
-    
+
     let metrics = collector.get_metrics();
     assert_eq!(metrics.total_classes, 2);
     assert_eq!(metrics.total_methods, 1);
@@ -419,41 +425,43 @@ fn test_collector_with_multiple_classes() {
 #[test]
 fn test_collector_integration() {
     let mut collector = BasicMetricsCollector::new();
-    
+
     // Create statements with different control structures
     let statements = vec![
         Statement::If(Box::new(IfStatement {
             condition: bsharp::syntax::nodes::expressions::expression::Expression::Literal(
-                bsharp::syntax::nodes::expressions::literal::Literal::Boolean(false)
+                bsharp::syntax::nodes::expressions::literal::Literal::Boolean(false),
             ),
-            consequence: Box::new(Statement::Block(vec![
-                Statement::For(Box::new(ForStatement {
+            consequence: Box::new(Statement::Block(vec![Statement::For(Box::new(
+                ForStatement {
                     initializer: None,
                     condition: None,
                     iterator: vec![],
                     body: Box::new(Statement::Block(Vec::new())),
-                }))
-            ])),
+                },
+            ))])),
             alternative: None,
         })),
         Statement::While(Box::new(WhileStatement {
-            condition: Box::new(bsharp::syntax::nodes::expressions::expression::Expression::Literal(
-                bsharp::syntax::nodes::expressions::literal::Literal::Boolean(true)
-            )),
+            condition: Box::new(
+                bsharp::syntax::nodes::expressions::expression::Expression::Literal(
+                    bsharp::syntax::nodes::expressions::literal::Literal::Boolean(true),
+                ),
+            ),
             body: Box::new(Statement::Block(Vec::new())),
         })),
         Statement::DoWhile(Box::new(DoWhileStatement {
             body: Box::new(Statement::Block(Vec::new())),
             condition: bsharp::syntax::nodes::expressions::expression::Expression::Literal(
-                bsharp::syntax::nodes::expressions::literal::Literal::Boolean(true)
+                bsharp::syntax::nodes::expressions::literal::Literal::Boolean(true),
             ),
         })),
     ];
-    
+
     for stmt in &statements {
         collector.collect_from_statement(stmt);
     }
-    
+
     let metrics = collector.get_metrics();
     assert_eq!(metrics.total_if_statements, 1);
     assert_eq!(metrics.total_for_loops, 1);
@@ -461,39 +469,37 @@ fn test_collector_integration() {
 }
 
 fn create_complex_method_for_analysis() -> MethodDeclaration {
-    let complex_body = Statement::Block(vec![
-        Statement::If(Box::new(IfStatement {
-            condition: bsharp::syntax::nodes::expressions::expression::Expression::Literal(
-                bsharp::syntax::nodes::expressions::literal::Literal::Boolean(true)
+    let complex_body = Statement::Block(vec![Statement::If(Box::new(IfStatement {
+        condition: bsharp::syntax::nodes::expressions::expression::Expression::Literal(
+            bsharp::syntax::nodes::expressions::literal::Literal::Boolean(true),
+        ),
+        consequence: Box::new(Statement::Block(vec![Statement::For(Box::new(
+            ForStatement {
+                initializer: None,
+                condition: None,
+                iterator: vec![],
+                body: Box::new(Statement::Block(vec![Statement::Try(Box::new(
+                    TryStatement {
+                        try_block: Box::new(Statement::Block(Vec::new())),
+                        catches: vec![CatchClause {
+                            exception_type: None,
+                            exception_variable: None,
+                            block: Box::new(Statement::Block(Vec::new())),
+                        }],
+                        finally_clause: None,
+                    },
+                ))])),
+            },
+        ))])),
+        alternative: Some(Box::new(Statement::While(Box::new(WhileStatement {
+            condition: Box::new(
+                bsharp::syntax::nodes::expressions::expression::Expression::Literal(
+                    bsharp::syntax::nodes::expressions::literal::Literal::Boolean(false),
+                ),
             ),
-            consequence: Box::new(Statement::Block(vec![
-                Statement::For(Box::new(ForStatement {
-                    initializer: None,
-                    condition: None,
-                    iterator: vec![],
-                    body: Box::new(Statement::Block(vec![
-                        Statement::Try(Box::new(TryStatement {
-                            try_block: Box::new(Statement::Block(Vec::new())),
-                            catches: vec![
-                                CatchClause {
-                                    exception_type: None,
-                                    exception_variable: None,
-                                    block: Box::new(Statement::Block(Vec::new())),
-                                }
-                            ],
-                            finally_clause: None,
-                        }))
-                    ])),
-                }))
-            ])),
-            alternative: Some(Box::new(Statement::While(Box::new(WhileStatement {
-                condition: Box::new(bsharp::syntax::nodes::expressions::expression::Expression::Literal(
-                    bsharp::syntax::nodes::expressions::literal::Literal::Boolean(false)
-                )),
-                body: Box::new(Statement::Block(Vec::new())),
-            })))),
-        }))
-    ]);
+            body: Box::new(Statement::Block(Vec::new())),
+        })))),
+    }))]);
 
     MethodDeclaration {
         modifiers: vec![Modifier::Public],
@@ -504,4 +510,4 @@ fn create_complex_method_for_analysis() -> MethodDeclaration {
         constraints: Some(Vec::new()),
         body: Some(complex_body),
     }
-} 
+}

@@ -12,14 +12,12 @@ impl DependencyGraph {
     pub fn new() -> Self {
         Self::default()
     }
-    
+
     pub fn add_node(&mut self, name: String, node_type: DependencyNodeType) {
-        self.nodes.insert(name.clone(), DependencyNode {
-            name,
-            node_type,
-        });
+        self.nodes
+            .insert(name.clone(), DependencyNode { name, node_type });
     }
-    
+
     pub fn add_dependency(&mut self, from: String, to: String, dependency_type: DependencyType) {
         self.edges.push(DependencyEdge {
             from,
@@ -27,11 +25,11 @@ impl DependencyGraph {
             dependency_type,
         });
     }
-    
+
     pub fn node_count(&self) -> usize {
         self.nodes.len()
     }
-    
+
     pub fn edge_count(&self) -> usize {
         self.edges.len()
     }
@@ -89,10 +87,10 @@ pub struct ClassDependencies {
 
 impl ClassDependencies {
     pub fn total_dependencies(&self) -> usize {
-        self.inherits_from.len() + 
-        self.implements.len() + 
-        self.field_dependencies.len() + 
-        self.method_dependencies.len()
+        self.inherits_from.len()
+            + self.implements.len()
+            + self.field_dependencies.len()
+            + self.method_dependencies.len()
     }
 }
 
@@ -209,15 +207,7 @@ pub struct OverallDependencyMetrics {
 /// Architectural smells
 #[derive(Debug, Clone)]
 pub enum ArchitecturalSmell {
-    Hub {
-        module_name: String,
-        fan_in: usize,
-    },
-    GodComponent {
-        module_name: String,
-        fan_out: usize,
-    },
-    CyclicDependency {
-        cycle: Vec<String>,
-    },
-} 
+    Hub { module_name: String, fan_in: usize },
+    GodComponent { module_name: String, fan_out: usize },
+    CyclicDependency { cycle: Vec<String> },
+}

@@ -13,14 +13,14 @@ pub struct BasicMetrics {
     pub total_enums: usize,
     pub total_records: usize,
     pub total_delegates: usize,
-    
+
     // Member counts
     pub total_methods: usize,
     pub total_properties: usize,
     pub total_fields: usize,
     pub total_events: usize,
     pub total_constructors: usize,
-    
+
     // Statement counts
     pub total_if_statements: usize,
     pub total_for_loops: usize,
@@ -28,7 +28,7 @@ pub struct BasicMetrics {
     pub total_switch_statements: usize,
     pub total_try_statements: usize,
     pub total_using_statements: usize,
-    
+
     // Lines of code metrics
     pub physical_lines: usize,
     pub logical_lines: usize,
@@ -40,7 +40,7 @@ impl BasicMetrics {
     pub fn new() -> Self {
         Self::default()
     }
-    
+
     /// Combine two basic metrics by adding their counts
     pub fn combine(self, other: BasicMetrics) -> BasicMetrics {
         BasicMetrics {
@@ -50,45 +50,56 @@ impl BasicMetrics {
             total_enums: self.total_enums + other.total_enums,
             total_records: self.total_records + other.total_records,
             total_delegates: self.total_delegates + other.total_delegates,
-            
+
             total_methods: self.total_methods + other.total_methods,
             total_properties: self.total_properties + other.total_properties,
             total_fields: self.total_fields + other.total_fields,
             total_events: self.total_events + other.total_events,
             total_constructors: self.total_constructors + other.total_constructors,
-            
+
             total_if_statements: self.total_if_statements + other.total_if_statements,
             total_for_loops: self.total_for_loops + other.total_for_loops,
             total_while_loops: self.total_while_loops + other.total_while_loops,
             total_switch_statements: self.total_switch_statements + other.total_switch_statements,
             total_try_statements: self.total_try_statements + other.total_try_statements,
             total_using_statements: self.total_using_statements + other.total_using_statements,
-            
+
             physical_lines: self.physical_lines + other.physical_lines,
             logical_lines: self.logical_lines + other.logical_lines,
             comment_lines: self.comment_lines + other.comment_lines,
             blank_lines: self.blank_lines + other.blank_lines,
         }
     }
-    
+
     /// Get total types count
     pub fn total_types(&self) -> usize {
-        self.total_classes + self.total_interfaces + self.total_structs + 
-        self.total_enums + self.total_records + self.total_delegates
+        self.total_classes
+            + self.total_interfaces
+            + self.total_structs
+            + self.total_enums
+            + self.total_records
+            + self.total_delegates
     }
-    
+
     /// Get total members count
     pub fn total_members(&self) -> usize {
-        self.total_methods + self.total_properties + self.total_fields + 
-        self.total_events + self.total_constructors
+        self.total_methods
+            + self.total_properties
+            + self.total_fields
+            + self.total_events
+            + self.total_constructors
     }
-    
+
     /// Get total control structures count
     pub fn total_control_structures(&self) -> usize {
-        self.total_if_statements + self.total_for_loops + self.total_while_loops + 
-        self.total_switch_statements + self.total_try_statements + self.total_using_statements
+        self.total_if_statements
+            + self.total_for_loops
+            + self.total_while_loops
+            + self.total_switch_statements
+            + self.total_try_statements
+            + self.total_using_statements
     }
-    
+
     /// Calculate code density (logical lines / physical lines)
     pub fn code_density(&self) -> f64 {
         if self.physical_lines == 0 {
@@ -97,7 +108,7 @@ impl BasicMetrics {
             self.logical_lines as f64 / self.physical_lines as f64
         }
     }
-    
+
     /// Calculate comment ratio (comment lines / total lines)
     pub fn comment_ratio(&self) -> f64 {
         if self.physical_lines == 0 {
@@ -119,18 +130,18 @@ impl BasicMetricsCollector {
             metrics: BasicMetrics::new(),
         }
     }
-    
+
     /// Collect basic metrics from a compilation unit
     pub fn collect_from_compilation_unit(&mut self, unit: &CompilationUnit) {
         // TODO: Implement collection from compilation unit
         // This would traverse the AST and count elements
         let _ = unit; // Suppress unused warning for now
     }
-    
+
     /// Collect basic metrics from a class
     pub fn collect_from_class(&mut self, class: &ClassDeclaration) {
         self.metrics.total_classes += 1;
-        
+
         // Count members and analyze their bodies
         for member in &class.body_declarations {
             match member {
@@ -147,7 +158,9 @@ impl BasicMetricsCollector {
                 crate::syntax::nodes::declarations::ClassBodyDeclaration::Event(_) => {
                     self.metrics.total_events += 1;
                 }
-                crate::syntax::nodes::declarations::ClassBodyDeclaration::Constructor(constructor) => {
+                crate::syntax::nodes::declarations::ClassBodyDeclaration::Constructor(
+                    constructor,
+                ) => {
                     self.metrics.total_constructors += 1;
                     if let Some(body) = &constructor.body {
                         self.collect_from_statement(body);
@@ -157,14 +170,14 @@ impl BasicMetricsCollector {
             }
         }
     }
-    
+
     /// Collect basic metrics from a method
     pub fn collect_from_method(&mut self, method: &MethodDeclaration) {
         if let Some(body) = &method.body {
             self.collect_from_statement(body);
         }
     }
-    
+
     /// Collect basic metrics from a statement
     pub fn collect_from_statement(&mut self, statement: &Statement) {
         match statement {
@@ -225,8 +238,12 @@ impl BasicMetricsCollector {
                     self.collect_from_statement(stmt);
                 }
             }
-            Statement::Expression(_) | Statement::Return(_) | Statement::Throw(_) | 
-            Statement::Break(_) | Statement::Continue(_) | Statement::Declaration(_) => {
+            Statement::Expression(_)
+            | Statement::Return(_)
+            | Statement::Throw(_)
+            | Statement::Break(_)
+            | Statement::Continue(_)
+            | Statement::Declaration(_) => {
                 // These are simple statements that count as logical lines
                 self.metrics.logical_lines += 1;
             }
@@ -239,12 +256,12 @@ impl BasicMetricsCollector {
             }
         }
     }
-    
+
     /// Get the collected metrics
     pub fn get_metrics(&self) -> &BasicMetrics {
         &self.metrics
     }
-    
+
     /// Reset the collector
     pub fn reset(&mut self) {
         self.metrics = BasicMetrics::new();
@@ -255,4 +272,4 @@ impl Default for BasicMetricsCollector {
     fn default() -> Self {
         Self::new()
     }
-} 
+}

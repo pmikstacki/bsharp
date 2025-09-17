@@ -1,11 +1,11 @@
 // Integration tests for if_statement_parser.rs
 
+use bsharp::parser::expressions::statements::if_statement_parser::parse_if_statement;
 use bsharp::syntax::nodes::expressions::expression::Expression;
-use bsharp::syntax::nodes::identifier::Identifier;
 use bsharp::syntax::nodes::expressions::literal::Literal;
+use bsharp::syntax::nodes::identifier::Identifier;
 use bsharp::syntax::nodes::statements::statement::Statement;
 use bsharp::syntax::test_helpers::parse_all;
-use bsharp::parser::statements::if_statement_parser::parse_if_statement;
 
 #[test]
 fn test_parse_if_statement() {
@@ -15,7 +15,10 @@ fn test_parse_if_statement() {
     match result_if_only.unwrap().1 {
         Statement::If(if_stmt) => {
             // Check the condition
-            assert!(matches!(if_stmt.condition, Expression::Literal(Literal::Boolean(true))));
+            assert!(matches!(
+                if_stmt.condition,
+                Expression::Literal(Literal::Boolean(true))
+            ));
             // Check the consequence block
             assert!(matches!(*if_stmt.consequence, Statement::Block(_)));
             assert!(if_stmt.alternative.is_none());
@@ -29,17 +32,23 @@ fn test_parse_if_statement() {
     match result_if_else.unwrap().1 {
         Statement::If(if_stmt) => {
             // Check the condition
-            assert!(matches!(if_stmt.condition, Expression::Variable(Identifier { .. })));
+            assert!(matches!(
+                if_stmt.condition,
+                Expression::Variable(Identifier { .. })
+            ));
             // Check the consequence (ExpressionStatement)
             assert!(matches!(*if_stmt.consequence, Statement::Expression(_)));
             // Check the alternative (else block with ExpressionStatement)
-            assert!(matches!(*if_stmt.alternative.unwrap(), Statement::Expression(_)));
+            assert!(matches!(
+                *if_stmt.alternative.unwrap(),
+                Statement::Expression(_)
+            ));
         }
         _ => panic!("Expected If statement"),
     }
 
     let input_if_else_if = "if (a) 1; else if (b) 2; else 3;"; // Requires careful parsing of else part
-                                                            // This structure is handled by how parse_statement recursively handles the else branch.
+    // This structure is handled by how parse_statement recursively handles the else branch.
     let result_if_else_if = parse_all(parse_if_statement, input_if_else_if);
     assert!(result_if_else_if.is_ok());
     if let Statement::If(outer_if) = result_if_else_if.unwrap().1 {
@@ -54,7 +63,10 @@ fn test_parse_if_statement() {
             // Check inner if consequence
             assert!(matches!(*inner_if.consequence, Statement::Expression(_))); // 2
             // Check inner if alternative
-            assert!(matches!(*inner_if.alternative.unwrap(), Statement::Expression(_))); // 3
+            assert!(matches!(
+                *inner_if.alternative.unwrap(),
+                Statement::Expression(_)
+            )); // 3
         } else {
             panic!("Expected inner IfStatement as alternative of outer if");
         }

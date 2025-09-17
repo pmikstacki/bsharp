@@ -1,13 +1,10 @@
+use crate::parser::expressions::unary_expression_parser::parse_unary_expression_or_higher;
 use crate::syntax::errors::BResult;
 use crate::syntax::nodes::expressions::expression::Expression;
 use crate::syntax::nodes::expressions::range_expression::RangeExpression;
 use crate::syntax::parser_helpers::{bchar, bws, context};
-use crate::parser::expressions::unary_expression_parser::parse_unary_expression_or_higher;
 
-use nom::{
-    combinator::opt,
-    sequence::pair,
-};
+use nom::{combinator::opt, sequence::pair};
 
 /// Helper for parse_range_expression_or_higher to specifically parse ranges starting with `..`
 fn parse_range_starting_with_dots(input: &str) -> BResult<&str, Expression> {
@@ -35,11 +32,14 @@ pub(crate) fn parse_range_expression_or_higher(input: &str) -> BResult<&str, Exp
             let (i, start_expr) = parse_unary_expression_or_higher(i)?;
             if let Ok((i_after_dots, _)) = pair(bchar('.'), bchar('.'))(i) {
                 let (i_after_end, end_expr) = opt(parse_unary_expression_or_higher)(i_after_dots)?;
-                Ok((i_after_end, Expression::Range(Box::new(RangeExpression {
-                    start: Some(Box::new(start_expr)),
-                    end: end_expr.map(Box::new),
-                    is_inclusive: false,
-                }))))
+                Ok((
+                    i_after_end,
+                    Expression::Range(Box::new(RangeExpression {
+                        start: Some(Box::new(start_expr)),
+                        end: end_expr.map(Box::new),
+                        is_inclusive: false,
+                    })),
+                ))
             } else {
                 Ok((i, start_expr))
             }

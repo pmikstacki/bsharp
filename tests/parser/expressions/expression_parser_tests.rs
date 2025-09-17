@@ -1,13 +1,17 @@
+use bsharp::parser::expressions::primary_expression_parser::*;
 use bsharp::syntax::nodes::expressions::expression::Expression;
 use bsharp::syntax::nodes::expressions::literal::Literal;
-use bsharp::syntax::nodes::types::Type;
-use bsharp::parser::expressions::expression_parser::*; // Adjust if parse_expression is not public or in a submodule
+use bsharp::syntax::nodes::types::Type; // Adjust if parse_expression is not public or in a submodule
 
 #[test]
 fn test_parse_simple_new_expression() {
     let input = "new Exception(\"Error\")";
     let result = parse_expression(input);
-    assert!(result.is_ok(), r#"Failed to parse 'new Exception("Error")': {:?}"#, result.err());
+    assert!(
+        result.is_ok(),
+        r#"Failed to parse 'new Exception("Error")': {:?}"#,
+        result.err()
+    );
     let (remaining, expr) = result.unwrap();
     assert_eq!(remaining, "");
     match expr {
@@ -32,7 +36,11 @@ fn test_parse_simple_new_expression() {
 fn test_parse_new_expression_no_args() {
     let input = "new Object()";
     let result = parse_expression(input);
-    assert!(result.is_ok(), "Failed to parse 'new Object()': {:?}", result.err());
+    assert!(
+        result.is_ok(),
+        "Failed to parse 'new Object()': {:?}",
+        result.err()
+    );
     let (remaining, expr) = result.unwrap();
     assert_eq!(remaining, "");
     match expr {
@@ -51,7 +59,11 @@ fn test_parse_new_expression_no_args() {
 fn test_parse_new_expression_multiple_args() {
     let input = "new Data(42, \"test\", true)";
     let result = parse_expression(input);
-    assert!(result.is_ok(), r#"Failed to parse 'new Data(42, "test", true)': {:?}"#, result.err());
+    assert!(
+        result.is_ok(),
+        r#"Failed to parse 'new Data(42, "test", true)': {:?}"#,
+        result.err()
+    );
     let (remaining, expr) = result.unwrap();
     assert_eq!(remaining, "");
     match expr {

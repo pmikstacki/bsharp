@@ -1,8 +1,8 @@
 // Tests for parameter modifiers with full semantics
 
-use bsharp::syntax::nodes::types::{Parameter, ParameterModifier, Type, PrimitiveType};
+use bsharp::parser::expressions::declarations::parameter_parser::parse_parameter;
 use bsharp::syntax::nodes::identifier::Identifier;
-use bsharp::parser::declarations::parameter_parser::parse_parameter;
+use bsharp::syntax::nodes::types::{Parameter, ParameterModifier, PrimitiveType, Type};
 
 fn parse_parameter_test(code: &str) -> Result<Parameter, String> {
     match parse_parameter(code) {
@@ -109,11 +109,23 @@ fn test_parameter_modifier_semantics() {
 fn test_parameter_modifier_from_modifier() {
     use bsharp::syntax::nodes::declarations::Modifier;
 
-    assert_eq!(ParameterModifier::from_modifier(&Modifier::Ref), Some(ParameterModifier::Ref));
-    assert_eq!(ParameterModifier::from_modifier(&Modifier::Out), Some(ParameterModifier::Out));
-    assert_eq!(ParameterModifier::from_modifier(&Modifier::In), Some(ParameterModifier::In));
-    assert_eq!(ParameterModifier::from_modifier(&Modifier::Params), Some(ParameterModifier::Params));
-    
+    assert_eq!(
+        ParameterModifier::from_modifier(&Modifier::Ref),
+        Some(ParameterModifier::Ref)
+    );
+    assert_eq!(
+        ParameterModifier::from_modifier(&Modifier::Out),
+        Some(ParameterModifier::Out)
+    );
+    assert_eq!(
+        ParameterModifier::from_modifier(&Modifier::In),
+        Some(ParameterModifier::In)
+    );
+    assert_eq!(
+        ParameterModifier::from_modifier(&Modifier::Params),
+        Some(ParameterModifier::Params)
+    );
+
     // Non-parameter modifiers should return None
     assert_eq!(ParameterModifier::from_modifier(&Modifier::Public), None);
     assert_eq!(ParameterModifier::from_modifier(&Modifier::Static), None);
@@ -129,7 +141,7 @@ fn test_parse_parameter_with_complex_types() {
     assert_eq!(param.modifier, Some(ParameterModifier::Ref));
     assert_eq!(param.name.name, "items");
 
-    // Test out with nullable type  
+    // Test out with nullable type
     let code = "out int? result";
     let result = parse_parameter_test(code);
     assert!(result.is_ok());
@@ -160,10 +172,10 @@ fn test_parse_parameter_whitespace_variations() {
 fn test_parameter_modifier_edge_cases() {
     // Test that we don't parse partial matches
     let invalid_cases = [
-        "re int value",     // partial 'ref'
-        "ou int value",     // partial 'out'
-        "i int value",      // partial 'in'
-        "param int value",  // partial 'params'
+        "re int value",      // partial 'ref'
+        "ou int value",      // partial 'out'
+        "i int value",       // partial 'in'
+        "param int value",   // partial 'params'
         "referee int value", // 'ref' as prefix
     ];
 
@@ -171,7 +183,11 @@ fn test_parameter_modifier_edge_cases() {
         let result = parse_parameter_test(code);
         // These should either fail or parse without modifiers
         if let Ok(param) = result {
-            assert_eq!(param.modifier, None, "Should not have modifier for: {}", code);
+            assert_eq!(
+                param.modifier, None,
+                "Should not have modifier for: {}",
+                code
+            );
         }
     }
-} 
+}

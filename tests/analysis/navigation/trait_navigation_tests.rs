@@ -1,6 +1,6 @@
 // Tests for trait-based AST navigation functionality
 
-use bsharp::syntax::{Parser, AstNavigate, FindDeclarations};
+use bsharp::syntax::{AstNavigate, FindDeclarations, Parser};
 
 #[test]
 fn test_trait_based_navigation() {
@@ -70,26 +70,30 @@ namespace TestApp
 "#;
 
     let ast = parser.parse(source).expect("Failed to parse source");
-    
+
     // Test trait-based navigation
     let classes = ast.find_classes();
     assert_eq!(classes.len(), 1);
     assert_eq!(classes[0].name.name, "ControlFlowExamples");
-    
+
     let methods = ast.find_methods();
     assert_eq!(methods.len(), 3);
-    
+
     let if_statements = ast.find_if_statements();
     assert!(if_statements.len() > 0, "Should find if statements");
-    
+
     let for_loops = ast.find_for_loops();
     assert_eq!(for_loops.len(), 1, "Should find exactly one for loop");
-    
+
     let while_loops = ast.find_while_loops();
     assert_eq!(while_loops.len(), 2, "Should find while and do-while loops");
-    
+
     let switch_statements = ast.find_switch_statements();
-    assert_eq!(switch_statements.len(), 1, "Should find exactly one switch statement");
+    assert_eq!(
+        switch_statements.len(),
+        1,
+        "Should find exactly one switch statement"
+    );
 }
 
 #[test]
@@ -129,17 +133,21 @@ namespace TestApp
 "#;
 
     let ast = parser.parse(source).expect("Failed to parse source");
-    
+
     // Test deeply nested navigation
     let if_statements = ast.find_if_statements();
-    assert_eq!(if_statements.len(), 2, "Should find 2 if statements (outer and nested)");
-    
+    assert_eq!(
+        if_statements.len(),
+        2,
+        "Should find 2 if statements (outer and nested)"
+    );
+
     let for_loops = ast.find_for_loops();
     assert_eq!(for_loops.len(), 1, "Should find 1 for loop");
-    
+
     let while_loops = ast.find_while_loops();
     assert_eq!(while_loops.len(), 1, "Should find 1 while loop");
-    
+
     let switch_statements = ast.find_switch_statements();
     assert_eq!(switch_statements.len(), 1, "Should find 1 switch statement");
 }
@@ -164,37 +172,48 @@ namespace TestApp
 "#;
 
     let ast = parser.parse(source).expect("Failed to parse source");
-    
+
     // Test FindDeclarations trait
     let classes = ast.find_classes();
     assert_eq!(classes.len(), 2, "Should find 2 classes");
     assert_eq!(classes[0].name.name, "FirstClass");
     assert_eq!(classes[1].name.name, "SecondClass");
-    
+
     let methods = ast.find_methods();
     assert_eq!(methods.len(), 3, "Should find 3 methods total");
-    
+
     // Test finding methods within a specific class
     let first_class_methods = classes[0].find_methods();
-    assert_eq!(first_class_methods.len(), 2, "First class should have 2 methods");
-    
+    assert_eq!(
+        first_class_methods.len(),
+        2,
+        "First class should have 2 methods"
+    );
+
     let second_class_methods = classes[1].find_methods();
-    assert_eq!(second_class_methods.len(), 1, "Second class should have 1 method");
+    assert_eq!(
+        second_class_methods.len(),
+        1,
+        "Second class should have 1 method"
+    );
 }
 
 #[test]
 fn test_navigation_performance_with_large_ast() {
     let parser = Parser::new();
-    
+
     // Create a larger code sample for performance testing
     let mut source = String::from("namespace TestApp\n{\n");
-    
+
     // Add multiple classes with methods
     for class_idx in 0..10 {
         source.push_str(&format!("    public class Class{}\n    {{\n", class_idx));
-        
+
         for method_idx in 0..5 {
-            source.push_str(&format!("        public void Method{}()\n        {{\n", method_idx));
+            source.push_str(&format!(
+                "        public void Method{}()\n        {{\n",
+                method_idx
+            ));
             source.push_str("            if (true)\n            {\n");
             source.push_str("                for (int i = 0; i < 10; i++)\n                {\n");
             source.push_str("                    while (i > 0)\n                    {\n");
@@ -204,27 +223,27 @@ fn test_navigation_performance_with_large_ast() {
             source.push_str("            }\n");
             source.push_str("        }\n");
         }
-        
+
         source.push_str("    }\n");
     }
-    
+
     source.push_str("}\n");
-    
+
     let ast = parser.parse(&source).expect("Failed to parse large source");
-    
+
     // Test navigation on larger AST
     let classes = ast.find_classes();
     assert_eq!(classes.len(), 10, "Should find 10 classes");
-    
+
     let methods = ast.find_methods();
     assert_eq!(methods.len(), 50, "Should find 50 methods total");
-    
+
     let if_statements = ast.find_if_statements();
     assert_eq!(if_statements.len(), 50, "Should find 50 if statements");
-    
+
     let for_loops = ast.find_for_loops();
     assert_eq!(for_loops.len(), 50, "Should find 50 for loops");
-    
+
     let while_loops = ast.find_while_loops();
     assert_eq!(while_loops.len(), 50, "Should find 50 while loops");
 }
@@ -286,24 +305,34 @@ namespace TestApp
 }
 "#;
 
-    let ast = parser.parse(source).expect("Failed to parse edge cases source");
-    
+    let ast = parser
+        .parse(source)
+        .expect("Failed to parse edge cases source");
+
     // Test navigation handles edge cases
     let classes = ast.find_classes();
     assert_eq!(classes.len(), 1, "Should find 1 class");
-    
+
     let methods = ast.find_methods();
-    assert_eq!(methods.len(), 3, "Should find 3 methods including expression-bodied");
-    
+    assert_eq!(
+        methods.len(),
+        3,
+        "Should find 3 methods including expression-bodied"
+    );
+
     let if_statements = ast.find_if_statements();
-    assert_eq!(if_statements.len(), 5, "Should find all nested if statements");
-    
+    assert_eq!(
+        if_statements.len(),
+        5,
+        "Should find all nested if statements"
+    );
+
     let while_loops = ast.find_while_loops();
     assert_eq!(while_loops.len(), 1, "Should find 1 while loop");
-    
+
     let for_loops = ast.find_for_loops();
     assert_eq!(for_loops.len(), 1, "Should find 1 for loop");
-    
+
     let switch_statements = ast.find_switch_statements();
     assert_eq!(switch_statements.len(), 1, "Should find 1 switch statement");
-} 
+}

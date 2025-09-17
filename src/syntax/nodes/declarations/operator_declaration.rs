@@ -18,9 +18,11 @@ pub struct OperatorDeclaration {
 pub enum OperatorKind {
     Unary(Identifier), // op symbol
     Binary(Identifier),
-    Conversion { kind: ConversionKind, target_type: Type },
+    Conversion {
+        kind: ConversionKind,
+        target_type: Type,
+    },
     // This variant uses the lifetime to satisfy the compiler
-
 }
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]

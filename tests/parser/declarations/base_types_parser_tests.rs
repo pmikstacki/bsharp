@@ -1,5 +1,5 @@
 #![cfg(test)]
-use bsharp::parser::declarations::base_types_parser::*;
+use bsharp::parser::expressions::declarations::base_types_parser::*;
 use bsharp::syntax::nodes::types::Type;
 
 #[test]
@@ -16,7 +16,7 @@ fn test_single_interface() {
     let (rest, types) = parse_base_type_list(input).unwrap();
     assert_eq!(rest, "{ }");
     assert_eq!(types.len(), 1);
-    
+
     if let Type::Reference(id) = &types[0] {
         assert_eq!(id.name, "IDisposable");
     } else {
@@ -30,19 +30,19 @@ fn test_multiple_interfaces() {
     let (rest, types) = parse_base_type_list(input).unwrap();
     assert_eq!(rest, "{ }");
     assert_eq!(types.len(), 3);
-    
+
     if let Type::Reference(id) = &types[0] {
         assert_eq!(id.name, "IComparable");
     } else {
         panic!("Expected Reference type but got {:?}", types[0]);
     }
-    
+
     if let Type::Reference(id) = &types[1] {
         assert_eq!(id.name, "IEnumerable");
     } else {
         panic!("Expected Reference type but got {:?}", types[1]);
     }
-    
+
     if let Type::Reference(id) = &types[2] {
         assert_eq!(id.name, "IDisposable");
     } else {
@@ -56,7 +56,7 @@ fn test_generic_interface() {
     let (rest, types) = parse_base_type_list(input).unwrap();
     assert_eq!(rest, "{ }");
     assert_eq!(types.len(), 1);
-    
+
     if let Type::Generic { base, args } = &types[0] {
         assert_eq!(base.name, "IEnumerable");
         assert_eq!(args.len(), 1);
@@ -76,7 +76,7 @@ fn test_whitespace_variations() {
     let (rest, types) = parse_base_type_list(input).unwrap();
     assert_eq!(rest, "{ }");
     assert_eq!(types.len(), 1);
-    
+
     // Extra whitespace around comma
     let input = ": IComparable  ,  IDisposable { }";
     let (rest, types) = parse_base_type_list(input).unwrap();
@@ -90,7 +90,7 @@ fn test_qualified_interface_name() {
     let (rest, types) = parse_base_type_list(input).unwrap();
     assert_eq!(rest, "{ }");
     assert_eq!(types.len(), 1);
-    
+
     if let Type::Reference(id) = &types[0] {
         assert_eq!(id.name, "System.Collections.IEnumerable");
     } else {

@@ -1,14 +1,14 @@
+use crate::parser::expressions::await_expression_parser::parse_await_expression;
+use crate::parser::expressions::ref_expression_parser::parse_ref_expression;
+use crate::parser::expressions::sizeof_expression_parser::parse_sizeof_expression;
+use crate::parser::expressions::stackalloc_expression_parser::parse_stackalloc_expression;
+use crate::parser::expressions::typeof_expression_parser::parse_typeof_expression;
+use crate::parser::types::type_parser::parse_type_expression;
 use crate::syntax::errors::BResult;
 use crate::syntax::nodes::expressions::expression::Expression;
 use crate::syntax::nodes::expressions::range_expression::IndexExpression;
 use crate::syntax::nodes::expressions::UnaryOperator;
 use crate::syntax::parser_helpers::{bchar, bws};
-use crate::parser::expressions::await_expression_parser::parse_await_expression;
-use crate::parser::expressions::ref_expression_parser::parse_ref_expression;
-use crate::parser::expressions::stackalloc_expression_parser::parse_stackalloc_expression;
-use crate::parser::expressions::sizeof_expression_parser::parse_sizeof_expression;
-use crate::parser::expressions::typeof_expression_parser::parse_typeof_expression;
-use crate::parser::types::type_parser::parse_type_expression;
 
 use nom::{
     branch::alt,
@@ -34,24 +34,35 @@ pub(crate) fn parse_unary_expression_or_higher(input: &str) -> BResult<&str, Exp
         map(bchar('-'), |_| UnaryOperator::Minus),
         map(bchar('!'), |_| UnaryOperator::LogicalNot),
         map(bchar('~'), |_| UnaryOperator::BitwiseNot),
-        map(recognize(pair(bchar('+'), bchar('+'))), |_| UnaryOperator::Increment),
-        map(recognize(pair(bchar('-'), bchar('-'))), |_| UnaryOperator::Decrement),
+        map(recognize(pair(bchar('+'), bchar('+'))), |_| {
+            UnaryOperator::Increment
+        }),
+        map(recognize(pair(bchar('-'), bchar('-'))), |_| {
+            UnaryOperator::Decrement
+        }),
         map(bchar('&'), |_| UnaryOperator::AddressOf),
         map(bchar('*'), |_| UnaryOperator::PointerIndirection),
         // ^ (index from end) operator as unary
         map(bchar('^'), |_| UnaryOperator::IndexFromEnd),
-    )))(input) {
+    )))(input)
+    {
         let (input, operand) = parse_unary_expression_or_higher(input)?;
         // If the operator is IndexFromEnd, wrap it in Expression::Index
         if op == UnaryOperator::IndexFromEnd {
-            return Ok((input, Expression::Index(Box::new(IndexExpression {
-                value: Box::new(operand),
-            }))));
+            return Ok((
+                input,
+                Expression::Index(Box::new(IndexExpression {
+                    value: Box::new(operand),
+                })),
+            ));
         }
-        return Ok((input, Expression::Unary {
-            op,
-            expr: Box::new(operand),
-        }));
+        return Ok((
+            input,
+            Expression::Unary {
+                op,
+                expr: Box::new(operand),
+            },
+        ));
     }
 
     // Try cast expression: (Type)expression - but be more careful to avoid conflicts with parenthesized expressions
@@ -62,11 +73,15 @@ pub(crate) fn parse_unary_expression_or_higher(input: &str) -> BResult<&str, Exp
                 // Only treat as cast if there's actually something after the closing parenthesis
                 // that could be an expression (not end of input)
                 if !input_after_close_paren.trim().is_empty() {
-                    let (input, operand) = parse_unary_expression_or_higher(input_after_close_paren)?;
-                    return Ok((input, Expression::Unary {
-                        op: UnaryOperator::Cast,
-                        expr: Box::new(operand),
-                    }));
+                    let (input, operand) =
+                        parse_unary_expression_or_higher(input_after_close_paren)?;
+                    return Ok((
+                        input,
+                        Expression::Unary {
+                            op: UnaryOperator::Cast,
+                            expr: Box::new(operand),
+                        },
+                    ));
                 }
             }
         }

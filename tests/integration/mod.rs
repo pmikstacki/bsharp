@@ -5,4 +5,4 @@
 pub mod analysis_integration;
 
 // Parser integration tests - moved from top level
-pub mod parser_integration; 
+pub mod parser_integration;

@@ -1,6 +1,6 @@
 // Tests for parsing namespace declarations
 
-use bsharp::parser::declarations::namespace_declaration_parser::parse_namespace_declaration;
+use bsharp::parser::expressions::declarations::namespace_declaration_parser::parse_namespace_declaration;
 
 // Local test helper to avoid import issues
 fn parse_full_input<'a, O, F>(input: &'a str, parser: F) -> Result<(&'a str, O), String>

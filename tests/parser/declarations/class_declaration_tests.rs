@@ -1,13 +1,13 @@
 // Tests for parsing class declarations
 
-use bsharp::syntax::nodes::declarations::{ClassDeclaration, Modifier, ClassBodyDeclaration};
-use bsharp::syntax::nodes::identifier::Identifier;
-use bsharp::syntax::nodes::types::{Type, TypeParameter, PrimitiveType, Variance};
-use bsharp::syntax::nodes::declarations::{MethodDeclaration, FieldDeclaration};
+use bsharp::parser::expressions::declarations::type_declaration_parser::parse_class_declaration;
+use bsharp::syntax::nodes::declarations::{ClassBodyDeclaration, ClassDeclaration, Modifier};
+use bsharp::syntax::nodes::declarations::{FieldDeclaration, MethodDeclaration};
 use bsharp::syntax::nodes::expressions::expression::Expression;
 use bsharp::syntax::nodes::expressions::literal::Literal;
+use bsharp::syntax::nodes::identifier::Identifier;
 use bsharp::syntax::nodes::statements::statement::Statement;
-use bsharp::parser::declarations::type_declaration_parser::parse_class_declaration;
+use bsharp::syntax::nodes::types::{PrimitiveType, Type, TypeParameter, Variance};
 
 fn parse_class_decl_test(code: &str) -> Result<ClassDeclaration, String> {
     match parse_class_declaration(code) {
@@ -39,16 +39,19 @@ fn test_parse_generic_class() {
         attributes: vec![],
         modifiers: vec![],
         name: Identifier::new("Dictionary"),
-        type_parameters: Some(vec![
-            TypeParameter {
-                name: Identifier::new("TKey"),
-                variance: Variance::None,
-            },
-            TypeParameter {
-                name: Identifier::new("TValue"),
-                variance: Variance::None,
-            },
-        ].into()),
+        type_parameters: Some(
+            vec![
+                TypeParameter {
+                    name: Identifier::new("TKey"),
+                    variance: Variance::None,
+                },
+                TypeParameter {
+                    name: Identifier::new("TValue"),
+                    variance: Variance::None,
+                },
+            ]
+            .into(),
+        ),
         base_types: vec![],
         body_declarations: vec![],
         documentation: None,
@@ -65,31 +68,39 @@ fn test_parse_class_with_method() {
             void Add(int a, int b) {}
         }
     "#;
-    
+
     // Try parsing the class declaration directly rather than using the helper
     match parse_class_declaration(code.trim()) {
         Ok((rest, class_decl)) => {
             // Check that we parsed the entire input
-            assert!(rest.trim().is_empty(), "Expected empty rest, got: '{}'.", rest);
-            
+            assert!(
+                rest.trim().is_empty(),
+                "Expected empty rest, got: '{}'.",
+                rest
+            );
+
             // Verify the class name
             assert_eq!(class_decl.name.name, "Calculator");
-            
+
             // Verify that there's exactly one member
-            assert_eq!(class_decl.body_declarations.len(), 1, "Expected 1 class member");
-            
+            assert_eq!(
+                class_decl.body_declarations.len(),
+                1,
+                "Expected 1 class member"
+            );
+
             // Check that the member is a method
             if let ClassBodyDeclaration::Method(method) = &class_decl.body_declarations[0] {
                 // Check method name
                 assert_eq!(method.name.name, "Add");
-                
+
                 // Check return type is void
                 if let Type::Primitive(prim) = &method.return_type {
                     assert_eq!(*prim, PrimitiveType::Void);
                 } else {
                     panic!("Expected Void return type");
                 }
-                
+
                 // Check parameters
                 assert_eq!(method.parameters.len(), 2, "Expected 2 parameters");
                 assert_eq!(method.parameters[0].name.name, "a");
@@ -100,7 +111,7 @@ fn test_parse_class_with_method() {
             } else {
                 panic!("Expected method member");
             }
-        },
+        }
         Err(e) => {
             panic!("Class parsing failed: {:?}", e);
         }
@@ -159,14 +170,12 @@ fn test_parse_class_with_field() {
         name: Identifier::new("Data"),
         type_parameters: None,
         base_types: vec![],
-        body_declarations: vec![
-            ClassBodyDeclaration::Field(FieldDeclaration {
-                modifiers: vec![],
-                ty: Type::Primitive(PrimitiveType::Int),
-                name: Identifier::new("value"),
-                initializer: Some(Expression::Literal(Literal::Integer(42))),
-            })
-        ],
+        body_declarations: vec![ClassBodyDeclaration::Field(FieldDeclaration {
+            modifiers: vec![],
+            ty: Type::Primitive(PrimitiveType::Int),
+            name: Identifier::new("value"),
+            initializer: Some(Expression::Literal(Literal::Integer(42))),
+        })],
         documentation: None,
     };
     assert_eq!(parse_class_decl_test(code.trim()), Ok(expected));
@@ -195,7 +204,7 @@ fn test_parse_class_with_mixed_members() {
                 initializer: Some(Expression::Literal(Literal::String("Default".to_string()))),
             }),
             ClassBodyDeclaration::Method(MethodDeclaration {
-                modifiers: vec![], 
+                modifiers: vec![],
                 return_type: Type::Primitive(PrimitiveType::Void),
                 name: Identifier::new("Initialize"),
                 type_parameters: None,
@@ -224,7 +233,11 @@ fn test_parse_class_with_method_with_body() {
                 assert_eq!(method.name.name, "SayHello");
                 assert!(method.body.is_some(), "Method body should exist");
                 if let Some(Statement::Block(stmts)) = &method.body {
-                    assert_eq!(stmts.len(), 1, "Method body block should contain one statement");
+                    assert_eq!(
+                        stmts.len(),
+                        1,
+                        "Method body block should contain one statement"
+                    );
                 } else {
                     panic!("Method body was not a Statement::Block as expected");
                 }
@@ -272,5 +285,8 @@ fn test_parse_class_with_modifiers() {
         body_declarations: vec![],
         documentation: None,
     });
-    assert_eq!(parse_class_decl_test(code_static_public), expected_static_public);
+    assert_eq!(
+        parse_class_decl_test(code_static_public),
+        expected_static_public
+    );
 }

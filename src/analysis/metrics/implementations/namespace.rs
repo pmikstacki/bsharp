@@ -1,6 +1,8 @@
-use super::super::core::{AstAnalyze, AstAnalysis};
+use super::super::core::{AstAnalysis, AstAnalyze};
 
-pub fn analyze_namespace_member(member: &crate::syntax::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration) -> AstAnalysis {
+pub fn analyze_namespace_member(
+    member: &crate::syntax::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration,
+) -> AstAnalysis {
     match member {
         crate::syntax::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration::Class(class) => {
             class.analyze()
@@ -11,7 +13,7 @@ pub fn analyze_namespace_member(member: &crate::syntax::nodes::declarations::nam
         crate::syntax::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration::Struct(struct_decl) => {
             // Analyze struct like a class - count its methods too
             let mut analysis = AstAnalysis { total_structs: 1, ..Default::default() };
-            
+
             // Analyze struct members
             for member in &struct_decl.body_declarations {
                 match member {
@@ -31,7 +33,7 @@ pub fn analyze_namespace_member(member: &crate::syntax::nodes::declarations::nam
                     }
                 }
             }
-            
+
             analysis
         }
         crate::syntax::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration::Enum(_) => {
@@ -52,4 +54,4 @@ pub fn analyze_namespace_member(member: &crate::syntax::nodes::declarations::nam
         }
         _ => AstAnalysis::default(), // Wildcard arm for unhandled NamespaceBodyDeclaration types
     }
-} 
+}

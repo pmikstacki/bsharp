@@ -1,4 +1,4 @@
-use super::super::core::{AstAnalyze, AstAnalysis};
+use super::super::core::{AstAnalysis, AstAnalyze};
 use crate::syntax::nodes::declarations::ClassDeclaration;
 
 impl AstAnalyze for ClassDeclaration {
@@ -8,7 +8,7 @@ impl AstAnalyze for ClassDeclaration {
             documented_classes: if self.documentation.is_some() { 1 } else { 0 },
             ..Default::default()
         };
-        
+
         for member in &self.body_declarations {
             match member {
                 crate::syntax::nodes::declarations::ClassBodyDeclaration::Method(method) => {
@@ -28,13 +28,15 @@ impl AstAnalyze for ClassDeclaration {
                     analysis.total_constructors += 1;
                     analysis.total_methods += 1; // Constructors should also count as methods
                 }
-                crate::syntax::nodes::declarations::ClassBodyDeclaration::NestedClass(nested_class) => {
+                crate::syntax::nodes::declarations::ClassBodyDeclaration::NestedClass(
+                    nested_class,
+                ) => {
                     analysis = analysis.combine(nested_class.analyze());
                 }
                 _ => {}
             }
         }
-        
+
         analysis
     }
-} 
+}

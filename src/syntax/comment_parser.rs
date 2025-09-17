@@ -1,9 +1,9 @@
 use crate::syntax::errors::BResult;
+use crate::syntax::parser_helpers::context;
 use nom::branch::alt;
 use nom::bytes::complete::{tag, take_until};
 use nom::character::complete::{multispace0, multispace1};
 use nom::combinator::{map, recognize};
-use nom::error::context;
 use nom::multi::many0;
 use nom::sequence::{delimited, preceded, tuple};
 
@@ -12,13 +12,9 @@ pub fn parse_block_comment(input: &str) -> BResult<&str, &str> {
     context(
         "block comment",
         map(
-            recognize(tuple((
-                tag("/*"),
-                take_until("*/"),
-                tag("*/")
-            ))),
-            |s| s
-        )
+            recognize(tuple((tag("/*"), take_until("*/"), tag("*/")))),
+            |s| s,
+        ),
     )(input)
 }
 
@@ -29,8 +25,8 @@ pub fn parse_line_comment(input: &str) -> BResult<&str, &str> {
         recognize(tuple((
             tag("//"),
             take_until("\n"),
-            alt((tag("\n"), recognize(multispace0)))
-        )))
+            alt((tag("\n"), recognize(multispace0))),
+        ))),
     )(input)
 }
 
@@ -41,8 +37,8 @@ pub fn parse_whitespace_or_comments(input: &str) -> BResult<&str, &str> {
         recognize(many0(alt((
             multispace1,
             parse_block_comment,
-            parse_line_comment
-        ))))
+            parse_line_comment,
+        )))),
     )(input)
 }
 

@@ -8,4 +8,4 @@ pub enum InterfaceBodyDeclaration {
     Event(EventDeclaration),
     Indexer(IndexerDeclaration),
     // TODO: Add other relevant interface members like nested types if necessary
-} 
+}

@@ -3,54 +3,54 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub enum BinaryOperator {
     // Arithmetic
-    Add,            // +
-    Subtract,       // -
-    Multiply,       // *
-    Divide,         // /
-    Modulo,         // %
+    Add,      // +
+    Subtract, // -
+    Multiply, // *
+    Divide,   // /
+    Modulo,   // %
 
     // Assignment
-    Assign,         // =
-    AddAssign,      // +=
-    SubtractAssign, // -=
-    MultiplyAssign, // *=
-    DivideAssign,   // /=
-    ModuloAssign,   // %=
-    AndAssign,      // &=
-    OrAssign,       // |=
-    XorAssign,      // ^=
-    LeftShiftAssign,// <<=
-    RightShiftAssign,// >>=
+    Assign,                   // =
+    AddAssign,                // +=
+    SubtractAssign,           // -=
+    MultiplyAssign,           // *=
+    DivideAssign,             // /=
+    ModuloAssign,             // %=
+    AndAssign,                // &=
+    OrAssign,                 // |=
+    XorAssign,                // ^=
+    LeftShiftAssign,          // <<=
+    RightShiftAssign,         // >>=
     UnsignedRightShiftAssign, // >>>= (New)
-    NullCoalescingAssign, // ??= (New)
+    NullCoalescingAssign,     // ??= (New)
 
     // Comparison / Type Testing
-    Equal,          // ==
-    NotEqual,       // !=
-    LessThan,       // <
-    GreaterThan,    // >
-    LessEqual,      // <=
-    GreaterEqual,   // >=
-    Is,             // is (New)
-    As,             // as (New)
+    Equal,        // ==
+    NotEqual,     // !=
+    LessThan,     // <
+    GreaterThan,  // >
+    LessEqual,    // <=
+    GreaterEqual, // >=
+    Is,           // is (New)
+    As,           // as (New)
 
     // Logical
-    LogicalAnd,     // &&
-    LogicalOr,      // ||
-    
+    LogicalAnd, // &&
+    LogicalOr,  // ||
+
     // Bitwise
-    BitwiseAnd,     // &
-    BitwiseOr,      // |
-    BitwiseXor,     // ^
-    LeftShift,      // <<
-    RightShift,     // >>
+    BitwiseAnd,         // &
+    BitwiseOr,          // |
+    BitwiseXor,         // ^
+    LeftShift,          // <<
+    RightShift,         // >>
     UnsignedRightShift, // >>> (New)
 
     // Null Coalescing
     NullCoalescing, // ?? (New)
 
     // Range
-    Range,          // .. (New)
+    Range, // .. (New)
 }
 
 impl BinaryOperator {
@@ -62,7 +62,7 @@ impl BinaryOperator {
             // Primary operators (like range `..`) have high precedence,
             // but are often handled by specific grammar rules rather than this generic function.
             // For now, giving Range a high value, but its parsing might be specialized.
-            Self::Range => 12, 
+            Self::Range => 12,
 
             // Multiplicative
             Self::Multiply | Self::Divide | Self::Modulo => 11,
@@ -71,7 +71,12 @@ impl BinaryOperator {
             // Shift
             Self::LeftShift | Self::RightShift | Self::UnsignedRightShift => 9,
             // Relational and type testing
-            Self::LessThan | Self::GreaterThan | Self::LessEqual | Self::GreaterEqual | Self::Is | Self::As => 8,
+            Self::LessThan
+            | Self::GreaterThan
+            | Self::LessEqual
+            | Self::GreaterEqual
+            | Self::Is
+            | Self::As => 8,
             // Equality
             Self::Equal | Self::NotEqual => 7,
             // Bitwise AND
@@ -88,11 +93,19 @@ impl BinaryOperator {
             Self::NullCoalescing => 1, // ?? has lower precedence than || and &&
             // Assignment operators (lowest regular precedence)
             // Conditional operator ?: is even lower but handled differently.
-            Self::Assign | Self::AddAssign | Self::SubtractAssign | 
-            Self::MultiplyAssign | Self::DivideAssign | Self::ModuloAssign |
-            Self::AndAssign | Self::OrAssign | Self::XorAssign |
-            Self::LeftShiftAssign | Self::RightShiftAssign | Self::UnsignedRightShiftAssign |
-            Self::NullCoalescingAssign => 0,
+            Self::Assign
+            | Self::AddAssign
+            | Self::SubtractAssign
+            | Self::MultiplyAssign
+            | Self::DivideAssign
+            | Self::ModuloAssign
+            | Self::AndAssign
+            | Self::OrAssign
+            | Self::XorAssign
+            | Self::LeftShiftAssign
+            | Self::RightShiftAssign
+            | Self::UnsignedRightShiftAssign
+            | Self::NullCoalescingAssign => 0,
         }
     }
 }

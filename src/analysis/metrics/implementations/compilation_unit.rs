@@ -1,16 +1,17 @@
-use super::super::core::{AstAnalyze, AstAnalysis};
+use super::super::core::{AstAnalysis, AstAnalyze};
 use crate::syntax::ast::CompilationUnit;
 
 impl AstAnalyze for CompilationUnit {
     fn analyze(&self) -> AstAnalysis {
         let mut analysis = AstAnalysis::default();
-        
+
         // Analyze top-level declarations
         for member in &self.declarations {
             match member {
                 crate::syntax::ast::TopLevelDeclaration::Namespace(ns) => {
                     for ns_member in &ns.declarations {
-                        analysis = analysis.combine(super::namespace::analyze_namespace_member(ns_member));
+                        analysis =
+                            analysis.combine(super::namespace::analyze_namespace_member(ns_member));
                     }
                 }
                 crate::syntax::ast::TopLevelDeclaration::Class(class) => {
@@ -34,19 +35,20 @@ impl AstAnalyze for CompilationUnit {
                 _ => {}
             }
         }
-        
+
         // Analyze file-scoped namespace if present
         if let Some(file_scoped_ns) = &self.file_scoped_namespace {
             for declaration in &file_scoped_ns.declarations {
-                analysis = analysis.combine(super::namespace::analyze_namespace_member(declaration));
+                analysis =
+                    analysis.combine(super::namespace::analyze_namespace_member(declaration));
             }
         }
-        
+
         // Analyze top-level statements
         for stmt in &self.top_level_statements {
             analysis = analysis.combine(stmt.analyze());
         }
-        
+
         analysis
     }
 }
@@ -57,4 +59,4 @@ impl CompilationUnit {
     pub fn quick_analysis(&self) -> AstAnalysis {
         self.analyze()
     }
-} 
+}

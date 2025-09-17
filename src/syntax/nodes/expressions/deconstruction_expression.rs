@@ -3,7 +3,7 @@ use crate::syntax::nodes::identifier::Identifier;
 use crate::syntax::nodes::types::Type;
 use serde::{Deserialize, Serialize};
 
-/// Represents a deconstruction expression in C# 
+/// Represents a deconstruction expression in C#
 /// Examples: (var x, var y) = tuple; (int a, string b) = GetTuple(); var (x, y) = tuple;
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct DeconstructionExpression {

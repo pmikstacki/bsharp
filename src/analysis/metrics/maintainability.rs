@@ -1,6 +1,6 @@
-use crate::syntax::ast::CompilationUnit;
-use super::complexity::ComplexityMetrics;
 use super::basic::BasicMetrics;
+use super::complexity::ComplexityMetrics;
+use crate::syntax::ast::CompilationUnit;
 use serde::{Deserialize, Serialize};
 
 /// Maintainability metrics and indices
@@ -20,7 +20,7 @@ impl MaintainabilityMetrics {
     pub fn new() -> Self {
         Self::default()
     }
-    
+
     /// Calculate overall maintainability grade
     pub fn maintainability_grade(&self) -> MaintainabilityGrade {
         match self.maintainability_index {
@@ -31,7 +31,7 @@ impl MaintainabilityMetrics {
             _ => MaintainabilityGrade::Critical,
         }
     }
-    
+
     /// Calculate composite quality score
     pub fn quality_score(&self) -> f64 {
         let weights = [0.3, 0.2, 0.2, 0.1, 0.1, 0.1]; // Weighted scoring
@@ -43,8 +43,9 @@ impl MaintainabilityMetrics {
             self.test_coverage,
             100.0 - self.duplication_percentage,
         ];
-        
-        weights.iter()
+
+        weights
+            .iter()
             .zip(scores.iter())
             .map(|(weight, score)| weight * score)
             .sum()
@@ -53,11 +54,11 @@ impl MaintainabilityMetrics {
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub enum MaintainabilityGrade {
-    Excellent,  // 85-100
-    Good,       // 65-84
-    Moderate,   // 45-64
-    Poor,       // 25-44
-    Critical,   // 0-24
+    Excellent, // 85-100
+    Good,      // 65-84
+    Moderate,  // 45-64
+    Poor,      // 25-44
+    Critical,  // 0-24
 }
 
 /// Technical debt quantification
@@ -105,21 +106,21 @@ impl MaintainabilityAnalyzer {
     pub fn new() -> Self {
         Self
     }
-    
+
     /// Calculate maintainability metrics for a compilation unit
     pub fn analyze_compilation_unit(&self, unit: &CompilationUnit) -> MaintainabilityMetrics {
         // TODO: Implement full maintainability analysis
         let _ = unit; // Suppress unused warning for now
-        
+
         let mut metrics = MaintainabilityMetrics::new();
-        
+
         // Placeholder calculations - would be replaced with real analysis
         metrics.maintainability_index = 75.0;
         metrics.documentation_coverage = 60.0;
-        
+
         metrics
     }
-    
+
     /// Calculate maintainability index using Microsoft formula
     pub fn calculate_maintainability_index(
         &self,
@@ -129,51 +130,51 @@ impl MaintainabilityAnalyzer {
         // Microsoft Maintainability Index formula:
         // MI = 171 - 5.2 * ln(HalsteadVolume) - 0.23 * CyclomaticComplexity - 16.2 * ln(LinesOfCode)
         // + 50 * sin(sqrt(2.4 * PercentOfComments))
-        
+
         let lines_of_code = basic_metrics.logical_lines as f64;
         let cyclomatic_complexity = complexity_metrics.cyclomatic_complexity as f64;
         let halstead_volume = complexity_metrics.halstead_metrics.volume();
         let comment_percentage = basic_metrics.comment_ratio() * 100.0;
-        
+
         if lines_of_code == 0.0 {
             return 100.0; // Perfect score for empty code
         }
-        
+
         let halstead_term = if halstead_volume > 0.0 {
             5.2 * halstead_volume.ln()
         } else {
             0.0
         };
-        
+
         let complexity_term = 0.23 * cyclomatic_complexity;
         let loc_term = 16.2 * lines_of_code.ln();
         let comment_term = 50.0 * (2.4f64 * comment_percentage).sqrt().sin();
-        
+
         let mi = 171.0 - halstead_term - complexity_term - loc_term + comment_term;
-        
+
         // Normalize to 0-100 range
         mi.max(0.0).min(100.0)
     }
-    
+
     /// Calculate technical debt metrics
     pub fn calculate_technical_debt(&self, basic_metrics: &BasicMetrics) -> TechnicalDebt {
         // Simplified calculation - would be more sophisticated in practice
         let total_lines = basic_metrics.logical_lines as f64;
         let complexity_issues = basic_metrics.total_control_structures() as f64;
-        
+
         let debt_ratio = if total_lines > 0.0 {
             (complexity_issues / total_lines) * 100.0
         } else {
             0.0
         };
-        
+
         let debt_in_hours = complexity_issues * 0.5; // 30 minutes per issue
         let debt_per_line = if total_lines > 0.0 {
             debt_in_hours / total_lines
         } else {
             0.0
         };
-        
+
         TechnicalDebt {
             debt_ratio,
             debt_in_hours,
@@ -182,16 +183,20 @@ impl MaintainabilityAnalyzer {
             remediation_cost: debt_in_hours * 100.0, // $100/hour
         }
     }
-    
+
     /// Calculate code churn (frequency of changes)
     pub fn calculate_code_churn(&self, _file_path: &str, _time_period_days: u32) -> f64 {
         // TODO: Implement code churn analysis using git history
         // This would analyze commit frequency and change size
         0.0
     }
-    
+
     /// Estimate defect density
-    pub fn estimate_defect_density(&self, complexity_metrics: &ComplexityMetrics, basic_metrics: &BasicMetrics) -> f64 {
+    pub fn estimate_defect_density(
+        &self,
+        complexity_metrics: &ComplexityMetrics,
+        basic_metrics: &BasicMetrics,
+    ) -> f64 {
         // Empirical formula based on complexity and size
         let lines_of_code = basic_metrics.logical_lines as f64;
         let avg_complexity = if basic_metrics.total_methods > 0 {
@@ -199,15 +204,15 @@ impl MaintainabilityAnalyzer {
         } else {
             1.0
         };
-        
+
         if lines_of_code == 0.0 {
             return 0.0;
         }
-        
+
         // Defects per 1000 lines of code
         let base_defect_rate = 2.0; // 2 defects per 1000 LOC (industry average)
         let complexity_multiplier = (avg_complexity / 10.0).max(1.0);
-        
+
         (base_defect_rate * complexity_multiplier * 1000.0) / lines_of_code
     }
 }
@@ -239,4 +244,4 @@ impl Default for RiskLevel {
     fn default() -> Self {
         RiskLevel::Low
     }
-} 
+}

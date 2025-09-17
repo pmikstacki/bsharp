@@ -1,7 +1,7 @@
 // Import TypeSyntax from the same directory's mod.rs (which will re-export it)
 use super::Type;
-use crate::syntax::nodes::identifier::Identifier;
 use crate::syntax::nodes::declarations::Modifier;
+use crate::syntax::nodes::identifier::Identifier;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
@@ -33,7 +33,10 @@ impl ParameterModifier {
 
     /// Check if the parameter is by reference (ref, out, in)
     pub fn is_by_reference(&self) -> bool {
-        matches!(self, ParameterModifier::Ref | ParameterModifier::Out | ParameterModifier::In)
+        matches!(
+            self,
+            ParameterModifier::Ref | ParameterModifier::Out | ParameterModifier::In
+        )
     }
 
     /// Check if the parameter requires initialization before use

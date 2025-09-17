@@ -5,10 +5,10 @@
 // pub mod nullable_type;
 pub mod calling_convention;
 pub mod parameter;
-pub mod type_;
 pub mod primitive_type;
-pub mod type_parameter;
+pub mod type_;
 pub mod type_argument_list;
+pub mod type_parameter;
 
 // pub use base_type::BaseType;
 // pub use built_in_type::PrimitiveType;

@@ -1,12 +1,12 @@
 // Tests for code analysis functionality
 
-pub mod metrics;
 pub mod control_flow;
-pub mod types;
 pub mod dependencies;
-pub mod navigation;
+pub mod metrics;
 pub mod naming;
+pub mod navigation;
 pub mod quality;
+pub mod types;
 
 // These modules don't exist yet:
 // pub mod security;
@@ -18,4 +18,4 @@ pub mod quality;
 // pub mod diagnostics;
 
 // Integration tests that test multiple analysis features together
-// pub mod comprehensive_tests;  // File doesn't exist yet 
+// pub mod comprehensive_tests;  // File doesn't exist yet

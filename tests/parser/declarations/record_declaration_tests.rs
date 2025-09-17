@@ -1,9 +1,9 @@
 // Tests for parsing record declarations
 
-use bsharp::syntax::nodes::declarations::{RecordDeclaration, Modifier};
+use bsharp::parser::expressions::declarations::type_declaration_parser::parse_record_declaration;
+use bsharp::syntax::nodes::declarations::{Modifier, RecordDeclaration};
 use bsharp::syntax::nodes::identifier::Identifier;
-use bsharp::syntax::nodes::types::{Parameter, Type, PrimitiveType};
-use bsharp::parser::declarations::type_declaration_parser::parse_record_declaration;
+use bsharp::syntax::nodes::types::{Parameter, PrimitiveType, Type};
 
 fn parse_record_decl_test(code: &str) -> Result<RecordDeclaration, String> {
     match parse_record_declaration(code) {
@@ -22,15 +22,17 @@ fn test_parse_positional_record() {
     let expected = RecordDeclaration {
         attributes: vec![],
         modifiers: vec![],
-        name: Identifier { name: "Person".to_string() },
+        name: Identifier {
+            name: "Person".to_string(),
+        },
         is_struct: false,
-        parameters: Some(vec![
-            Parameter {
-                modifier: None,
-                parameter_type: Type::Primitive(PrimitiveType::String),
-                name: Identifier { name: "Name".to_string() },
+        parameters: Some(vec![Parameter {
+            modifier: None,
+            parameter_type: Type::Primitive(PrimitiveType::String),
+            name: Identifier {
+                name: "Name".to_string(),
             },
-        ]),
+        }]),
         base_types: vec![],
         body_declarations: vec![],
     };

@@ -1,9 +1,9 @@
 #[cfg(test)]
 mod statement_counting_tests {
     use bsharp::analysis::AstAnalyze;
-    use bsharp::syntax::Parser;
+    use bsharp::parser::expressions::declarations::method_declaration_parser::parse_member_declaration;
     use bsharp::parser::types::type_parser::parse_type_expression;
-    use bsharp::parser::declarations::method_declaration_parser::parse_member_declaration;
+    use bsharp::syntax::Parser;
 
     #[test]
     fn test_method_body_statement_counting() {
@@ -38,14 +38,20 @@ namespace Test
         // Verify basic structure
         assert_eq!(analysis.total_classes, 1, "Should find 1 class");
         assert_eq!(analysis.total_methods, 1, "Should find 1 method");
-        
+
         // Verify statements are counted
-        assert_eq!(analysis.total_if_statements, 1, "Should find 1 if statement");
+        assert_eq!(
+            analysis.total_if_statements, 1,
+            "Should find 1 if statement"
+        );
         assert_eq!(analysis.total_for_loops, 1, "Should find 1 for loop");
         assert_eq!(analysis.total_while_loops, 1, "Should find 1 while loop");
-        
+
         // Verify complexity calculation
-        assert!(analysis.cyclomatic_complexity >= 4, "Should have complexity >= 4 (base=1 + if=1 + for=1 + while=1)");
+        assert!(
+            analysis.cyclomatic_complexity >= 4,
+            "Should have complexity >= 4 (base=1 + if=1 + for=1 + while=1)"
+        );
     }
 
     #[test]
@@ -72,16 +78,24 @@ namespace Test
 "#;
 
         let parser = Parser::new();
-        let ast = parser.parse(source).expect("Failed to parse test source with var declarations");
+        let ast = parser
+            .parse(source)
+            .expect("Failed to parse test source with var declarations");
         let analysis = ast.analyze();
 
         // Verify structure
         assert_eq!(analysis.total_classes, 1);
         assert_eq!(analysis.total_methods, 1);
-        
+
         // Verify statements with var declarations are counted
-        assert_eq!(analysis.total_if_statements, 1, "Should find 1 if statement even with var declarations");
-        assert_eq!(analysis.total_for_loops, 1, "Should find 1 for loop even with var declarations");
+        assert_eq!(
+            analysis.total_if_statements, 1,
+            "Should find 1 if statement even with var declarations"
+        );
+        assert_eq!(
+            analysis.total_for_loops, 1,
+            "Should find 1 for loop even with var declarations"
+        );
     }
 
     #[test]
@@ -133,20 +147,31 @@ namespace Test
 "#;
 
         let parser = Parser::new();
-        let ast = parser.parse(source).expect("Failed to parse complex method source");
+        let ast = parser
+            .parse(source)
+            .expect("Failed to parse complex method source");
         let analysis = ast.analyze();
 
         // Verify structure
         assert_eq!(analysis.total_classes, 1);
         assert_eq!(analysis.total_methods, 1);
-        
+
         // Verify statements are counted
-        assert!(analysis.total_if_statements >= 3, "Should find at least 3 if statements");
-        assert_eq!(analysis.total_try_statements, 1, "Should find 1 try statement");
-        assert!(analysis.cyclomatic_complexity >= 5, "Should have significant complexity");
+        assert!(
+            analysis.total_if_statements >= 3,
+            "Should find at least 3 if statements"
+        );
+        assert_eq!(
+            analysis.total_try_statements, 1,
+            "Should find 1 try statement"
+        );
+        assert!(
+            analysis.cyclomatic_complexity >= 5,
+            "Should have significant complexity"
+        );
     }
 
-    #[test] 
+    #[test]
     fn test_enhanced_expression_parsing_with_string_interpolation() {
         let source = r#"
 namespace Test
@@ -169,13 +194,18 @@ namespace Test
 "#;
 
         let parser = Parser::new();
-        let ast = parser.parse(source).expect("Failed to parse string interpolation source");
+        let ast = parser
+            .parse(source)
+            .expect("Failed to parse string interpolation source");
         let analysis = ast.analyze();
 
         // Verify structure
         assert_eq!(analysis.total_classes, 1);
         assert_eq!(analysis.total_methods, 1);
-        assert_eq!(analysis.total_if_statements, 1, "Should find 1 if statement");
+        assert_eq!(
+            analysis.total_if_statements, 1,
+            "Should find 1 if statement"
+        );
     }
 
     #[test]
@@ -206,13 +236,18 @@ namespace Test
 "#;
 
         let parser = Parser::new();
-        let ast = parser.parse(source).expect("Failed to parse object initializer source");
+        let ast = parser
+            .parse(source)
+            .expect("Failed to parse object initializer source");
         let analysis = ast.analyze();
 
         // Verify structure
         assert_eq!(analysis.total_classes, 1);
         assert_eq!(analysis.total_methods, 1);
-        assert_eq!(analysis.total_if_statements, 1, "Should find 1 if statement");
+        assert_eq!(
+            analysis.total_if_statements, 1,
+            "Should find 1 if statement"
+        );
     }
 
     #[test]
@@ -243,13 +278,18 @@ namespace Test
 "#;
 
         let parser = Parser::new();
-        let ast = parser.parse(source).expect("Failed to parse method chaining source");
+        let ast = parser
+            .parse(source)
+            .expect("Failed to parse method chaining source");
         let analysis = ast.analyze();
 
         // Verify structure
         assert_eq!(analysis.total_classes, 1);
         assert_eq!(analysis.total_methods, 1);
-        assert_eq!(analysis.total_if_statements, 1, "Should find 1 if statement");
+        assert_eq!(
+            analysis.total_if_statements, 1,
+            "Should find 1 if statement"
+        );
     }
 
     #[test]
@@ -271,13 +311,18 @@ namespace Test
 "#;
 
         let parser = Parser::new();
-        let ast = parser.parse(source).expect("Failed to parse complex generic return type source");
+        let ast = parser
+            .parse(source)
+            .expect("Failed to parse complex generic return type source");
         let analysis = ast.analyze();
 
         // Debug output to see what we actually found
         println!("Debug: Found {} classes", analysis.total_classes);
         println!("Debug: Found {} methods", analysis.total_methods);
-        println!("Debug: Found {} if statements", analysis.total_if_statements);
+        println!(
+            "Debug: Found {} if statements",
+            analysis.total_if_statements
+        );
 
         // Verify structure
         assert_eq!(analysis.total_classes, 1);
@@ -304,13 +349,18 @@ namespace Test
 "#;
 
         let parser = Parser::new();
-        let ast = parser.parse(source).expect("Failed to parse async method source");
+        let ast = parser
+            .parse(source)
+            .expect("Failed to parse async method source");
         let analysis = ast.analyze();
 
         // Debug output to see what we actually found
         println!("Debug: Found {} classes", analysis.total_classes);
         println!("Debug: Found {} methods", analysis.total_methods);
-        println!("Debug: Found {} if statements", analysis.total_if_statements);
+        println!(
+            "Debug: Found {} if statements",
+            analysis.total_if_statements
+        );
 
         // Verify structure
         assert_eq!(analysis.total_classes, 1);
@@ -380,26 +430,46 @@ namespace Test
 "#;
 
         let parser = Parser::new();
-        let ast = parser.parse(source).expect("Failed to parse comprehensive modern C# source");
+        let ast = parser
+            .parse(source)
+            .expect("Failed to parse comprehensive modern C# source");
         let analysis = ast.analyze();
 
         // Debug output to see what we actually found
         println!("Debug: Found {} classes", analysis.total_classes);
         println!("Debug: Found {} methods", analysis.total_methods);
-        println!("Debug: Found {} if statements", analysis.total_if_statements);
-        println!("Debug: Found {} try statements", analysis.total_try_statements);
-        println!("Debug: Cyclomatic complexity: {}", analysis.cyclomatic_complexity);
+        println!(
+            "Debug: Found {} if statements",
+            analysis.total_if_statements
+        );
+        println!(
+            "Debug: Found {} try statements",
+            analysis.total_try_statements
+        );
+        println!(
+            "Debug: Cyclomatic complexity: {}",
+            analysis.cyclomatic_complexity
+        );
 
         // Verify structure
         assert_eq!(analysis.total_classes, 1);
         assert_eq!(analysis.total_methods, 1);
-        
+
         // Verify complex control flow is parsed correctly
-        assert!(analysis.total_if_statements >= 2, "Should find at least 2 if statements");
-        assert_eq!(analysis.total_try_statements, 1, "Should find 1 try statement");
-        
+        assert!(
+            analysis.total_if_statements >= 2,
+            "Should find at least 2 if statements"
+        );
+        assert_eq!(
+            analysis.total_try_statements, 1,
+            "Should find 1 try statement"
+        );
+
         // Verify complexity reflects the sophisticated control flow
-        assert!(analysis.cyclomatic_complexity >= 6, "Should have high complexity due to multiple decision points");
+        assert!(
+            analysis.cyclomatic_complexity >= 6,
+            "Should have high complexity due to multiple decision points"
+        );
     }
 
     #[test]
@@ -419,9 +489,14 @@ namespace Test
 "#;
 
         let parser = Parser::new();
-        let ast1 = parser.parse(source1).expect("Failed to parse simple method");
+        let ast1 = parser
+            .parse(source1)
+            .expect("Failed to parse simple method");
         let analysis1 = ast1.analyze();
-        println!("Test 1 - Simple if: if_statements={}, methods={}", analysis1.total_if_statements, analysis1.total_methods);
+        println!(
+            "Test 1 - Simple if: if_statements={}, methods={}",
+            analysis1.total_if_statements, analysis1.total_methods
+        );
 
         // Test 2: Try statement
         let source2 = r#"
@@ -446,7 +521,10 @@ namespace Test
 
         let ast2 = parser.parse(source2).expect("Failed to parse try method");
         let analysis2 = ast2.analyze();
-        println!("Test 2 - Try statement: try_statements={}, methods={}", analysis2.total_try_statements, analysis2.total_methods);
+        println!(
+            "Test 2 - Try statement: try_statements={}, methods={}",
+            analysis2.total_try_statements, analysis2.total_methods
+        );
 
         // Test 3: Complex async method (like the failing one but simpler)
         let source3 = r#"
@@ -478,9 +556,14 @@ namespace Test
 }
 "#;
 
-        let ast3 = parser.parse(source3).expect("Failed to parse complex async method");
+        let ast3 = parser
+            .parse(source3)
+            .expect("Failed to parse complex async method");
         let analysis3 = ast3.analyze();
-        println!("Test 3 - Complex async: if_statements={}, try_statements={}, methods={}", analysis3.total_if_statements, analysis3.total_try_statements, analysis3.total_methods);
+        println!(
+            "Test 3 - Complex async: if_statements={}, try_statements={}, methods={}",
+            analysis3.total_if_statements, analysis3.total_try_statements, analysis3.total_methods
+        );
 
         // All should work
         assert_eq!(analysis1.total_if_statements, 1);
@@ -494,16 +577,19 @@ namespace Test
         // Test if the type syntax can handle complex nested generics
         let test_cases = vec![
             "Task<User>",
-            "Task<Result<User>>", 
+            "Task<Result<User>>",
             "List<string>",
             "Dictionary<string, int>",
         ];
-        
+
         for test_case in test_cases {
             println!("Testing type syntax with: {}", test_case);
             match parse_type_expression(test_case) {
                 Ok((remaining, parsed_type)) => {
-                    println!("✅ Successfully parsed '{}' -> {:?}, remaining: '{}'", test_case, parsed_type, remaining);
+                    println!(
+                        "✅ Successfully parsed '{}' -> {:?}, remaining: '{}'",
+                        test_case, parsed_type, remaining
+                    );
                 }
                 Err(e) => {
                     println!("❌ Failed to parse '{}': {:?}", test_case, e);
@@ -521,13 +607,15 @@ namespace Test
             "public async Task ProcessAsync()",
             "public async Task<Result<User>> ProcessUserAsync(string email)",
         ];
-        
+
         for test_case in test_cases {
             println!("Testing member declaration syntax with: {}", test_case);
             match parse_member_declaration(test_case) {
                 Ok((remaining, member_decl)) => {
-                    println!("✅ Successfully parsed '{}' -> return_type: {:?}, name: {:?}, remaining: '{}'", 
-                             test_case, member_decl.return_type, member_decl.name, remaining);
+                    println!(
+                        "✅ Successfully parsed '{}' -> return_type: {:?}, name: {:?}, remaining: '{}'",
+                        test_case, member_decl.return_type, member_decl.name, remaining
+                    );
                 }
                 Err(e) => {
                     println!("❌ Failed to parse '{}': {:?}", test_case, e);
@@ -536,4 +624,4 @@ namespace Test
             }
         }
     }
-} 
+}

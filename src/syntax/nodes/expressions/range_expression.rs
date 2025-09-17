@@ -11,4 +11,4 @@ pub struct RangeExpression {
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct IndexExpression {
     pub value: Box<Expression>, // The expression after ^
-} 
+}

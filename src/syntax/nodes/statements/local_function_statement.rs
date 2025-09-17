@@ -13,4 +13,4 @@ pub struct LocalFunctionStatement {
     pub parameters: Vec<Parameter>,
     pub constraints: Option<Vec<TypeParameterConstraintClause>>,
     pub body: Box<Statement>,
-} 
+}

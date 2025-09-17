@@ -1,10 +1,10 @@
 // Quality analysis integration tests
 // Tests specifically focused on how quality analysis integrates with parsing and quality-specific scenarios
 
-use bsharp::analysis::quality::*;
 use bsharp::analysis::AstAnalyze;
-use bsharp::syntax::{Parser};
 use bsharp::analysis::navigation::FindDeclarations;
+use bsharp::analysis::quality::*;
+use bsharp::syntax::Parser;
 use bsharp::syntax::nodes::identifier::Identifier;
 
 fn create_test_identifier(name: &str) -> Identifier {
@@ -68,28 +68,30 @@ namespace TestApp
     }
 }
 "#;
-    
+
     let ast = parser.parse(source).expect("Failed to parse source");
     let analyzer = QualityAnalyzer::new();
-    
+
     // Test quality analysis on parsed AST
     let quality_report = analyzer.analyze(&ast);
     let ast_analysis = ast.analyze();
-    
+
     // Verify quality analysis found issues
     assert_eq!(quality_report.class_reports.len(), 1);
     let class_report = &quality_report.class_reports[0];
-    
+
     assert_eq!(class_report.class_name, "CalculatorService");
     assert_eq!(class_report.method_count, 3);
     assert_eq!(class_report.field_count, 1);
-    
+
     // Should detect missing documentation for all 3 public methods
-    let missing_doc_count = class_report.issues.iter()
+    let missing_doc_count = class_report
+        .issues
+        .iter()
         .filter(|issue| matches!(issue, QualityIssue::MissingDocumentation { .. }))
         .count();
     assert_eq!(missing_doc_count, 3);
-    
+
     // Verify AST analysis captured complexity
     assert_eq!(ast_analysis.total_classes, 1);
     assert_eq!(ast_analysis.total_methods, 3);
@@ -133,41 +135,49 @@ namespace TestApp
     }
 }
 "#;
-    
+
     let ast = parser.parse(source).expect("Failed to parse source");
     let analyzer = QualityAnalyzer::new();
-    
+
     // Use navigation to find classes and methods first
     let classes = ast.find_classes();
     let methods = ast.find_methods();
-    
+
     assert_eq!(classes.len(), 2);
     assert_eq!(methods.len(), 4);
-    
+
     // Analyze quality using parsed AST
     let quality_report = analyzer.analyze(&ast);
-    
+
     // Should have reports for both classes
     assert_eq!(quality_report.class_reports.len(), 2);
-    
-    let user_manager_report = quality_report.class_reports.iter()
+
+    let user_manager_report = quality_report
+        .class_reports
+        .iter()
         .find(|r| r.class_name == "UserManager")
         .expect("UserManager report not found");
-    
-    let order_service_report = quality_report.class_reports.iter()
+
+    let order_service_report = quality_report
+        .class_reports
+        .iter()
         .find(|r| r.class_name == "OrderService")
         .expect("OrderService report not found");
-    
+
     // UserManager should have 3 methods with documentation issues
     assert_eq!(user_manager_report.method_count, 3);
-    let user_manager_doc_issues = user_manager_report.issues.iter()
+    let user_manager_doc_issues = user_manager_report
+        .issues
+        .iter()
         .filter(|issue| matches!(issue, QualityIssue::MissingDocumentation { .. }))
         .count();
     assert_eq!(user_manager_doc_issues, 3);
-    
+
     // OrderService should have 1 method with documentation issue
     assert_eq!(order_service_report.method_count, 1);
-    let order_service_doc_issues = order_service_report.issues.iter()
+    let order_service_doc_issues = order_service_report
+        .issues
+        .iter()
         .filter(|issue| matches!(issue, QualityIssue::MissingDocumentation { .. }))
         .count();
     assert_eq!(order_service_doc_issues, 1);
@@ -208,28 +218,32 @@ namespace LargeProject
     }
 }
 "#;
-    
+
     let ast = parser.parse(source).expect("Failed to parse source");
     let analyzer = QualityAnalyzer::new();
-    
+
     use std::time::Instant;
-    
+
     // Time the complete analysis workflow
     let start = Instant::now();
-    
+
     let quality_report = analyzer.analyze(&ast);
     let ast_analysis = ast.analyze();
-    
+
     let duration = start.elapsed();
-    
+
     // Analysis should complete quickly (under 100ms for this small example)
-    assert!(duration.as_millis() < 100, "Analysis took too long: {:?}", duration);
-    
+    assert!(
+        duration.as_millis() < 100,
+        "Analysis took too long: {:?}",
+        duration
+    );
+
     // Verify all results are consistent
     assert_eq!(quality_report.class_reports.len(), 3);
     assert_eq!(ast_analysis.total_classes, 3);
     assert_eq!(ast_analysis.total_methods, 15); // 3 classes * 5 methods each
-    
+
     // All classes should have similar structure
     for class_report in &quality_report.class_reports {
         assert_eq!(class_report.method_count, 5);
@@ -260,46 +274,60 @@ namespace TestApp
     }
 }
 "#;
-    
+
     let ast = parser.parse(source).expect("Failed to parse source");
     let analyzer = QualityAnalyzer::new();
     let quality_report = analyzer.analyze(&ast);
-    
+
     // Should have reports for both classes
     assert_eq!(quality_report.class_reports.len(), 2);
-    
-    let good_report = quality_report.class_reports.iter()
+
+    let good_report = quality_report
+        .class_reports
+        .iter()
         .find(|r| r.class_name == "GoodClass")
         .expect("GoodClass report not found");
-    
-    let problematic_report = quality_report.class_reports.iter()
+
+    let problematic_report = quality_report
+        .class_reports
+        .iter()
         .find(|r| r.class_name == "ProblematicClass")
         .expect("ProblematicClass report not found");
-    
+
     // Good class should have minimal issues
     assert_eq!(good_report.class_name, "GoodClass");
     assert_eq!(good_report.method_count, 1);
     // Note: Even the "good" class may have issues due to missing XML documentation
     assert!(good_report.quality_score >= 0.0); // Valid score
-    
+
     // Problematic class should have multiple issues
     assert_eq!(problematic_report.class_name, "ProblematicClass");
     assert_eq!(problematic_report.method_count, 1);
     assert!(!problematic_report.issues.is_empty()); // Has quality issues
     assert!(problematic_report.quality_score < 100.0); // Lower quality score
-    
+
     // Should detect missing documentation
-    let has_doc_issue = problematic_report.issues.iter()
+    let has_doc_issue = problematic_report
+        .issues
+        .iter()
         .any(|issue| matches!(issue, QualityIssue::MissingDocumentation { .. }));
     assert!(has_doc_issue);
-    
+
     // Should detect too many parameters
-    let has_param_issue = problematic_report.issues.iter()
+    let has_param_issue = problematic_report
+        .issues
+        .iter()
         .any(|issue| matches!(issue, QualityIssue::TooManyParameters { .. }));
     assert!(has_param_issue);
-    
+
     // Verify the overall report structure
     assert_eq!(quality_report.class_reports.len(), 2);
-    assert!(!quality_report.issues.is_empty() || quality_report.class_reports.iter().any(|r| !r.issues.is_empty()));
+    assert!(
+        !quality_report.issues.is_empty()
+            || quality_report
+                .class_reports
+                .iter()
+                .any(|r| !r.issues.is_empty())
+    );
     assert!(quality_report.overall_score >= 0.0 && quality_report.overall_score <= 100.0);
-} 
+}

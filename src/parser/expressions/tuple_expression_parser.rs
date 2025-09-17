@@ -1,16 +1,16 @@
+use crate::parser::expressions::primary_expression_parser::parse_expression;
+use crate::parser::identifier_parser::parse_identifier;
 use crate::syntax::errors::BResult;
 use crate::syntax::nodes::expressions::expression::Expression;
-use crate::syntax::nodes::expressions::tuple_expression::{TupleExpression, TupleElement};
-use crate::syntax::parser_helpers::{bchar, context, bws};
-use crate::parser::expressions::expression_parser::parse_expression;
-use crate::parser::identifier_parser::parse_identifier;
+use crate::syntax::nodes::expressions::tuple_expression::{TupleElement, TupleExpression};
+use crate::syntax::parser_helpers::{bchar, bws, context};
 
+use nom::combinator::cut;
 use nom::{
     combinator::{map, opt},
     multi::separated_list1,
     sequence::{delimited, tuple},
 };
-use nom::combinator::cut;
 
 /// Parse a tuple expression: (expr1, expr2, ...) or (name1: expr1, name2: expr2, ...)
 pub fn parse_tuple_expression(input: &str) -> BResult<&str, Expression> {
@@ -44,19 +44,20 @@ fn parse_tuple_element(input: &str) -> BResult<&str, TupleElement> {
         bws(parse_identifier),
         bws(bchar(':')),
         bws(parse_expression),
-    ))(input) {
-        return Ok((input, TupleElement {
-            name: Some(name),
-            value,
-        }));
+    ))(input)
+    {
+        return Ok((
+            input,
+            TupleElement {
+                name: Some(name),
+                value,
+            },
+        ));
     }
 
     // Otherwise, parse as unnamed tuple element: expression
-    map(
-        bws(parse_expression),
-        |value| TupleElement {
-            name: None,
-            value,
-        },
-    )(input)
-} 
+    map(bws(parse_expression), |value| TupleElement {
+        name: None,
+        value,
+    })(input)
+}

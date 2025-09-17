@@ -12,7 +12,7 @@ pub struct QueryExpression {
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct FromClause {
-    pub type_annotation: Option<Identifier>, 
+    pub type_annotation: Option<Identifier>,
     pub identifier: Identifier,
     pub expression: Expression,
 }

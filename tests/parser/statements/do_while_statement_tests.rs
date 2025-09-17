@@ -1,11 +1,11 @@
 // Integration tests for do_while_statement_parser.rs
 // Content moved from src/parser/statements/do_while_statement_parser.rs
 
+use bsharp::parser::expressions::statements::do_while_statement_parser::parse_do_while_statement;
 use bsharp::syntax::nodes::expressions::expression::Expression;
 use bsharp::syntax::nodes::expressions::literal::Literal;
 use bsharp::syntax::nodes::statements::statement::Statement;
 use bsharp::syntax::test_helpers::parse_all;
-use bsharp::parser::statements::do_while_statement_parser::parse_do_while_statement;
 
 #[test]
 fn test_parse_do_while_statement() {
@@ -14,11 +14,14 @@ fn test_parse_do_while_statement() {
     assert!(result.is_ok());
     match result.unwrap().1 {
         Statement::DoWhile(do_while_stmt) => {
-            assert_eq!(do_while_stmt.condition, Expression::Literal(Literal::Boolean(false)));
+            assert_eq!(
+                do_while_stmt.condition,
+                Expression::Literal(Literal::Boolean(false))
+            );
             // Check block structure if needed
-             assert!(matches!(*do_while_stmt.body, Statement::Block(_)));
+            assert!(matches!(*do_while_stmt.body, Statement::Block(_)));
             if let Statement::Block(_b) = *do_while_stmt.body {
-               // Check block contents if needed
+                // Check block contents if needed
             }
         }
         _ => panic!("Expected DoWhile statement"),

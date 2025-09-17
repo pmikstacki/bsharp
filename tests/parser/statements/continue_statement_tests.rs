@@ -1,10 +1,10 @@
 // Integration tests for continue_statement_parser.rs
 // Content moved from src/parser/statements/continue_statement_parser.rs
 
-use bsharp::syntax::nodes::statements::statement::Statement;
+use bsharp::parser::expressions::statements::continue_statement_parser::parse_continue_statement;
 use bsharp::syntax::nodes::statements::continue_statement::ContinueStatement;
+use bsharp::syntax::nodes::statements::statement::Statement;
 use bsharp::syntax::test_helpers::parse_all;
-use bsharp::parser::statements::continue_statement_parser::parse_continue_statement;
 
 #[test]
 fn test_parse_continue_statement() {

@@ -1,7 +1,9 @@
-use crate::syntax::ast::{CompilationUnit, TopLevelDeclaration};
-use crate::syntax::nodes::declarations::{ClassDeclaration, MethodDeclaration, NamespaceDeclaration};
-use crate::analysis::naming::NamingViolation;
 use crate::analysis::metrics::complexity::ComplexityAnalyzer;
+use crate::analysis::naming::NamingViolation;
+use crate::syntax::ast::{CompilationUnit, TopLevelDeclaration};
+use crate::syntax::nodes::declarations::{
+    ClassDeclaration, MethodDeclaration, NamespaceDeclaration,
+};
 use serde::{Deserialize, Serialize};
 
 /// Quality issues and code smells detector
@@ -12,7 +14,7 @@ impl QualityAnalyzer {
     pub fn new() -> Self {
         Self::default()
     }
-    
+
     /// Analyze quality issues in a compilation unit
     pub fn analyze(&self, compilation_unit: &CompilationUnit) -> QualityReport {
         let mut report = QualityReport::new();
@@ -20,8 +22,12 @@ impl QualityAnalyzer {
         report.calculate_overall_score();
         report
     }
-    
-    fn analyze_compilation_unit(&self, compilation_unit: &CompilationUnit, report: &mut QualityReport) {
+
+    fn analyze_compilation_unit(
+        &self,
+        compilation_unit: &CompilationUnit,
+        report: &mut QualityReport,
+    ) {
         for declaration in &compilation_unit.declarations {
             if let TopLevelDeclaration::Namespace(namespace) = declaration {
                 self.analyze_namespace(&namespace, report);
@@ -32,7 +38,7 @@ impl QualityAnalyzer {
             // Add other top-level declarations analysis if needed
         }
     }
-    
+
     fn analyze_namespace(&self, namespace: &NamespaceDeclaration, report: &mut QualityReport) {
         for member in &namespace.declarations {
             if let crate::syntax::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration::Class(class_decl) = member {
@@ -41,27 +47,48 @@ impl QualityAnalyzer {
             // Add other namespace members analysis if needed
         }
     }
-    
+
     fn analyze_class(&self, class: &ClassDeclaration, report: &mut QualityReport) {
         let class_report = self.calculate_class_metrics(class);
         report.class_reports.push(class_report);
     }
-    
+
     fn calculate_class_metrics(&self, class: &ClassDeclaration) -> ClassQualityReport {
-        let method_count = class.body_declarations.iter()
-            .filter(|m| matches!(m, crate::syntax::nodes::declarations::ClassBodyDeclaration::Method(_)))
+        let method_count = class
+            .body_declarations
+            .iter()
+            .filter(|m| {
+                matches!(
+                    m,
+                    crate::syntax::nodes::declarations::ClassBodyDeclaration::Method(_)
+                )
+            })
             .count();
-            
-        let field_count = class.body_declarations.iter()
-            .filter(|m| matches!(m, crate::syntax::nodes::declarations::ClassBodyDeclaration::Field(_)))
+
+        let field_count = class
+            .body_declarations
+            .iter()
+            .filter(|m| {
+                matches!(
+                    m,
+                    crate::syntax::nodes::declarations::ClassBodyDeclaration::Field(_)
+                )
+            })
             .count();
-            
-        let property_count = class.body_declarations.iter()
-            .filter(|m| matches!(m, crate::syntax::nodes::declarations::ClassBodyDeclaration::Property(_)))
+
+        let property_count = class
+            .body_declarations
+            .iter()
+            .filter(|m| {
+                matches!(
+                    m,
+                    crate::syntax::nodes::declarations::ClassBodyDeclaration::Property(_)
+                )
+            })
             .count();
-            
+
         let issues = self.collect_class_issues(class);
-        
+
         let mut class_report = ClassQualityReport {
             class_name: class.name.name.clone(),
             method_count,
@@ -72,33 +99,38 @@ impl QualityAnalyzer {
             issues,
             quality_score: 100.0,
         };
-        
+
         // Calculate the quality score based on issues
         class_report.calculate_score();
-        
+
         class_report
     }
-    
+
     fn collect_class_issues(&self, class: &ClassDeclaration) -> Vec<QualityIssue> {
         let mut issues = Vec::new();
         for member in &class.body_declarations {
-            if let crate::syntax::nodes::declarations::ClassBodyDeclaration::Method(method) = member {
+            if let crate::syntax::nodes::declarations::ClassBodyDeclaration::Method(method) = member
+            {
                 self.analyze_method(method, &mut issues);
             }
             // Add analysis for other class members like fields, properties if needed
         }
         issues
     }
-    
+
     fn analyze_method(&self, method: &MethodDeclaration, issues: &mut Vec<QualityIssue>) {
         // Check for missing documentation on public methods
-        if method.modifiers.iter().any(|m| format!("{:?}", m).to_lowercase() == "public") {
+        if method
+            .modifiers
+            .iter()
+            .any(|m| format!("{:?}", m).to_lowercase() == "public")
+        {
             issues.push(QualityIssue::MissingDocumentation {
                 member_name: method.name.name.clone(),
                 member_type: "Method".to_string(),
             });
         }
-        
+
         // Check for too many parameters (threshold: 7 parameters)
         let parameter_count = method.parameters.len();
         if parameter_count > 7 {
@@ -107,12 +139,12 @@ impl QualityAnalyzer {
                 parameter_count,
             });
         }
-        
+
         // Check for high cyclomatic complexity (threshold: 10)
         if let Some(body) = &method.body {
             let complexity_analyzer = ComplexityAnalyzer::new();
             let complexity = complexity_analyzer.calculate_cyclomatic_complexity(body, 1);
-            
+
             if complexity > 10 {
                 issues.push(QualityIssue::HighComplexity {
                     method_name: method.name.name.clone(),
@@ -120,7 +152,7 @@ impl QualityAnalyzer {
                 });
             }
         }
-        
+
         // Example: Check for long methods (e.g., > 50 lines)
         // Placeholder - line count not directly available here
         if false {
@@ -160,16 +192,16 @@ pub enum QualityIssue {
         method_name: String,
         parameter_count: usize,
     },
-    
+
     // Documentation issues
     MissingDocumentation {
         member_name: String,
         member_type: String,
     },
-    
+
     // Naming issues
     NamingViolation(NamingViolation),
-    
+
     // Design issues
     DeepInheritance {
         class_name: String,
@@ -184,7 +216,7 @@ pub enum QualityIssue {
         location2: String,
         similarity: f64,
     },
-    
+
     // Performance issues
     StringConcatenationInLoop {
         method_name: String,
@@ -194,7 +226,7 @@ pub enum QualityIssue {
         class1: String,
         class2: String,
     },
-    
+
     // Architecture issues
     GodClass {
         class_name: String,
@@ -219,11 +251,11 @@ impl QualityReport {
     pub fn new() -> Self {
         Self::default()
     }
-    
+
     pub fn add_issue(&mut self, issue: QualityIssue) {
         self.issues.push(issue);
     }
-    
+
     pub fn calculate_overall_score(&mut self) {
         if self.class_reports.is_empty() {
             // If no class reports but we have issues, calculate score based on issues
@@ -244,7 +276,7 @@ impl QualityReport {
                 // No classes and no issues means empty file - score should be 0
                 self.overall_score = 0.0;
             }
-            
+
             // Assign grade based on score
             self.grade = match self.overall_score {
                 s if s >= 90.0 => QualityGrade::A,
@@ -255,10 +287,10 @@ impl QualityReport {
             };
             return;
         }
-        
+
         let total_score: f64 = self.class_reports.iter().map(|r| r.quality_score).sum();
         self.overall_score = total_score / self.class_reports.len() as f64;
-        
+
         // Apply penalty for general issues not tied to specific classes
         if !self.issues.is_empty() {
             let mut penalty = 0.0;
@@ -274,7 +306,7 @@ impl QualityReport {
             }
             self.overall_score = (self.overall_score - penalty).max(0.0f64);
         }
-        
+
         // Assign grade based on score
         self.grade = match self.overall_score {
             s if s >= 90.0 => QualityGrade::A,
@@ -337,15 +369,16 @@ impl QualityMetrics {
     pub fn new() -> Self {
         Self::default()
     }
-    
+
     /// Calculate overall quality grade
     pub fn quality_grade(&self) -> QualityGrade {
-        let score = (self.maintainability_index + 
-                    self.code_coverage + 
-                    (100.0 - self.technical_debt_ratio) + 
-                    (100.0 - self.duplication_percentage) + 
-                    self.test_coverage) / 5.0;
-        
+        let score = (self.maintainability_index
+            + self.code_coverage
+            + (100.0 - self.technical_debt_ratio)
+            + (100.0 - self.duplication_percentage)
+            + self.test_coverage)
+            / 5.0;
+
         match score {
             90.0..=100.0 => QualityGrade::A,
             80.0..90.0 => QualityGrade::B,
@@ -378,38 +411,38 @@ mod tests {
     #[test]
     fn test_quality_score_calculation() {
         let mut report = QualityReport::new();
-        
+
         // Add some issues
         report.add_issue(QualityIssue::HighComplexity {
             method_name: "TestMethod".to_string(),
             complexity: 15,
         });
-        
+
         report.add_issue(QualityIssue::LongMethod {
             method_name: "AnotherMethod".to_string(),
             line_count: 40,
             threshold: 50,
         });
-        
+
         report.calculate_overall_score();
-        
+
         // Score should be less than 100 due to issues
         assert!(report.overall_score < 100.0);
         assert!(report.overall_score >= 0.0);
     }
-    
+
     #[test]
     fn test_severity_classification() {
         let report = QualityReport::new();
-        
+
         let _high_complexity = QualityIssue::HighComplexity {
             method_name: "Test".to_string(),
             complexity: 25,
         };
-        
+
         assert_eq!(report.grade, QualityGrade::F);
     }
-    
+
     #[test]
     fn test_quality_grade() {
         let mut metrics = QualityMetrics::new();
@@ -418,7 +451,7 @@ mod tests {
         metrics.technical_debt_ratio = 5.0;
         metrics.duplication_percentage = 2.0;
         metrics.test_coverage = 85.0;
-        
+
         assert_eq!(metrics.quality_grade(), QualityGrade::A);
     }
-} 
+}

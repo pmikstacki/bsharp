@@ -1,10 +1,9 @@
 // Tests for parsing method declarations
 
-use bsharp::syntax::nodes::declarations::{MemberDeclaration, Modifier};
-use bsharp::syntax::nodes::identifier::Identifier;
-use bsharp::syntax::nodes::types::{Type, PrimitiveType};
+use bsharp::parser::expressions::declarations::method_declaration_parser::parse_member_declaration;
+use bsharp::syntax::nodes::declarations::Modifier;
 use bsharp::syntax::nodes::statements::statement::Statement;
-use bsharp::parser::declarations::method_declaration_parser::parse_member_declaration;
+use bsharp::syntax::nodes::types::{PrimitiveType, Type};
 
 #[test]
 fn test_simple_method() {
@@ -15,7 +14,10 @@ fn test_simple_method() {
             assert_eq!(member_decl.name.name, "TestMethod");
             assert!(member_decl.has_method_syntax()); // Has return type
             assert!(member_decl.modifiers.contains(&Modifier::Public));
-            assert!(matches!(member_decl.return_type, Some(Type::Primitive(PrimitiveType::Void))));
+            assert!(matches!(
+                member_decl.return_type,
+                Some(Type::Primitive(PrimitiveType::Void))
+            ));
         }
         Err(e) => panic!("Parser failed with error: {:?} for input: {}", e, input),
     }
@@ -32,12 +34,15 @@ fn test_expression_bodied_method() {
             assert!(member_decl.has_method_syntax()); // Has return type
             assert!(member_decl.modifiers.contains(&Modifier::Public));
             assert_eq!(member_decl.parameters.len(), 2);
-            
+
             // Verify that the body is properly parsed as an expression
             if let Some(Statement::Expression(_expr)) = &member_decl.body {
                 // Expression is parsed successfully
             } else {
-                panic!("Expected expression body to be parsed as Statement::Expression, got {:?}", member_decl.body);
+                panic!(
+                    "Expected expression body to be parsed as Statement::Expression, got {:?}",
+                    member_decl.body
+                );
             }
         }
         Err(e) => panic!("Parser failed with error: {:?} for input: {}", e, input),
@@ -55,12 +60,15 @@ fn test_expression_bodied_constructor() {
             assert!(member_decl.has_constructor_syntax()); // No return type
             assert!(member_decl.modifiers.contains(&Modifier::Public));
             assert_eq!(member_decl.parameters.len(), 1);
-            
+
             // Verify that the body is properly parsed as an expression
             if let Some(Statement::Expression(_expr)) = &member_decl.body {
                 // Expression is parsed successfully
             } else {
-                panic!("Expected expression body to be parsed as Statement::Expression, got {:?}", member_decl.body);
+                panic!(
+                    "Expected expression body to be parsed as Statement::Expression, got {:?}",
+                    member_decl.body
+                );
             }
         }
         Err(e) => panic!("Parser failed with error: {:?} for input: {}", e, input),
@@ -77,7 +85,10 @@ fn test_debug_simple_constructor() {
             assert_eq!(member_decl.name.name, "MyClass");
             assert!(member_decl.has_constructor_syntax());
         }
-        Err(e) => panic!("Parser failed on simple constructor: {:?} for input: {}", e, input),
+        Err(e) => panic!(
+            "Parser failed on simple constructor: {:?} for input: {}",
+            e, input
+        ),
     }
 }
 
@@ -92,7 +103,10 @@ fn test_debug_public_constructor() {
             assert!(member_decl.has_constructor_syntax());
             assert!(member_decl.modifiers.contains(&Modifier::Public));
         }
-        Err(e) => panic!("Parser failed on public constructor: {:?} for input: {}", e, input),
+        Err(e) => panic!(
+            "Parser failed on public constructor: {:?} for input: {}",
+            e, input
+        ),
     }
 }
 
@@ -107,7 +121,10 @@ fn test_async_constructor_syntax_parsing() {
             assert!(member_decl.has_constructor_syntax()); // No return type
             assert!(member_decl.modifiers.contains(&Modifier::Async));
         }
-        Err(e) => panic!("Parser should not fail on syntactically valid async constructor: {:?}", e),
+        Err(e) => panic!(
+            "Parser should not fail on syntactically valid async constructor: {:?}",
+            e
+        ),
     }
 }
 
@@ -139,7 +156,10 @@ fn test_abstract_virtual_method_modifiers_syntax() {
             assert!(member_decl.modifiers.contains(&Modifier::Abstract));
             assert!(member_decl.modifiers.contains(&Modifier::Virtual));
         }
-        Err(e) => panic!("Parser should accept syntactically valid modifiers: {:?}", e),
+        Err(e) => panic!(
+            "Parser should accept syntactically valid modifiers: {:?}",
+            e
+        ),
     }
 }
 
@@ -156,6 +176,9 @@ fn test_constructor_with_invalid_semantic_modifiers() {
             assert!(member_decl.modifiers.contains(&Modifier::Abstract));
             assert!(member_decl.modifiers.contains(&Modifier::Virtual));
         }
-        Err(e) => panic!("Parser should accept syntactically valid but semantically invalid modifiers: {:?}", e),
+        Err(e) => panic!(
+            "Parser should accept syntactically valid but semantically invalid modifiers: {:?}",
+            e
+        ),
     }
 }

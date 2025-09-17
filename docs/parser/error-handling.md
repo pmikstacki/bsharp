@@ -30,6 +30,39 @@ When encountering malformed syntax, the parser attempts to skip to recovery poin
 - Closing braces (`}`)
 - End of input
 
+### 1.a Declaration Error Recovery (Type Member Top-Level)
+
+For type declarations (classes, structs, records, interfaces), malformed members are recovered using a lightweight, scope-aware helper:
+
+- Helper: `skip_to_member_boundary_top_level()`
+- Location: `src/parser/expressions/declarations/type_declaration_helpers.rs`
+
+Contract:
+- Only use from within a type body when a member parser fails.
+- Stops at the next safe boundary at top level of the current type:
+  - Consumes a top-level `;` and returns the slice after it.
+  - Or stops at a top-level `}` without consuming it (so the caller can close the current body cleanly).
+  - Returns an empty slice at EOF.
+- Depth-tracks `()`, `[]`, `{}`, and a heuristic `<>` to avoid stopping inside expressions, attribute arguments, or generic argument lists.
+- Ignores control characters inside strings, chars, and comments.
+
+Limitations:
+- Angle-bracket tracking is heuristic and does not fully disambiguate generics from shift operators.
+- Verbatim/interpolated strings are not fully lexed here; this helper is intended for robust, not perfect, recovery.
+
+Usage example (simplified):
+
+```rust
+match member_parser(cur) {
+    Ok((rest, member)) => { members.push(member); cur = rest; }
+    Err(_) => {
+        let next = skip_to_member_boundary_top_level(cur);
+        if next.is_empty() || next == cur { break; }
+        cur = next;
+    }
+}
+```
+
 ### 2. Context-Aware Errors
 
 Errors include contextual information about the parsing context:

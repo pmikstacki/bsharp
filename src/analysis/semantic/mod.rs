@@ -1,8 +1,8 @@
 // Semantic analysis module - handles the validation that was removed from the syntax
 
 use crate::analysis::diagnostics::{Diagnostic, DiagnosticCode, DiagnosticCollection};
-use crate::syntax::nodes::declarations::{ClassDeclaration, MemberDeclaration, Modifier};
 use crate::syntax::ast::CompilationUnit;
+use crate::syntax::nodes::declarations::{ClassDeclaration, MemberDeclaration, Modifier};
 use serde::{Deserialize, Serialize};
 
 /// Semantic member type determined by analysis, not parsing
@@ -96,7 +96,9 @@ impl SemanticAnalyzer {
                     };
                     analyses.push(self.analyze_member(&unified_member, &class.name.name));
                 }
-                crate::syntax::nodes::declarations::ClassBodyDeclaration::Constructor(constructor) => {
+                crate::syntax::nodes::declarations::ClassBodyDeclaration::Constructor(
+                    constructor,
+                ) => {
                     // Convert constructor back to unified representation for analysis
                     let unified_member = MemberDeclaration {
                         modifiers: constructor.modifiers.clone(),
@@ -119,7 +121,7 @@ impl SemanticAnalyzer {
     /// Analyze a unified member declaration for semantic correctness
     fn analyze_member(&mut self, member: &MemberDeclaration, class_name: &str) -> MemberAnalysis {
         let mut member_diagnostics = DiagnosticCollection::new();
-        
+
         // Determine semantic type based on parser
         let semantic_type = if member.return_type.is_none() {
             SemanticMemberType::Constructor
@@ -149,26 +151,36 @@ impl SemanticAnalyzer {
     }
 
     /// Validate constructor-specific semantic rules
-    fn validate_constructor(&self, member: &MemberDeclaration, class_name: &str, diagnostics: &mut DiagnosticCollection) {
+    fn validate_constructor(
+        &self,
+        member: &MemberDeclaration,
+        class_name: &str,
+        diagnostics: &mut DiagnosticCollection,
+    ) {
         // BSE01001: Constructors cannot be declared async
         if member.modifiers.contains(&Modifier::Async) {
             diagnostics.add(Diagnostic::with_default_message(DiagnosticCode::BSE01001));
         }
 
-        // BSE01002: Constructors cannot have an explicit return type  
+        // BSE01002: Constructors cannot have an explicit return type
         if member.return_type.is_some() {
             diagnostics.add(Diagnostic::with_default_message(DiagnosticCode::BSE01002));
         }
 
         // BSE01003: Constructors cannot be virtual or abstract
-        if member.modifiers.contains(&Modifier::Virtual) || member.modifiers.contains(&Modifier::Abstract) {
+        if member.modifiers.contains(&Modifier::Virtual)
+            || member.modifiers.contains(&Modifier::Abstract)
+        {
             diagnostics.add(Diagnostic::with_default_message(DiagnosticCode::BSE01003));
         }
 
         // BSE01004: Constructor cannot be both static and instance
         let has_static = member.modifiers.contains(&Modifier::Static);
         let has_instance_modifiers = member.modifiers.iter().any(|m| {
-            matches!(m, Modifier::Public | Modifier::Private | Modifier::Protected | Modifier::Internal)
+            matches!(
+                m,
+                Modifier::Public | Modifier::Private | Modifier::Protected | Modifier::Internal
+            )
         });
         if has_static && has_instance_modifiers {
             diagnostics.add(Diagnostic::with_default_message(DiagnosticCode::BSE01004));
@@ -178,7 +190,10 @@ impl SemanticAnalyzer {
         if member.name.name != class_name {
             diagnostics.add(Diagnostic::new(
                 DiagnosticCode::BSE01005,
-                format!("Constructor name '{}' does not match class name '{}'", member.name.name, class_name)
+                format!(
+                    "Constructor name '{}' does not match class name '{}'",
+                    member.name.name, class_name
+                ),
             ));
         }
 
@@ -203,12 +218,16 @@ impl SemanticAnalyzer {
         }
 
         // BSE02005: Methods cannot be both virtual and static
-        if member.modifiers.contains(&Modifier::Virtual) && member.modifiers.contains(&Modifier::Static) {
+        if member.modifiers.contains(&Modifier::Virtual)
+            && member.modifiers.contains(&Modifier::Static)
+        {
             diagnostics.add(Diagnostic::with_default_message(DiagnosticCode::BSE02005));
         }
 
         // BSE02006: Static methods cannot override
-        if member.modifiers.contains(&Modifier::Static) && member.modifiers.contains(&Modifier::Override) {
+        if member.modifiers.contains(&Modifier::Static)
+            && member.modifiers.contains(&Modifier::Override)
+        {
             diagnostics.add(Diagnostic::with_default_message(DiagnosticCode::BSE02006));
         }
 
@@ -220,10 +239,10 @@ impl SemanticAnalyzer {
                     crate::syntax::nodes::types::Type::Reference(ref_type) => {
                         ref_type.name == "Task"
                     }
-                    crate::syntax::nodes::types::Type::Generic { base, .. } => {
-                        base.name == "Task"
-                    }
-                    crate::syntax::nodes::types::Type::Primitive(crate::syntax::nodes::types::PrimitiveType::Void) => {
+                    crate::syntax::nodes::types::Type::Generic { base, .. } => base.name == "Task",
+                    crate::syntax::nodes::types::Type::Primitive(
+                        crate::syntax::nodes::types::PrimitiveType::Void,
+                    ) => {
                         true // async void is technically allowed but discouraged
                     }
                     _ => false,
@@ -236,12 +255,16 @@ impl SemanticAnalyzer {
         }
 
         // BSE04006: Abstract members cannot be private
-        if member.modifiers.contains(&Modifier::Abstract) && member.modifiers.contains(&Modifier::Private) {
+        if member.modifiers.contains(&Modifier::Abstract)
+            && member.modifiers.contains(&Modifier::Private)
+        {
             diagnostics.add(Diagnostic::with_default_message(DiagnosticCode::BSE04006));
         }
 
-        // BSE04007: Virtual members cannot be private  
-        if member.modifiers.contains(&Modifier::Virtual) && member.modifiers.contains(&Modifier::Private) {
+        // BSE04007: Virtual members cannot be private
+        if member.modifiers.contains(&Modifier::Virtual)
+            && member.modifiers.contains(&Modifier::Private)
+        {
             diagnostics.add(Diagnostic::with_default_message(DiagnosticCode::BSE04007));
         }
     }
@@ -262,11 +285,13 @@ mod tests {
     #[test]
     fn test_async_constructor_semantic_error() {
         let mut analyzer = SemanticAnalyzer::new();
-        
+
         let async_constructor = MemberDeclaration {
             modifiers: vec![Modifier::Public, Modifier::Async],
             return_type: None,
-            name: Identifier { name: "TestClass".to_string() },
+            name: Identifier {
+                name: "TestClass".to_string(),
+            },
             type_parameters: None,
             parameters: vec![],
             body: None,
@@ -274,11 +299,11 @@ mod tests {
         };
 
         let analysis = analyzer.analyze_member(&async_constructor, "TestClass");
-        
+
         assert_eq!(analysis.semantic_type, SemanticMemberType::Constructor);
         assert!(!analysis.is_valid);
         assert!(analysis.diagnostics.has_errors());
-        
+
         let errors: Vec<_> = analysis.diagnostics.errors().collect();
         assert_eq!(errors.len(), 1);
         assert_eq!(errors[0].code, DiagnosticCode::BSE01001);
@@ -287,11 +312,13 @@ mod tests {
     #[test]
     fn test_valid_method_semantic_analysis() {
         let mut analyzer = SemanticAnalyzer::new();
-        
+
         let valid_method = MemberDeclaration {
             modifiers: vec![Modifier::Public],
             return_type: Some(Type::Primitive(PrimitiveType::Void)),
-            name: Identifier { name: "TestMethod".to_string() },
+            name: Identifier {
+                name: "TestMethod".to_string(),
+            },
             type_parameters: None,
             parameters: vec![],
             body: None, // In interface context this would be valid
@@ -299,7 +326,7 @@ mod tests {
         };
 
         let analysis = analyzer.analyze_member(&valid_method, "TestClass");
-        
+
         assert_eq!(analysis.semantic_type, SemanticMemberType::Method);
         assert!(analysis.is_valid);
         assert!(!analysis.diagnostics.has_errors());
@@ -308,11 +335,13 @@ mod tests {
     #[test]
     fn test_virtual_static_method_error() {
         let mut analyzer = SemanticAnalyzer::new();
-        
+
         let invalid_method = MemberDeclaration {
             modifiers: vec![Modifier::Public, Modifier::Virtual, Modifier::Static],
             return_type: Some(Type::Primitive(PrimitiveType::Void)),
-            name: Identifier { name: "TestMethod".to_string() },
+            name: Identifier {
+                name: "TestMethod".to_string(),
+            },
             type_parameters: None,
             parameters: vec![],
             body: None,
@@ -320,12 +349,12 @@ mod tests {
         };
 
         let analysis = analyzer.analyze_member(&invalid_method, "TestClass");
-        
+
         assert_eq!(analysis.semantic_type, SemanticMemberType::Method);
         assert!(!analysis.is_valid);
         assert!(analysis.diagnostics.has_errors());
-        
+
         let errors: Vec<_> = analysis.diagnostics.errors().collect();
         assert!(errors.iter().any(|e| e.code == DiagnosticCode::BSE02005));
     }
-} 
+}

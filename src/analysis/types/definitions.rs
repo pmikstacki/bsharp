@@ -15,7 +15,7 @@ impl TypeUsage {
     pub fn new() -> Self {
         Self::default()
     }
-    
+
     pub fn total_types(&self) -> usize {
         self.primitive_types.len() + self.custom_types.len() + self.generic_types.len()
     }
@@ -50,9 +50,11 @@ impl TypeMetrics {
         self.generic_type_parameters += other.generic_type_parameters;
         self.field_types.extend(other.field_types);
         self.property_types.extend(other.property_types);
-        self.method_parameter_types.extend(other.method_parameter_types);
+        self.method_parameter_types
+            .extend(other.method_parameter_types);
         self.method_return_types.extend(other.method_return_types);
-        self.implemented_interfaces.extend(other.implemented_interfaces);
+        self.implemented_interfaces
+            .extend(other.implemented_interfaces);
         self.generic_constraints.extend(other.generic_constraints);
         self.array_types.extend(other.array_types);
         self.nullable_types.extend(other.nullable_types);
@@ -67,10 +69,10 @@ impl TypeMetrics {
 /// Type complexity levels
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum TypeComplexity {
-    Simple,       // int, string, bool
-    Moderate,     // List<T>, Dictionary<K,V>
-    Complex,      // Func<T1, T2, T3, TResult>
-    VeryComplex,  // Deeply nested generics
+    Simple,      // int, string, bool
+    Moderate,    // List<T>, Dictionary<K,V>
+    Complex,     // Func<T1, T2, T3, TResult>
+    VeryComplex, // Deeply nested generics
 }
 
 /// Type complexity metrics
@@ -105,4 +107,4 @@ pub enum TypeKind {
     Struct,
     Enum,
     Delegate,
-} 
+}

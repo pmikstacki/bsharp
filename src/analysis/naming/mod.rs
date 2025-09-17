@@ -1,13 +1,14 @@
 use crate::syntax::ast::*;
-use crate::syntax::nodes::statements::ForInitializer;
-use crate::syntax::nodes::statements::statement::Statement;
 use crate::syntax::nodes::declarations::{
-    NamespaceDeclaration as Namespace, ClassBodyDeclaration, InterfaceBodyDeclaration, StructBodyDeclaration,
-    MethodDeclaration, PropertyDeclaration, FieldDeclaration, ConstructorDeclaration
+    ClassBodyDeclaration, ConstructorDeclaration, FieldDeclaration, InterfaceBodyDeclaration,
+    MethodDeclaration, NamespaceDeclaration as Namespace, PropertyDeclaration,
+    StructBodyDeclaration,
 };
 use crate::syntax::nodes::expressions::Expression;
-use std::collections::HashMap;
+use crate::syntax::nodes::statements::statement::Statement;
+use crate::syntax::nodes::statements::ForInitializer;
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 
 /// Naming convention violations and inconsistencies
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -67,41 +68,40 @@ impl NamingAnalyzer {
     /// Analyzes naming conventions in a compilation unit
     pub fn analyze(&self, compilation_unit: &CompilationUnit) -> NamingMetrics {
         let mut metrics = NamingMetrics::default();
-        
+
         for _using_directive in &compilation_unit.using_directives {
             // using_directives don't typically have naming violations - skip for now
         }
-        
+
         // Iterate through declarations to find namespaces and other top-level declarations
         for declaration in &compilation_unit.declarations {
             if let TopLevelDeclaration::Namespace(namespace) = declaration {
                 self.analyze_namespace(namespace, &mut metrics);
             }
         }
-        
+
         // Calculate metrics
         metrics.compliance_rate = if metrics.total_identifiers > 0 {
             1.0 - (metrics.violations.len() as f64 / metrics.total_identifiers as f64)
         } else {
             1.0
         };
-        
+
         if metrics.total_identifiers > 0 {
-            let total_length: usize = metrics.identifier_length_distribution
+            let total_length: usize = metrics
+                .identifier_length_distribution
                 .iter()
                 .map(|(length, count)| length * count)
                 .sum();
             metrics.avg_identifier_length = total_length as f64 / metrics.total_identifiers as f64;
         }
-        
+
         metrics
     }
 
-    
-
     fn analyze_namespace(&self, namespace: &Namespace, metrics: &mut NamingMetrics) {
         self.check_identifier(&namespace.name.name, IdentifierType::Namespace, metrics);
-        
+
         for declaration in &namespace.declarations {
             match declaration {
                 crate::syntax::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration::Class(class) => {
@@ -129,13 +129,13 @@ impl NamingAnalyzer {
 
     fn analyze_class(&self, class: &ClassDeclaration, metrics: &mut NamingMetrics) {
         self.check_identifier(&class.name.name, IdentifierType::Class, metrics);
-        
+
         if let Some(ref type_params) = class.type_parameters {
             for param in type_params {
                 self.check_identifier(&param.name.name, IdentifierType::GenericParameter, metrics);
             }
         }
-        
+
         for member in &class.body_declarations {
             self.analyze_class_member(member, metrics);
         }
@@ -143,13 +143,13 @@ impl NamingAnalyzer {
 
     fn analyze_interface(&self, interface: &InterfaceDeclaration, metrics: &mut NamingMetrics) {
         self.check_identifier(&interface.name.name, IdentifierType::Interface, metrics);
-        
+
         if let Some(ref type_params) = interface.type_parameters {
             for param in type_params {
                 self.check_identifier(&param.name.name, IdentifierType::GenericParameter, metrics);
             }
         }
-        
+
         for member in &interface.body_declarations {
             self.analyze_interface_member(member, metrics);
         }
@@ -157,7 +157,7 @@ impl NamingAnalyzer {
 
     fn analyze_enum(&self, enum_decl: &EnumDeclaration, metrics: &mut NamingMetrics) {
         self.check_identifier(&enum_decl.name.name, IdentifierType::Enum, metrics);
-        
+
         for member in &enum_decl.enum_members {
             self.check_identifier(&member.name.name, IdentifierType::Constant, metrics);
         }
@@ -165,7 +165,7 @@ impl NamingAnalyzer {
 
     fn analyze_struct(&self, struct_decl: &StructDeclaration, metrics: &mut NamingMetrics) {
         self.check_identifier(&struct_decl.name.name, IdentifierType::Class, metrics);
-        
+
         for member in &struct_decl.body_declarations {
             self.analyze_struct_member(member, metrics);
         }
@@ -173,7 +173,7 @@ impl NamingAnalyzer {
 
     fn analyze_record(&self, record: &RecordDeclaration, metrics: &mut NamingMetrics) {
         self.check_identifier(&record.name.name, IdentifierType::Class, metrics);
-        
+
         if let Some(ref parameters) = record.parameters {
             for param in parameters {
                 self.check_identifier(&param.name.name, IdentifierType::Property, metrics);
@@ -183,7 +183,7 @@ impl NamingAnalyzer {
 
     fn analyze_delegate(&self, delegate: &DelegateDeclaration, metrics: &mut NamingMetrics) {
         self.check_identifier(&delegate.name.name, IdentifierType::Class, metrics);
-        
+
         for param in &delegate.parameters {
             self.check_identifier(&param.name.name, IdentifierType::Parameter, metrics);
         }
@@ -194,7 +194,9 @@ impl NamingAnalyzer {
             ClassBodyDeclaration::Method(method) => self.analyze_method(method, metrics),
             ClassBodyDeclaration::Property(property) => self.analyze_property(property, metrics),
             ClassBodyDeclaration::Field(field) => self.analyze_field(field, metrics),
-            ClassBodyDeclaration::Constructor(constructor) => self.analyze_constructor(constructor, metrics),
+            ClassBodyDeclaration::Constructor(constructor) => {
+                self.analyze_constructor(constructor, metrics)
+            }
             ClassBodyDeclaration::Event(_) => {
                 // TODO: Implement event analysis if needed
             }
@@ -228,10 +230,16 @@ impl NamingAnalyzer {
         }
     }
 
-    fn analyze_interface_member(&self, member: &InterfaceBodyDeclaration, metrics: &mut NamingMetrics) {
+    fn analyze_interface_member(
+        &self,
+        member: &InterfaceBodyDeclaration,
+        metrics: &mut NamingMetrics,
+    ) {
         match member {
             InterfaceBodyDeclaration::Method(method) => self.analyze_method(method, metrics),
-            InterfaceBodyDeclaration::Property(property) => self.analyze_property(property, metrics),
+            InterfaceBodyDeclaration::Property(property) => {
+                self.analyze_property(property, metrics)
+            }
             InterfaceBodyDeclaration::Event(_) => {
                 // TODO: Implement event analysis if needed
             }
@@ -246,17 +254,19 @@ impl NamingAnalyzer {
             StructBodyDeclaration::Method(method) => self.analyze_method(method, metrics),
             StructBodyDeclaration::Property(property) => self.analyze_property(property, metrics),
             StructBodyDeclaration::Field(field) => self.analyze_field(field, metrics),
-            StructBodyDeclaration::Constructor(constructor) => self.analyze_constructor(constructor, metrics),
+            StructBodyDeclaration::Constructor(constructor) => {
+                self.analyze_constructor(constructor, metrics)
+            }
         }
     }
 
     fn analyze_method(&self, method: &MethodDeclaration, metrics: &mut NamingMetrics) {
         self.check_identifier(&method.name.name, IdentifierType::Method, metrics);
-        
+
         for param in &method.parameters {
             self.check_identifier(&param.name.name, IdentifierType::Parameter, metrics);
         }
-        
+
         if let Some(ref body) = method.body {
             self.analyze_statement(body, metrics);
         }
@@ -270,11 +280,15 @@ impl NamingAnalyzer {
         self.check_identifier(&field.name.name, IdentifierType::Field, metrics);
     }
 
-    fn analyze_constructor(&self, constructor: &ConstructorDeclaration, metrics: &mut NamingMetrics) {
+    fn analyze_constructor(
+        &self,
+        constructor: &ConstructorDeclaration,
+        metrics: &mut NamingMetrics,
+    ) {
         for param in &constructor.parameters {
             self.check_identifier(&param.name.name, IdentifierType::Parameter, metrics);
         }
-        
+
         if let Some(ref body) = constructor.body {
             self.analyze_statement(body, metrics);
         }
@@ -307,7 +321,11 @@ impl NamingAnalyzer {
                     match init {
                         ForInitializer::Declaration(var) => {
                             for declarator in &var.declarators {
-                                self.check_identifier(&declarator.name.name, IdentifierType::Variable, metrics);
+                                self.check_identifier(
+                                    &declarator.name.name,
+                                    IdentifierType::Variable,
+                                    metrics,
+                                );
                             }
                         }
                         ForInitializer::Expressions(exprs) => {
@@ -334,7 +352,11 @@ impl NamingAnalyzer {
                 self.analyze_expression(&do_while_stmt.condition, metrics);
             }
             Statement::ForEach(foreach_stmt) => {
-                self.check_identifier(&foreach_stmt.var_name.name, IdentifierType::Variable, metrics);
+                self.check_identifier(
+                    &foreach_stmt.var_name.name,
+                    IdentifierType::Variable,
+                    metrics,
+                );
                 self.analyze_expression(&foreach_stmt.collection, metrics);
                 self.analyze_statement(&foreach_stmt.body, metrics);
             }
@@ -344,7 +366,11 @@ impl NamingAnalyzer {
                     if let Some(var) = &catch.exception_variable {
                         let name = &var.name;
                         if !self.is_valid_variable_name(name) {
-                            metrics.violations.push(NamingViolation::PrivateFieldShouldStartWithUnderscore(name.to_string()));
+                            metrics.violations.push(
+                                NamingViolation::PrivateFieldShouldStartWithUnderscore(
+                                    name.to_string(),
+                                ),
+                            );
                         }
                     }
                     self.analyze_statement(&catch.block, metrics);
@@ -367,11 +393,14 @@ impl NamingAnalyzer {
 
     fn check_identifier(&self, name: &str, id_type: IdentifierType, metrics: &mut NamingMetrics) {
         metrics.total_identifiers += 1;
-        
+
         // Track length distribution
         let length = name.len();
-        *metrics.identifier_length_distribution.entry(length).or_insert(0) += 1;
-        
+        *metrics
+            .identifier_length_distribution
+            .entry(length)
+            .or_insert(0) += 1;
+
         // Check various naming violations
         self.check_length_violations(name, metrics);
         self.check_convention_violations(name, id_type, metrics);
@@ -379,36 +408,57 @@ impl NamingAnalyzer {
 
     fn check_length_violations(&self, name: &str, metrics: &mut NamingMetrics) {
         if name.len() < 2 && !self.is_acceptable_short_name(name) {
-            metrics.violations.push(NamingViolation::NameTooShort(name.to_string()));
+            metrics
+                .violations
+                .push(NamingViolation::NameTooShort(name.to_string()));
         }
-        
+
         if name.len() > 50 {
-            metrics.violations.push(NamingViolation::NameTooLong(name.to_string()));
+            metrics
+                .violations
+                .push(NamingViolation::NameTooLong(name.to_string()));
         }
     }
 
-    fn check_convention_violations(&self, name: &str, id_type: IdentifierType, metrics: &mut NamingMetrics) {
+    fn check_convention_violations(
+        &self,
+        name: &str,
+        id_type: IdentifierType,
+        metrics: &mut NamingMetrics,
+    ) {
         match id_type {
             IdentifierType::Class | IdentifierType::Enum => {
                 if !self.is_pascal_case(name) {
                     metrics.violations.push(match id_type {
-                        IdentifierType::Class => NamingViolation::ClassNotPascalCase(name.to_string()),
-                        IdentifierType::Enum => NamingViolation::EnumNotPascalCase(name.to_string()),
+                        IdentifierType::Class => {
+                            NamingViolation::ClassNotPascalCase(name.to_string())
+                        }
+                        IdentifierType::Enum => {
+                            NamingViolation::EnumNotPascalCase(name.to_string())
+                        }
                         _ => unreachable!(),
                     });
                 }
             }
             IdentifierType::Interface => {
                 if !name.starts_with('I') || !self.is_pascal_case(&name[1..]) {
-                    metrics.violations.push(NamingViolation::InterfaceNotIPascalCase(name.to_string()));
+                    metrics
+                        .violations
+                        .push(NamingViolation::InterfaceNotIPascalCase(name.to_string()));
                 }
             }
             IdentifierType::Method | IdentifierType::Property | IdentifierType::Namespace => {
                 if !self.is_pascal_case(name) {
                     metrics.violations.push(match id_type {
-                        IdentifierType::Method => NamingViolation::MethodNotPascalCase(name.to_string()),
-                        IdentifierType::Property => NamingViolation::PropertyNotPascalCase(name.to_string()),
-                        IdentifierType::Namespace => NamingViolation::NamespaceNotPascalCase(name.to_string()),
+                        IdentifierType::Method => {
+                            NamingViolation::MethodNotPascalCase(name.to_string())
+                        }
+                        IdentifierType::Property => {
+                            NamingViolation::PropertyNotPascalCase(name.to_string())
+                        }
+                        IdentifierType::Namespace => {
+                            NamingViolation::NamespaceNotPascalCase(name.to_string())
+                        }
                         _ => unreachable!(),
                     });
                 }
@@ -416,21 +466,33 @@ impl NamingAnalyzer {
             IdentifierType::Field | IdentifierType::Variable | IdentifierType::Parameter => {
                 if !self.is_camel_case(name) {
                     metrics.violations.push(match id_type {
-                        IdentifierType::Field => NamingViolation::FieldNotCamelCase(name.to_string()),
-                        IdentifierType::Variable => NamingViolation::VariableNotCamelCase(name.to_string()),
-                        IdentifierType::Parameter => NamingViolation::ParameterNotCamelCase(name.to_string()),
+                        IdentifierType::Field => {
+                            NamingViolation::FieldNotCamelCase(name.to_string())
+                        }
+                        IdentifierType::Variable => {
+                            NamingViolation::VariableNotCamelCase(name.to_string())
+                        }
+                        IdentifierType::Parameter => {
+                            NamingViolation::ParameterNotCamelCase(name.to_string())
+                        }
                         _ => unreachable!(),
                     });
                 }
             }
             IdentifierType::Constant => {
                 if !self.is_pascal_case(name) {
-                    metrics.violations.push(NamingViolation::ConstantNotPascalCase(name.to_string()));
+                    metrics
+                        .violations
+                        .push(NamingViolation::ConstantNotPascalCase(name.to_string()));
                 }
             }
             IdentifierType::GenericParameter => {
                 if name.len() != 1 || !name.chars().all(|c| c.is_uppercase()) {
-                    metrics.violations.push(NamingViolation::GenericParameterNotSingleLetter(name.to_string()));
+                    metrics
+                        .violations
+                        .push(NamingViolation::GenericParameterNotSingleLetter(
+                            name.to_string(),
+                        ));
                 }
             }
         }
@@ -440,21 +502,21 @@ impl NamingAnalyzer {
         if name.is_empty() {
             return false;
         }
-        
+
         let mut chars = name.chars();
         let first = chars.next().unwrap();
-        
+
         if !first.is_uppercase() {
             return false;
         }
-        
+
         let remaining: String = chars.collect();
-        
+
         // All uppercase is not PascalCase
         if remaining.chars().all(|c| c.is_uppercase()) && remaining.len() > 0 {
             return false;
         }
-        
+
         // Check that subsequent words start with uppercase
         let mut prev_was_lower = first.is_lowercase(); // This will be false for first char
         for ch in remaining.chars() {
@@ -469,7 +531,7 @@ impl NamingAnalyzer {
                 continue;
             }
         }
-        
+
         // Must have at least one lowercase letter to be valid PascalCase
         name.chars().any(|c| c.is_lowercase())
     }
@@ -478,14 +540,14 @@ impl NamingAnalyzer {
         if name.is_empty() {
             return false;
         }
-        
+
         let mut chars = name.chars();
         let first = chars.next().unwrap();
-        
+
         if !first.is_lowercase() {
             return false;
         }
-        
+
         // Rest should follow camelCase rules
         let mut prev_was_lower = true;
         for ch in chars {
@@ -497,7 +559,7 @@ impl NamingAnalyzer {
                 return false; // camelCase shouldn't have underscores
             }
         }
-        
+
         true
     }
 
@@ -540,11 +602,11 @@ mod tests {
     #[test]
     fn test_pascal_case_detection() {
         let analyzer = NamingAnalyzer::new();
-        
+
         assert!(analyzer.is_pascal_case("PascalCase"));
         assert!(analyzer.is_pascal_case("MyClass"));
         assert!(analyzer.is_pascal_case("XMLHttpRequest"));
-        
+
         assert!(!analyzer.is_pascal_case("camelCase"));
         assert!(!analyzer.is_pascal_case("snake_case"));
         assert!(!analyzer.is_pascal_case("UPPERCASE"));
@@ -554,14 +616,14 @@ mod tests {
     #[test]
     fn test_camel_case_detection() {
         let analyzer = NamingAnalyzer::new();
-        
+
         assert!(analyzer.is_camel_case("camelCase"));
         assert!(analyzer.is_camel_case("myVariable"));
         assert!(analyzer.is_camel_case("xmlHttpRequest"));
-        
+
         assert!(!analyzer.is_camel_case("PascalCase"));
         assert!(!analyzer.is_camel_case("snake_case"));
         assert!(!analyzer.is_camel_case("UPPERCASE"));
         assert!(!analyzer.is_camel_case(""));
     }
-} 
+}

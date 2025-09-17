@@ -1,6 +1,6 @@
-use bsharp::parser::declarations::delegate_declaration_parser::parse_delegate_declaration;
+use bsharp::parser::expressions::declarations::delegate_declaration_parser::parse_delegate_declaration;
 use bsharp::syntax::nodes::declarations::Modifier;
-use bsharp::syntax::nodes::types::{Type, PrimitiveType};
+use bsharp::syntax::nodes::types::{PrimitiveType, Type};
 
 #[test]
 fn test_simple_delegate() {
@@ -24,7 +24,7 @@ fn test_delegate_with_parameters() {
     assert_eq!(delegate.parameters.len(), 2);
     assert_eq!(delegate.parameters[0].name.name, "x");
     assert_eq!(delegate.parameters[1].name.name, "y");
-    
+
     // Check return type is int
     if let Type::Primitive(PrimitiveType::Int) = delegate.return_type {
         // Expected
@@ -81,7 +81,10 @@ fn test_delegate_with_attributes() {
     assert_eq!(delegate.name.name, "AttributedDelegate");
     assert_eq!(delegate.attributes.len(), 1);
     assert_eq!(delegate.attributes[0].attributes.len(), 1);
-    assert_eq!(delegate.attributes[0].attributes[0].name.name, "Serializable");
+    assert_eq!(
+        delegate.attributes[0].attributes[0].name.name,
+        "Serializable"
+    );
 }
 
 #[test]
@@ -94,4 +97,4 @@ fn test_internal_delegate() {
     assert_eq!(delegate.modifiers[0], Modifier::Internal);
     assert_eq!(delegate.parameters.len(), 1);
     assert_eq!(delegate.parameters[0].name.name, "input");
-} 
+}

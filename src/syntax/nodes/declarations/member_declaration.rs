@@ -42,4 +42,4 @@ impl MemberDeclaration {
     pub fn has_method_syntax(&self) -> bool {
         self.return_type.is_some()
     }
-} 
+}

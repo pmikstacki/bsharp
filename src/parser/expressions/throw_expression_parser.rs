@@ -1,8 +1,8 @@
+use crate::parser::expressions::primary_expression_parser::parse_expression;
 use crate::syntax::errors::BResult;
 use crate::syntax::nodes::expressions::expression::Expression;
 use crate::syntax::nodes::expressions::throw_expression::ThrowExpression;
 use crate::syntax::parser_helpers::{context, keyword};
-use crate::parser::expressions::expression_parser::parse_expression;
 
 use nom::{
     combinator::{map, opt},
@@ -28,4 +28,4 @@ pub fn parse_throw_expression(input: &str) -> BResult<&str, Expression> {
             },
         ),
     )(input)
-} 
+}

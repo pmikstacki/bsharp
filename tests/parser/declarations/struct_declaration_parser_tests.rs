@@ -1,8 +1,8 @@
 #![cfg(test)]
-use bsharp::parser::declarations::type_declaration_parser::parse_struct_declaration;
-use bsharp::syntax::nodes::declarations::{Modifier, StructDeclaration, StructBodyDeclaration};
-use bsharp::syntax::nodes::types::{PrimitiveType, Type, TypeParameter, Variance};
+use bsharp::parser::expressions::declarations::type_declaration_parser::parse_struct_declaration;
+use bsharp::syntax::nodes::declarations::{Modifier, StructBodyDeclaration, StructDeclaration};
 use bsharp::syntax::nodes::identifier::Identifier;
+use bsharp::syntax::nodes::types::{PrimitiveType, Type, TypeParameter, Variance};
 
 #[test]
 fn test_simple_struct() {
@@ -104,7 +104,7 @@ fn test_public_struct_with_multiple_generic_parameters() {
 fn test_struct_with_interface() {
     let input = "struct MyStruct : IDisposable {}";
     let (_, result) = parse_struct_declaration(input).unwrap();
-    
+
     assert_eq!(result.base_types.len(), 1);
     if let Type::Reference(id) = &result.base_types[0] {
         assert_eq!(id.name, "IDisposable");
@@ -117,15 +117,15 @@ fn test_struct_with_interface() {
 fn test_struct_with_multiple_interfaces() {
     let input = "struct MyStruct : IComparable, IDisposable {}";
     let (_, result) = parse_struct_declaration(input).unwrap();
-    
+
     assert_eq!(result.base_types.len(), 2);
-    
+
     if let Type::Reference(id) = &result.base_types[0] {
         assert_eq!(id.name, "IComparable");
     } else {
         panic!("Expected Reference type");
     }
-    
+
     if let Type::Reference(id) = &result.base_types[1] {
         assert_eq!(id.name, "IDisposable");
     } else {
@@ -137,7 +137,7 @@ fn test_struct_with_multiple_interfaces() {
 fn test_struct_with_field() {
     let input = "struct Point { int x; }";
     let (_, result) = parse_struct_declaration(input).unwrap();
-    
+
     assert_eq!(result.body_declarations.len(), 1);
     match &result.body_declarations[0] {
         StructBodyDeclaration::Field(field) => {
@@ -146,7 +146,7 @@ fn test_struct_with_field() {
                 Type::Primitive(pt) => assert_eq!(*pt, PrimitiveType::Int),
                 _ => panic!("Expected primitive type"),
             }
-        },
+        }
         _ => panic!("Expected field member"),
     };
 }
@@ -155,7 +155,7 @@ fn test_struct_with_field() {
 fn test_struct_with_attribute() {
     let input = "[Serializable] struct MyStruct {}";
     let (_, result) = parse_struct_declaration(input).unwrap();
-    
+
     assert_eq!(result.attributes.len(), 1);
     assert_eq!(result.attributes[0].attributes.len(), 1);
     assert_eq!(result.attributes[0].attributes[0].name.name, "Serializable");

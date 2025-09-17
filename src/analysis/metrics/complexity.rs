@@ -41,22 +41,22 @@ impl HalsteadMetrics {
     pub fn vocabulary(&self) -> usize {
         self.distinct_operators + self.distinct_operands
     }
-    
+
     /// Calculate program length
     pub fn length(&self) -> usize {
         self.total_operators + self.total_operands
     }
-    
+
     /// Calculate calculated length
     pub fn calculated_length(&self) -> f64 {
         if self.distinct_operators == 0 || self.distinct_operands == 0 {
             0.0
         } else {
-            (self.distinct_operators as f64) * (self.distinct_operators as f64).log2() +
-            (self.distinct_operands as f64) * (self.distinct_operands as f64).log2()
+            (self.distinct_operators as f64) * (self.distinct_operators as f64).log2()
+                + (self.distinct_operands as f64) * (self.distinct_operands as f64).log2()
         }
     }
-    
+
     /// Calculate volume
     pub fn volume(&self) -> f64 {
         if self.vocabulary() == 0 {
@@ -65,17 +65,17 @@ impl HalsteadMetrics {
             (self.length() as f64) * (self.vocabulary() as f64).log2()
         }
     }
-    
+
     /// Calculate difficulty
     pub fn difficulty(&self) -> f64 {
         if self.distinct_operands == 0 || self.total_operands == 0 {
             0.0
         } else {
-            ((self.distinct_operators as f64) / 2.0) * 
-            ((self.total_operands as f64) / (self.distinct_operands as f64))
+            ((self.distinct_operators as f64) / 2.0)
+                * ((self.total_operands as f64) / (self.distinct_operands as f64))
         }
     }
-    
+
     /// Calculate effort
     pub fn effort(&self) -> f64 {
         self.difficulty() * self.volume()
@@ -90,11 +90,11 @@ impl ComplexityAnalyzer {
     pub fn new() -> Self {
         Self
     }
-    
+
     /// Calculate comprehensive complexity metrics for a method
     pub fn analyze_method(&self, method: &MethodDeclaration) -> ComplexityMetrics {
         let mut metrics = ComplexityMetrics::default();
-        
+
         if let Some(body) = &method.body {
             metrics.cyclomatic_complexity = self.calculate_cyclomatic_complexity(body, 1);
             metrics.cognitive_complexity = self.calculate_cognitive_complexity(body, 0, 0);
@@ -104,12 +104,16 @@ impl ComplexityAnalyzer {
         } else {
             metrics.cyclomatic_complexity = 1; // Base complexity for methods without body
         }
-        
+
         metrics
     }
-    
+
     /// Calculate cyclomatic complexity (McCabe)
-    pub fn calculate_cyclomatic_complexity(&self, stmt: &Statement, base_complexity: usize) -> usize {
+    pub fn calculate_cyclomatic_complexity(
+        &self,
+        stmt: &Statement,
+        base_complexity: usize,
+    ) -> usize {
         match stmt {
             Statement::If(if_stmt) => {
                 let mut complexity = base_complexity + 1; // +1 for if
@@ -150,35 +154,48 @@ impl ComplexityAnalyzer {
             _ => base_complexity,
         }
     }
-    
+
     /// Calculate cognitive complexity (SonarSource methodology)
-    pub fn calculate_cognitive_complexity(&self, stmt: &Statement, current_depth: usize, base_complexity: usize) -> usize {
+    pub fn calculate_cognitive_complexity(
+        &self,
+        stmt: &Statement,
+        current_depth: usize,
+        base_complexity: usize,
+    ) -> usize {
         match stmt {
             Statement::If(if_stmt) => {
                 let mut complexity = base_complexity + 1 + current_depth; // +1 for if, +nesting
-                complexity += self.calculate_cognitive_complexity(&if_stmt.consequence, current_depth + 1, 0);
+                complexity +=
+                    self.calculate_cognitive_complexity(&if_stmt.consequence, current_depth + 1, 0);
                 if let Some(alt) = &if_stmt.alternative {
                     if matches!(**alt, Statement::If(_)) {
                         // else if doesn't add nesting
                         complexity += self.calculate_cognitive_complexity(alt, current_depth, 0);
                     } else {
                         // else adds nesting
-                        complexity += self.calculate_cognitive_complexity(alt, current_depth + 1, 0);
+                        complexity +=
+                            self.calculate_cognitive_complexity(alt, current_depth + 1, 0);
                     }
                 }
                 complexity
             }
             Statement::For(for_stmt) => {
-                base_complexity + 1 + current_depth + 
-                self.calculate_cognitive_complexity(&for_stmt.body, current_depth + 1, 0)
+                base_complexity
+                    + 1
+                    + current_depth
+                    + self.calculate_cognitive_complexity(&for_stmt.body, current_depth + 1, 0)
             }
             Statement::While(while_stmt) => {
-                base_complexity + 1 + current_depth + 
-                self.calculate_cognitive_complexity(&while_stmt.body, current_depth + 1, 0)
+                base_complexity
+                    + 1
+                    + current_depth
+                    + self.calculate_cognitive_complexity(&while_stmt.body, current_depth + 1, 0)
             }
             Statement::DoWhile(do_while_stmt) => {
-                base_complexity + 1 + current_depth + 
-                self.calculate_cognitive_complexity(&do_while_stmt.body, current_depth + 1, 0)
+                base_complexity
+                    + 1
+                    + current_depth
+                    + self.calculate_cognitive_complexity(&do_while_stmt.body, current_depth + 1, 0)
             }
             Statement::Switch(switch_stmt) => {
                 let mut complexity = base_complexity + 1 + current_depth; // +1 for switch, +nesting
@@ -209,13 +226,14 @@ impl ComplexityAnalyzer {
             _ => base_complexity,
         }
     }
-    
+
     /// Calculate maximum nesting depth
     pub fn calculate_max_nesting_depth(&self, stmt: &Statement, current_depth: usize) -> usize {
         match stmt {
             Statement::If(if_stmt) => {
                 let new_depth = current_depth + 1;
-                let consequence_depth = self.calculate_max_nesting_depth(&if_stmt.consequence, new_depth);
+                let consequence_depth =
+                    self.calculate_max_nesting_depth(&if_stmt.consequence, new_depth);
                 let alternative_depth = if let Some(alt) = &if_stmt.alternative {
                     self.calculate_max_nesting_depth(alt, new_depth)
                 } else {
@@ -253,14 +271,14 @@ impl ComplexityAnalyzer {
             _ => current_depth,
         }
     }
-    
+
     /// Calculate ABC complexity metrics
     pub fn calculate_abc_complexity(&self, stmt: &Statement) -> ABCComplexity {
         let mut abc = ABCComplexity::default();
         self.collect_abc_complexity(stmt, &mut abc);
         abc
     }
-    
+
     fn collect_abc_complexity(&self, stmt: &Statement, abc: &mut ABCComplexity) {
         match stmt {
             Statement::If(if_stmt) => {
@@ -313,4 +331,4 @@ impl Default for ComplexityAnalyzer {
     fn default() -> Self {
         Self::new()
     }
-} 
+}

@@ -1,7 +1,7 @@
 use crate::syntax::nodes::expressions::expression::Expression;
 use crate::syntax::nodes::identifier::Identifier;
-use crate::syntax::nodes::types::Type;
 use crate::syntax::nodes::statements::statement::Statement;
+use crate::syntax::nodes::types::Type;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
@@ -17,7 +17,6 @@ pub struct LambdaParameter {
     pub ty: Option<Type>,
     pub modifier: Option<LambdaParameterModifier>,
     // This marker helps Rust understand that we're intentionally using this lifetime
-
 }
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]

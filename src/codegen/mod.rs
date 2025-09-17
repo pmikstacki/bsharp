@@ -12,7 +12,9 @@ use std::str::FromStr;
 use target_lexicon::Triple;
 
 use crate::syntax::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration;
-use crate::syntax::nodes::declarations::{ClassBodyDeclaration, ClassDeclaration, MethodDeclaration};
+use crate::syntax::nodes::declarations::{
+    ClassBodyDeclaration, ClassDeclaration, MethodDeclaration,
+};
 use crate::syntax::nodes::types::{PrimitiveType, Type};
 
 // Trait for AST nodes that can be compiled
@@ -44,11 +46,19 @@ impl Compilable for ClassDeclaration {
             match member {
                 ClassBodyDeclaration::Method(method_decl) => {
                     // Pass the current class name as context
-                    method_decl.compile_node(Some(&self.name.name), module, builder_context, context)?;
+                    method_decl.compile_node(
+                        Some(&self.name.name),
+                        module,
+                        builder_context,
+                        context,
+                    )?;
                 }
                 ClassBodyDeclaration::Field(field_decl) => {
                     // TODO: Handle field declarations (e.g., allocate space in constructor?)
-                    log::info!("Skipping field declaration (in trait impl): {}", field_decl.name);
+                    log::info!(
+                        "Skipping field declaration (in trait impl): {}",
+                        field_decl.name
+                    );
                 }
                 _ => {}
             }
@@ -66,7 +76,8 @@ impl Compilable for MethodDeclaration {
         builder_context: &mut FunctionBuilderContext,
         context: &mut Context,
     ) -> Result<(), String> {
-        let current_class_name = class_name.ok_or_else(|| "Method compilation requires class context".to_string())?;
+        let current_class_name =
+            class_name.ok_or_else(|| "Method compilation requires class context".to_string())?;
         log::info!(
             "Compiling method: {}.{}",
             current_class_name,
@@ -80,10 +91,14 @@ impl Compilable for MethodDeclaration {
         }
 
         for param in &self.parameters {
-            if let Some(param_type) = map_type_stub(&param.parameter_type) { // Use stub for now
+            if let Some(param_type) = map_type_stub(&param.parameter_type) {
+                // Use stub for now
                 sig.params.push(AbiParam::new(param_type));
             } else {
-                return Err(format!("Unsupported parameter type: {:?}\nIn method: {}.{}", param.parameter_type, current_class_name, self.name));
+                return Err(format!(
+                    "Unsupported parameter type: {:?}\nIn method: {}.{}",
+                    param.parameter_type, current_class_name, self.name
+                ));
             }
         }
 
@@ -102,10 +117,15 @@ impl Compilable for MethodDeclaration {
 
         // TODO: Implement actual method body compilation based on self.body
         if let Some(ret_type) = return_type {
-             let zero = match ret_type {
-                 types::I32 | types::I64 => builder.ins().iconst(ret_type, 0),
-                 types::I8 => builder.ins().iconst(ret_type, 0),
-                 _ => return Err(format!("Unsupported return type for default value: {:?}\nIn method: {}.{}", ret_type, current_class_name, self.name)),
+            let zero = match ret_type {
+                types::I32 | types::I64 => builder.ins().iconst(ret_type, 0),
+                types::I8 => builder.ins().iconst(ret_type, 0),
+                _ => {
+                    return Err(format!(
+                        "Unsupported return type for default value: {:?}\nIn method: {}.{}",
+                        ret_type, current_class_name, self.name
+                    ));
+                }
             };
             builder.ins().return_(&[zero]);
         } else {
@@ -115,7 +135,7 @@ impl Compilable for MethodDeclaration {
         builder.finalize();
         let flags = settings::Flags::new(settings::builder());
         verify_function(&context.func, &flags)
-             .map_err(|e| format!("Function verification failed for {}: {}", func_name, e))?;
+            .map_err(|e| format!("Function verification failed for {}: {}", func_name, e))?;
         module
             .define_function(func_id, context)
             .map_err(|e| format!("Failed to define function {}: {}", func_name, e))?;
@@ -141,7 +161,9 @@ impl CodeGenerator {
         let isa_builder = cranelift_native::builder().unwrap_or_else(|msg| {
             panic!("host machine is not supported: {}", msg);
         });
-        let isa = isa_builder.finish(settings::Flags::new(flag_builder)).unwrap();
+        let isa = isa_builder
+            .finish(settings::Flags::new(flag_builder))
+            .unwrap();
 
         let builder = ObjectBuilder::new(
             isa,
@@ -163,17 +185,21 @@ impl CodeGenerator {
         }
     }
 
-    pub fn compile(mut self, ast: &ast::CompilationUnit) -> Result<Vec<u8>, String> { 
+    pub fn compile(mut self, ast: &ast::CompilationUnit) -> Result<Vec<u8>, String> {
         // TODO: Implement compilation logic
         // For now, just process the AST structure and perhaps define functions
 
         // Handle global attributes (assembly and module metadata)
         if !ast.global_attributes.is_empty() {
-            println!("Processing {} global attributes", ast.global_attributes.len());
+            println!(
+                "Processing {} global attributes",
+                ast.global_attributes.len()
+            );
             for global_attr in &ast.global_attributes {
-                println!("Global attribute: {} -> {}", 
-                    global_attr.target.name, 
-                    global_attr.attribute.name.name);
+                println!(
+                    "Global attribute: {} -> {}",
+                    global_attr.target.name, global_attr.attribute.name.name
+                );
                 // TODO: Implement metadata handling for assembly/module attributes
                 // These typically affect metadata generation rather than code generation
             }
@@ -181,10 +207,18 @@ impl CodeGenerator {
 
         // Handle file-scoped namespace first if present
         if let Some(file_scoped_ns) = &ast.file_scoped_namespace {
-            println!("Compiling file-scoped namespace: {}", file_scoped_ns.name.name);
+            println!(
+                "Compiling file-scoped namespace: {}",
+                file_scoped_ns.name.name
+            );
             for ns_member in &file_scoped_ns.declarations {
                 if let NamespaceBodyDeclaration::Class(class_decl) = ns_member {
-                    do_compile_class(class_decl, &mut self.module, &mut self.builder_context, &mut self.context)?;
+                    do_compile_class(
+                        class_decl,
+                        &mut self.module,
+                        &mut self.builder_context,
+                        &mut self.context,
+                    )?;
                 }
             }
         }
@@ -196,20 +230,38 @@ impl CodeGenerator {
                     // TODO: Handle namespace scoping in bytecode
                     for ns_member in &ns.declarations {
                         if let NamespaceBodyDeclaration::Class(class_decl) = ns_member {
-                            do_compile_class(class_decl, &mut self.module, &mut self.builder_context, &mut self.context)?;
+                            do_compile_class(
+                                class_decl,
+                                &mut self.module,
+                                &mut self.builder_context,
+                                &mut self.context,
+                            )?;
                         }
                     }
                 }
                 ast::TopLevelDeclaration::FileScopedNamespace(file_scoped_ns) => {
-                    println!("Compiling file-scoped namespace declaration: {}", file_scoped_ns.name.name);
+                    println!(
+                        "Compiling file-scoped namespace declaration: {}",
+                        file_scoped_ns.name.name
+                    );
                     for ns_member in &file_scoped_ns.declarations {
                         if let NamespaceBodyDeclaration::Class(class_decl) = ns_member {
-                            do_compile_class(class_decl, &mut self.module, &mut self.builder_context, &mut self.context)?;
+                            do_compile_class(
+                                class_decl,
+                                &mut self.module,
+                                &mut self.builder_context,
+                                &mut self.context,
+                            )?;
                         }
                     }
                 }
                 ast::TopLevelDeclaration::Class(class_decl) => {
-                    do_compile_class(class_decl, &mut self.module, &mut self.builder_context, &mut self.context)?;
+                    do_compile_class(
+                        class_decl,
+                        &mut self.module,
+                        &mut self.builder_context,
+                        &mut self.context,
+                    )?;
                 }
                 ast::TopLevelDeclaration::Struct(_struct_decl) => {
                     return Err("Struct compilation not implemented yet".to_string());
@@ -236,11 +288,17 @@ impl CodeGenerator {
 
         // Handle top-level statements (C# 9+)
         if !ast.top_level_statements.is_empty() {
-            println!("Compiling {} top-level statements", ast.top_level_statements.len());
+            println!(
+                "Compiling {} top-level statements",
+                ast.top_level_statements.len()
+            );
             // TODO: Create a synthetic Main method for top-level statements
             // For now, just log that we found them
             for (i, _stmt) in ast.top_level_statements.iter().enumerate() {
-                println!("Top-level statement {}: (compilation not yet implemented)", i + 1);
+                println!(
+                    "Top-level statement {}: (compilation not yet implemented)",
+                    i + 1
+                );
             }
         }
 
@@ -253,7 +311,12 @@ impl CodeGenerator {
 }
 
 // Changed from a method to a free function
-fn do_compile_class(class_decl: &ast::ClassDeclaration, module: &mut ObjectModule, builder_context: &mut FunctionBuilderContext, context: &mut Context) -> Result<(), String> {
+fn do_compile_class(
+    class_decl: &ast::ClassDeclaration,
+    module: &mut ObjectModule,
+    builder_context: &mut FunctionBuilderContext,
+    context: &mut Context,
+) -> Result<(), String> {
     // TODO: Implement actual class declaration visitation logic
     // This might involve calling class_decl.compile_node(...) if that's the pattern,
     // or other specific logic for classes.
@@ -267,7 +330,7 @@ fn map_type_stub(ty: &Type) -> Option<types::Type> {
         Type::Primitive(primitive) => match primitive {
             PrimitiveType::Void => None,
             PrimitiveType::Bool => Some(types::I8),
-            
+
             // Integral types
             PrimitiveType::Byte => Some(types::I8),
             PrimitiveType::SByte => Some(types::I8),
@@ -277,15 +340,17 @@ fn map_type_stub(ty: &Type) -> Option<types::Type> {
             PrimitiveType::UInt => Some(types::I32),
             PrimitiveType::Long => Some(types::I64),
             PrimitiveType::ULong => Some(types::I64),
-            
+
             // Floating-point types
             PrimitiveType::Float => Some(types::F32),
             PrimitiveType::Double => Some(types::F64),
             PrimitiveType::Decimal => {
-                log::warn!("Decimal type mapping not fully implemented yet - using F64 as fallback.");
+                log::warn!(
+                    "Decimal type mapping not fully implemented yet - using F64 as fallback."
+                );
                 Some(types::F64)
             }
-            
+
             // Character and string types
             PrimitiveType::Char => Some(types::I16), // UTF-16 character
             PrimitiveType::String => {

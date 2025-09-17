@@ -3,11 +3,11 @@
 
 use bsharp::syntax::nodes::expressions::expression::Expression;
 
+use bsharp::parser::expressions::statements::switch_statement_parser::parse_switch_statement;
 use bsharp::syntax::nodes::identifier::Identifier;
 use bsharp::syntax::nodes::statements::statement::Statement;
 use bsharp::syntax::nodes::statements::switch_label::SwitchLabel;
 use bsharp::syntax::test_helpers::parse_all;
-use bsharp::parser::statements::switch_statement_parser::parse_switch_statement;
 
 #[test]
 fn test_parse_switch_statement() {
@@ -39,23 +39,23 @@ fn test_parse_switch_statement() {
     assert!(result_empty.is_ok());
     match result_empty.unwrap().1 {
         Statement::Switch(ss) => {
-             assert_eq!(ss.expression, Expression::Variable(Identifier::new("y")));
-             assert!(ss.sections.is_empty());
-         }
-         _ => panic!("Expected Switch statement"),
+            assert_eq!(ss.expression, Expression::Variable(Identifier::new("y")));
+            assert!(ss.sections.is_empty());
+        }
+        _ => panic!("Expected Switch statement"),
     }
 
     let input_fallthrough = "switch(z) { case 0: case 1: DoZeroOrOne(); break; }";
     let result_fallthrough = parse_all(parse_switch_statement, input_fallthrough);
     assert!(result_fallthrough.is_ok());
     match result_fallthrough.unwrap().1 {
-         Statement::Switch(ss) => {
-             assert_eq!(ss.sections.len(), 1);
-             assert_eq!(ss.sections[0].labels.len(), 2);
-             assert!(matches!(ss.sections[0].labels[0], SwitchLabel::Case(_)));
-             assert!(matches!(ss.sections[0].labels[1], SwitchLabel::Case(_)));
-             assert_eq!(ss.sections[0].statements.len(), 2);
-         }
-         _ => panic!("Expected Switch statement"),
+        Statement::Switch(ss) => {
+            assert_eq!(ss.sections.len(), 1);
+            assert_eq!(ss.sections[0].labels.len(), 2);
+            assert!(matches!(ss.sections[0].labels[0], SwitchLabel::Case(_)));
+            assert!(matches!(ss.sections[0].labels[1], SwitchLabel::Case(_)));
+            assert_eq!(ss.sections[0].statements.len(), 2);
+        }
+        _ => panic!("Expected Switch statement"),
     }
 }

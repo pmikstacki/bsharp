@@ -1,18 +1,18 @@
 // Tests for parsing using statements
 
-use bsharp::syntax::nodes::statements::statement::Statement;
+use bsharp::parser::expressions::statements::using_statement_parser::parse_using_statement;
 use bsharp::syntax::nodes::expressions::expression::Expression;
-use bsharp::parser::statements::using_statement_parser::parse_using_statement;
+use bsharp::syntax::nodes::statements::statement::Statement;
 
 #[test]
 fn test_simple_using_statement() {
     let input = "using (stream) { Console.WriteLine(\"Hello\"); }";
     let result = parse_using_statement(input);
-    
+
     assert!(result.is_ok());
     let (remaining, statement) = result.unwrap();
     assert_eq!(remaining, "");
-    
+
     match statement {
         Statement::Using(using_stmt) => {
             // Check that the resource is a variable expression
@@ -22,7 +22,7 @@ fn test_simple_using_statement() {
                 }
                 _ => panic!("Expected variable expression for resource"),
             }
-            
+
             // Check that the body is a block statement
             match &*using_stmt.body {
                 Statement::Block(_) => {
@@ -40,11 +40,11 @@ fn test_using_statement_with_new_expression() {
     // Note: This test assumes we can parse new expressions
     let input = "using (new FileStream()) { }";
     let result = parse_using_statement(input);
-    
+
     assert!(result.is_ok());
     let (remaining, statement) = result.unwrap();
     assert_eq!(remaining, "");
-    
+
     match statement {
         Statement::Using(using_stmt) => {
             // Check that we have a new expression
@@ -66,7 +66,7 @@ fn test_using_statement_with_block_body() {
         Console.WriteLine("Inside using block"); 
     }"#;
     let result = parse_using_statement(input);
-    
+
     assert!(result.is_ok());
     let (remaining, _) = result.unwrap();
     assert_eq!(remaining, "");
@@ -76,11 +76,11 @@ fn test_using_statement_with_block_body() {
 fn test_using_statement_with_single_statement_body() {
     let input = "using (resource) Console.WriteLine(\"test\");";
     let result = parse_using_statement(input);
-    
+
     assert!(result.is_ok());
     let (remaining, statement) = result.unwrap();
     assert_eq!(remaining, "");
-    
+
     match statement {
         Statement::Using(using_stmt) => {
             // Body should be an expression statement
@@ -99,7 +99,7 @@ fn test_using_statement_with_single_statement_body() {
 fn test_using_statement_fails_without_parentheses() {
     let input = "using resource { }";
     let result = parse_using_statement(input);
-    
+
     assert!(result.is_err());
 }
 
@@ -107,6 +107,6 @@ fn test_using_statement_fails_without_parentheses() {
 fn test_using_statement_fails_without_body() {
     let input = "using (resource)";
     let result = parse_using_statement(input);
-    
+
     assert!(result.is_err());
 }

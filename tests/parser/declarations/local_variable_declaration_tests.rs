@@ -1,11 +1,11 @@
 // Tests for parsing local variable declarations
 
+use bsharp::parser::expressions::declarations::variable_declaration_parser::parse_local_variable_declaration;
 use bsharp::syntax::nodes::declarations::LocalVariableDeclaration;
 use bsharp::syntax::nodes::declarations::local_variable_declaration::VariableDeclarator;
-use bsharp::syntax::nodes::types::{Type, PrimitiveType};
-use bsharp::syntax::nodes::identifier::Identifier;
 use bsharp::syntax::nodes::expressions::{Expression, Literal};
-use bsharp::parser::declarations::variable_declaration_parser::parse_local_variable_declaration;
+use bsharp::syntax::nodes::identifier::Identifier;
+use bsharp::syntax::nodes::types::{PrimitiveType, Type};
 
 fn parse_local_var_decl_test(code: &str) -> Result<LocalVariableDeclaration, String> {
     match parse_local_variable_declaration(code) {
@@ -22,12 +22,12 @@ fn test_parse_local_variable_with_initializer() {
         is_const: false,
         is_ref: false,
         declaration_type: Type::Primitive(PrimitiveType::Int),
-        declarators: vec![
-            VariableDeclarator {
-                name: Identifier { name: "x".to_string() },
-                initializer: Some(Expression::Literal(Literal::Integer(5))),
-            }
-        ],
+        declarators: vec![VariableDeclarator {
+            name: Identifier {
+                name: "x".to_string(),
+            },
+            initializer: Some(Expression::Literal(Literal::Integer(5))),
+        }],
     };
     assert_eq!(parse_local_var_decl_test(code), Ok(expected));
 }
@@ -39,13 +39,12 @@ fn test_parse_local_variable_without_initializer() {
         is_const: false,
         is_ref: false,
         declaration_type: Type::Primitive(PrimitiveType::String),
-        declarators: vec![
-            VariableDeclarator {
-                name: Identifier { name: "name".to_string() },
-                initializer: None,
-            }
-        ],
+        declarators: vec![VariableDeclarator {
+            name: Identifier {
+                name: "name".to_string(),
+            },
+            initializer: None,
+        }],
     };
     assert_eq!(parse_local_var_decl_test(code), Ok(expected));
 }
-

@@ -7,11 +7,11 @@ pub enum Literal {
     Float(f64), // Added Float variant
     Boolean(bool),
     String(String),
-    Char(char), // Added char literal
-    Null, // null literal
+    Char(char),                                    // Added char literal
+    Null,                                          // null literal
     InterpolatedString(InterpolatedStringLiteral), // String interpolation: $"Hello {name}"
-    VerbatimString(String), // Verbatim string: @"path\to\file"
-    RawString(String), // Raw string literal: """text"""
+    VerbatimString(String),                        // Verbatim string: @"path\to\file"
+    RawString(String),                             // Raw string literal: """text"""
 }
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]

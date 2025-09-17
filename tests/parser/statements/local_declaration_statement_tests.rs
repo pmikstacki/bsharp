@@ -1,24 +1,28 @@
 // Integration tests for local variable declaration statements
 // Moved from statement_tests.rs
 
-use bsharp::syntax::nodes::statements::statement::Statement;
+use bsharp::parser::statement_parser::parse_statement;
 use bsharp::syntax::nodes::declarations::LocalVariableDeclaration;
 use bsharp::syntax::nodes::declarations::local_variable_declaration::VariableDeclarator;
 use bsharp::syntax::nodes::expressions::expression::Expression;
 use bsharp::syntax::nodes::expressions::literal::Literal;
-use bsharp::syntax::nodes::identifier::Identifier;
 use bsharp::syntax::nodes::expressions::new_expression::NewExpression;
-use bsharp::syntax::nodes::types::{Type, PrimitiveType};
-use bsharp::parser::statement_parser::parse_statement;
-use nom::combinator::all_consuming;
+use bsharp::syntax::nodes::identifier::Identifier;
+use bsharp::syntax::nodes::statements::statement::Statement;
+use bsharp::syntax::nodes::types::{PrimitiveType, Type};
 use nom::Finish;
+use nom::combinator::all_consuming;
 
 // Helper function from statement_tests.rs
 fn assert_statement_parses(code: &str, expected: Statement) {
     let code_trimmed = code.trim();
     match all_consuming(parse_statement)(code_trimmed).finish() {
         Ok((_, parsed_statement)) => {
-            assert_eq!(parsed_statement, expected, "Parsed statement does not match expected for code: {}\n", code_trimmed);
+            assert_eq!(
+                parsed_statement, expected,
+                "Parsed statement does not match expected for code: {}\n",
+                code_trimmed
+            );
         }
         Err(e) => {
             panic!("Parser failed for code: '{}'\nError: {:?}", code_trimmed, e);
@@ -34,12 +38,12 @@ fn test_parse_local_variable_declaration_no_init() {
             is_const: false,
             is_ref: false,
             declaration_type: Type::Primitive(PrimitiveType::String),
-            declarators: vec![
-                VariableDeclarator {
-                    name: Identifier { name: "message".to_string() },
-                    initializer: None,
-                }
-            ],
+            declarators: vec![VariableDeclarator {
+                name: Identifier {
+                    name: "message".to_string(),
+                },
+                initializer: None,
+            }],
         }),
     );
 }
@@ -52,12 +56,12 @@ fn test_parse_local_variable_declaration_with_initializer() {
             is_const: false,
             is_ref: false,
             declaration_type: Type::Primitive(PrimitiveType::Bool),
-            declarators: vec![
-                VariableDeclarator {
-                    name: Identifier { name: "flag".to_string() },
-                    initializer: Some(Expression::Literal(Literal::Boolean(true))),
-                }
-            ],
+            declarators: vec![VariableDeclarator {
+                name: Identifier {
+                    name: "flag".to_string(),
+                },
+                initializer: Some(Expression::Literal(Literal::Boolean(true))),
+            }],
         }),
     );
 }
@@ -70,12 +74,12 @@ fn test_parse_local_variable_declaration_int_with_initializer() {
             is_const: false,
             is_ref: false,
             declaration_type: Type::Primitive(PrimitiveType::Int),
-            declarators: vec![
-                VariableDeclarator {
-                    name: Identifier { name: "count".to_string() },
-                    initializer: Some(Expression::Literal(Literal::Integer(10))),
-                }
-            ],
+            declarators: vec![VariableDeclarator {
+                name: Identifier {
+                    name: "count".to_string(),
+                },
+                initializer: Some(Expression::Literal(Literal::Integer(10))),
+            }],
         }),
     );
 }
@@ -88,23 +92,27 @@ fn test_parse_local_variable_declaration_list_new_expression() {
             is_const: false,
             is_ref: false,
             declaration_type: Type::Generic {
-                base: Identifier { name: "List".to_string() },
+                base: Identifier {
+                    name: "List".to_string(),
+                },
                 args: vec![Type::Primitive(PrimitiveType::String)],
             },
-            declarators: vec![
-                VariableDeclarator {
-                    name: Identifier { name: "names".to_string() },
-                    initializer: Some(Expression::New(Box::new(NewExpression {
-                        ty: Type::Generic {
-                            base: Identifier { name: "List".to_string() },
-                            args: vec![Type::Primitive(PrimitiveType::String)],
+            declarators: vec![VariableDeclarator {
+                name: Identifier {
+                    name: "names".to_string(),
+                },
+                initializer: Some(Expression::New(Box::new(NewExpression {
+                    ty: Type::Generic {
+                        base: Identifier {
+                            name: "List".to_string(),
                         },
-                        arguments: vec![],
-                        object_initializer: None, 
-                        collection_initializer: None, 
-                    }))),
-                }
-            ],
+                        args: vec![Type::Primitive(PrimitiveType::String)],
+                    },
+                    arguments: vec![],
+                    object_initializer: None,
+                    collection_initializer: None,
+                }))),
+            }],
         }),
     );
 }
@@ -119,11 +127,15 @@ fn test_parse_local_variable_declaration_multiple_declarators() {
             declaration_type: Type::Primitive(PrimitiveType::Int),
             declarators: vec![
                 VariableDeclarator {
-                    name: Identifier { name: "x".to_string() },
+                    name: Identifier {
+                        name: "x".to_string(),
+                    },
                     initializer: Some(Expression::Literal(Literal::Integer(1))),
                 },
                 VariableDeclarator {
-                    name: Identifier { name: "y".to_string() },
+                    name: Identifier {
+                        name: "y".to_string(),
+                    },
                     initializer: Some(Expression::Literal(Literal::Integer(2))),
                 },
             ],
@@ -138,13 +150,13 @@ fn test_parse_local_variable_declaration_var_keyword() {
         Statement::Declaration(LocalVariableDeclaration {
             is_const: false,
             is_ref: false,
-            declaration_type: Type::Var, 
-            declarators: vec![
-                VariableDeclarator {
-                    name: Identifier { name: "name".to_string() },
-                    initializer: Some(Expression::Literal(Literal::String("BSharp".to_string()))),
-                }
-            ],
+            declaration_type: Type::Var,
+            declarators: vec![VariableDeclarator {
+                name: Identifier {
+                    name: "name".to_string(),
+                },
+                initializer: Some(Expression::Literal(Literal::String("BSharp".to_string()))),
+            }],
         }),
     );
 }
@@ -157,12 +169,12 @@ fn test_parse_local_variable_declaration_const_modifier() {
             is_const: true,
             is_ref: false,
             declaration_type: Type::Primitive(PrimitiveType::Double),
-            declarators: vec![
-                VariableDeclarator {
-                    name: Identifier { name: "PI".to_string() },
-                    initializer: Some(Expression::Literal(Literal::Float(3.14))),
-                }
-            ],
+            declarators: vec![VariableDeclarator {
+                name: Identifier {
+                    name: "PI".to_string(),
+                },
+                initializer: Some(Expression::Literal(Literal::Float(3.14))),
+            }],
         }),
     );
 }
@@ -175,20 +187,22 @@ fn test_parse_local_variable_declaration_var_with_new_expression() {
             is_const: false,
             is_ref: false,
             declaration_type: Type::Var,
-            declarators: vec![
-                VariableDeclarator {
-                    name: Identifier { name: "list".to_string() },
-                    initializer: Some(Expression::New(Box::new(NewExpression {
-                        ty: Type::Generic {
-                            base: Identifier { name: "List".to_string() },
-                            args: vec![Type::Primitive(PrimitiveType::String)],
+            declarators: vec![VariableDeclarator {
+                name: Identifier {
+                    name: "list".to_string(),
+                },
+                initializer: Some(Expression::New(Box::new(NewExpression {
+                    ty: Type::Generic {
+                        base: Identifier {
+                            name: "List".to_string(),
                         },
-                        arguments: vec![],
-                        object_initializer: None,
-                        collection_initializer: None,
-                    }))),
-                }
-            ],
+                        args: vec![Type::Primitive(PrimitiveType::String)],
+                    },
+                    arguments: vec![],
+                    object_initializer: None,
+                    collection_initializer: None,
+                }))),
+            }],
         }),
     );
 }
@@ -201,12 +215,12 @@ fn test_parse_local_variable_declaration_var_with_numeric_literal() {
             is_const: false,
             is_ref: false,
             declaration_type: Type::Var,
-            declarators: vec![
-                VariableDeclarator {
-                    name: Identifier { name: "count".to_string() },
-                    initializer: Some(Expression::Literal(Literal::Integer(42))),
-                }
-            ],
+            declarators: vec![VariableDeclarator {
+                name: Identifier {
+                    name: "count".to_string(),
+                },
+                initializer: Some(Expression::Literal(Literal::Integer(42))),
+            }],
         }),
     );
 }
@@ -221,11 +235,15 @@ fn test_parse_local_variable_declaration_var_multiple_declarators() {
             declaration_type: Type::Var,
             declarators: vec![
                 VariableDeclarator {
-                    name: Identifier { name: "x".to_string() },
+                    name: Identifier {
+                        name: "x".to_string(),
+                    },
                     initializer: Some(Expression::Literal(Literal::Integer(1))),
                 },
                 VariableDeclarator {
-                    name: Identifier { name: "y".to_string() },
+                    name: Identifier {
+                        name: "y".to_string(),
+                    },
                     initializer: Some(Expression::Literal(Literal::Integer(2))),
                 },
             ],
@@ -241,12 +259,12 @@ fn test_parse_local_variable_declaration_var_with_numeric_literal_is_ref() {
             is_const: false,
             is_ref: false,
             declaration_type: Type::Var,
-            declarators: vec![
-                VariableDeclarator {
-                    name: Identifier { name: "count".to_string() },
-                    initializer: Some(Expression::Literal(Literal::Integer(42))),
-                }
-            ],
+            declarators: vec![VariableDeclarator {
+                name: Identifier {
+                    name: "count".to_string(),
+                },
+                initializer: Some(Expression::Literal(Literal::Integer(42))),
+            }],
         }),
     );
 }

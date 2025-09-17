@@ -10,14 +10,14 @@ impl ControlFlowAnalyzer {
     pub fn new() -> Self {
         Self
     }
-    
+
     /// Analyze control flow for a compilation unit
     pub fn analyze_compilation_unit(&self, _unit: &CompilationUnit) -> ControlFlowGraph {
         let graph = ControlFlowGraph::new();
         // TODO: Implement control flow analysis
         graph
     }
-    
+
     /// Calculate cyclomatic complexity for a method
     pub fn calculate_cyclomatic_complexity(&self, method: &MethodDeclaration) -> usize {
         if let Some(body) = &method.body {
@@ -26,7 +26,7 @@ impl ControlFlowAnalyzer {
             1 // Base complexity for methods without body
         }
     }
-    
+
     /// Calculate complexity for a statement
     fn calculate_statement_complexity(&self, stmt: &Statement, base_complexity: usize) -> usize {
         match stmt {
@@ -69,11 +69,11 @@ impl ControlFlowAnalyzer {
             _ => base_complexity,
         }
     }
-    
+
     /// Detect code smells related to control flow
     pub fn detect_control_flow_smells(&self, method: &MethodDeclaration) -> Vec<ControlFlowSmell> {
         let mut smells = Vec::new();
-        
+
         let complexity = self.calculate_cyclomatic_complexity(method);
         if complexity > 10 {
             smells.push(ControlFlowSmell::HighCyclomaticComplexity {
@@ -81,7 +81,7 @@ impl ControlFlowAnalyzer {
                 complexity,
             });
         }
-        
+
         if let Some(body) = &method.body {
             let nesting_depth = self.calculate_max_nesting_depth(body, 0);
             if nesting_depth > 4 {
@@ -91,16 +91,17 @@ impl ControlFlowAnalyzer {
                 });
             }
         }
-        
+
         smells
     }
-    
+
     /// Calculate maximum nesting depth
     fn calculate_max_nesting_depth(&self, stmt: &Statement, current_depth: usize) -> usize {
         match stmt {
             Statement::If(if_stmt) => {
                 let new_depth = current_depth + 1;
-                let consequence_depth = self.calculate_max_nesting_depth(&if_stmt.consequence, new_depth);
+                let consequence_depth =
+                    self.calculate_max_nesting_depth(&if_stmt.consequence, new_depth);
                 let alternative_depth = if let Some(alt) = &if_stmt.alternative {
                     self.calculate_max_nesting_depth(alt, new_depth)
                 } else {
@@ -159,13 +160,13 @@ impl ControlFlowGraph {
     pub fn new() -> Self {
         Self::default()
     }
-    
+
     pub fn add_node(&mut self, node: ControlFlowNode) -> usize {
         let id = self.nodes.len();
         self.nodes.push(node);
         id
     }
-    
+
     pub fn add_edge(&mut self, from: usize, to: usize, edge_type: ControlFlowEdgeType) {
         self.edges.push(ControlFlowEdge {
             from,
@@ -173,14 +174,15 @@ impl ControlFlowGraph {
             edge_type,
         });
     }
-    
+
     /// Calculate the number of decision points in the graph
     pub fn decision_points(&self) -> usize {
-        self.nodes.iter()
+        self.nodes
+            .iter()
             .filter(|node| matches!(node.node_type, ControlFlowNodeType::Decision))
             .count()
     }
-    
+
     /// Calculate the number of exit points
     pub fn exit_points(&self) -> usize {
         self.exit_nodes.len()
@@ -253,4 +255,4 @@ pub struct ControlFlowMetrics {
     pub exit_points: usize,
     pub loop_count: usize,
     pub conditional_count: usize,
-} 
+}

@@ -1,10 +1,12 @@
+// Added for documentation
+use crate::syntax::nodes::declarations::{
+    attribute::AttributeList, ClassBodyDeclaration, Modifier,
+};
+use crate::syntax::nodes::types::{Type, TypeParameter};
 use crate::syntax::nodes::Identifier;
-use serde::{Deserialize, Serialize};
 // Updated path
 use crate::syntax::nodes::XmlDocumentationComment;
-// Added for documentation
-use crate::syntax::nodes::declarations::{attribute::AttributeList, ClassBodyDeclaration, Modifier};
-use crate::syntax::nodes::types::{Type, TypeParameter};
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct ClassDeclaration {

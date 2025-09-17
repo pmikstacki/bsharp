@@ -1,36 +1,31 @@
 use nom::{
     branch::alt,
-    character::complete::alpha1,
-    combinator::{map, not, opt, peek},
-    multi::separated_list0,
-    sequence::{delimited, terminated, tuple},
+    combinator::{map, opt},
+    sequence::tuple,
 };
-use nom_supreme::tag::complete::tag;
-use nom::combinator::cut;
 
-use crate::syntax::errors::BResult;
-use crate::syntax::nodes::expressions::expression::Expression;
-use crate::syntax::nodes::expressions::lambda_expression::{AnonymousMethodExpression, LambdaBody, LambdaExpression, LambdaParameter, LambdaParameterModifier};
-use crate::syntax::parser_helpers::{bchar, context, bws, keyword};
-use crate::parser::expressions::expression_parser::parse_expression;
+use crate::parser::expressions::primary_expression_parser::parse_expression;
+use crate::parser::expressions::statements::block_statement_parser::{
+    extract_statements_from_block, parse_block_statement,
+};
 use crate::parser::identifier_parser::parse_identifier;
 use crate::parser::types::type_parser::parse_type_expression;
-use crate::parser::statements::block_statement_parser::{parse_block_statement, extract_statements_from_block};
-
-// Helper to ensure we match complete words, not prefixes
-fn word_boundary(input: &str) -> BResult<&str, ()> {
-    // Check that the next character is not alphanumeric or underscore, without consuming it
-    peek(not(alpha1))(input)
-}
+use crate::syntax::errors::BResult;
+use crate::syntax::nodes::expressions::expression::Expression;
+use crate::syntax::nodes::expressions::lambda_expression::{
+    AnonymousMethodExpression, LambdaBody, LambdaExpression, LambdaParameter,
+    LambdaParameterModifier,
+};
+use crate::syntax::parser_helpers::{bchar, bws, context, keyword, parse_delimited_list0};
 
 /// Parse a lambda parameter modifier (ref, out, in)
 fn parse_lambda_parameter_modifier(input: &str) -> BResult<&str, LambdaParameterModifier> {
     context(
         "lambda parameter modifier",
         alt((
-            map(terminated(tag("ref"), word_boundary), |_| LambdaParameterModifier::Ref),
-            map(terminated(tag("out"), word_boundary), |_| LambdaParameterModifier::Out),
-            map(terminated(tag("in"), word_boundary), |_| LambdaParameterModifier::In),
+            map(keyword("ref"), |_| LambdaParameterModifier::Ref),
+            map(keyword("out"), |_| LambdaParameterModifier::Out),
+            map(keyword("in"), |_| LambdaParameterModifier::In),
         )),
     )(input)
 }
@@ -55,10 +50,7 @@ fn parse_lambda_parameter(input: &str) -> BResult<&str, LambdaParameter> {
             ),
             // Try parameter with just type: int x
             map(
-                tuple((
-                    bws(parse_type_expression),
-                    bws(parse_identifier),
-                )),
+                tuple((bws(parse_type_expression), bws(parse_identifier))),
                 |(ty, name)| LambdaParameter {
                     name,
                     ty: Some(ty),
@@ -67,10 +59,7 @@ fn parse_lambda_parameter(input: &str) -> BResult<&str, LambdaParameter> {
             ),
             // Try parameter with just modifier: ref x
             map(
-                tuple((
-                    bws(parse_lambda_parameter_modifier),
-                    bws(parse_identifier),
-                )),
+                tuple((bws(parse_lambda_parameter_modifier), bws(parse_identifier))),
                 |(modifier, name)| LambdaParameter {
                     name,
                     ty: None,
@@ -78,14 +67,11 @@ fn parse_lambda_parameter(input: &str) -> BResult<&str, LambdaParameter> {
                 },
             ),
             // Just identifier: x
-            map(
-                bws(parse_identifier),
-                |name| LambdaParameter {
-                    name,
-                    ty: None,
-                    modifier: None,
-                },
-            ),
+            map(bws(parse_identifier), |name| LambdaParameter {
+                name,
+                ty: None,
+                modifier: None,
+            }),
         )),
     )(input)
 }
@@ -96,27 +82,31 @@ fn parse_lambda_parameters(input: &str) -> BResult<&str, Vec<LambdaParameter>> {
         "lambda parameters",
         alt((
             // Parenthesized list: (x, y) => x + y or (int x, string y) => ...
-            delimited(
+            parse_delimited_list0::<_, _, _, _, char, LambdaParameter, char, char, LambdaParameter>(
                 bchar('('),
-                separated_list0(bws(bchar(',')), bws(parse_lambda_parameter)),
-                cut(bws(bchar(')')))
+                parse_lambda_parameter,
+                bchar(','),
+                bchar(')'),
+                false, // trailing comma not allowed in lambda parameter list
+                true,  // cut on close
             ),
             // Single parameter without parentheses: x => x * 2
             // This should only work if there's no type or modifier
-            map(
-                bws(parse_identifier),
-                |name| vec![LambdaParameter {
+            map(bws(parse_identifier), |name| {
+                vec![LambdaParameter {
                     name,
                     ty: None,
                     modifier: None,
                 }]
-            ),
+            }),
         )),
     )(input)
 }
 
 /// Parse lambda body block statements (for lambda { ... } bodies)
-fn parse_lambda_block_body(input: &str) -> BResult<&str, Vec<crate::syntax::nodes::statements::statement::Statement>> {
+fn parse_lambda_block_body(
+    input: &str,
+) -> BResult<&str, Vec<crate::syntax::nodes::statements::statement::Statement>> {
     let (input, block_statement) = parse_block_statement(input)?;
     let statements = extract_statements_from_block(block_statement);
     Ok((input, statements))
@@ -129,14 +119,16 @@ fn parse_lambda_body(input: &str) -> BResult<&str, LambdaBody> {
         alt((
             // Block body: { statements... }
             // We need our own block syntax here to avoid recursion issues
-            map(parse_lambda_block_body, |statements| LambdaBody::Block(statements)),
+            map(parse_lambda_block_body, |statements| {
+                LambdaBody::Block(statements)
+            }),
             // Expression body: expression
             map(parse_expression, |expr| LambdaBody::ExpressionSyntax(expr)),
         )),
     )(input)
 }
 
-/// Parse a lambda expression: [async] parameters => body
+/// Parse a lambda expression: \[async] parameters => body
 pub fn parse_lambda_expression(input: &str) -> BResult<&str, Expression> {
     context(
         "lambda expression",
@@ -144,7 +136,7 @@ pub fn parse_lambda_expression(input: &str) -> BResult<&str, Expression> {
             tuple((
                 opt(keyword("async")),
                 bws(parse_lambda_parameters),
-                bws(bchar('=')), 
+                bws(bchar('=')),
                 bws(bchar('>')),
                 bws(parse_lambda_body),
             )),
@@ -167,10 +159,13 @@ pub fn parse_anonymous_method_expression(input: &str) -> BResult<&str, Expressio
             tuple((
                 opt(bws(keyword("async"))),
                 bws(keyword("delegate")),
-                opt(delimited(
-                    bws(bchar('(')),
-                    separated_list0(bws(bchar(',')), bws(parse_lambda_parameter)),
-                    cut(bws(bchar(')')))
+                opt(parse_delimited_list0::<_, _, _, _, char, LambdaParameter, char, char, LambdaParameter>(
+                    bchar('('),
+                    parse_lambda_parameter,
+                    bchar(','),
+                    bchar(')'),
+                    false,
+                    true,
                 )),
                 bws(parse_lambda_body),
             )),
@@ -189,9 +184,6 @@ pub fn parse_anonymous_method_expression(input: &str) -> BResult<&str, Expressio
 pub fn parse_lambda_or_anonymous_method(input: &str) -> BResult<&str, Expression> {
     context(
         "lambda or anonymous method",
-        alt((
-            parse_lambda_expression,
-            parse_anonymous_method_expression,
-        )),
+        alt((parse_lambda_expression, parse_anonymous_method_expression)),
     )(input)
-} 
+}

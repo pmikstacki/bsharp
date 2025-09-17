@@ -1,4 +1,4 @@
-use super::super::core::{AstAnalyze, AstAnalysis};
+use super::super::core::{AstAnalysis, AstAnalyze};
 use crate::syntax::nodes::declarations::MethodDeclaration;
 
 impl AstAnalyze for MethodDeclaration {
@@ -9,12 +9,12 @@ impl AstAnalyze for MethodDeclaration {
             cyclomatic_complexity: 1, // Base complexity
             ..Default::default()
         };
-        
+
         if let Some(body) = &self.body {
             let body_analysis = body.analyze();
             analysis = analysis.combine(body_analysis);
         }
-        
+
         analysis
     }
-} 
+}

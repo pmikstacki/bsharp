@@ -1,17 +1,17 @@
-use crate::syntax::errors::BResult;
-use crate::syntax::nodes::expressions::{DeconstructionExpression, DeconstructionTarget};
-use crate::syntax::parser_helpers::{bchar, context, bws, keyword};
-use crate::parser::expressions::expression_parser::parse_expression;
+use crate::parser::expressions::primary_expression_parser::parse_expression;
 use crate::parser::identifier_parser::parse_identifier;
 use crate::parser::types::type_parser::parse_type_expression;
+use crate::syntax::errors::BResult;
+use crate::syntax::nodes::expressions::{DeconstructionExpression, DeconstructionTarget};
+use crate::syntax::parser_helpers::{bchar, bws, context, keyword};
 
+use nom::combinator::cut;
 use nom::{
     branch::alt,
     combinator::{map, verify},
     multi::separated_list1,
     sequence::{delimited, tuple},
 };
-use nom::combinator::cut;
 
 /// Parse a deconstruction expression: (var x, var y) = tuple
 pub fn parse_deconstruction_expression(input: &str) -> BResult<&str, DeconstructionExpression> {
@@ -39,7 +39,7 @@ fn parse_deconstruction_targets(input: &str) -> BResult<&str, Vec<Deconstruction
             bws(bchar('(')),
             verify(
                 separated_list1(bws(bchar(',')), bws(parse_deconstruction_target)),
-                |targets: &Vec<DeconstructionTarget>| targets.len() >= 2
+                |targets: &Vec<DeconstructionTarget>| targets.len() >= 2,
             ),
             cut(bws(bchar(')'))),
         ),
@@ -68,10 +68,7 @@ fn parse_deconstruction_target(input: &str) -> BResult<&str, DeconstructionTarge
             ),
             // Variable declaration with explicit type: int x, string y
             map(
-                tuple((
-                    bws(parse_type_expression),
-                    bws(parse_identifier),
-                )),
+                tuple((bws(parse_type_expression), bws(parse_identifier))),
                 |(variable_type, name)| DeconstructionTarget::Declaration {
                     variable_type: Some(variable_type),
                     name,
@@ -79,7 +76,9 @@ fn parse_deconstruction_target(input: &str) -> BResult<&str, DeconstructionTarge
                 },
             ),
             // Existing variable: existingVar
-            map(parse_identifier, |name| DeconstructionTarget::Variable(name)),
+            map(parse_identifier, |name| {
+                DeconstructionTarget::Variable(name)
+            }),
         )),
     )(input)
-} 
+}

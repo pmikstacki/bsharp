@@ -1,22 +1,28 @@
 // Analysis module - organized by feature area
 
-pub mod metrics;      // Code metrics (counts, complexity)
-pub mod navigation;   // AST navigation and search
 pub mod control_flow; // Control flow analysis
-pub mod types;        // Type usage analysis
 pub mod dependencies; // Dependency analysis
-pub mod naming;       // Naming convention analysis
-pub mod quality;      // Code quality analysis
-pub mod diagnostics;  // Diagnostic system with error codes
-pub mod semantic;     // Semantic analysis
+pub mod diagnostics; // Diagnostic system with error codes
+pub mod metrics; // Code metrics (counts, complexity)
+pub mod naming; // Naming convention analysis
+pub mod navigation; // AST navigation and search
+pub mod quality; // Code quality analysis
+pub mod semantic;
+pub mod types; // Type usage analysis // Semantic analysis
 
 // Re-export main analysis traits and types for easy access
-pub use metrics::{AstAnalyze, AstAnalysis, MetricCollector};
-pub use navigation::{AstNavigate, FindDeclarations, DeclarationInfo, DeclarationType};
 pub use control_flow::{ControlFlowAnalyzer, ControlFlowGraph, ControlFlowMetrics};
-pub use types::{TypeAnalyzer, TypeUsage, TypeComplexity, TypeMetrics, TypeComplexityMetrics, TypeCohesionMetrics};
-pub use dependencies::{DependencyAnalyzer, DependencyGraph, CircularDependency, DependencyMetrics, ModuleDependencies, ClassDependencies};
-pub use naming::{NamingAnalyzer, NamingViolation, NamingMetrics};
-pub use quality::{QualityAnalyzer, QualityIssue, QualityReport, QualitySeverity, QualityGrade};
+pub use dependencies::{
+    CircularDependency, ClassDependencies, DependencyAnalyzer, DependencyGraph, DependencyMetrics,
+    ModuleDependencies,
+};
 pub use diagnostics::{Diagnostic, DiagnosticCode, DiagnosticCollection, DiagnosticSeverity};
-pub use semantic::{SemanticAnalyzer, SemanticAnalysisResult, MemberAnalysis, SemanticMemberType}; 
+pub use metrics::{AstAnalysis, AstAnalyze, MetricCollector};
+pub use naming::{NamingAnalyzer, NamingMetrics, NamingViolation};
+pub use navigation::{AstNavigate, DeclarationInfo, DeclarationType, FindDeclarations};
+pub use quality::{QualityAnalyzer, QualityGrade, QualityIssue, QualityReport, QualitySeverity};
+pub use semantic::{MemberAnalysis, SemanticAnalysisResult, SemanticAnalyzer, SemanticMemberType};
+pub use types::{
+    TypeAnalyzer, TypeCohesionMetrics, TypeComplexity, TypeComplexityMetrics, TypeMetrics,
+    TypeUsage,
+};

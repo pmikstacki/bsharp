@@ -1,7 +1,7 @@
 // Tests for parsing empty statements
 
+use bsharp::parser::expressions::statements::empty_statement_parser::parse_empty_statement;
 use bsharp::syntax::nodes::statements::statement::Statement;
-use bsharp::parser::statements::empty_statement_parser::parse_empty_statement;
 
 #[test]
 fn test_parse_empty_statement_simple() {
@@ -27,4 +27,4 @@ fn test_parse_empty_statement_with_whitespace() {
 fn test_parse_empty_statement_fails_no_semicolon() {
     let input = "abc";
     assert!(parse_empty_statement(input).is_err());
-} 
+}

@@ -1,11 +1,11 @@
 // Integration tests for foreach_statement_parser.rs
 // Content moved from src/parser/statements/foreach_statement_parser.rs
 
+use bsharp::parser::expressions::statements::foreach_statement_parser::parse_foreach_statement;
 use bsharp::syntax::nodes::expressions::expression::Expression;
 use bsharp::syntax::nodes::statements::statement::Statement;
 use bsharp::syntax::nodes::types::{PrimitiveType, Type};
 use bsharp::syntax::test_helpers::parse_all;
-use bsharp::parser::statements::foreach_statement_parser::parse_foreach_statement;
 
 #[test]
 fn test_parse_foreach_statement() {
@@ -28,8 +28,8 @@ fn test_parse_foreach_statement() {
     if let Ok((_, Statement::ForEach(stmt))) = result_explicit_type {
         assert!(matches!(stmt.var_type, Type::Primitive(PrimitiveType::Int)));
         assert_eq!(stmt.var_name.name, "number");
-         assert!(matches!(*stmt.collection, Expression::Variable(_))); // Check collection is a variable
-         assert!(matches!(*stmt.body, Statement::Block(_))); // Check body is a block statement
+        assert!(matches!(*stmt.collection, Expression::Variable(_))); // Check collection is a variable
+        assert!(matches!(*stmt.body, Statement::Block(_))); // Check body is a block statement
     } else {
         panic!("Expected ForEach statement, got {:?}", result_explicit_type);
     }

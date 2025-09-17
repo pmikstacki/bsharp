@@ -1,15 +1,15 @@
+use crate::parser::types::type_parser::parse_type_expression;
 use crate::syntax::errors::BResult;
 use crate::syntax::nodes::expressions::default_expression::DefaultExpression;
 use crate::syntax::nodes::expressions::expression::Expression;
-use crate::syntax::parser_helpers::{bchar, context, bws, keyword};
-use crate::parser::types::type_parser::parse_type_expression;
+use crate::syntax::parser_helpers::{bchar, bws, context, keyword};
 
+use nom::combinator::cut;
 use nom::{
     branch::alt,
-    combinator::{map},
+    combinator::map,
     sequence::{delimited, preceded},
 };
-use nom::combinator::cut;
 
 /// Parse a default expression: `default(Type)` or `default`
 pub fn parse_default_expression(input: &str) -> BResult<&str, Expression> {
@@ -33,14 +33,9 @@ pub fn parse_default_expression(input: &str) -> BResult<&str, Expression> {
                 },
             ),
             // default - literal without type
-            map(
-                keyword("default"),
-                |_| {
-                    Expression::Default(Box::new(DefaultExpression {
-                        target_type: None,
-                    }))
-                },
-            ),
+            map(keyword("default"), |_| {
+                Expression::Default(Box::new(DefaultExpression { target_type: None }))
+            }),
         )),
     )(input)
-} 
+}

@@ -1,22 +1,36 @@
-use super::traits::{AstNavigate, FindDeclarations, DeclarationInfo, DeclarationType};
+use super::traits::{AstNavigate, DeclarationInfo, DeclarationType, FindDeclarations};
 use crate::syntax::ast::CompilationUnit;
 use crate::syntax::nodes::{
-    declarations::{ClassDeclaration, MethodDeclaration, InterfaceDeclaration, StructDeclaration, EnumDeclaration, RecordDeclaration, DelegateDeclaration},
-    statements::statement::Statement,
+    declarations::{
+        ClassDeclaration, DelegateDeclaration, EnumDeclaration, InterfaceDeclaration,
+        MethodDeclaration, RecordDeclaration, StructDeclaration,
+    },
     expressions::expression::Expression,
+    statements::statement::Statement,
 };
 
 // Internal helpers to streamline iteration over declarations across namespaces and file-scoped namespaces
-fn iter_namespace_members<'a>(cu: &'a CompilationUnit) -> impl Iterator<Item = &'a crate::syntax::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration> + 'a {
-    let top_level = cu.declarations.iter().filter_map(|member| {
-        if let crate::syntax::ast::TopLevelDeclaration::Namespace(ns) = member {
-            Some(ns.declarations.iter())
-        } else {
-            None
-        }
-    }).flatten();
+fn iter_namespace_members<'a>(
+    cu: &'a CompilationUnit,
+) -> impl Iterator<
+    Item = &'a crate::syntax::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration,
+> + 'a {
+    let top_level = cu
+        .declarations
+        .iter()
+        .filter_map(|member| {
+            if let crate::syntax::ast::TopLevelDeclaration::Namespace(ns) = member {
+                Some(ns.declarations.iter())
+            } else {
+                None
+            }
+        })
+        .flatten();
 
-    let file_scoped = cu.file_scoped_namespace.iter().flat_map(|fs| fs.declarations.iter());
+    let file_scoped = cu
+        .file_scoped_namespace
+        .iter()
+        .flat_map(|fs| fs.declarations.iter());
 
     top_level.chain(file_scoped)
 }
@@ -29,7 +43,7 @@ impl AstNavigate for CompilationUnit {
         }
         results
     }
-    
+
     fn find_for_loops(&self) -> Vec<&Statement> {
         let mut results = Vec::new();
         for class in self.find_classes() {
@@ -37,7 +51,7 @@ impl AstNavigate for CompilationUnit {
         }
         results
     }
-    
+
     fn find_while_loops(&self) -> Vec<&Statement> {
         let mut results = Vec::new();
         for class in self.find_classes() {
@@ -45,7 +59,7 @@ impl AstNavigate for CompilationUnit {
         }
         results
     }
-    
+
     fn find_switch_statements(&self) -> Vec<&Statement> {
         let mut results = Vec::new();
         for class in self.find_classes() {
@@ -53,7 +67,7 @@ impl AstNavigate for CompilationUnit {
         }
         results
     }
-    
+
     fn find_try_statements(&self) -> Vec<&Statement> {
         let mut results = Vec::new();
         for class in self.find_classes() {
@@ -61,7 +75,7 @@ impl AstNavigate for CompilationUnit {
         }
         results
     }
-    
+
     fn find_using_statements(&self) -> Vec<&Statement> {
         let mut results = Vec::new();
         for class in self.find_classes() {
@@ -69,10 +83,10 @@ impl AstNavigate for CompilationUnit {
         }
         results
     }
-    
+
     fn find_expressions<F>(&self, predicate: F) -> Vec<&Expression>
     where
-        F: Fn(&Expression) -> bool
+        F: Fn(&Expression) -> bool,
     {
         let mut results = Vec::new();
         for class in self.find_classes() {
@@ -102,7 +116,7 @@ impl FindDeclarations for CompilationUnit {
 
         classes
     }
-    
+
     fn find_methods(&self) -> Vec<&MethodDeclaration> {
         let mut methods = Vec::new();
         for class in self.find_classes() {
@@ -110,10 +124,10 @@ impl FindDeclarations for CompilationUnit {
         }
         methods
     }
-    
+
     fn find_interfaces(&self) -> Vec<&InterfaceDeclaration> {
         let mut interfaces = Vec::new();
-        
+
         // Search top-level declarations
         for member in &self.declarations {
             match member {
@@ -130,7 +144,7 @@ impl FindDeclarations for CompilationUnit {
                 _ => {}
             }
         }
-        
+
         // Search file-scoped namespace
         if let Some(file_scoped_ns) = &self.file_scoped_namespace {
             for declaration in &file_scoped_ns.declarations {
@@ -139,13 +153,13 @@ impl FindDeclarations for CompilationUnit {
                 }
             }
         }
-        
+
         interfaces
     }
-    
+
     fn find_structs(&self) -> Vec<&StructDeclaration> {
         let mut structs = Vec::new();
-        
+
         for member in &self.declarations {
             match member {
                 crate::syntax::ast::TopLevelDeclaration::Namespace(ns) => {
@@ -161,7 +175,7 @@ impl FindDeclarations for CompilationUnit {
                 _ => {}
             }
         }
-        
+
         if let Some(file_scoped_ns) = &self.file_scoped_namespace {
             for declaration in &file_scoped_ns.declarations {
                 if let crate::syntax::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration::Struct(struct_decl) = declaration {
@@ -169,13 +183,13 @@ impl FindDeclarations for CompilationUnit {
                 }
             }
         }
-        
+
         structs
     }
-    
+
     fn find_enums(&self) -> Vec<&EnumDeclaration> {
         let mut enums = Vec::new();
-        
+
         for member in &self.declarations {
             match member {
                 crate::syntax::ast::TopLevelDeclaration::Namespace(ns) => {
@@ -191,7 +205,7 @@ impl FindDeclarations for CompilationUnit {
                 _ => {}
             }
         }
-        
+
         if let Some(file_scoped_ns) = &self.file_scoped_namespace {
             for declaration in &file_scoped_ns.declarations {
                 if let crate::syntax::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration::Enum(enum_decl) = declaration {
@@ -199,13 +213,13 @@ impl FindDeclarations for CompilationUnit {
                 }
             }
         }
-        
+
         enums
     }
-    
+
     fn find_records(&self) -> Vec<&RecordDeclaration> {
         let mut records = Vec::new();
-        
+
         for member in &self.declarations {
             match member {
                 crate::syntax::ast::TopLevelDeclaration::Namespace(ns) => {
@@ -221,7 +235,7 @@ impl FindDeclarations for CompilationUnit {
                 _ => {}
             }
         }
-        
+
         if let Some(file_scoped_ns) = &self.file_scoped_namespace {
             for declaration in &file_scoped_ns.declarations {
                 if let crate::syntax::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration::Record(record_decl) = declaration {
@@ -229,13 +243,13 @@ impl FindDeclarations for CompilationUnit {
                 }
             }
         }
-        
+
         records
     }
-    
+
     fn find_delegates(&self) -> Vec<&DelegateDeclaration> {
         let mut delegates = Vec::new();
-        
+
         for member in &self.declarations {
             match member {
                 crate::syntax::ast::TopLevelDeclaration::Namespace(ns) => {
@@ -251,7 +265,7 @@ impl FindDeclarations for CompilationUnit {
                 _ => {}
             }
         }
-        
+
         if let Some(file_scoped_ns) = &self.file_scoped_namespace {
             for declaration in &file_scoped_ns.declarations {
                 if let crate::syntax::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration::Delegate(delegate_decl) = declaration {
@@ -259,13 +273,13 @@ impl FindDeclarations for CompilationUnit {
                 }
             }
         }
-        
+
         delegates
     }
-    
+
     fn find_by_name(&self, name: &str) -> Vec<DeclarationInfo> {
         let mut results = Vec::new();
-        
+
         // Find classes
         for class in self.find_classes() {
             if class.name.name == name {
@@ -276,7 +290,7 @@ impl FindDeclarations for CompilationUnit {
                 });
             }
         }
-        
+
         // Find interfaces
         for interface in self.find_interfaces() {
             if interface.name.name == name {
@@ -287,7 +301,7 @@ impl FindDeclarations for CompilationUnit {
                 });
             }
         }
-        
+
         // Find methods
         for method in self.find_methods() {
             if method.name.name == name {
@@ -298,7 +312,7 @@ impl FindDeclarations for CompilationUnit {
                 });
             }
         }
-        
+
         results
     }
 }
@@ -311,7 +325,7 @@ impl AstNavigate for ClassDeclaration {
         }
         results
     }
-    
+
     fn find_for_loops(&self) -> Vec<&Statement> {
         let mut results = Vec::new();
         for method in self.find_methods() {
@@ -319,7 +333,7 @@ impl AstNavigate for ClassDeclaration {
         }
         results
     }
-    
+
     fn find_while_loops(&self) -> Vec<&Statement> {
         let mut results = Vec::new();
         for method in self.find_methods() {
@@ -327,7 +341,7 @@ impl AstNavigate for ClassDeclaration {
         }
         results
     }
-    
+
     fn find_switch_statements(&self) -> Vec<&Statement> {
         let mut results = Vec::new();
         for method in self.find_methods() {
@@ -335,7 +349,7 @@ impl AstNavigate for ClassDeclaration {
         }
         results
     }
-    
+
     fn find_try_statements(&self) -> Vec<&Statement> {
         let mut results = Vec::new();
         for method in self.find_methods() {
@@ -343,7 +357,7 @@ impl AstNavigate for ClassDeclaration {
         }
         results
     }
-    
+
     fn find_using_statements(&self) -> Vec<&Statement> {
         let mut results = Vec::new();
         for method in self.find_methods() {
@@ -351,10 +365,10 @@ impl AstNavigate for ClassDeclaration {
         }
         results
     }
-    
+
     fn find_expressions<F>(&self, predicate: F) -> Vec<&Expression>
     where
-        F: Fn(&Expression) -> bool
+        F: Fn(&Expression) -> bool,
     {
         let mut results = Vec::new();
         for method in self.find_methods() {
@@ -368,40 +382,41 @@ impl FindDeclarations for ClassDeclaration {
     fn find_classes(&self) -> Vec<&ClassDeclaration> {
         vec![self] // A class contains itself
     }
-    
+
     fn find_methods(&self) -> Vec<&MethodDeclaration> {
         let mut methods = Vec::new();
         for member in &self.body_declarations {
-            if let crate::syntax::nodes::declarations::ClassBodyDeclaration::Method(method) = member {
+            if let crate::syntax::nodes::declarations::ClassBodyDeclaration::Method(method) = member
+            {
                 methods.push(method);
             }
         }
         methods
     }
-    
+
     fn find_interfaces(&self) -> Vec<&InterfaceDeclaration> {
         Vec::new() // Classes don't contain interfaces directly
     }
-    
+
     fn find_structs(&self) -> Vec<&StructDeclaration> {
         Vec::new() // TODO: Add nested struct support when needed
     }
-    
+
     fn find_enums(&self) -> Vec<&EnumDeclaration> {
         Vec::new() // TODO: Add nested enum support when needed
     }
-    
+
     fn find_records(&self) -> Vec<&RecordDeclaration> {
         Vec::new() // TODO: Add nested record support when needed
     }
-    
+
     fn find_delegates(&self) -> Vec<&DelegateDeclaration> {
         Vec::new() // TODO: Add nested delegate support when needed
     }
-    
+
     fn find_by_name(&self, name: &str) -> Vec<DeclarationInfo> {
         let mut results = Vec::new();
-        
+
         if self.name.name == name {
             results.push(DeclarationInfo {
                 name: self.name.name.clone(),
@@ -409,7 +424,7 @@ impl FindDeclarations for ClassDeclaration {
                 location: None,
             });
         }
-        
+
         for method in self.find_methods() {
             if method.name.name == name {
                 results.push(DeclarationInfo {
@@ -419,7 +434,7 @@ impl FindDeclarations for ClassDeclaration {
                 });
             }
         }
-        
+
         results
     }
 }
@@ -432,7 +447,7 @@ impl AstNavigate for MethodDeclaration {
             Vec::new()
         }
     }
-    
+
     fn find_for_loops(&self) -> Vec<&Statement> {
         if let Some(body) = &self.body {
             body.find_for_loops()
@@ -440,7 +455,7 @@ impl AstNavigate for MethodDeclaration {
             Vec::new()
         }
     }
-    
+
     fn find_while_loops(&self) -> Vec<&Statement> {
         if let Some(body) = &self.body {
             body.find_while_loops()
@@ -448,7 +463,7 @@ impl AstNavigate for MethodDeclaration {
             Vec::new()
         }
     }
-    
+
     fn find_switch_statements(&self) -> Vec<&Statement> {
         if let Some(body) = &self.body {
             body.find_switch_statements()
@@ -456,7 +471,7 @@ impl AstNavigate for MethodDeclaration {
             Vec::new()
         }
     }
-    
+
     fn find_try_statements(&self) -> Vec<&Statement> {
         if let Some(body) = &self.body {
             body.find_try_statements()
@@ -464,7 +479,7 @@ impl AstNavigate for MethodDeclaration {
             Vec::new()
         }
     }
-    
+
     fn find_using_statements(&self) -> Vec<&Statement> {
         if let Some(body) = &self.body {
             body.find_using_statements()
@@ -472,10 +487,10 @@ impl AstNavigate for MethodDeclaration {
             Vec::new()
         }
     }
-    
+
     fn find_expressions<F>(&self, predicate: F) -> Vec<&Expression>
     where
-        F: Fn(&Expression) -> bool
+        F: Fn(&Expression) -> bool,
     {
         if let Some(body) = &self.body {
             body.find_expressions(predicate)
@@ -489,31 +504,31 @@ impl FindDeclarations for MethodDeclaration {
     fn find_classes(&self) -> Vec<&ClassDeclaration> {
         Vec::new() // Methods don't contain classes
     }
-    
+
     fn find_methods(&self) -> Vec<&MethodDeclaration> {
         vec![self] // A method contains itself
     }
-    
+
     fn find_interfaces(&self) -> Vec<&InterfaceDeclaration> {
         Vec::new()
     }
-    
+
     fn find_structs(&self) -> Vec<&StructDeclaration> {
         Vec::new()
     }
-    
+
     fn find_enums(&self) -> Vec<&EnumDeclaration> {
         Vec::new()
     }
-    
+
     fn find_records(&self) -> Vec<&RecordDeclaration> {
         Vec::new()
     }
-    
+
     fn find_delegates(&self) -> Vec<&DelegateDeclaration> {
         Vec::new()
     }
-    
+
     fn find_by_name(&self, name: &str) -> Vec<DeclarationInfo> {
         if self.name.name == name {
             vec![DeclarationInfo {
@@ -533,40 +548,40 @@ impl AstNavigate for Statement {
         collect_if_statements(self, &mut results);
         results
     }
-    
+
     fn find_for_loops(&self) -> Vec<&Statement> {
         let mut results = Vec::new();
         collect_for_loops(self, &mut results);
         results
     }
-    
+
     fn find_while_loops(&self) -> Vec<&Statement> {
         let mut results = Vec::new();
         collect_while_loops(self, &mut results);
         results
     }
-    
+
     fn find_switch_statements(&self) -> Vec<&Statement> {
         let mut results = Vec::new();
         collect_switch_statements(self, &mut results);
         results
     }
-    
+
     fn find_try_statements(&self) -> Vec<&Statement> {
         let mut results = Vec::new();
         collect_try_statements(self, &mut results);
         results
     }
-    
+
     fn find_using_statements(&self) -> Vec<&Statement> {
         let mut results = Vec::new();
         collect_using_statements(self, &mut results);
         results
     }
-    
+
     fn find_expressions<F>(&self, predicate: F) -> Vec<&Expression>
     where
-        F: Fn(&Expression) -> bool
+        F: Fn(&Expression) -> bool,
     {
         let mut results = Vec::new();
         collect_expressions(self, &predicate, &mut results);
@@ -678,7 +693,9 @@ fn collect_switch_statements<'a>(stmt: &'a Statement, results: &mut Vec<&'a Stat
         }
         Statement::For(for_stmt) => collect_switch_statements(&for_stmt.body, results),
         Statement::While(while_stmt) => collect_switch_statements(&while_stmt.body, results),
-        Statement::DoWhile(do_while_stmt) => collect_switch_statements(&do_while_stmt.body, results),
+        Statement::DoWhile(do_while_stmt) => {
+            collect_switch_statements(&do_while_stmt.body, results)
+        }
         _ => {}
     }
 }
@@ -745,9 +762,9 @@ fn collect_using_statements<'a>(stmt: &'a Statement, results: &mut Vec<&'a State
 
 fn collect_expressions<'a, F>(stmt: &'a Statement, predicate: &F, results: &mut Vec<&'a Expression>)
 where
-    F: Fn(&Expression) -> bool
+    F: Fn(&Expression) -> bool,
 {
     // TODO: Implement expression collection within statements
     // This would require traversing all expression nodes within statements
     let _ = (stmt, predicate, results); // Suppress unused warnings for now
-} 
+}

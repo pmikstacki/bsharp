@@ -1,10 +1,10 @@
 // Tests for parsing enum declarations
 
+use bsharp::parser::expressions::declarations::enum_declaration_parser::parse_enum_declaration;
 use bsharp::syntax::nodes::declarations::Modifier;
-use bsharp::syntax::nodes::types::{Type, PrimitiveType};
 use bsharp::syntax::nodes::expressions::expression::Expression;
 use bsharp::syntax::nodes::expressions::literal::Literal;
-use bsharp::parser::declarations::enum_declaration_parser::parse_enum_declaration;
+use bsharp::syntax::nodes::types::{PrimitiveType, Type};
 
 // Local test helper to avoid import issues
 fn parse_full_input<'a, O, F>(input: &'a str, parser: F) -> Result<(&'a str, O), String>
@@ -52,7 +52,7 @@ fn test_enum_with_values() {
     let (_remaining, decl) = result.unwrap();
     assert_eq!(decl.name.name, "ErrorCode");
     assert_eq!(decl.enum_members.len(), 3);
-    
+
     // Check that values were parsed correctly
     assert_eq!(decl.enum_members[0].name.name, "Success");
     if let Some(Expression::Literal(Literal::Integer(0))) = decl.enum_members[0].value {
@@ -60,7 +60,7 @@ fn test_enum_with_values() {
     } else {
         panic!("Expected integer literal 0");
     }
-    
+
     assert_eq!(decl.enum_members[1].name.name, "NotFound");
     if let Some(Expression::Literal(Literal::Integer(404))) = decl.enum_members[1].value {
         // Success
@@ -76,7 +76,7 @@ fn test_enum_with_underlying_type() {
     assert!(result.is_ok());
     let (_remaining, decl) = result.unwrap();
     assert_eq!(decl.name.name, "IntFlags");
-    
+
     // Check underlying type
     assert!(decl.underlying_type.is_some());
     if let Some(Type::Primitive(primitive)) = decl.underlying_type {
@@ -84,7 +84,7 @@ fn test_enum_with_underlying_type() {
     } else {
         panic!("Expected int primitive type");
     }
-    
+
     // Check members
     assert_eq!(decl.enum_members.len(), 4);
 }
@@ -97,23 +97,35 @@ fn test_parse_enum_with_attributes_modifiers_and_base_type() {
     let (_remaining, decl) = result.unwrap();
 
     assert_eq!(decl.name.name, "MyEnum");
-    
+
     // Check attributes
     assert_eq!(decl.attributes.len(), 1, "Expected 1 attribute list");
-    assert!(!decl.attributes[0].attributes.is_empty(), "Expected attributes in the list");
-    assert_eq!(decl.attributes[0].attributes[0].name.name, "Flags", "Attribute name mismatch");
-    
+    assert!(
+        !decl.attributes[0].attributes.is_empty(),
+        "Expected attributes in the list"
+    );
+    assert_eq!(
+        decl.attributes[0].attributes[0].name.name, "Flags",
+        "Attribute name mismatch"
+    );
+
     // Check modifiers
     assert_eq!(decl.modifiers.len(), 1, "Expected 1 modifier");
     assert_eq!(decl.modifiers[0], Modifier::Public, "Modifier mismatch");
 
     // Check underlying type
-    assert!(decl.underlying_type.is_some(), "Expected an underlying type");
+    assert!(
+        decl.underlying_type.is_some(),
+        "Expected an underlying type"
+    );
     if let Some(Type::Primitive(primitive)) = &decl.underlying_type {
         assert_eq!(*primitive, PrimitiveType::Int, "Underlying type mismatch");
     } else {
-        panic!("Expected int primitive type, got {:?}", decl.underlying_type);
+        panic!(
+            "Expected int primitive type, got {:?}",
+            decl.underlying_type
+        );
     }
-    
+
     assert_eq!(decl.enum_members.len(), 2, "Member count mismatch");
-} 
+}

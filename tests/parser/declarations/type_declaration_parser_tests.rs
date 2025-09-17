@@ -1,12 +1,9 @@
 #![cfg(test)]
-use bsharp::syntax::nodes::declarations::{InterfaceBodyDeclaration, TypeDeclaration};
-use bsharp::parser::declarations::type_declaration_parser::{
-    parse_class_declaration,
-    parse_interface_declaration,
-    parse_record_declaration,
-    parse_struct_declaration,
-    parse_type_declaration,
+use bsharp::parser::expressions::declarations::type_declaration_parser::{
+    parse_class_declaration, parse_interface_declaration, parse_record_declaration,
+    parse_struct_declaration, parse_type_declaration,
 };
+use bsharp::syntax::nodes::declarations::{InterfaceBodyDeclaration, TypeDeclaration};
 
 #[test]
 fn test_simple_class() {
@@ -140,7 +137,7 @@ fn test_interface_with_method_body_error() {
             assert_eq!(remaining, "");
             assert_eq!(decl.name.to_string(), "IBad");
             assert_eq!(decl.body_declarations.len(), 1);
-            
+
             // The method should be parsed but with body set to None (error recovery)
             if let InterfaceBodyDeclaration::Method(method) = &decl.body_declarations[0] {
                 assert_eq!(method.name.to_string(), "BadMethod");
@@ -149,7 +146,10 @@ fn test_interface_with_method_body_error() {
                 panic!("Expected a method, found something else");
             }
         }
-        Err(e) => panic!("Expected parsing to succeed with error recovery, but got: {:?}", e),
+        Err(e) => panic!(
+            "Expected parsing to succeed with error recovery, but got: {:?}",
+            e
+        ),
     }
 }
 

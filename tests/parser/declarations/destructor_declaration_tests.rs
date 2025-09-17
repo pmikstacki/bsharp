@@ -1,8 +1,8 @@
 // Tests for parsing destructor declarations
 
+use bsharp::parser::expressions::declarations::destructor_declaration_parser::parse_destructor_declaration;
 use bsharp::syntax::nodes::declarations::{DestructorDeclaration, Modifier};
 use bsharp::syntax::nodes::identifier::Identifier;
-use bsharp::parser::declarations::destructor_declaration_parser::parse_destructor_declaration;
 
 fn parse_destructor_declaration_helper(code: &str) -> Result<DestructorDeclaration, String> {
     match parse_destructor_declaration(code) {
@@ -21,8 +21,12 @@ fn parse_destructor_declaration_helper(code: &str) -> Result<DestructorDeclarati
 fn test_parse_simple_destructor() {
     let code = "~MyClass() { }";
     let result = parse_destructor_declaration_helper(code);
-    assert!(result.is_ok(), "Failed to parse simple destructor: {:?}", result);
-    
+    assert!(
+        result.is_ok(),
+        "Failed to parse simple destructor: {:?}",
+        result
+    );
+
     let declaration = result.unwrap();
     assert_eq!(declaration.name, Identifier::new("MyClass"));
     assert_eq!(declaration.modifiers, vec![]);
@@ -34,8 +38,12 @@ fn test_parse_simple_destructor() {
 fn test_parse_destructor_with_body() {
     let code = "~MyClass() { Console.WriteLine(\"Destructor called\"); }";
     let result = parse_destructor_declaration_helper(code);
-    assert!(result.is_ok(), "Failed to parse destructor with body: {:?}", result);
-    
+    assert!(
+        result.is_ok(),
+        "Failed to parse destructor with body: {:?}",
+        result
+    );
+
     let declaration = result.unwrap();
     assert_eq!(declaration.name, Identifier::new("MyClass"));
     // Our simplified implementation returns a placeholder for the body
@@ -46,8 +54,12 @@ fn test_parse_destructor_with_body() {
 fn test_parse_extern_destructor() {
     let code = "extern ~MyClass();";
     let result = parse_destructor_declaration_helper(code);
-    assert!(result.is_ok(), "Failed to parse extern destructor: {:?}", result);
-    
+    assert!(
+        result.is_ok(),
+        "Failed to parse extern destructor: {:?}",
+        result
+    );
+
     let declaration = result.unwrap();
     assert_eq!(declaration.name, Identifier::new("MyClass"));
     assert!(declaration.modifiers.contains(&Modifier::Extern));
@@ -58,33 +70,58 @@ fn test_parse_extern_destructor() {
 fn test_parse_destructor_with_attributes() {
     let code = "[Obsolete] ~MyClass() { }";
     let result = parse_destructor_declaration_helper(code);
-    assert!(result.is_ok(), "Failed to parse destructor with attributes: {:?}", result);
-    
+    assert!(
+        result.is_ok(),
+        "Failed to parse destructor with attributes: {:?}",
+        result
+    );
+
     let declaration = result.unwrap();
     assert_eq!(declaration.name, Identifier::new("MyClass"));
-    assert!(!declaration.attributes.is_empty(), "Expected attributes to be parsed");
+    assert!(
+        !declaration.attributes.is_empty(),
+        "Expected attributes to be parsed"
+    );
 }
 
 #[test]
 fn test_parse_destructor_with_multiple_attributes() {
     let code = "[Obsolete][MethodImpl(MethodImplOptions.NoInlining)] ~MyClass() { }";
     let result = parse_destructor_declaration_helper(code);
-    assert!(result.is_ok(), "Failed to parse destructor with multiple attributes: {:?}", result);
-    
+    assert!(
+        result.is_ok(),
+        "Failed to parse destructor with multiple attributes: {:?}",
+        result
+    );
+
     let declaration = result.unwrap();
     assert_eq!(declaration.name, Identifier::new("MyClass"));
-    assert!(!declaration.attributes.is_empty(), "Expected attributes to be parsed");
+    assert!(
+        !declaration.attributes.is_empty(),
+        "Expected attributes to be parsed"
+    );
 }
 
 #[test]
 fn test_parse_destructor_different_class_names() {
-    let class_names = vec!["MyClass", "TestClass", "SomeOtherClass", "A", "VeryLongClassName"];
-    
+    let class_names = vec![
+        "MyClass",
+        "TestClass",
+        "SomeOtherClass",
+        "A",
+        "VeryLongClassName",
+    ];
+
     for class_name in class_names {
         let code = format!("~{}() {{ }}", class_name);
         let result = parse_destructor_declaration_helper(&code);
-        assert!(result.is_ok(), "Failed to parse destructor for class {}: {:?}", class_name, result);
-        
+        assert!(
+            result.is_ok(),
+            "Failed to parse destructor for class {}: {:?}",
+            class_name,
+            result
+        );
+
         let declaration = result.unwrap();
         assert_eq!(declaration.name, Identifier::new(class_name));
     }
@@ -94,8 +131,12 @@ fn test_parse_destructor_different_class_names() {
 fn test_parse_destructor_with_whitespace() {
     let code = "  ~  MyClass  (  )  {  }  ";
     let result = parse_destructor_declaration_helper(code);
-    assert!(result.is_ok(), "Failed to parse destructor with whitespace: {:?}", result);
-    
+    assert!(
+        result.is_ok(),
+        "Failed to parse destructor with whitespace: {:?}",
+        result
+    );
+
     let declaration = result.unwrap();
     assert_eq!(declaration.name, Identifier::new("MyClass"));
 }
@@ -121,8 +162,12 @@ fn test_parse_destructor_with_comments() {
 fn test_parse_unsafe_destructor() {
     let code = "unsafe ~MyClass() { }";
     let result = parse_destructor_declaration_helper(code);
-    assert!(result.is_ok(), "Failed to parse unsafe destructor: {:?}", result);
-    
+    assert!(
+        result.is_ok(),
+        "Failed to parse unsafe destructor: {:?}",
+        result
+    );
+
     let declaration = result.unwrap();
     assert_eq!(declaration.name, Identifier::new("MyClass"));
     assert!(declaration.modifiers.contains(&Modifier::Unsafe));
@@ -132,8 +177,12 @@ fn test_parse_unsafe_destructor() {
 fn test_parse_destructor_empty_body() {
     let code = "~MyClass() { }";
     let result = parse_destructor_declaration_helper(code);
-    assert!(result.is_ok(), "Failed to parse destructor with empty body: {:?}", result);
-    
+    assert!(
+        result.is_ok(),
+        "Failed to parse destructor with empty body: {:?}",
+        result
+    );
+
     let declaration = result.unwrap();
     assert_eq!(declaration.name, Identifier::new("MyClass"));
     assert_eq!(declaration.body, "{ /* destructor body */ }");
@@ -143,8 +192,12 @@ fn test_parse_destructor_empty_body() {
 fn test_parse_destructor_generic_class() {
     let code = "~MyClass() { }";
     let result = parse_destructor_declaration_helper(code);
-    assert!(result.is_ok(), "Failed to parse destructor for generic class: {:?}", result);
-    
+    assert!(
+        result.is_ok(),
+        "Failed to parse destructor for generic class: {:?}",
+        result
+    );
+
     let declaration = result.unwrap();
     // Note: Destructors don't have type parameters themselves, even for generic classes
     // The class name in the destructor is just the simple name without type parameters
@@ -155,8 +208,12 @@ fn test_parse_destructor_generic_class() {
 fn test_parse_destructor_nested_class() {
     let code = "~NestedClass() { }";
     let result = parse_destructor_declaration_helper(code);
-    assert!(result.is_ok(), "Failed to parse destructor for nested class: {:?}", result);
-    
+    assert!(
+        result.is_ok(),
+        "Failed to parse destructor for nested class: {:?}",
+        result
+    );
+
     let declaration = result.unwrap();
     assert_eq!(declaration.name, Identifier::new("NestedClass"));
 }

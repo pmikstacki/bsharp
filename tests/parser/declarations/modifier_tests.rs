@@ -1,4 +1,6 @@
-use bsharp::parser::declarations::modifier_parser::{parse_modifiers, parse_modifiers_for_decl_type};
+use bsharp::parser::expressions::declarations::modifier_parser::{
+    parse_modifiers, parse_modifiers_for_decl_type,
+};
 use bsharp::syntax::nodes::declarations::Modifier;
 
 #[test]
@@ -6,11 +8,11 @@ fn test_parse_single_modifier() {
     let result = parse_modifiers("public").unwrap();
     assert_eq!(result.0, "");
     assert_eq!(result.1, vec![Modifier::Public]);
-    
+
     let result = parse_modifiers("static").unwrap();
     assert_eq!(result.0, "");
     assert_eq!(result.1, vec![Modifier::Static]);
-    
+
     let result = parse_modifiers("private").unwrap();
     assert_eq!(result.0, "");
     assert_eq!(result.1, vec![Modifier::Private]);
@@ -36,11 +38,17 @@ fn test_parse_multiple_modifiers() {
 
     let result = parse_modifiers("virtual internal protected").unwrap();
     assert_eq!(result.0, "");
-    assert_eq!(result.1, vec![Modifier::Internal, Modifier::Protected, Modifier::Virtual]);
+    assert_eq!(
+        result.1,
+        vec![Modifier::Internal, Modifier::Protected, Modifier::Virtual]
+    );
 
     let result_ws = parse_modifiers("virtual internal protected ").unwrap();
     assert_eq!(result_ws.0, "");
-    assert_eq!(result_ws.1, vec![Modifier::Internal, Modifier::Protected, Modifier::Virtual]);
+    assert_eq!(
+        result_ws.1,
+        vec![Modifier::Internal, Modifier::Protected, Modifier::Virtual]
+    );
 }
 
 #[test]

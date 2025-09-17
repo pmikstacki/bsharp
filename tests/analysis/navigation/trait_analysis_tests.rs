@@ -1,7 +1,7 @@
 // Tests for trait-based AST analysis functionality
 
+use bsharp::analysis::{AstAnalysis, AstAnalyze};
 use bsharp::syntax::Parser;
-use bsharp::analysis::{AstAnalyze, AstAnalysis};
 
 #[test]
 fn test_trait_based_analysis() {
@@ -31,17 +31,17 @@ namespace TestApp
 "#;
 
     let ast = parser.parse(source).expect("Failed to parse source");
-    
+
     // Test trait-based analysis
     let analysis = ast.analyze();
-    
+
     assert_eq!(analysis.total_classes, 1);
     assert_eq!(analysis.total_methods, 2);
     assert_eq!(analysis.total_if_statements, 1);
     assert_eq!(analysis.total_for_loops, 1);
     assert_eq!(analysis.total_while_loops, 0);
     assert_eq!(analysis.total_switch_statements, 0);
-    
+
     // Test the extension method
     let quick_analysis = ast.quick_analysis();
     assert_eq!(analysis, quick_analysis);
@@ -73,7 +73,7 @@ fn test_analysis_combine() {
         documented_methods: 0,
         documented_classes: 0,
     };
-    
+
     let analysis2 = AstAnalysis {
         total_classes: 2,
         total_interfaces: 0,
@@ -98,9 +98,9 @@ fn test_analysis_combine() {
         documented_methods: 0,
         documented_classes: 0,
     };
-    
+
     let combined = analysis1.combine(analysis2);
-    
+
     assert_eq!(combined.total_classes, 3);
     assert_eq!(combined.total_methods, 3);
     assert_eq!(combined.total_if_statements, 4);
@@ -161,7 +161,7 @@ namespace TestApp
 
     let ast = parser.parse(source).expect("Failed to parse source");
     let analysis = ast.analyze();
-    
+
     assert_eq!(analysis.total_classes, 1);
     assert_eq!(analysis.total_methods, 2);
     assert_eq!(analysis.total_if_statements, 3); // if(true), if(i%2==0), if(j>2)
@@ -173,7 +173,7 @@ namespace TestApp
 #[test]
 fn test_analysis_default() {
     let analysis = AstAnalysis::default();
-    
+
     assert_eq!(analysis.total_classes, 0);
     assert_eq!(analysis.total_methods, 0);
     assert_eq!(analysis.total_if_statements, 0);
@@ -255,7 +255,7 @@ namespace TestApp
 
     let ast = parser.parse(source).expect("Failed to parse source");
     let analysis = ast.analyze();
-    
+
     // Verify comprehensive metrics collection
     assert_eq!(analysis.total_classes, 1); // Only counting classes, not interfaces or structs
     assert_eq!(analysis.total_methods, 4); // Constructor + 3 methods
@@ -277,7 +277,7 @@ namespace EmptyApp
 
     let ast = parser.parse(source).expect("Failed to parse empty source");
     let analysis = ast.analyze();
-    
+
     // Should handle empty code gracefully
     assert_eq!(analysis.total_classes, 0);
     assert_eq!(analysis.total_methods, 0);
@@ -290,7 +290,7 @@ namespace EmptyApp
 #[test]
 fn test_analysis_aggregation() {
     let parser = Parser::new();
-    
+
     // Create multiple analysis instances as if from different files
     let source1 = r#"
 namespace App1
@@ -305,7 +305,7 @@ namespace App1
     }
 }
 "#;
-    
+
     let source2 = r#"
 namespace App2
 {
@@ -324,25 +324,25 @@ namespace App2
     }
 }
 "#;
-    
+
     let ast1 = parser.parse(source1).expect("Failed to parse source1");
     let ast2 = parser.parse(source2).expect("Failed to parse source2");
-    
+
     let analysis1 = ast1.analyze();
     let analysis2 = ast2.analyze();
-    
+
     // Test individual analyses
     assert_eq!(analysis1.total_classes, 1);
     assert_eq!(analysis1.total_methods, 1);
     assert_eq!(analysis1.total_if_statements, 1);
     assert_eq!(analysis1.total_for_loops, 1);
-    
+
     assert_eq!(analysis2.total_classes, 1);
     assert_eq!(analysis2.total_methods, 2);
     assert_eq!(analysis2.total_if_statements, 1);
     assert_eq!(analysis2.total_while_loops, 1);
     assert_eq!(analysis2.total_switch_statements, 1);
-    
+
     // Test combined analysis
     let combined = analysis1.combine(analysis2);
     assert_eq!(combined.total_classes, 2);
@@ -351,4 +351,4 @@ namespace App2
     assert_eq!(combined.total_for_loops, 1);
     assert_eq!(combined.total_while_loops, 1);
     assert_eq!(combined.total_switch_statements, 1);
-} 
+}

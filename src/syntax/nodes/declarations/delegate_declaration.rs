@@ -1,8 +1,8 @@
+// Need Parameter too
+use super::{AttributeList, Modifier, TypeParameterConstraintClause};
 use crate::syntax::nodes::identifier::Identifier;
 use crate::syntax::nodes::types::{Parameter, Type, TypeParameter};
 use serde::{Deserialize, Serialize};
-// Need Parameter too
-use super::{AttributeList, Modifier, TypeParameterConstraintClause};
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct DelegateDeclaration {

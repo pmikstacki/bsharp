@@ -1,14 +1,19 @@
 // Tests for parsing primary expressions (variable references, literals, parenthesized expressions)
+use bsharp::parser::expressions::parse_primary_expression;
 use bsharp::syntax::nodes::expressions::Expression;
-use bsharp::syntax::nodes::identifier::Identifier;
 use bsharp::syntax::nodes::expressions::Literal;
-use bsharp::parser::expressions::primary_parser::parse_primary_expression;
+use bsharp::syntax::nodes::identifier::Identifier;
 
 #[test]
 fn test_parse_variable_reference() {
     let input = "foo";
     let (rest, expr) = parse_primary_expression(input).unwrap();
-    assert_eq!(expr, Expression::Variable(Identifier { name: "foo".to_string() }));
+    assert_eq!(
+        expr,
+        Expression::Variable(Identifier {
+            name: "foo".to_string()
+        })
+    );
     assert_eq!(rest, "");
 }
 
@@ -24,7 +29,10 @@ fn test_parse_literal_integer() {
 fn test_parse_literal_string() {
     let input = r#""hello""#;
     let (rest, expr) = parse_primary_expression(input).unwrap();
-    assert_eq!(expr, Expression::Literal(Literal::String("hello".to_string())));
+    assert_eq!(
+        expr,
+        Expression::Literal(Literal::String("hello".to_string()))
+    );
     assert_eq!(rest, "");
 }
 

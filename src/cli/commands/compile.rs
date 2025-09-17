@@ -8,13 +8,13 @@ use crate::compiler;
 pub fn execute(input: PathBuf) -> Result<()> {
     // Create a compiler instance
     let mut compiler = compiler::Compiler::new();
-    
+
     // Compile the file
     match compiler.compile_file(input.to_str().unwrap()) {
         Ok(_) => {
             println!("Compilation successful!");
             Ok(())
-        },
+        }
         Err(e) => Err(anyhow!("Compilation failed: {}", e)),
     }
 }

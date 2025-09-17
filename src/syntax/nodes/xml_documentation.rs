@@ -24,9 +24,9 @@ pub struct XmlElement {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum XmlNode {
     Element(XmlElement),
-    Text(String),      // Plain text content
-    CData(String),     // CDATA section content
-    Comment(String),   // XML Comment <!-- ... -->
+    Text(String),    // Plain text content
+    CData(String),   // CDATA section content
+    Comment(String), // XML Comment <!-- ... -->
 }
 
 /// Represents a parsed C# XML documentation comment block.

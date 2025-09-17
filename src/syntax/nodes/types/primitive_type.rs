@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 pub enum PrimitiveType {
     Void,
     Bool,
-    
+
     // Integral types
     Byte,
     SByte,
@@ -14,12 +14,12 @@ pub enum PrimitiveType {
     UInt,
     Long,
     ULong,
-    
+
     // Floating-point types
     Float,
     Double,
     Decimal,
-    
+
     // Character and string types
     Char,
     String,

@@ -2,16 +2,16 @@ use crate::syntax::errors::BResult;
 use nom::Err;
 
 /// Helper function to parse all input and ensure nothing remains
-pub fn parse_all<'a, O, P>(parser: P, input: &'a str) -> BResult<&'a str, O>
+pub fn parse_all<O, P>(parser: P, input: &str) -> BResult<&str, O>
 where
-    P: Fn(&'a str) -> BResult<&'a str, O>,
+    P: Fn(&str) -> BResult<&str, O>,
 {
     let (remaining, result) = parser(input)?;
     if remaining.trim().is_empty() {
         Ok(("", result))
     } else {
         // Create a nom-supreme error for remaining input
-        use nom_supreme::error::{ErrorTree, BaseErrorKind, Expectation};
+        use nom_supreme::error::{BaseErrorKind, ErrorTree, Expectation};
         let error_tree = ErrorTree::Base {
             location: remaining,
             kind: BaseErrorKind::Expected(Expectation::Eof),
@@ -21,7 +21,9 @@ where
 }
 
 /// Parse statement and ensure all input is consumed
-pub fn parse_statement_all(input: &str) -> BResult<&str, crate::syntax::nodes::statements::statement::Statement> {
+pub fn parse_statement_all(
+    input: &str,
+) -> BResult<&str, crate::syntax::nodes::statements::statement::Statement> {
     parse_all(crate::parser::statement_parser::parse_statement, input)
 }
 

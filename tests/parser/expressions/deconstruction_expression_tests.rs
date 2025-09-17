@@ -1,9 +1,11 @@
 // Tests for parsing deconstruction expressions
 
-use bsharp::syntax::nodes::expressions::{DeconstructionExpression, DeconstructionTarget, Expression};
-use bsharp::syntax::nodes::types::{Type, PrimitiveType};
-use bsharp::syntax::nodes::identifier::Identifier;
 use bsharp::parser::expressions::deconstruction_expression_parser::parse_deconstruction_expression;
+use bsharp::syntax::nodes::expressions::{
+    DeconstructionExpression, DeconstructionTarget, Expression,
+};
+use bsharp::syntax::nodes::identifier::Identifier;
+use bsharp::syntax::nodes::types::{PrimitiveType, Type};
 
 fn parse_deconstruction_expr(code: &str) -> Result<DeconstructionExpression, String> {
     match parse_deconstruction_expression(code) {
@@ -54,7 +56,7 @@ fn test_parse_typed_deconstruction() {
             bsharp::syntax::nodes::expressions::InvocationExpression {
                 callee: Box::new(Expression::Variable(Identifier::new("GetTuple"))),
                 arguments: vec![],
-            }
+            },
         ))),
     };
     assert_eq!(parse_deconstruction_expr(code), Ok(expected));
@@ -185,10 +187,13 @@ fn test_parse_complex_types_in_deconstruction() {
     assert!(result.is_ok());
     let deconstruction = result.unwrap();
     assert_eq!(deconstruction.targets.len(), 2);
-    
+
     // Check that both targets are declarations with complex types
     for target in &deconstruction.targets {
-        assert!(matches!(target, DeconstructionTarget::Declaration { is_var: false, .. }));
+        assert!(matches!(
+            target,
+            DeconstructionTarget::Declaration { is_var: false, .. }
+        ));
     }
 }
 
@@ -204,13 +209,13 @@ fn test_parse_nullable_types_in_deconstruction() {
 #[test]
 fn test_deconstruction_parsing_errors() {
     let invalid_cases = [
-        "() = tuple",                    // Empty target list
-        "(var) = tuple",                 // Single target without comma
-        "(var x var y) = tuple",         // Missing comma
-        "(var x,) = tuple",              // Trailing comma without target
-        "var x, var y = tuple",          // Missing parentheses
-        "(var x, var y) =",              // Missing value
-        "(var x, var y) tuple",          // Missing assignment operator
+        "() = tuple",            // Empty target list
+        "(var) = tuple",         // Single target without comma
+        "(var x var y) = tuple", // Missing comma
+        "(var x,) = tuple",      // Trailing comma without target
+        "var x, var y = tuple",  // Missing parentheses
+        "(var x, var y) =",      // Missing value
+        "(var x, var y) tuple",  // Missing assignment operator
     ];
 
     for code in &invalid_cases {
@@ -226,7 +231,7 @@ fn test_deeply_nested_deconstruction() {
     assert!(result.is_ok());
     let deconstruction = result.unwrap();
     assert_eq!(deconstruction.targets.len(), 2);
-    
+
     // Verify the nested structure
     match &deconstruction.targets[0] {
         DeconstructionTarget::Nested(inner) => {
