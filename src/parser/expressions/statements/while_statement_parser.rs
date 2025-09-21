@@ -9,7 +9,8 @@ use nom::{
 
 use crate::syntax::errors::BResult;
 use crate::syntax::nodes::statements::while_statement::WhileStatement;
-use crate::syntax::parser_helpers::{bchar, bws, context, keyword};
+use crate::syntax::parser_helpers::{bchar, bws, context};
+use crate::parser::keywords::iteration_keywords::kw_while;
 
 use crate::parser::expressions::primary_expression_parser::parse_expression;
 use crate::parser::statement_parser::parse_statement_ws;
@@ -20,7 +21,7 @@ pub fn parse_while_statement(input: &str) -> BResult<&str, Statement> {
         "while statement (expected 'while (condition) statement')",
         map(
             tuple((
-                context("while keyword (expected 'while')", keyword("while")),
+                context("while keyword (expected 'while')", kw_while()),
                 bws(delimited(
                     context(
                         "opening parenthesis for while condition (expected '(')",

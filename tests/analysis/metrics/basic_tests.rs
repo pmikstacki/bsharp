@@ -142,6 +142,7 @@ fn test_collect_from_class() {
         modifiers: Vec::new(),
         name: create_test_identifier("TestClass"),
         type_parameters: None,
+        primary_constructor_parameters: None,
         base_types: Vec::new(),
         body_declarations: vec![
             ClassBodyDeclaration::Method(MethodDeclaration {
@@ -160,6 +161,7 @@ fn test_collect_from_class() {
                 initializer: None,
             }),
             ClassBodyDeclaration::Property(PropertyDeclaration {
+                attributes: Vec::new(),
                 modifiers: Vec::new(),
                 ty: Type::Primitive(PrimitiveType::String),
                 name: create_test_identifier("Property1"),
@@ -215,6 +217,7 @@ fn test_collector_reset() {
         modifiers: Vec::new(),
         name: create_test_identifier("TestClass"),
         type_parameters: None,
+        primary_constructor_parameters: None,
         base_types: Vec::new(),
         body_declarations: Vec::new(),
     };
@@ -281,6 +284,7 @@ fn test_metrics_accuracy_with_real_code() {
         modifiers: vec![Modifier::Public],
         name: create_test_identifier("Calculator"),
         type_parameters: None,
+        primary_constructor_parameters: None,
         base_types: Vec::new(),
         body_declarations: vec![
             // Field
@@ -323,6 +327,7 @@ fn test_metrics_accuracy_with_real_code() {
                                             exception_type: None,
                                             exception_variable: None,
                                             block: Box::new(Statement::Block(Vec::new())),
+                                            when_clause: None,
                                         }],
                                         finally_clause: None,
                                     },
@@ -374,6 +379,7 @@ fn test_collector_with_multiple_classes() {
         modifiers: Vec::new(),
         name: create_test_identifier("Class1"),
         type_parameters: None,
+        primary_constructor_parameters: None,
         base_types: Vec::new(),
         body_declarations: vec![ClassBodyDeclaration::Method(MethodDeclaration {
             modifiers: Vec::new(),
@@ -393,6 +399,7 @@ fn test_collector_with_multiple_classes() {
         modifiers: Vec::new(),
         name: create_test_identifier("Class2"),
         type_parameters: None,
+        primary_constructor_parameters: None,
         base_types: Vec::new(),
         body_declarations: vec![
             ClassBodyDeclaration::Field(FieldDeclaration {
@@ -402,15 +409,15 @@ fn test_collector_with_multiple_classes() {
                 initializer: None,
             }),
             ClassBodyDeclaration::Property(PropertyDeclaration {
+                attributes: Vec::new(),
                 modifiers: Vec::new(),
-                ty: Type::Primitive(PrimitiveType::String),
-                name: create_test_identifier("Property1"),
+                ty: Type::Primitive(PrimitiveType::Int),
+                name: create_test_identifier("Property2"),
                 accessors: Vec::new(),
                 initializer: None,
             }),
         ],
     };
-
     collector.collect_from_class(&class1);
     collector.collect_from_class(&class2);
 
@@ -485,6 +492,7 @@ fn create_complex_method_for_analysis() -> MethodDeclaration {
                             exception_type: None,
                             exception_variable: None,
                             block: Box::new(Statement::Block(Vec::new())),
+                            when_clause: None,
                         }],
                         finally_clause: None,
                     },

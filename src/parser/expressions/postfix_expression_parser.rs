@@ -3,12 +3,13 @@ use crate::parser::identifier_parser::parse_identifier;
 use crate::syntax::errors::BResult;
 use crate::syntax::nodes::expressions::expression::Expression;
 use crate::syntax::nodes::expressions::indexing_expression::IndexingExpression;
-use crate::syntax::nodes::expressions::invocation_expression::InvocationExpression;
+use crate::syntax::nodes::expressions::invocation_expression::{InvocationExpression, Argument, ArgumentModifier};
 use crate::syntax::nodes::expressions::member_access_expression::MemberAccessExpression;
 use crate::syntax::nodes::expressions::null_conditional_expression::NullConditionalExpression;
 use crate::syntax::nodes::expressions::UnaryOperator;
 use crate::syntax::nodes::identifier::Identifier;
 use crate::syntax::parser_helpers::{bchar, bws, parse_delimited_list0};
+use crate::parser::keywords::expression_keywords::kw_with;
 
 use nom::{
     branch::alt,
@@ -18,7 +19,7 @@ use nom::{
 
 #[derive(Debug, Clone)]
 enum PostfixOpKind {
-    Invocation(Vec<Expression>),
+    Invocation(Vec<Argument>),
     MemberAccess(Identifier),
     NullConditionalMemberAccess(Identifier),
     Indexing(Box<Expression>),
@@ -26,14 +27,43 @@ enum PostfixOpKind {
     PostfixIncrement,
     PostfixDecrement,
     NullForgiving,
+    With(Vec<(String, Expression)>),
+}
+
+/// Parse a single invocation argument supporting optional modifier and name:
+/// [ref|out|in] [name: ] expr
+fn parse_invocation_argument(input: &str) -> BResult<&str, Argument> {
+    use crate::parser::keywords::parameter_modifier_keywords::{kw_in, kw_out, kw_ref};
+    use nom::branch::alt;
+    use nom::combinator::map;
+    use nom::combinator::opt;
+
+    // Optional modifier
+    let (input, modifier) = bws(opt(alt((
+        map(kw_ref(), |_| ArgumentModifier::Ref),
+        map(kw_out(), |_| ArgumentModifier::Out),
+        map(kw_in(), |_| ArgumentModifier::In),
+    ))))(input)?;
+
+    // Optional name label: identifier:
+    let (input, name) = if let Ok((i2, (id, _))) = bws(nom::sequence::tuple((parse_identifier, bchar(':'))))(input) {
+        (i2, Some(id))
+    } else {
+        (input, None)
+    };
+
+    // Expression
+    let (input, expr) = bws(parse_expression)(input)?;
+
+    Ok((input, Argument { name, modifier, expr }))
 }
 
 /// Enhanced method invocation parsing
 fn enhanced_method_invocation(input: &str) -> BResult<&str, PostfixOpKind> {
     map(
-        parse_delimited_list0::<_, _, _, _, char, Expression, char, char, Expression>(
+        parse_delimited_list0::<_, _, _, _, char, Argument, char, char, Argument>(
             bchar('('),
-            parse_expression,
+            parse_invocation_argument,
             bchar(','),
             bchar(')'),
             false, // no trailing comma by default for invocation args (adjust if needed)
@@ -102,6 +132,26 @@ fn simple_postfix_operations(input: &str) -> BResult<&str, PostfixOpKind> {
     ))(input)
 }
 
+/// Parse with-expression postfix: `with { Name = expr, ... }`
+fn enhanced_with_expression(input: &str) -> BResult<&str, PostfixOpKind> {
+    map(
+        tuple((
+            bws(kw_with()),
+            bws(bchar('{')),
+            // zero or more property initializers separated by commas
+            nom::multi::separated_list0(
+                bws(bchar(',')),
+                map(
+                    tuple((bws(parse_identifier), bws(bchar('=')), bws(parse_expression))),
+                    |(id, _, expr)| (id.name, expr),
+                ),
+            ),
+            bws(bchar('}')),
+        )),
+        |(_, _, pairs, _)| PostfixOpKind::With(pairs),
+    )(input)
+}
+
 /// Enhanced postfix operation syntax with better error recovery
 fn enhanced_postfix_operation(input: &str) -> BResult<&str, PostfixOpKind> {
     alt((
@@ -109,6 +159,7 @@ fn enhanced_postfix_operation(input: &str) -> BResult<&str, PostfixOpKind> {
         enhanced_method_invocation,
         enhanced_indexing,
         enhanced_null_conditional_access,
+        enhanced_with_expression,
         simple_postfix_operations,
     ))(input)
 }
@@ -160,6 +211,9 @@ fn apply_postfix_operation(expr: Expression, op: PostfixOpKind) -> Expression {
             op: UnaryOperator::NullForgiving,
             expr: Box::new(expr),
         },
+        PostfixOpKind::With(inits) => {
+            Expression::With { target: Box::new(expr), initializers: inits }
+        }
     }
 }
 

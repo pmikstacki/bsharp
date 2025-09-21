@@ -11,4 +11,6 @@ pub const KEYWORDS: &[&str] = &[
     "sealed", "short", "sizeof", "stackalloc", "static", "string", "struct", "switch",
     "this", "throw", "true", "try", "typeof", "uint", "ulong", "unchecked", "unsafe",
     "ushort", "using", "virtual", "void", "volatile", "while",
+    // Newer reserved keywords for types
+    "nint", "nuint",
 ];

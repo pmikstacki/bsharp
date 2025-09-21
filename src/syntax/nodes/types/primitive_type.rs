@@ -14,6 +14,8 @@ pub enum PrimitiveType {
     UInt,
     Long,
     ULong,
+    NInt,
+    NUInt,
 
     // Floating-point types
     Float,

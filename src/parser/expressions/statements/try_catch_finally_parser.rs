@@ -3,13 +3,17 @@ use crate::syntax::nodes::statements::statement::Statement;
 
 use crate::parser::identifier_parser::parse_identifier;
 use crate::parser::statement_parser::parse_statement_ws;
+use crate::parser::expressions::primary_expression_parser::parse_expression;
 use crate::parser::types::type_parser::parse_type_expression;
 use crate::syntax::errors::BResult;
 use crate::syntax::nodes::statements::{CatchClause, FinallyClause, TryStatement};
-use crate::syntax::parser_helpers::{bchar, bws, context, keyword};
+use crate::syntax::parser_helpers::{bchar, bws, context};
+use crate::parser::keywords::exception_and_safety_keywords::{kw_try, kw_catch, kw_finally};
+use crate::parser::keywords::selection_and_switch_keywords::kw_when;
 
 use crate::syntax::comment_parser::ws;
 use nom::combinator::cut;
+use nom::sequence::preceded;
 use nom::{
     combinator::{map, opt},
     multi::many0,
@@ -22,7 +26,7 @@ pub fn parse_catch_clause(input: &str) -> BResult<&str, CatchClause> {
         "catch clause (expected 'catch' with optional (type variable) and block)",
         map(
             tuple((
-                context("catch keyword (expected 'catch')", keyword("catch")),
+                context("catch keyword (expected 'catch')", kw_catch()),
                 context("whitespace after catch keyword", ws),
                 // 3. Optional exception type and variable in parentheses
                 context(
@@ -48,13 +52,22 @@ pub fn parse_catch_clause(input: &str) -> BResult<&str, CatchClause> {
                         )),
                     )),
                 ),
+                // Optional when filter: when (expr)
+                opt(preceded(
+                    bws(kw_when()),
+                    delimited(
+                        bws(bchar('(')),
+                        bws(parse_expression),
+                        cut(bws(bchar(')'))),
+                    ),
+                )),
                 context("whitespace before catch block", ws),
                 context(
                     "catch block (expected valid C# statement block)",
                     bws(parse_statement_ws),
                 ),
             )),
-            |(_catch_kw, _, exception_info, _, block_stmt)| {
+            |(_catch_kw, _, exception_info, when_clause, _, block_stmt)| {
                 // Extract exception type and variable if provided
                 let (exception_type, exception_variable) = match exception_info {
                     Some((ty, ident_opt)) => (Some(ty), ident_opt),
@@ -63,6 +76,7 @@ pub fn parse_catch_clause(input: &str) -> BResult<&str, CatchClause> {
                 CatchClause {
                     exception_type,
                     exception_variable,
+                    when_clause,
                     block: Box::new(block_stmt),
                 }
             },
@@ -76,7 +90,7 @@ pub fn parse_finally_clause(input: &str) -> BResult<&str, FinallyClause> {
         "finally clause (expected 'finally' and block)",
         map(
             tuple((
-                context("finally keyword (expected 'finally')", keyword("finally")),
+                context("finally keyword (expected 'finally')", kw_finally()),
                 context("whitespace after finally keyword", ws),
                 context(
                     "finally block (expected valid C# statement block)",
@@ -96,7 +110,7 @@ pub fn parse_try_statement(input: &str) -> BResult<&str, Statement> {
         "try statement (expected 'try' block, zero or more 'catch' clauses, and optional 'finally' block)",
         map(
             tuple((
-                context("try keyword (expected 'try')", keyword("try")),
+                context("try keyword (expected 'try')", kw_try()),
                 context(
                     "try block (expected valid C# statement block)",
                     bws(parse_statement_ws),

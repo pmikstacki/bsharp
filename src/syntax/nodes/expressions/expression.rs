@@ -3,6 +3,7 @@ use crate::syntax::nodes::expressions::literal::Literal;
 use crate::syntax::nodes::expressions::range_expression::{IndexExpression, RangeExpression};
 use crate::syntax::nodes::expressions::BinaryOperator;
 use crate::syntax::nodes::expressions::UnaryOperator;
+use crate::syntax::nodes::expressions::checked_expression::{CheckedExpression, UncheckedExpression};
 use crate::syntax::nodes::expressions::{
     AnonymousMethodExpression, AnonymousObjectCreationExpression, AssignmentExpression,
     AwaitExpression, ConditionalExpression, DeconstructionExpression, DefaultExpression,
@@ -54,6 +55,10 @@ pub enum Expression {
         expression: Box<Expression>,
         pattern: Box<Pattern>,
     }, // Pattern matching: x is int y
+    As {
+        expression: Box<Expression>,
+        target_type: crate::syntax::nodes::types::Type,
+    }, // As operator: x as T
     Cast {
         expression: Box<Expression>,
         target_type: crate::syntax::nodes::types::Type,
@@ -65,6 +70,19 @@ pub enum Expression {
     Default(Box<DefaultExpression>),         // Default expressions: default(int) or default
     StackAlloc(Box<StackAllocExpression>),   // Stackalloc expressions: stackalloc int[10]
     Ref(Box<Expression>),                    // Ref expressions: ref field, ref array[index]
+    Checked(Box<CheckedExpression>),         // checked(expr)
+    Unchecked(Box<UncheckedExpression>),     // unchecked(expr)
+    With {
+        target: Box<Expression>,
+        initializers: Vec<(String, Expression)>,
+    }, // with-expressions: expr with { P = v }
+    Collection(Vec<CollectionElement>), // Collection expressions: [a, ..b]
+}
+
+#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+pub enum CollectionElement {
+    Expr(Expression),
+    Spread(Expression),
 }
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]

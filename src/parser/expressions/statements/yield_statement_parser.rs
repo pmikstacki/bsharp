@@ -2,7 +2,8 @@ use crate::parser::expressions::primary_expression_parser::parse_expression;
 use crate::syntax::errors::BResult;
 use crate::syntax::nodes::statements::statement::Statement;
 use crate::syntax::nodes::statements::yield_statement::YieldStatement;
-use crate::syntax::parser_helpers::{bchar, bws, context, keyword};
+use crate::syntax::parser_helpers::{bchar, bws, context};
+use crate::parser::keywords::flow_control_keywords::{kw_yield, kw_return, kw_break};
 
 use nom::combinator::cut;
 use nom::{branch::alt, combinator::map, sequence::tuple};
@@ -13,18 +14,18 @@ pub fn parse_yield_statement(input: &str) -> BResult<&str, Statement> {
         "yield statement",
         map(
             tuple((
-                context("yield keyword", keyword("yield")),
+                context("yield keyword", kw_yield()),
                 context(
                     "return or break",
                     alt((
                         map(
                             tuple((
-                                context("return keyword", keyword("return")),
+                                context("return keyword", kw_return()),
                                 context("return expression", bws(parse_expression)),
                             )),
                             |(_, expr)| YieldStatement::Return(expr),
                         ),
-                        map(context("break keyword", keyword("break")), |_| {
+                        map(context("break keyword", kw_break()), |_| {
                             YieldStatement::Break
                         }),
                     )),

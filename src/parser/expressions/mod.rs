@@ -4,6 +4,7 @@ mod conditional_expression_parser;
 pub mod declarations;
 pub mod deconstruction_expression_parser;
 pub mod default_expression_parser;
+pub mod collection_expression_parser;
 pub mod lambda_expression_parser;
 pub mod literal_parser;
 mod logical_expression_parser;

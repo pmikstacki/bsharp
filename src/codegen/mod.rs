@@ -340,6 +340,9 @@ fn map_type_stub(ty: &Type) -> Option<types::Type> {
             PrimitiveType::UInt => Some(types::I32),
             PrimitiveType::Long => Some(types::I64),
             PrimitiveType::ULong => Some(types::I64),
+            // Pointer-sized ints map conservatively for now
+            PrimitiveType::NInt => Some(types::I64),
+            PrimitiveType::NUInt => Some(types::I64),
 
             // Floating-point types
             PrimitiveType::Float => Some(types::F32),

@@ -129,6 +129,7 @@ fn test_analyze_simple_class() {
         modifiers: vec![bsharp::syntax::nodes::declarations::Modifier::Public],
         name: create_test_identifier("TestClass"),
         type_parameters: None,
+        primary_constructor_parameters: None,
         base_types: Vec::new(),
         body_declarations: vec![
             ClassBodyDeclaration::Method(MethodDeclaration {
@@ -193,6 +194,7 @@ fn test_analyze_complex_class() {
         modifiers: vec![bsharp::syntax::nodes::declarations::Modifier::Public],
         name: create_test_identifier("ComplexClass"),
         type_parameters: None,
+        primary_constructor_parameters: None,
         base_types: Vec::new(),
         body_declarations: vec![
             // Multiple public methods without documentation
@@ -238,6 +240,7 @@ fn test_analyze_complex_class() {
             }),
             // Properties
             ClassBodyDeclaration::Property(PropertyDeclaration {
+                attributes: Vec::new(),
                 modifiers: vec![bsharp::syntax::nodes::declarations::Modifier::Public],
                 ty: Type::Primitive(PrimitiveType::String),
                 name: create_test_identifier("Property1"),
@@ -245,6 +248,7 @@ fn test_analyze_complex_class() {
                 initializer: None,
             }),
             ClassBodyDeclaration::Property(PropertyDeclaration {
+                attributes: Vec::new(),
                 modifiers: vec![bsharp::syntax::nodes::declarations::Modifier::Public],
                 ty: Type::Primitive(PrimitiveType::Int),
                 name: create_test_identifier("Property2"),

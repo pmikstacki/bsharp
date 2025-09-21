@@ -55,6 +55,7 @@ pub enum Modifier {
     New,
     Partial,
     Async,
+    Required,
 
     // Parameter modifiers
     Ref,
@@ -144,6 +145,10 @@ impl Modifier {
                 order: 5,
             },
             Modifier::Async => ModifierInfo {
+                category: ModifierCategory::Special,
+                order: 5,
+            },
+            Modifier::Required => ModifierInfo {
                 category: ModifierCategory::Special,
                 order: 5,
             },
@@ -303,6 +308,7 @@ impl Modifier {
                 Modifier::Override,
                 Modifier::New,
                 Modifier::Readonly,
+                Modifier::Required,
             ],
             "field" => vec![
                 Modifier::Public,
@@ -314,6 +320,7 @@ impl Modifier {
                 Modifier::Volatile,
                 Modifier::New,
                 Modifier::Const,
+                Modifier::Required,
             ],
             "parameter" => vec![Modifier::Ref, Modifier::Out, Modifier::In, Modifier::Params],
             "constructor" => vec![

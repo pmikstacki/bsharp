@@ -7,7 +7,8 @@ use crate::syntax::nodes::expressions::anonymous_object_creation_expression::{
 };
 use crate::syntax::nodes::expressions::expression::Expression;
 use crate::syntax::nodes::expressions::new_expression::NewExpression;
-use crate::syntax::parser_helpers::{bchar, bws, context, keyword, parse_delimited_list0};
+use crate::syntax::parser_helpers::{bchar, bws, context, parse_delimited_list0};
+use crate::parser::keywords::expression_keywords::kw_new;
 
 use nom::{
     branch::alt,
@@ -31,7 +32,7 @@ pub(crate) fn parse_new_expression(input: &str) -> BResult<&str, Expression> {
             // Try anonymous object creation first (new { ... })
             map(
                 preceded(
-                    keyword("new"),
+                    kw_new(),
                     context(
                         "anonymous object creation",
                         parse_delimited_list0::<_, _, _, _, char, AnonymousObjectMember, char, char, AnonymousObjectMember>(
@@ -52,7 +53,9 @@ pub(crate) fn parse_new_expression(input: &str) -> BResult<&str, Expression> {
             ),
             // Then try new with type and initializer
             enhanced_new_with_type_and_initializer,
-            // Simple new expression as fallback
+            // Target-typed new (no type)
+            target_typed_new_expression,
+            // Simple new expression as fallback (with type)
             simple_new_expression,
         )),
     )(input)
@@ -62,7 +65,7 @@ pub(crate) fn parse_new_expression(input: &str) -> BResult<&str, Expression> {
 fn enhanced_new_with_type_and_initializer(input: &str) -> BResult<&str, Expression> {
     map(
         tuple((
-            keyword("new"),
+            kw_new(),
             cut(bws(parse_type_expression)),
             opt(parse_delimited_list0::<_, _, _, _, char, Expression, char, char, Expression>(
                 bchar('('),
@@ -82,7 +85,7 @@ fn enhanced_new_with_type_and_initializer(input: &str) -> BResult<&str, Expressi
             };
 
             Expression::New(Box::new(NewExpression {
-                ty,
+                ty: Some(ty),
                 arguments: arguments.unwrap_or_default(),
                 object_initializer,
                 collection_initializer,
@@ -95,7 +98,7 @@ fn enhanced_new_with_type_and_initializer(input: &str) -> BResult<&str, Expressi
 fn simple_new_expression(input: &str) -> BResult<&str, Expression> {
     map(
         tuple((
-            keyword("new"),
+            kw_new(),
             bws(parse_type_expression),
             opt(parse_delimited_list0::<_, _, _, _, char, Expression, char, char, Expression>(
                 bchar('('),
@@ -108,10 +111,41 @@ fn simple_new_expression(input: &str) -> BResult<&str, Expression> {
         )),
         |(_new_kw, ty, arguments)| {
             Expression::New(Box::new(NewExpression {
-                ty,
+                ty: Some(ty),
                 arguments: arguments.unwrap_or_default(),
                 object_initializer: None,
                 collection_initializer: None,
+            }))
+        },
+    )(input)
+}
+
+/// Target-typed new: new() [initializer]
+fn target_typed_new_expression(input: &str) -> BResult<&str, Expression> {
+    map(
+        tuple((
+            kw_new(),
+            opt(parse_delimited_list0::<_, _, _, _, char, Expression, char, char, Expression>(
+                bchar('('),
+                parse_expression,
+                bchar(','),
+                bchar(')'),
+                false,
+                true,
+            )),
+            opt(bws(enhanced_initializer)),
+        )),
+        |(_new_kw, arguments, initializer)| {
+            let (object_initializer, collection_initializer) = match initializer {
+                Some(InitializerKind::Object(obj)) => (Some(obj), None),
+                Some(InitializerKind::Collection(coll)) => (None, Some(coll)),
+                None => (None, None),
+            };
+            Expression::New(Box::new(NewExpression {
+                ty: None,
+                arguments: arguments.unwrap_or_default(),
+                object_initializer,
+                collection_initializer,
             }))
         },
     )(input)

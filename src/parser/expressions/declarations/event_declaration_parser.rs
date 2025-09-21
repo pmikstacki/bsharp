@@ -6,6 +6,8 @@ use crate::parser::types::type_parser::parse_type_expression;
 use crate::syntax::errors::BResult;
 use crate::syntax::nodes::declarations::{EventAccessor, EventAccessorList, EventDeclaration};
 use crate::syntax::parser_helpers::{bchar, bws, context, keyword};
+use crate::parser::keywords::declaration_keywords::kw_event;
+use crate::parser::keywords::accessor_keywords::{kw_add, kw_remove};
 
 use nom::combinator::cut;
 use nom::{
@@ -21,7 +23,7 @@ fn parse_event_accessor(input: &str) -> BResult<&str, (String, EventAccessor)> {
         alt((
             map(
                 tuple((
-                    keyword("add"),
+                    kw_add(),
                     alt((
                         map(bws(bchar(';')), |_| None),
                         map(bws(parse_statement), |stmt| Some(stmt)),
@@ -40,7 +42,7 @@ fn parse_event_accessor(input: &str) -> BResult<&str, (String, EventAccessor)> {
             ),
             map(
                 tuple((
-                    keyword("remove"),
+                    kw_remove(),
                     alt((
                         map(bws(bchar(';')), |_| None),
                         map(bws(parse_statement), |stmt| Some(stmt)),
@@ -120,7 +122,7 @@ pub fn parse_event_declaration(input: &str) -> BResult<&str, EventDeclaration> {
                 // 2. Modifiers
                 parse_modifiers,
                 // 3. 'event' keyword
-                keyword("event"),
+                kw_event(),
                 // 4. Event type
                 bws(parse_type_expression),
                 // 5. Event name

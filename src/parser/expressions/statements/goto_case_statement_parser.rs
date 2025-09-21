@@ -2,7 +2,9 @@ use crate::parser::expressions::primary_expression_parser::parse_expression;
 use crate::syntax::errors::BResult;
 use crate::syntax::nodes::statements::goto_case_statement::{GotoCaseKind, GotoCaseStatement};
 use crate::syntax::nodes::statements::statement::Statement;
-use crate::syntax::parser_helpers::{bchar, bws, keyword};
+use crate::syntax::parser_helpers::{bchar, bws};
+use crate::parser::keywords::flow_control_keywords::kw_goto;
+use crate::parser::keywords::selection_and_switch_keywords::{kw_case, kw_default};
 
 use nom::Parser;
 use nom::combinator::cut;
@@ -13,16 +15,16 @@ use nom_supreme::ParserExt;
 pub fn parse_goto_case_statement(input: &str) -> BResult<&str, Statement> {
     map(
         tuple((
-            keyword("goto").context("goto keyword"),
+            kw_goto().context("goto keyword"),
             alt((
                 map(
                     tuple((
-                        keyword("case").context("case keyword"),
+                        kw_case().context("case keyword"),
                         bws(parse_expression).context("case expression"),
                     )),
                     |(_, expr)| GotoCaseKind::Case(expr),
                 ),
-                map(keyword("default").context("default keyword"), |_| {
+                map(kw_default().context("default keyword"), |_| {
                     GotoCaseKind::Default
                 }),
             ))

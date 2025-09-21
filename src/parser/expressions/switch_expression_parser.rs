@@ -6,7 +6,9 @@ use crate::syntax::nodes::expressions::expression::{
     Expression, SwitchExpression, SwitchExpressionArm,
 };
 use crate::syntax::nodes::expressions::pattern::{Pattern, PatternCase};
-use crate::syntax::parser_helpers::{bws, keyword, parse_delimited_list1};
+use crate::syntax::parser_helpers::{bws, parse_delimited_list1};
+use crate::parser::keywords::selection_and_switch_keywords::{kw_switch, kw_when, kw_case, kw_default};
+use crate::parser::keywords::expression_keywords::kw_is;
 
 use nom::combinator::cut;
 use nom::{
@@ -22,7 +24,7 @@ pub fn parse_switch_expression(input: &str) -> BResult<&str, Expression> {
     map(
         tuple((
             parse_basic_expression, // Use basic expression to avoid recursion
-            bws(keyword("switch")),
+            bws(kw_switch()),
             bws(parse_delimited_list1::<_, _, _, _, char, SwitchExpressionArm, char, char, SwitchExpressionArm>(
                 nom_char('{'),
                 |i| bws(parse_switch_expression_arm)(i),
@@ -44,7 +46,7 @@ fn parse_switch_expression_arm(input: &str) -> BResult<&str, SwitchExpressionArm
         tuple((
             parse_pattern,
             opt(preceded(
-                bws(keyword("when")),
+                bws(kw_when()),
                 bws(parse_relational_basic_expression),
             )), // Use relational expression
             bws(tag("=>")),
@@ -103,7 +105,7 @@ pub fn parse_is_pattern_expression(input: &str) -> BResult<&str, Expression> {
     let (input, expr) = parse_basic_expression(input)?;
 
     // Then check for "is" keyword followed by pattern
-    if let Ok((input, _)) = bws(keyword("is"))(input) {
+    if let Ok((input, _)) = bws(kw_is())(input) {
         let (input, pattern) = bws(parse_pattern)(input)?;
         Ok((
             input,
@@ -217,6 +219,7 @@ fn parse_primary_basic_expression(input: &str) -> BResult<&str, Expression> {
                 ),
             )),
             |(obj, method, args)| {
+                use crate::syntax::nodes::expressions::invocation_expression::Argument;
                 Expression::Invocation(Box::new(
                 crate::syntax::nodes::expressions::invocation_expression::InvocationExpression {
                     callee: Box::new(Expression::MemberAccess(Box::new(
@@ -225,7 +228,7 @@ fn parse_primary_basic_expression(input: &str) -> BResult<&str, Expression> {
                             member: method,
                         }
                     ))),
-                    arguments: args,
+                    arguments: args.into_iter().map(|expr| Argument { name: None, modifier: None, expr }).collect(),
                 }
             ))
             },
@@ -239,9 +242,9 @@ pub fn parse_switch_case(input: &str) -> BResult<&str, PatternCase> {
         // case pattern [when condition]:
         map(
             tuple((
-                keyword("case"),
+                bws(kw_case()),
                 bws(parse_pattern),
-                opt(preceded(bws(keyword("when")), bws(parse_basic_expression))),
+                opt(preceded(bws(kw_when()), bws(parse_basic_expression))),
                 bws(nom_char(':')),
                 // For simplicity, we'll parse the body as a single expression
                 // In a real implementation, this would parse a list of statements
@@ -256,7 +259,7 @@ pub fn parse_switch_case(input: &str) -> BResult<&str, PatternCase> {
         // default:
         map(
             tuple((
-                keyword("default"),
+                bws(kw_default()),
                 bws(nom_char(':')),
                 bws(parse_basic_expression),
             )),

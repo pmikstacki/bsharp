@@ -2,7 +2,8 @@ use crate::parser::expressions::primary_expression_parser::parse_expression;
 use crate::syntax::errors::BResult;
 use crate::syntax::nodes::expressions::expression::Expression;
 use crate::syntax::nodes::expressions::throw_expression::ThrowExpression;
-use crate::syntax::parser_helpers::{context, keyword};
+use crate::syntax::parser_helpers::{context};
+use crate::parser::keywords::exception_and_safety_keywords::kw_throw;
 
 use nom::{
     combinator::{map, opt},
@@ -15,7 +16,7 @@ pub fn parse_throw_expression(input: &str) -> BResult<&str, Expression> {
         "throw expression",
         map(
             preceded(
-                keyword("throw"),
+                kw_throw(),
                 opt(preceded(
                     nom::character::complete::multispace1,
                     parse_expression,

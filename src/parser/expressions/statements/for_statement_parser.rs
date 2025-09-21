@@ -17,6 +17,7 @@ use crate::syntax::nodes::declarations::local_variable_declaration::LocalVariabl
 use crate::syntax::nodes::statements::statement::Statement;
 use crate::syntax::nodes::statements::{ForInitializer, ForStatement};
 use crate::syntax::parser_helpers::{bchar, bws, context, keyword, parse_list0};
+use crate::parser::keywords::iteration_keywords::kw_for;
 
 // Parse the initializer part of a for loop statement - can be a variable declaration
 // or a comma-separated list of expressions
@@ -72,7 +73,7 @@ pub fn parse_for_statement(input: &str) -> BResult<&str, Statement> {
         "for statement (expected 'for (initializer; condition; iterator) body')",
         |input| {
             // Base approach addressing all the test cases
-            let (input, _) = context("for keyword (expected 'for')", keyword("for"))(input)?;
+            let (input, _) = context("for keyword (expected 'for')", kw_for())(input)?;
             let (input, _) = context(
                 "opening parenthesis after for (expected '(')",
                 bws(bchar('(')),

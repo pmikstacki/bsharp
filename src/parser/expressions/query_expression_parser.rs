@@ -5,6 +5,16 @@ use crate::syntax::nodes::expressions::expression::Expression;
 use crate::syntax::nodes::expressions::query_expression::*;
 use crate::syntax::nodes::identifier::Identifier;
 use crate::syntax::parser_helpers::{bws, keyword};
+use crate::parser::keywords::linq_query_keywords::{
+    kw_from, kw_where, kw_select, kw_group, kw_into, kw_join, kw_let, kw_orderby, kw_ascending,
+    kw_descending, kw_on, kw_equals, kw_by,
+};
+use crate::parser::keywords::parameter_modifier_keywords::kw_in;
+use crate::parser::keywords::type_keywords::{
+    kw_ushort, kw_uint, kw_ulong, kw_sbyte, kw_short, kw_byte, kw_bool, kw_int, kw_long, kw_double,
+    kw_decimal, kw_float, kw_string, kw_object, kw_char,
+};
+use crate::parser::keywords::contextual_misc_keywords::kw_dynamic;
 
 use nom::{
     branch::alt,
@@ -18,22 +28,22 @@ fn parse_primitive_type_identifier(input: &str) -> BResult<&str, Identifier> {
     map(
         alt((
             // Order matters! Put longer keywords first to avoid partial matches
-            keyword("ushort"),
-            keyword("uint"),
-            keyword("ulong"),
-            keyword("sbyte"),
-            keyword("short"),
-            keyword("byte"),
-            keyword("bool"),
-            keyword("int"),
-            keyword("long"),
-            keyword("double"),
-            keyword("decimal"),
-            keyword("float"),
-            keyword("string"),
-            keyword("object"),
-            keyword("char"),
-            keyword("dynamic"),
+            kw_ushort(),
+            kw_uint(),
+            kw_ulong(),
+            kw_sbyte(),
+            kw_short(),
+            kw_byte(),
+            kw_bool(),
+            kw_int(),
+            kw_long(),
+            kw_double(),
+            kw_decimal(),
+            kw_float(),
+            kw_string(),
+            kw_object(),
+            kw_char(),
+            kw_dynamic(),
         )),
         |name| Identifier::new(name),
     )(input)
@@ -63,7 +73,7 @@ pub fn parse_query_expression(input: &str) -> BResult<&str, Expression> {
 fn parse_from_clause(input: &str) -> BResult<&str, FromClause> {
     map(
         tuple((
-            keyword("from"),
+            kw_from(),
             bws(alt((
                 // Type annotation case: from PrimitiveType identifier in expression
                 map(
@@ -76,7 +86,7 @@ fn parse_from_clause(input: &str) -> BResult<&str, FromClause> {
                 // No type annotation case: from identifier in expression
                 map(parse_identifier, |identifier| (None, identifier)),
             ))),
-            bws(keyword("in")),
+            bws(kw_in()),
             bws(parse_expression), // Collection expression
         )),
         |(_, (type_annotation, identifier), _, expression)| FromClause {
@@ -107,7 +117,7 @@ fn parse_additional_from_clause(input: &str) -> BResult<&str, FromClause> {
 fn parse_let_clause(input: &str) -> BResult<&str, LetClause> {
     map(
         tuple((
-            keyword("let"),
+            kw_let(),
             bws(parse_identifier),
             bws(keyword("=")),
             bws(parse_expression),
@@ -122,7 +132,7 @@ fn parse_let_clause(input: &str) -> BResult<&str, LetClause> {
 /// Parse 'where' clause for filtering
 fn parse_where_clause(input: &str) -> BResult<&str, QueryWhereClause> {
     map(
-        preceded(keyword("where"), bws(parse_expression)),
+        preceded(kw_where(), bws(parse_expression)),
         |condition| QueryWhereClause { condition },
     )(input)
 }
@@ -131,7 +141,7 @@ fn parse_where_clause(input: &str) -> BResult<&str, QueryWhereClause> {
 fn parse_join_clause(input: &str) -> BResult<&str, JoinClause> {
     map(
         tuple((
-            keyword("join"),
+            kw_join(),
             bws(alt((
                 // Type annotation case: join PrimitiveType identifier in expression
                 map(
@@ -144,13 +154,13 @@ fn parse_join_clause(input: &str) -> BResult<&str, JoinClause> {
                 // No type annotation case: join identifier in expression
                 map(parse_identifier, |identifier| (None, identifier)),
             ))),
-            bws(keyword("in")),
+            bws(kw_in()),
             bws(parse_expression), // Join collection
-            bws(keyword("on")),
+            bws(kw_on()),
             bws(parse_expression), // Join condition left side
-            bws(keyword("equals")),
+            bws(kw_equals()),
             bws(parse_expression), // Join condition right side
-            opt(preceded(bws(keyword("into")), bws(parse_identifier))), // Optional 'into' clause
+            opt(preceded(bws(kw_into()), bws(parse_identifier))), // Optional 'into' clause
         )),
         |(
             _,
@@ -178,10 +188,7 @@ fn parse_join_clause(input: &str) -> BResult<&str, JoinClause> {
 /// Parse 'orderby' clause for sorting
 fn parse_orderby_clause(input: &str) -> BResult<&str, QueryOrderByClause> {
     map(
-        preceded(
-            keyword("orderby"),
-            separated_list1(bws(keyword(",")), parse_ordering),
-        ),
+        preceded(kw_orderby(), separated_list1(bws(keyword(",")), parse_ordering)),
         |orderings| QueryOrderByClause { orderings },
     )(input)
 }
@@ -192,8 +199,8 @@ fn parse_ordering(input: &str) -> BResult<&str, OrderByOrdering> {
         tuple((
             bws(parse_expression),
             opt(bws(alt((
-                map(keyword("ascending"), |_| OrderingDirection::Ascending),
-                map(keyword("descending"), |_| OrderingDirection::Descending),
+                map(kw_ascending(), |_| OrderingDirection::Ascending),
+                map(kw_descending(), |_| OrderingDirection::Descending),
             )))),
         )),
         |(expression, direction)| OrderByOrdering {
@@ -212,7 +219,7 @@ fn parse_select_or_group_clause(input: &str) -> BResult<&str, QuerySelectOrGroup
 /// Parse 'select' clause
 fn parse_select_clause(input: &str) -> BResult<&str, QuerySelectOrGroup> {
     map(
-        preceded(keyword("select"), bws(parse_expression)),
+        preceded(kw_select(), bws(parse_expression)),
         |expression| QuerySelectOrGroup::Select(expression),
     )(input)
 }
@@ -221,9 +228,9 @@ fn parse_select_clause(input: &str) -> BResult<&str, QuerySelectOrGroup> {
 fn parse_group_clause(input: &str) -> BResult<&str, QuerySelectOrGroup> {
     map(
         tuple((
-            keyword("group"),
+            kw_group(),
             bws(parse_expression),
-            bws(keyword("by")),
+            bws(kw_by()),
             bws(parse_expression),
         )),
         |(_, element, _, by)| QuerySelectOrGroup::Group { element, by },
@@ -234,7 +241,7 @@ fn parse_group_clause(input: &str) -> BResult<&str, QuerySelectOrGroup> {
 fn parse_query_continuation(input: &str) -> BResult<&str, QueryContinuation> {
     map(
         tuple((
-            keyword("into"),
+            kw_into(),
             bws(parse_identifier),
             many0(parse_query_clause),
             parse_select_or_group_clause,

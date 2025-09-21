@@ -38,7 +38,7 @@ pub use field_declaration::FieldDeclaration;
 pub use file_scoped_namespace_declaration::FileScopedNamespaceDeclaration;
 pub use global_attribute::GlobalAttribute;
 pub use global_using_directive::GlobalUsingDirective;
-pub use indexer_declaration::{IndexerAccessorList, IndexerDeclaration};
+pub use indexer_declaration::{IndexerAccessor, IndexerAccessorList, IndexerDeclaration};
 pub use interface_body_declaration::InterfaceBodyDeclaration;
 pub use interface_declaration::InterfaceDeclaration;
 pub use local_variable_declaration::LocalVariableDeclaration;

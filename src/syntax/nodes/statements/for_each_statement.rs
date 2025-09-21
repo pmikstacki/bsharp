@@ -6,6 +6,8 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct ForEachStatement {
+    // Whether this is an 'await foreach'
+    pub is_await: bool,
     // TypeSyntax of the iteration variable (can be 'var')
     pub var_type: Type, // Or maybe a special 'Var' type?
     // Name of the iteration variable

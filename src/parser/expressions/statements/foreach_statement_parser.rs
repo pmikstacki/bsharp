@@ -10,7 +10,10 @@ use crate::parser::statement_parser::parse_statement_ws;
 use crate::parser::types::type_parser::parse_type_expression;
 use crate::syntax::errors::BResult;
 use crate::syntax::nodes::statements::*;
-use crate::syntax::parser_helpers::{bchar, bws, context, keyword};
+use crate::syntax::parser_helpers::{bchar, bws, context};
+use crate::parser::keywords::iteration_keywords::kw_foreach;
+use crate::parser::keywords::expression_keywords::kw_await;
+use crate::parser::keywords::parameter_modifier_keywords::kw_in;
 
 // Parse a foreach statement following Roslyn's structure:
 // foreach (<type> <identifier> in <expression>) <statement>
@@ -19,8 +22,10 @@ pub fn parse_foreach_statement(input: &str) -> BResult<&str, Statement> {
         "foreach statement (expected 'foreach (type identifier in collection) statement')",
         map(
             tuple((
+                // 0. Optional 'await'
+                nom::combinator::opt(bws(kw_await())),
                 // 1. Foreach keyword
-                context("foreach keyword (expected 'foreach')", keyword("foreach")),
+                context("foreach keyword (expected 'foreach')", kw_foreach()),
                 // 2. Opening parenthesis
                 context(
                     "opening parenthesis after foreach (expected '(')",
@@ -39,7 +44,7 @@ pub fn parse_foreach_statement(input: &str) -> BResult<&str, Statement> {
                 // 5. 'in' keyword
                 context(
                     "in keyword in foreach (expected 'in')",
-                    bws(keyword("in")),
+                    bws(kw_in()),
                 ),
                 // 6. Collection expression
                 context(
@@ -58,6 +63,7 @@ pub fn parse_foreach_statement(input: &str) -> BResult<&str, Statement> {
                 ),
             )),
             |(
+                await_opt,
                 _foreach_kw,
                 _open_paren,
                 var_type,
@@ -68,6 +74,7 @@ pub fn parse_foreach_statement(input: &str) -> BResult<&str, Statement> {
                 body,
             )| {
                 Statement::ForEach(Box::new(ForEachStatement {
+                    is_await: await_opt.is_some(),
                     var_type,
                     var_name,
                     collection: Box::new(collection),

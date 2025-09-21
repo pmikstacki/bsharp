@@ -156,6 +156,21 @@ where
     }
 }
 
+/// Peek for a specific character without consuming input (whitespace/comment aware)
+pub fn peek_bchar(c: char) -> impl Fn(&str) -> BResult<&str, char> {
+    move |input: &str| bpeek(|i| bchar(c)(i))(input)
+}
+
+/// Peek for a keyword with word-boundary handling without consuming input (whitespace/comment aware)
+pub fn peek_keyword(kw: &'static str) -> impl Fn(&str) -> BResult<&str, &str> {
+    move |input: &str| bpeek(|i| keyword(kw)(i))(input)
+}
+
+/// Peek for an exact tag without consuming input (whitespace/comment aware)
+pub fn peek_tag(tag_str: &'static str) -> impl Fn(&str) -> BResult<&str, &str> {
+    move |input: &str| bpeek(|i| btag(tag_str)(i))(input)
+}
+
 /// Result of parsing either a singleton value or a delimited list of values
 #[derive(Debug, Clone, PartialEq)]
 pub enum OneOrMany<T> {

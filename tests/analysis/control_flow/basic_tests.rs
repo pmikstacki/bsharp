@@ -153,6 +153,7 @@ fn test_try_catch_control_flow() {
             exception_type: None,
             exception_variable: None,
             block: Box::new(Statement::Continue(ContinueStatement)),
+            when_clause: None,
         }],
         finally_clause: Some(FinallyClause {
             block: Box::new(Statement::Expression(Expression::Literal(Literal::String(
@@ -339,6 +340,7 @@ fn test_exception_flow_paths() {
             block: Box::new(Statement::Expression(Expression::Literal(Literal::String(
                 "handled".to_string(),
             )))),
+            when_clause: None,
         }],
         finally_clause: None,
     }));
@@ -376,6 +378,7 @@ fn test_control_flow_metrics() {
                         exception_type: None,
                         exception_variable: None,
                         block: Box::new(Statement::Continue(ContinueStatement)),
+                        when_clause: None,
                     }],
                     finally_clause: None,
                 }))),

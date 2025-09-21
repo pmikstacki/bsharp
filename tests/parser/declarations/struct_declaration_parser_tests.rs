@@ -12,6 +12,7 @@ fn test_simple_struct() {
         modifiers: vec![],
         name: Identifier::new("MyStruct"),
         type_parameters: None,
+        primary_constructor_parameters: None,
         base_types: vec![],
         body_declarations: vec![],
     };
@@ -33,6 +34,7 @@ fn test_public_struct() {
         modifiers: vec![Modifier::Public],
         name: Identifier::new("MyPublicStruct"),
         type_parameters: None,
+        primary_constructor_parameters: None,
         base_types: vec![],
         body_declarations: vec![],
     };
@@ -57,6 +59,7 @@ fn test_struct_with_single_generic_parameter() {
             name: Identifier::new("T"),
             variance: Variance::None,
         }]),
+        primary_constructor_parameters: None,
         base_types: vec![],
         body_declarations: vec![],
     };
@@ -87,6 +90,7 @@ fn test_public_struct_with_multiple_generic_parameters() {
                 variance: Variance::None,
             },
         ]),
+        primary_constructor_parameters: None,
         base_types: vec![],
         body_declarations: vec![],
     };

@@ -4,6 +4,12 @@ use crate::syntax::errors::BResult;
 use crate::syntax::nodes::identifier::Identifier;
 use crate::syntax::nodes::types::{CallingConvention, PrimitiveType, Type};
 use crate::syntax::parser_helpers::{bopt, bws, context, keyword, parse_delimited_list0};
+use crate::parser::keywords::type_keywords::{
+    kw_void, kw_bool, kw_ushort, kw_uint, kw_ulong, kw_sbyte, kw_short, kw_byte, kw_int, kw_long,
+    kw_double, kw_decimal, kw_float, kw_string, kw_object, kw_char, kw_nint, kw_nuint,
+};
+use crate::parser::keywords::contextual_misc_keywords::{kw_dynamic, kw_var};
+use crate::parser::keywords::parameter_modifier_keywords::kw_ref;
 use nom::combinator::cut;
 use nom::combinator::{map, opt};
 use nom::{branch::alt, character::complete::char as nom_char, combinator::value};
@@ -14,40 +20,32 @@ fn parse_primitive_type(input: &str) -> BResult<&str, Type> {
     context(
         "primitive type (expected built-in C# type like 'int', 'string', 'bool', etc.)",
         alt((
-            // Void type - revert to Type::Primitive(PrimitiveType::Void) for consistency with other tests
-            map(keyword("void"), |_| Type::Primitive(PrimitiveType::Void)),
+            // Void type
+            map(kw_void(), |_| Type::Primitive(PrimitiveType::Void)),
             // Boolean type
-            map(keyword("bool"), |_| Type::Primitive(PrimitiveType::Bool)),
+            map(kw_bool(), |_| Type::Primitive(PrimitiveType::Bool)),
             // Integral types - order matters! Put longer keywords first to avoid partial matches
-            map(keyword("ushort"), |_| {
-                Type::Primitive(PrimitiveType::UShort)
-            }),
-            map(keyword("uint"), |_| Type::Primitive(PrimitiveType::UInt)),
-            map(keyword("ulong"), |_| Type::Primitive(PrimitiveType::ULong)),
-            map(keyword("sbyte"), |_| Type::Primitive(PrimitiveType::SByte)),
-            map(keyword("short"), |_| Type::Primitive(PrimitiveType::Short)),
-            map(keyword("byte"), |_| Type::Primitive(PrimitiveType::Byte)),
-            map(keyword("int"), |_| Type::Primitive(PrimitiveType::Int)),
-            map(keyword("long"), |_| Type::Primitive(PrimitiveType::Long)),
+            map(kw_ushort(), |_| Type::Primitive(PrimitiveType::UShort)),
+            map(kw_uint(), |_| Type::Primitive(PrimitiveType::UInt)),
+            map(kw_ulong(), |_| Type::Primitive(PrimitiveType::ULong)),
+            map(kw_sbyte(), |_| Type::Primitive(PrimitiveType::SByte)),
+            map(kw_short(), |_| Type::Primitive(PrimitiveType::Short)),
+            map(kw_byte(), |_| Type::Primitive(PrimitiveType::Byte)),
+            map(kw_int(), |_| Type::Primitive(PrimitiveType::Int)),
+            map(kw_long(), |_| Type::Primitive(PrimitiveType::Long)),
+            map(kw_nint(), |_| Type::Primitive(PrimitiveType::NInt)),
+            map(kw_nuint(), |_| Type::Primitive(PrimitiveType::NUInt)),
             // Floating-point types
-            map(keyword("double"), |_| {
-                Type::Primitive(PrimitiveType::Double)
-            }),
-            map(keyword("decimal"), |_| {
-                Type::Primitive(PrimitiveType::Decimal)
-            }),
-            map(keyword("float"), |_| Type::Primitive(PrimitiveType::Float)),
+            map(kw_double(), |_| Type::Primitive(PrimitiveType::Double)),
+            map(kw_decimal(), |_| Type::Primitive(PrimitiveType::Decimal)),
+            map(kw_float(), |_| Type::Primitive(PrimitiveType::Float)),
             // Character and string types
-            map(keyword("string"), |_| {
-                Type::Primitive(PrimitiveType::String)
-            }),
-            map(keyword("object"), |_| {
-                Type::Primitive(PrimitiveType::Object)
-            }),
-            map(keyword("char"), |_| Type::Primitive(PrimitiveType::Char)),
+            map(kw_string(), |_| Type::Primitive(PrimitiveType::String)),
+            map(kw_object(), |_| Type::Primitive(PrimitiveType::Object)),
+            map(kw_char(), |_| Type::Primitive(PrimitiveType::Char)),
             // Special types
-            map(keyword("dynamic"), |_| Type::Dynamic),
-            map(keyword("var"), |_| Type::Var),
+            map(kw_dynamic(), |_| Type::Dynamic),
+            map(kw_var(), |_| Type::Var),
         )),
     )(input)
 }
@@ -176,9 +174,7 @@ fn parse_pointer_suffix(input: &str) -> BResult<&str, ()> {
 }
 
 // Helper function for parsing ref keyword with word boundary
-fn parse_ref_keyword(input: &str) -> BResult<&str, &str> {
-    keyword("ref")(input)
-}
+fn parse_ref_keyword(input: &str) -> BResult<&str, &str> { kw_ref()(input) }
 
 // Parse a ref return type (ref Type)
 fn parse_ref_return_type(input: &str) -> BResult<&str, Type> {

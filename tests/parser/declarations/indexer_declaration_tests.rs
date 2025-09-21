@@ -5,6 +5,7 @@ use bsharp::syntax::nodes::declarations::{IndexerDeclaration, Modifier};
 use bsharp::syntax::nodes::identifier::Identifier;
 use bsharp::syntax::nodes::types::Type::Primitive;
 use bsharp::syntax::nodes::types::{PrimitiveType, Type};
+use bsharp::syntax::nodes::statements::statement::Statement;
 
 fn parse_indexer_declaration_helper(code: &str) -> Result<IndexerDeclaration, String> {
     match parse_indexer_declaration(code) {
@@ -17,6 +18,83 @@ fn parse_indexer_declaration_helper(code: &str) -> Result<IndexerDeclaration, St
         }
         Err(e) => Err(format!("Parse error: {:?}", e)),
     }
+}
+
+#[test]
+fn test_indexer_mixed_accessor_modifiers_set_private() {
+    let code = "public string this[int i] { get; private set; }";
+    let decl = parse_indexer_declaration_helper(code).expect("parse ok");
+    // Property-level modifier and type
+    assert!(decl.modifiers.contains(&Modifier::Public));
+    assert_eq!(decl.indexer_type, Type::Primitive(PrimitiveType::String));
+    // Accessor modifiers: get -> none, set -> private
+    let get_acc = decl.accessor_list.get_accessor.as_ref().expect("get present");
+    assert!(get_acc.modifiers.is_empty());
+    assert!(get_acc.body.is_none());
+    let set_acc = decl.accessor_list.set_accessor.as_ref().expect("set present");
+    assert!(set_acc.modifiers.contains(&Modifier::Private));
+    assert_eq!(set_acc.modifiers.len(), 1);
+    assert!(set_acc.body.is_none());
+}
+
+#[test]
+fn test_indexer_mixed_accessor_modifiers_get_private() {
+    let code = "public string this[int i] { private get; set; }";
+    let decl = parse_indexer_declaration_helper(code).expect("parse ok");
+    // Property-level modifier and type
+    assert!(decl.modifiers.contains(&Modifier::Public));
+    assert_eq!(decl.indexer_type, Type::Primitive(PrimitiveType::String));
+    // Accessor modifiers: get -> private, set -> none
+    let get_acc = decl.accessor_list.get_accessor.as_ref().expect("get present");
+    assert!(get_acc.modifiers.contains(&Modifier::Private));
+    assert_eq!(get_acc.modifiers.len(), 1);
+    assert!(get_acc.body.is_none());
+    let set_acc = decl.accessor_list.set_accessor.as_ref().expect("set present");
+    assert!(set_acc.modifiers.is_empty());
+    assert!(set_acc.body.is_none());
+}
+
+#[test]
+fn test_indexer_accessor_attrs_with_mixed_modifiers() {
+    let code = "public string this[int i] { [A] get; private set; }";
+    let decl = parse_indexer_declaration_helper(code).expect("parse ok");
+    // Declaration-level checks
+    assert!(decl.modifiers.contains(&Modifier::Public));
+    assert_eq!(decl.indexer_type, Type::Primitive(PrimitiveType::String));
+    // get accessor: attribute [A], no modifiers, no body
+    let get_acc = decl.accessor_list.get_accessor.as_ref().expect("get present");
+    assert!(get_acc.modifiers.is_empty());
+    assert_eq!(get_acc.attributes.len(), 1);
+    assert_eq!(get_acc.attributes[0].name.name, "A");
+    assert!(get_acc.body.is_none());
+    // set accessor: private modifier, no attributes, no body
+    let set_acc = decl.accessor_list.set_accessor.as_ref().expect("set present");
+    assert!(set_acc.attributes.is_empty());
+    assert!(set_acc.modifiers.contains(&Modifier::Private));
+    assert_eq!(set_acc.modifiers.len(), 1);
+    assert!(set_acc.body.is_none());
+}
+
+#[test]
+fn test_indexer_accessor_level_attributes_and_modifiers() {
+    let code = "public int this[int index] { [A1] private get; [A2][A3] set; }";
+    let result = parse_indexer_declaration_helper(code);
+    assert!(result.is_ok(), "Failed to parse indexer with accessor attrs/mods: {:?}", result);
+    let decl = result.unwrap();
+    // get accessor present, private, with one attribute A1
+    let get_acc = decl.accessor_list.get_accessor.as_ref().expect("get present");
+    assert!(get_acc.modifiers.contains(&Modifier::Private));
+    assert_eq!(get_acc.attributes.len(), 1);
+    assert_eq!(get_acc.attributes[0].name.name, "A1");
+    assert!(get_acc.body.is_none());
+    // set accessor present, no modifiers, with attributes A2 and A3
+    let set_acc = decl.accessor_list.set_accessor.as_ref().expect("set present");
+    assert!(set_acc.modifiers.is_empty());
+    assert_eq!(set_acc.attributes.len(), 2);
+    let names: Vec<_> = set_acc.attributes.iter().map(|a| a.name.name.as_str()).collect();
+    assert!(names.contains(&"A2"));
+    assert!(names.contains(&"A3"));
+    assert!(set_acc.body.is_none());
 }
 
 #[test]
@@ -38,8 +116,22 @@ fn test_parse_simple_indexer() {
     assert_eq!(declaration.parameters.len(), 1);
 
     // Check that both get and set accessors are present
+    // Auto-accessors have no bodies -> body None
     assert!(declaration.accessor_list.get_accessor.is_some());
+    assert!(declaration.accessor_list
+        .get_accessor
+        .as_ref()
+        .unwrap()
+        .body
+        .is_none());
     assert!(declaration.accessor_list.set_accessor.is_some());
+    assert!(declaration
+        .accessor_list
+        .set_accessor
+        .as_ref()
+        .unwrap()
+        .body
+        .is_none());
 }
 
 #[test]
@@ -57,8 +149,15 @@ fn test_parse_readonly_indexer() {
         declaration.indexer_type,
         Type::Primitive(PrimitiveType::String)
     );
-    // Check that only get accessor is present
+    // Readonly auto get accessor present with no body
     assert!(declaration.accessor_list.get_accessor.is_some());
+    assert!(declaration
+        .accessor_list
+        .get_accessor
+        .as_ref()
+        .unwrap()
+        .body
+        .is_none());
     assert!(declaration.accessor_list.set_accessor.is_none());
 }
 
@@ -78,9 +177,16 @@ fn test_parse_writeonly_indexer() {
         Type::Primitive(PrimitiveType::String)
     );
 
-    // Check that only set accessor is present
+    // Writeonly auto set accessor present with no body
     assert!(declaration.accessor_list.get_accessor.is_none());
     assert!(declaration.accessor_list.set_accessor.is_some());
+    assert!(declaration
+        .accessor_list
+        .set_accessor
+        .as_ref()
+        .unwrap()
+        .body
+        .is_none());
 }
 
 #[test]
@@ -126,12 +232,26 @@ fn test_parse_indexer_with_body() {
     assert!(declaration.accessor_list.get_accessor.is_some());
     assert!(declaration.accessor_list.set_accessor.is_some());
 
-    let get_body = declaration.accessor_list.get_accessor.unwrap();
-    let set_body = declaration.accessor_list.set_accessor.unwrap();
+    let get_body = declaration
+        .accessor_list
+        .get_accessor
+        .as_ref()
+        .unwrap()
+        .body
+        .clone()
+        .unwrap();
+    let set_body = declaration
+        .accessor_list
+        .set_accessor
+        .as_ref()
+        .unwrap()
+        .body
+        .clone()
+        .unwrap();
 
-    // Our simplified implementation returns formatted strings for bodies
-    assert!(get_body.contains("get body") || get_body.is_empty());
-    assert!(set_body.contains("set body") || set_body.is_empty());
+    // Bodies should be parsed as Statement::Block(...)
+    assert!(matches!(get_body, Statement::Block(_)));
+    assert!(matches!(set_body, Statement::Block(_)));
 }
 
 #[test]

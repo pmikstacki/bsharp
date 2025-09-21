@@ -9,6 +9,8 @@ use crate::syntax::nodes::expressions::expression::Expression;
 use crate::syntax::nodes::expressions::range_expression::IndexExpression;
 use crate::syntax::nodes::expressions::UnaryOperator;
 use crate::syntax::parser_helpers::{bchar, bws};
+use crate::parser::keywords::exception_and_safety_keywords::{kw_checked, kw_unchecked};
+use crate::parser::expressions::primary_expression_parser::parse_expression;
 
 use nom::{
     branch::alt,
@@ -18,6 +20,31 @@ use nom::{
 
 /// Parse a unary expression or higher precedence constructs
 pub(crate) fn parse_unary_expression_or_higher(input: &str) -> BResult<&str, Expression> {
+    // checked(expr)
+    if let Ok((input_after_kw, _)) = bws(kw_checked())(input) {
+        if let Ok((rest, _)) = bws(bchar('('))(input_after_kw) {
+            let (rest, inner) = parse_expression(rest)?;
+            let (rest, _) = bws(bchar(')'))(rest)?;
+            return Ok((rest, Expression::Checked(Box::new(
+                crate::syntax::nodes::expressions::checked_expression::CheckedExpression {
+                    expr: Box::new(inner),
+                },
+            ))));
+        }
+    }
+
+    // unchecked(expr)
+    if let Ok((input_after_kw, _)) = bws(kw_unchecked())(input) {
+        if let Ok((rest, _)) = bws(bchar('('))(input_after_kw) {
+            let (rest, inner) = parse_expression(rest)?;
+            let (rest, _) = bws(bchar(')'))(rest)?;
+            return Ok((rest, Expression::Unchecked(Box::new(
+                crate::syntax::nodes::expressions::checked_expression::UncheckedExpression {
+                    expr: Box::new(inner),
+                },
+            ))));
+        }
+    }
     // Try ref expression first
     if let Ok((input, ref_expr)) = parse_ref_expression(input) {
         return Ok((input, ref_expr));

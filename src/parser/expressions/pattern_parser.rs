@@ -5,6 +5,8 @@ use crate::syntax::errors::BResult;
 use crate::syntax::nodes::expressions::expression::Expression;
 use crate::syntax::nodes::expressions::pattern::*;
 use crate::syntax::parser_helpers::{bws, keyword, parse_delimited_list0};
+use crate::parser::keywords::pattern_keywords::{kw_and, kw_or, kw_not};
+use crate::parser::keywords::contextual_misc_keywords::kw_var;
 
 use nom::combinator::cut;
 use nom::{
@@ -25,7 +27,7 @@ fn parse_logical_or_pattern(input: &str) -> BResult<&str, Pattern> {
     // Use fold_many0 approach from Nom docs for left-associative parsing
     let (input, first) = parse_logical_and_pattern(input)?;
     let (input, rest) =
-        nom::multi::many0(preceded(bws(keyword("or")), parse_logical_and_pattern))(input)?;
+        nom::multi::many0(preceded(bws(kw_or()), parse_logical_and_pattern))(input)?;
 
     // Fold the results into a left-associative tree
     Ok((
@@ -40,7 +42,7 @@ fn parse_logical_or_pattern(input: &str) -> BResult<&str, Pattern> {
 fn parse_logical_and_pattern(input: &str) -> BResult<&str, Pattern> {
     // Use fold_many0 approach from Nom docs for left-associative parsing
     let (input, first) = parse_not_pattern(input)?;
-    let (input, rest) = nom::multi::many0(preceded(bws(keyword("and")), parse_not_pattern))(input)?;
+    let (input, rest) = nom::multi::many0(preceded(bws(kw_and()), parse_not_pattern))(input)?;
 
     // Fold the results into a left-associative tree
     Ok((
@@ -55,7 +57,7 @@ fn parse_logical_and_pattern(input: &str) -> BResult<&str, Pattern> {
 fn parse_not_pattern(input: &str) -> BResult<&str, Pattern> {
     alt((
         map(
-            preceded(keyword("not"), bws(parse_relational_pattern)),
+            preceded(kw_not(), bws(parse_relational_pattern)),
             |pattern| Pattern::Not(Box::new(pattern)),
         ),
         parse_relational_pattern,
@@ -136,7 +138,7 @@ fn parse_discard_pattern(input: &str) -> BResult<&str, Pattern> {
 /// Parse var pattern (var identifier)
 fn parse_var_pattern(input: &str) -> BResult<&str, Pattern> {
     map(
-        preceded(keyword("var"), bws(parse_identifier)),
+        preceded(kw_var(), bws(parse_identifier)),
         Pattern::Var,
     )(input)
 }

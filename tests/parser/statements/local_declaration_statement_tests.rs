@@ -102,12 +102,12 @@ fn test_parse_local_variable_declaration_list_new_expression() {
                     name: "names".to_string(),
                 },
                 initializer: Some(Expression::New(Box::new(NewExpression {
-                    ty: Type::Generic {
+                    ty: Some(Type::Generic {
                         base: Identifier {
                             name: "List".to_string(),
                         },
                         args: vec![Type::Primitive(PrimitiveType::String)],
-                    },
+                    }),
                     arguments: vec![],
                     object_initializer: None,
                     collection_initializer: None,
@@ -192,12 +192,12 @@ fn test_parse_local_variable_declaration_var_with_new_expression() {
                     name: "list".to_string(),
                 },
                 initializer: Some(Expression::New(Box::new(NewExpression {
-                    ty: Type::Generic {
+                    ty: Some(Type::Generic {
                         base: Identifier {
                             name: "List".to_string(),
                         },
                         args: vec![Type::Primitive(PrimitiveType::String)],
-                    },
+                    }),
                     arguments: vec![],
                     object_initializer: None,
                     collection_initializer: None,

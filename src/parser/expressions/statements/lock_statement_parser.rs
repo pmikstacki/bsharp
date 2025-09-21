@@ -3,7 +3,8 @@ use crate::parser::statement_parser::parse_statement_ws;
 use crate::syntax::errors::BResult;
 use crate::syntax::nodes::statements::lock_statement::LockStatement;
 use crate::syntax::nodes::statements::statement::Statement;
-use crate::syntax::parser_helpers::{bchar, bws, context, keyword};
+use crate::syntax::parser_helpers::{bchar, bws, context};
+use crate::parser::keywords::exception_and_safety_keywords::kw_lock;
 
 use nom::combinator::cut;
 use nom::{
@@ -17,7 +18,7 @@ pub fn parse_lock_statement(input: &str) -> BResult<&str, Statement> {
         "lock statement",
         map(
             tuple((
-                context("lock keyword", keyword("lock")),
+                context("lock keyword", kw_lock()),
                 context(
                     "lock object in parentheses",
                     bws(delimited(

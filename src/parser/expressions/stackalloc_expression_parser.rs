@@ -4,7 +4,8 @@ use crate::syntax::errors::BResult;
 use crate::syntax::nodes::expressions::expression::Expression;
 use crate::syntax::nodes::expressions::stackalloc_expression::StackAllocExpression;
 use crate::syntax::nodes::types::Type;
-use crate::syntax::parser_helpers::{bchar, bws, context, keyword, parse_delimited_list0};
+use crate::syntax::parser_helpers::{bchar, bws, context, parse_delimited_list0};
+use crate::parser::keywords::expression_keywords::kw_stackalloc;
 
 use nom::combinator::cut;
 use nom::{branch::alt, combinator::map, sequence::{tuple, delimited}};
@@ -35,7 +36,7 @@ pub fn parse_stackalloc_expression(input: &str) -> BResult<&str, Expression> {
         "stackalloc expression",
         map(
             tuple((
-                keyword("stackalloc"),
+                kw_stackalloc(),
                 bws(alt((
                     // stackalloc[] { ... } (implicitly typed) - try this first to avoid type parsing
                     map(

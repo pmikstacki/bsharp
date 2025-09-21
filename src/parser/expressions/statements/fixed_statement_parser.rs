@@ -3,7 +3,8 @@ use crate::parser::statement_parser::parse_statement_ws;
 use crate::syntax::errors::BResult;
 use crate::syntax::nodes::statements::fixed_statement::FixedStatement;
 use crate::syntax::nodes::statements::statement::Statement;
-use crate::syntax::parser_helpers::{bchar, bws, keyword};
+use crate::syntax::parser_helpers::{bchar, bws};
+use crate::parser::keywords::exception_and_safety_keywords::kw_fixed;
 
 use nom::combinator::cut;
 use nom::Parser;
@@ -17,7 +18,7 @@ use nom_supreme::ParserExt;
 pub fn parse_fixed_statement(input: &str) -> BResult<&str, Statement> {
     map(
         tuple((
-            keyword("fixed").context("fixed keyword"),
+            kw_fixed().context("fixed keyword"),
             bws(delimited(
                 bchar('(').context("opening parenthesis"),
                 // Parse a single variable declaration (no trailing semicolon inside parentheses)

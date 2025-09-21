@@ -2,7 +2,8 @@ use crate::parser::types::type_parser::parse_type_expression;
 use crate::syntax::errors::BResult;
 use crate::syntax::nodes::expressions::default_expression::DefaultExpression;
 use crate::syntax::nodes::expressions::expression::Expression;
-use crate::syntax::parser_helpers::{bchar, bws, context, keyword};
+use crate::syntax::parser_helpers::{bchar, bws, context};
+use crate::parser::keywords::expression_keywords::kw_default;
 
 use nom::combinator::cut;
 use nom::{
@@ -19,7 +20,7 @@ pub fn parse_default_expression(input: &str) -> BResult<&str, Expression> {
             // default(Type) - explicit type
             map(
                 preceded(
-                    keyword("default"),
+                    kw_default(),
                     delimited(
                         bws(bchar('(')),
                         bws(parse_type_expression),
@@ -33,7 +34,7 @@ pub fn parse_default_expression(input: &str) -> BResult<&str, Expression> {
                 },
             ),
             // default - literal without type
-            map(keyword("default"), |_| {
+            map(kw_default(), |_| {
                 Expression::Default(Box::new(DefaultExpression { target_type: None }))
             }),
         )),

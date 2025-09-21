@@ -346,21 +346,15 @@ fn test_parse_ref_as_parameter() {
         Expression::Invocation(invocation) => {
             assert_eq!(invocation.arguments.len(), 2);
 
-            // First argument should be ref expression
-            match &invocation.arguments[0] {
-                Expression::Ref(_) => {
-                    // Expected ref expression
-                }
-                _ => panic!("Expected ref expression as first argument"),
-            }
+            // First argument should be marked as ref and carry a variable expr
+            let arg0 = &invocation.arguments[0];
+            assert!(matches!(arg0.modifier, Some(_)));
+            assert!(matches!(arg0.expr, Expression::Variable(_)));
 
-            // Second argument should be normal variable
-            match &invocation.arguments[1] {
-                Expression::Variable(_) => {
-                    // Expected variable expression
-                }
-                _ => panic!("Expected variable expression as second argument"),
-            }
+            // Second argument should be normal variable with no modifier
+            let arg1 = &invocation.arguments[1];
+            assert!(arg1.modifier.is_none());
+            assert!(matches!(arg1.expr, Expression::Variable(_)));
         }
         _ => panic!("Expected invocation expression"),
     }

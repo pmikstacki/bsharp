@@ -2,7 +2,8 @@ use crate::parser::identifier_parser::parse_identifier;
 use crate::parser::types::type_parser::parse_type_expression;
 use crate::syntax::errors::BResult;
 use crate::syntax::nodes::types::{Parameter, ParameterModifier};
-use crate::syntax::parser_helpers::{bchar, bws, context, keyword, parse_delimited_list0};
+use crate::syntax::parser_helpers::{bchar, bws, context, parse_delimited_list0};
+use crate::parser::keywords::parameter_modifier_keywords::{kw_ref, kw_out, kw_in, kw_params};
 use nom::branch::alt;
 use nom::combinator::map;
 use nom::combinator::opt;
@@ -10,10 +11,10 @@ use nom::combinator::opt;
 // Parse parameter modifiers (ref, out, in, params) and return the actual modifier
 fn parse_parameter_modifiers(input: &str) -> BResult<&str, Option<ParameterModifier>> {
     opt(alt((
-        map(keyword("ref"), |_| ParameterModifier::Ref),
-        map(keyword("out"), |_| ParameterModifier::Out),
-        map(keyword("in"), |_| ParameterModifier::In),
-        map(keyword("params"), |_| ParameterModifier::Params),
+        map(kw_ref(), |_| ParameterModifier::Ref),
+        map(kw_out(), |_| ParameterModifier::Out),
+        map(kw_in(), |_| ParameterModifier::In),
+        map(kw_params(), |_| ParameterModifier::Params),
     )))(input)
 }
 

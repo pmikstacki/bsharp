@@ -227,7 +227,9 @@ impl BasicMetricsCollector {
             Statement::Using(using_stmt) => {
                 self.metrics.total_using_statements += 1;
                 self.metrics.logical_lines += 1; // Count the using statement itself
-                self.collect_from_statement(&using_stmt.body);
+                if let Some(body) = &using_stmt.body {
+                    self.collect_from_statement(body);
+                }
             }
             Statement::Block(statements) => {
                 // Count only non-empty blocks as logical lines

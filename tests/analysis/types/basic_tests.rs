@@ -29,6 +29,7 @@ fn test_analyze_basic_types() {
         modifiers: Vec::new(),
         name: create_test_identifier("TestClass"),
         type_parameters: None,
+        primary_constructor_parameters: None,
         base_types: vec![
             Type::Reference(create_test_identifier("BaseClass")),
             Type::Reference(create_test_identifier("IInterface")),
@@ -41,6 +42,7 @@ fn test_analyze_basic_types() {
                 initializer: None,
             }),
             ClassBodyDeclaration::Property(PropertyDeclaration {
+                attributes: Vec::new(),
                 modifiers: Vec::new(),
                 ty: Type::Reference(create_test_identifier("int")),
                 name: create_test_identifier("Age"),
@@ -123,6 +125,7 @@ fn test_analyze_generic_types() {
                 variance: Variance::None,
             },
         ]),
+        primary_constructor_parameters: None,
         base_types: Vec::new(),
         body_declarations: vec![
             ClassBodyDeclaration::Field(FieldDeclaration {
@@ -169,6 +172,7 @@ fn test_inheritance_analysis() {
         modifiers: Vec::new(),
         name: create_test_identifier("BaseClass"),
         type_parameters: None,
+        primary_constructor_parameters: None,
         base_types: Vec::new(),
         body_declarations: Vec::new(),
     };
@@ -180,6 +184,7 @@ fn test_inheritance_analysis() {
         modifiers: Vec::new(),
         name: create_test_identifier("DerivedClass"),
         type_parameters: None,
+        primary_constructor_parameters: None,
         base_types: vec![Type::Reference(create_test_identifier("BaseClass"))],
         body_declarations: Vec::new(),
     };
@@ -191,6 +196,7 @@ fn test_inheritance_analysis() {
         modifiers: Vec::new(),
         name: create_test_identifier("FurtherDerived"),
         type_parameters: None,
+        primary_constructor_parameters: None,
         base_types: vec![Type::Reference(create_test_identifier("DerivedClass"))],
         body_declarations: Vec::new(),
     };
@@ -218,6 +224,7 @@ fn test_interface_analysis() {
         modifiers: Vec::new(),
         name: create_test_identifier("MultiInterfaceClass"),
         type_parameters: None,
+        primary_constructor_parameters: None,
         base_types: vec![
             Type::Reference(create_test_identifier("IComparable")),
             Type::Reference(create_test_identifier("IDisposable")),
@@ -256,6 +263,7 @@ fn test_type_usage_analysis() {
         modifiers: Vec::new(),
         name: create_test_identifier("TypeUsageClass"),
         type_parameters: None,
+        primary_constructor_parameters: None,
         base_types: Vec::new(),
         body_declarations: vec![
             ClassBodyDeclaration::Field(FieldDeclaration {
@@ -268,6 +276,7 @@ fn test_type_usage_analysis() {
                 initializer: None,
             }),
             ClassBodyDeclaration::Property(PropertyDeclaration {
+                attributes: Vec::new(),
                 modifiers: Vec::new(),
                 ty: Type::Nullable(Box::new(Type::Reference(create_test_identifier("int")))),
                 name: create_test_identifier("OptionalAge"),
@@ -323,6 +332,7 @@ fn test_type_complexity_analysis() {
             name: create_test_identifier("T"),
             variance: Variance::None,
         }]),
+        primary_constructor_parameters: None,
         base_types: Vec::new(),
         body_declarations: vec![ClassBodyDeclaration::Method(MethodDeclaration {
             modifiers: Vec::new(),
@@ -366,6 +376,7 @@ fn test_circular_dependency_detection() {
         modifiers: Vec::new(),
         name: create_test_identifier("ClassA"),
         type_parameters: None,
+        primary_constructor_parameters: None,
         base_types: Vec::new(),
         body_declarations: vec![ClassBodyDeclaration::Field(FieldDeclaration {
             modifiers: Vec::new(),
@@ -381,6 +392,7 @@ fn test_circular_dependency_detection() {
         modifiers: Vec::new(),
         name: create_test_identifier("ClassB"),
         type_parameters: None,
+        primary_constructor_parameters: None,
         base_types: Vec::new(),
         body_declarations: vec![ClassBodyDeclaration::Field(FieldDeclaration {
             modifiers: Vec::new(),
@@ -409,6 +421,7 @@ fn test_type_cohesion_analysis() {
         modifiers: Vec::new(),
         name: create_test_identifier("PersonManager"),
         type_parameters: None,
+        primary_constructor_parameters: None,
         base_types: Vec::new(),
         body_declarations: vec![
             ClassBodyDeclaration::Field(FieldDeclaration {
@@ -459,6 +472,7 @@ fn test_comprehensive_type_analysis() {
             name: create_test_identifier("T"),
             variance: Variance::None,
         }]),
+        primary_constructor_parameters: None,
         base_types: vec![
             Type::Reference(create_test_identifier("BaseClass")),
             Type::Reference(create_test_identifier("IInterface1")),
@@ -475,6 +489,7 @@ fn test_comprehensive_type_analysis() {
                 initializer: None,
             }),
             ClassBodyDeclaration::Property(PropertyDeclaration {
+                attributes: Vec::new(),
                 modifiers: Vec::new(),
                 ty: Type::Nullable(Box::new(Type::Reference(create_test_identifier("string")))),
                 name: create_test_identifier("Name"),

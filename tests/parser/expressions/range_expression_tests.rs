@@ -216,11 +216,17 @@ fn test_range_as_argument() {
         Expression::Invocation(Box::new(
             bsharp::syntax::nodes::expressions::invocation_expression::InvocationExpression {
                 callee: Box::new(Expression::Variable(Identifier::new("MyMethod"))),
-                arguments: vec![Expression::Range(Box::new(RangeExpression {
-                    start: Some(Box::new(Expression::Variable(Identifier::new("x")))),
-                    end: Some(Box::new(Expression::Variable(Identifier::new("y")))),
-                    is_inclusive: false,
-                }))],
+                arguments: vec![
+                    bsharp::syntax::nodes::expressions::invocation_expression::Argument {
+                        name: None,
+                        modifier: None,
+                        expr: Expression::Range(Box::new(RangeExpression {
+                            start: Some(Box::new(Expression::Variable(Identifier::new("x")))),
+                            end: Some(Box::new(Expression::Variable(Identifier::new("y")))),
+                            is_inclusive: false,
+                        })),
+                    }
+                ],
             },
         )),
     );
@@ -234,9 +240,15 @@ fn test_index_as_argument() {
         Expression::Invocation(Box::new(
             bsharp::syntax::nodes::expressions::invocation_expression::InvocationExpression {
                 callee: Box::new(Expression::Variable(Identifier::new("MyMethod"))),
-                arguments: vec![Expression::Index(Box::new(IndexExpression {
-                    value: Box::new(Expression::Variable(Identifier::new("idx"))),
-                }))],
+                arguments: vec![
+                    bsharp::syntax::nodes::expressions::invocation_expression::Argument {
+                        name: None,
+                        modifier: None,
+                        expr: Expression::Index(Box::new(IndexExpression {
+                            value: Box::new(Expression::Variable(Identifier::new("idx"))),
+                        })),
+                    }
+                ],
             },
         )),
     );

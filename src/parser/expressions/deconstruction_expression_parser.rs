@@ -3,7 +3,8 @@ use crate::parser::identifier_parser::parse_identifier;
 use crate::parser::types::type_parser::parse_type_expression;
 use crate::syntax::errors::BResult;
 use crate::syntax::nodes::expressions::{DeconstructionExpression, DeconstructionTarget};
-use crate::syntax::parser_helpers::{bchar, bws, context, keyword};
+use crate::syntax::parser_helpers::{bchar, bws, context};
+use crate::parser::keywords::contextual_misc_keywords::kw_var;
 
 use nom::combinator::cut;
 use nom::{
@@ -59,7 +60,7 @@ fn parse_deconstruction_target(input: &str) -> BResult<&str, DeconstructionTarge
             }),
             // Variable declaration with 'var': var x
             map(
-                tuple((keyword("var"), bws(parse_identifier))),
+                tuple((kw_var(), bws(parse_identifier))),
                 |(_, name)| DeconstructionTarget::Declaration {
                     variable_type: None,
                     name,

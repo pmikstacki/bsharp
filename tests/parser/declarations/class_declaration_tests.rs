@@ -25,6 +25,7 @@ fn test_parse_simple_class() {
         modifiers: vec![],
         name: Identifier::new("MyClass"),
         type_parameters: None,
+        primary_constructor_parameters: None,
         base_types: vec![],
         body_declarations: vec![],
         documentation: None,
@@ -52,6 +53,7 @@ fn test_parse_generic_class() {
             ]
             .into(),
         ),
+        primary_constructor_parameters: None,
         base_types: vec![],
         body_declarations: vec![],
         documentation: None,
@@ -131,6 +133,7 @@ fn test_parse_class_with_multiple_members() {
         modifiers: vec![],
         name: Identifier::new("Service"),
         type_parameters: None,
+        primary_constructor_parameters: None,
         base_types: vec![],
         body_declarations: vec![
             ClassBodyDeclaration::Method(MethodDeclaration {
@@ -169,6 +172,7 @@ fn test_parse_class_with_field() {
         modifiers: vec![],
         name: Identifier::new("Data"),
         type_parameters: None,
+        primary_constructor_parameters: None,
         base_types: vec![],
         body_declarations: vec![ClassBodyDeclaration::Field(FieldDeclaration {
             modifiers: vec![],
@@ -195,6 +199,7 @@ fn test_parse_class_with_mixed_members() {
         modifiers: vec![],
         name: Identifier::new("MyComponent"),
         type_parameters: None,
+        primary_constructor_parameters: None,
         base_types: vec![],
         body_declarations: vec![
             ClassBodyDeclaration::Field(FieldDeclaration {
@@ -257,6 +262,7 @@ fn test_parse_class_with_modifiers() {
         modifiers: vec![Modifier::Public],
         name: Identifier::new("PublicClass"),
         type_parameters: None,
+        primary_constructor_parameters: None,
         base_types: vec![],
         body_declarations: vec![],
         documentation: None,
@@ -269,6 +275,7 @@ fn test_parse_class_with_modifiers() {
         modifiers: vec![Modifier::Sealed],
         name: Identifier::new("SealedClass"),
         type_parameters: None,
+        primary_constructor_parameters: None,
         base_types: vec![],
         body_declarations: vec![],
         documentation: None,
@@ -281,6 +288,7 @@ fn test_parse_class_with_modifiers() {
         modifiers: vec![Modifier::Public, Modifier::Static],
         name: Identifier::new("StaticPublicClass"),
         type_parameters: None,
+        primary_constructor_parameters: None,
         base_types: vec![],
         body_declarations: vec![],
         documentation: None,

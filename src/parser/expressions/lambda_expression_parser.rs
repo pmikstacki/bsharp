@@ -16,16 +16,19 @@ use crate::syntax::nodes::expressions::lambda_expression::{
     AnonymousMethodExpression, LambdaBody, LambdaExpression, LambdaParameter,
     LambdaParameterModifier,
 };
-use crate::syntax::parser_helpers::{bchar, bws, context, keyword, parse_delimited_list0};
+use crate::syntax::parser_helpers::{bchar, bws, context, parse_delimited_list0};
+use crate::parser::keywords::parameter_modifier_keywords::{kw_ref, kw_out, kw_in};
+use crate::parser::keywords::modifier_keywords::kw_async;
+use crate::parser::keywords::declaration_keywords::kw_delegate;
 
 /// Parse a lambda parameter modifier (ref, out, in)
 fn parse_lambda_parameter_modifier(input: &str) -> BResult<&str, LambdaParameterModifier> {
     context(
         "lambda parameter modifier",
         alt((
-            map(keyword("ref"), |_| LambdaParameterModifier::Ref),
-            map(keyword("out"), |_| LambdaParameterModifier::Out),
-            map(keyword("in"), |_| LambdaParameterModifier::In),
+            map(kw_ref(), |_| LambdaParameterModifier::Ref),
+            map(kw_out(), |_| LambdaParameterModifier::Out),
+            map(kw_in(), |_| LambdaParameterModifier::In),
         )),
     )(input)
 }
@@ -134,7 +137,7 @@ pub fn parse_lambda_expression(input: &str) -> BResult<&str, Expression> {
         "lambda expression",
         map(
             tuple((
-                opt(keyword("async")),
+                opt(kw_async()),
                 bws(parse_lambda_parameters),
                 bws(bchar('=')),
                 bws(bchar('>')),
@@ -157,8 +160,8 @@ pub fn parse_anonymous_method_expression(input: &str) -> BResult<&str, Expressio
         "anonymous method expression",
         map(
             tuple((
-                opt(bws(keyword("async"))),
-                bws(keyword("delegate")),
+                opt(bws(kw_async())),
+                bws(kw_delegate()),
                 opt(parse_delimited_list0::<_, _, _, _, char, LambdaParameter, char, char, LambdaParameter>(
                     bchar('('),
                     parse_lambda_parameter,

@@ -1,24 +1,29 @@
 use crate::parser::expressions::declarations::modifier_parser::parse_modifiers_for_decl_type;
+use crate::parser::expressions::declarations::attribute_parser::parse_attribute_lists;
 use crate::parser::expressions::primary_expression_parser::parse_expression;
 use crate::parser::identifier_parser::parse_identifier;
 use crate::parser::types::type_parser::parse_type_expression;
 use crate::syntax::comment_parser::ws;
 use crate::syntax::errors::BResult;
 use crate::syntax::nodes::declarations::{PropertyAccessor, PropertyDeclaration};
+use crate::syntax::nodes::statements::statement::Statement;
 use crate::syntax::nodes::expressions::expression::Expression;
 use crate::syntax::parser_helpers::{bchar, bws, context};
 use nom::bytes::complete::tag_no_case;
-use nom::combinator::cut;
 use nom::{
     branch::alt,
     bytes::complete::take_until,
     combinator::{map, opt},
     multi::many0,
-    sequence::{delimited, preceded, tuple}, // Keep for internal nom usage if any
+    sequence::{tuple, delimited, preceded},
 };
+use nom::combinator::cut;
 
 // Parse get accessor
 fn parse_get_accessor(input: &str) -> BResult<&str, PropertyAccessor> {
+    // Optional attribute lists and modifiers
+    let (input, attributes) = bws(parse_attribute_lists)(input)?;
+    let (input, modifiers) = bws(|i| parse_modifiers_for_decl_type(i, "property"))(input)?;
     // Parse "get" followed by optional body or semicolon
     let (input, _) = context(
         "get accessor keyword (expected 'get')",
@@ -27,14 +32,19 @@ fn parse_get_accessor(input: &str) -> BResult<&str, PropertyAccessor> {
 
     // Parse body or just a semicolon
     let (input, body) = alt((
-        // Body with braces: "get { return _value; }"
+        // Expression-bodied accessor: get => expr;
         map(
-            delimited(
-                context("get accessor body opening (expected '{')", bws(bchar('{'))),
-                take_until("}"),
-                context("get accessor body closing (expected '}')", bws(bchar('}'))),
-            ),
-            |content: &str| Some(content.trim().to_string()),
+            tuple((
+                bws(tag_no_case("=>")),
+                bws(parse_expression),
+                bws(bchar(';')),
+            )),
+            |(_, expr, _)| Some(Statement::Expression(expr)),
+        ),
+        // Block body: get { ... }
+        map(
+            context("get accessor body (expected block)", crate::parser::expressions::statements::block_statement_parser::parse_block_statement),
+            |stmt| Some(stmt),
         ),
         // Auto-property with just semicolon: "get;"
         map(
@@ -43,11 +53,14 @@ fn parse_get_accessor(input: &str) -> BResult<&str, PropertyAccessor> {
         ),
     ))(input)?;
 
-    Ok((input, PropertyAccessor::Get(body)))
+    Ok((input, PropertyAccessor::Get { modifiers, attributes, body }))
 }
 
 // Parse set accessor
 fn parse_set_accessor(input: &str) -> BResult<&str, PropertyAccessor> {
+    // Optional attribute lists and modifiers
+    let (input, attributes) = bws(parse_attribute_lists)(input)?;
+    let (input, modifiers) = bws(|i| parse_modifiers_for_decl_type(i, "property"))(input)?;
     // Parse "set" followed by optional body or semicolon
     let (input, _) = context(
         "set accessor keyword (expected 'set')",
@@ -56,27 +69,33 @@ fn parse_set_accessor(input: &str) -> BResult<&str, PropertyAccessor> {
 
     // Parse body or just a semicolon
     let (input, body) = alt((
-        // Body with braces: "set { _value = value; }"
+        // Expression-bodied accessor: set => expr;
         map(
-            delimited(
-                context("set accessor body opening (expected '{')", bws(bchar('{'))),
-                take_until("}"),
-                context("set accessor body closing (expected '}')", bws(bchar('}'))),
-            ),
-            |content: &str| Some(content.trim().to_string()),
+            tuple((
+                bws(tag_no_case("=>")),
+                bws(parse_expression),
+                bws(bchar(';')),
+            )),
+            |(_, expr, _)| Some(Statement::Expression(expr)),
         ),
-        // Auto-property with just semicolon: "set;"
+        map(
+            context("set accessor body (expected block)", crate::parser::expressions::statements::block_statement_parser::parse_block_statement),
+            |stmt| Some(stmt),
+        ),
         map(
             context("set accessor terminator (expected ';')", bws(bchar(';'))),
             |_| None,
         ),
     ))(input)?;
 
-    Ok((input, PropertyAccessor::Set(body)))
+    Ok((input, PropertyAccessor::Set { modifiers, attributes, body }))
 }
 
 // Parse init accessor (C# 9+)
 fn parse_init_accessor(input: &str) -> BResult<&str, PropertyAccessor> {
+    // Optional attribute lists and modifiers
+    let (input, attributes) = bws(parse_attribute_lists)(input)?;
+    let (input, modifiers) = bws(|i| parse_modifiers_for_decl_type(i, "property"))(input)?;
     // Parse "init" followed by optional body or semicolon
     let (input, _) = context(
         "init accessor keyword (expected 'init')",
@@ -85,23 +104,26 @@ fn parse_init_accessor(input: &str) -> BResult<&str, PropertyAccessor> {
 
     // Parse body or just a semicolon
     let (input, body) = alt((
-        // Body with braces: "init { _value = value; }"
+        // Expression-bodied accessor: init => expr;
         map(
-            delimited(
-                context("init accessor body opening (expected '{')", bws(bchar('{'))),
-                take_until("}"),
-                context("init accessor body closing (expected '}')", bws(bchar('}'))),
-            ),
-            |content: &str| Some(content.trim().to_string()),
+            tuple((
+                bws(tag_no_case("=>")),
+                bws(parse_expression),
+                bws(bchar(';')),
+            )),
+            |(_, expr, _)| Some(Statement::Expression(expr)),
         ),
-        // Auto-property with just semicolon: "init;"
+        map(
+            context("init accessor body (expected block)", crate::parser::expressions::statements::block_statement_parser::parse_block_statement),
+            |stmt| Some(stmt),
+        ),
         map(
             context("init accessor terminator (expected ';')", bws(bchar(';'))),
             |_| None,
         ),
     ))(input)?;
 
-    Ok((input, PropertyAccessor::Init(body)))
+    Ok((input, PropertyAccessor::Init { modifiers, attributes, body }))
 }
 
 // Parse property accessors - can be one or more accessors in braces
@@ -139,6 +161,8 @@ fn parse_property_initializer(input: &str) -> BResult<&str, Option<Expression>> 
 
 // Parse a property declaration
 pub fn parse_property_declaration(input: &str) -> BResult<&str, PropertyDeclaration> {
+    // Parse attributes (zero or more groups)
+    let (input, attributes) = bws(parse_attribute_lists)(input)?;
     // Parse modifiers specifically for property declarations (they consume trailing space)
     let (input, modifiers) = context(
         "property modifiers (expected valid property modifiers)",
@@ -154,15 +178,37 @@ pub fn parse_property_declaration(input: &str) -> BResult<&str, PropertyDeclarat
         "property name (expected valid identifier)",
         bws(parse_identifier),
     )(input)?;
-    let (input, accessors) = context(
-        "property accessors (expected accessor block with get/set/init)",
-        bws(parse_property_accessors),
-    )(input)?;
-    let (input, initializer) = bws(parse_property_initializer)(input)?;
+    // Either an accessor block { ... } or an expression-bodied property => expr;
+    let (input, (accessors, initializer)) = alt((
+        // Expression-bodied property: `=> expr;`
+        map(
+            tuple((
+                bws(tag_no_case("=>")),
+                bws(parse_expression),
+                bws(bchar(';')),
+            )),
+            |(_, expr, _)| {
+                (
+                    vec![PropertyAccessor::Get {
+                        modifiers: vec![],
+                        attributes: vec![],
+                        body: Some(Statement::Expression(expr)),
+                    }],
+                    None,
+                )
+            },
+        ),
+        // Traditional accessor block with optional initializer
+        map(
+            tuple((bws(parse_property_accessors), bws(parse_property_initializer))),
+            |(accessors, initializer)| (accessors, initializer),
+        ),
+    ))(input)?;
 
     Ok((
         input,
         PropertyDeclaration {
+            attributes,
             modifiers,
             ty,
             name,

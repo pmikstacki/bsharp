@@ -2,7 +2,8 @@ use crate::parser::statement_parser::parse_statement_ws;
 use crate::syntax::errors::BResult;
 use crate::syntax::nodes::statements::checked_statement::{CheckedStatement, UncheckedStatement};
 use crate::syntax::nodes::statements::statement::Statement;
-use crate::syntax::parser_helpers::{bws, context, keyword};
+use crate::syntax::parser_helpers::{bws, context};
+use crate::parser::keywords::exception_and_safety_keywords::{kw_checked, kw_unchecked};
 
 use nom::{branch::alt, combinator::map, sequence::tuple};
 
@@ -12,7 +13,7 @@ pub fn parse_checked_statement(input: &str) -> BResult<&str, Statement> {
         "checked statement",
         map(
             tuple((
-                context("checked keyword", keyword("checked")),
+                context("checked keyword", kw_checked()),
                 context("checked body", bws(parse_statement_ws)),
             )),
             |(_, body)| {
@@ -30,7 +31,7 @@ pub fn parse_unchecked_statement(input: &str) -> BResult<&str, Statement> {
         "unchecked statement",
         map(
             tuple((
-                context("unchecked keyword", keyword("unchecked")),
+                context("unchecked keyword", kw_unchecked()),
                 context("unchecked body", bws(parse_statement_ws)),
             )),
             |(_, body)| {

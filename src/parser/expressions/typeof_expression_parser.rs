@@ -2,7 +2,8 @@ use crate::parser::types::type_parser::parse_type_expression;
 use crate::syntax::errors::BResult;
 use crate::syntax::nodes::expressions::expression::Expression;
 use crate::syntax::nodes::expressions::typeof_expression::TypeofExpression;
-use crate::syntax::parser_helpers::{bchar, bws, context, keyword};
+use crate::syntax::parser_helpers::{bchar, bws, context};
+use crate::parser::keywords::expression_keywords::kw_typeof;
 
 use nom::combinator::cut;
 use nom::{
@@ -16,7 +17,7 @@ pub fn parse_typeof_expression(input: &str) -> BResult<&str, Expression> {
         "typeof expression",
         map(
             preceded(
-                keyword("typeof"),
+                kw_typeof(),
                 delimited(
                     bws(bchar('(')),
                     bws(parse_type_expression),

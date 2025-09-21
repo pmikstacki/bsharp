@@ -1,4 +1,6 @@
 use nom::combinator::opt;
+use nom::branch::alt;
+use nom::sequence::preceded;
 use nom_supreme::tag::complete::tag;
 
 use crate::parser::expressions::declarations::modifier_parser::parse_modifiers;
@@ -13,72 +15,33 @@ use crate::parser::types::type_parser::parse_type_expression;
 use crate::syntax::errors::BResult;
 use crate::syntax::nodes::declarations::MemberDeclaration;
 use crate::syntax::nodes::statements::statement::Statement;
-use crate::syntax::parser_helpers::{bchar, bws};
+use crate::syntax::parser_helpers::{bchar, bws, context};
 
 /// Parse member body using unified logic for both methods and constructors
 /// Supports: block body ({ ... }), expression body (=> expr;), and abstract/interface (; only)
 fn parse_member_body(input: &str) -> BResult<&str, Option<Statement>> {
-    if input.trim_start().is_empty() {
-        use nom_supreme::error::{BaseErrorKind, ErrorTree, Expectation};
-        let error_tree = ErrorTree::Base {
-            location: input,
-            kind: BaseErrorKind::Expected(Expectation::Eof),
-        };
-        return Err(nom::Err::Error(error_tree));
-    }
-
-    let trimmed_input = input.trim_start();
-    let first_char = trimmed_input.chars().next().unwrap();
-
-    match first_char {
-        // Body block style: { ... } - delegate to block statement syntax
-        '{' => {
-            match parse_block_statement(input) {
-                // Use original input, not trimmed
-                Ok((rest, body_block)) => Ok((rest, Some(body_block))),
-                Err(e) => Err(e),
-            }
-        }
-        // Expression body style: => expr;
-        '=' => {
-            if trimmed_input.len() > 1 && trimmed_input.chars().nth(1) == Some('>') {
-                // Parse the => token
-                let (input, _) = bws(tag("=>"))(trimmed_input)?;
-
-                // Parse the expression using the proper expression syntax
-                let (input, expr) = bws(parse_expression)(input)?;
-
-                // Parse the semicolon
-                let (input, _) = bws(bchar(';'))(input)?;
-
-                // Wrap the expression in a Statement::Expression
-                Ok((input, Some(Statement::Expression(expr))))
-            } else {
-                use nom_supreme::error::{BaseErrorKind, ErrorTree, Expectation};
-                let error_tree = ErrorTree::Base {
-                    location: trimmed_input,
-                    kind: BaseErrorKind::Expected(Expectation::Tag("=> for expression body")),
-                };
-                Err(nom::Err::Error(error_tree))
-            }
-        }
-        // Abstract/interface member style: ; (No body)
-        ';' => {
-            let remainder = &trimmed_input[1..]; // Skip the semicolon
-            Ok((remainder, None))
-        }
-        // Unexpected character
-        _ => {
-            use nom_supreme::error::{BaseErrorKind, ErrorTree, Expectation};
-            let error_tree = ErrorTree::Base {
-                location: trimmed_input,
-                kind: BaseErrorKind::Expected(Expectation::Tag(
-                    "member body ('{}'), expression body ('=>'), or semicolon (';')",
-                )),
-            };
-            Err(nom::Err::Error(error_tree))
-        }
-    }
+    context(
+        "member body (expected block '{...}', expression body '=> expr;', or ';')",
+        alt((
+            // Block body: { ... }
+            |i| {
+                let (i, body_block) = bws(parse_block_statement)(i)?;
+                Ok((i, Some(body_block)))
+            },
+            // Expression body: => expr;
+            |i| {
+                let (i, _) = preceded(bws(tag("=>")), bws(|j| Ok((j, ()))))(i)?;
+                let (i, expr) = bws(parse_expression)(i)?;
+                let (i, _) = bws(bchar(';'))(i)?;
+                Ok((i, Some(Statement::Expression(expr))))
+            },
+            // Abstract/interface member: ; (no body)
+            |i| {
+                let (i, _) = bws(bchar(';'))(i)?;
+                Ok((i, None))
+            },
+        )),
+    )(input)
 }
 
 /// **Pure Structural Parser**
@@ -105,15 +68,8 @@ pub fn parse_member_declaration(input: &str) -> BResult<&str, MemberDeclaration>
                     Err(_) => (after_name_candidate, None), // If type param parsing fails, continue without them
                 };
 
-            // Check if we have parentheses after the name (and optional type_parameters) indicating parameters
-            let trimmed = after_type_params.trim_start();
-            if trimmed.starts_with('(') {
-                // This looks like a method: Type Name<TypeParams>(...)
-                let input_for_params = after_type_params; // Use input after type_parameters for parameter list
-
-                // 5. Parse parameters
-                let (input_after_params, parameters) = bws(parse_parameter_list)(input_for_params)?;
-
+            // Try parsing parameters directly; if it succeeds, it's a method path
+            if let Ok((input_after_params, parameters)) = bws(parse_parameter_list)(after_type_params) {
                 // 6. Parse constraints (for generic members)
                 let (input_after_constraints, constraints) =
                     opt(bws(parse_type_parameter_constraints_clauses))(input_after_params)?;
@@ -185,4 +141,33 @@ pub fn parse_member_declaration(input: &str) -> BResult<&str, MemberDeclaration>
             body,
         },
     ))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn member_body_parses_block() {
+        let src = "{ }";
+        let (rest, body) = parse_member_body(src).expect("parse");
+        assert!(rest.trim().is_empty());
+        assert!(matches!(body, Some(Statement::Block(_)) | Some(Statement::Empty) | Some(_)));
+    }
+
+    #[test]
+    fn member_body_parses_expression_arrow() {
+        let src = "=> x;";
+        let (rest, body) = parse_member_body(src).expect("parse");
+        assert!(rest.trim().is_empty());
+        assert!(matches!(body, Some(Statement::Expression(_))));
+    }
+
+    #[test]
+    fn member_body_parses_semicolon_none() {
+        let src = ";";
+        let (rest, body) = parse_member_body(src).expect("parse");
+        assert!(rest.trim().is_empty());
+        assert!(body.is_none());
+    }
 }

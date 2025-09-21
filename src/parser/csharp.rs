@@ -54,8 +54,46 @@ pub fn parse_csharp_source(input: &str) -> BResult<&str, CompilationUnit> {
         );
     }
 
-    // Parse using directives next (global using directives before namespace)
-    let (mut remaining, usings) = many0(bws(parse_using_directive))(remaining)?;
+    // Parse using directives next (including optional 'global using' which we normalize to UsingDirective)
+    let mut remaining = remaining;
+    let mut usings = Vec::new();
+    loop {
+        // Skip whitespace/comments between directives
+        let (r, _) = ws(remaining)?;
+        remaining = r;
+        // Look for 'global using' or 'using'
+        if bpeek(keyword("global"))(remaining).is_ok() {
+            // consume 'global'
+            let (r, _) = bws(keyword("global"))(remaining)?;
+            // next must be 'using'
+            if bpeek(keyword("using"))(r).is_ok() {
+                let (r2, _) = bws(keyword("using"))(r)?;
+                // parse the rest of using directive by reusing parser on the remainder that starts after 'using'
+                // We need a helper that expects we've already consumed 'using', but to keep it simple,
+                // rebuild input by prefixing 'using ' back is cumbersome. Instead, call parse_using_directive starting at 'using'.
+                // So we back up to a string that starts with 'using' by ignoring the consumed token above.
+                // As a simpler approach, parse_using_directive from remaining after 'global' by expecting 'using' again.
+                // We'll emulate by constructing a small closure.
+                let using_input = format!("using{}", r2);
+                // Not ideal to allocate, fallback: call parse_using_directive on original input (r) which still begins with 'using'.
+                // We already consumed 'using' into r2, but we can instead not consume 'using' and just call the parser on r.
+                let (r_after, using_dir) = parse_using_directive(r)?;
+                usings.push(using_dir);
+                remaining = r_after;
+                continue;
+            } else {
+                // Not a 'using' after global; stop scanning usings
+                break;
+            }
+        } else if bpeek(keyword("using"))(remaining).is_ok() {
+            let (r_after, using_dir) = bws(parse_using_directive)(remaining)?;
+            usings.push(using_dir);
+            remaining = r_after;
+            continue;
+        } else {
+            break;
+        }
+    }
     if log::log_enabled!(log::Level::Trace) && !usings.is_empty() {
         trace!(
             "Successfully parsed {} using directives",

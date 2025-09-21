@@ -58,8 +58,10 @@ impl AstAnalyze for Statement {
             }
             Statement::Using(using_stmt) => {
                 analysis.total_using_statements += 1;
-                // Analyze the using statement body
-                analysis = analysis.combine(using_stmt.body.analyze());
+                // Analyze the using body if present (declaration form has no body)
+                if let Some(body) = &using_stmt.body {
+                    analysis = analysis.combine(body.analyze());
+                }
             }
             Statement::Block(statements) => {
                 for stmt in statements {

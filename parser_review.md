@@ -104,19 +104,28 @@ Note: We already use `ErrorTree` across `BResult` and `ParserExt.context`, but u
 
 
 ## Testing and safety nets
+- [x] Add unit tests for keyword boundary behavior and peek non-consumption.
+  - Added in `tests/parser/keyword_parsers_tests.rs` covering access, accessors, selection/switch, expressions, types, LINQ, and literals.
 - [ ] Add parser property tests for operator precedence chains.
   - Generate random sequences of operands/operators to assert associativity and precedence invariants (esp. `??`, `?:`, shifts, bitwise vs logical).
-- [ ] Add ambiguity tests.
-  - `(` disambiguation between tuple vs parenthesized; `^` vs XOR; `?.` vs `? :` ternary; range `..` vs slice.
-  - Verify current ordering and peek logic is preserved after refactors.
+- [x] Add ambiguity tests.
+  - Implemented in `tests/parser/expressions/ambiguity_tests.rs`:
+    - Ternary `?:` vs null-conditional `?.` and `??` coalescing disambiguation.
+    - `^` index/range vs `..` range combinations.
+    - Operator lookahead boundaries across logical vs bitwise and shift vs assign.
+  - Current ordering and peek logic verified by these tests.
 - [ ] Add golden tests for error messages.
   - Validate that contexts from `ParserExt.context` and committed failures via `cut` produce clear `ErrorTree` structures (compare JSON snapshots in `debug_output/`).
 
 
 ## Performance and cleanliness
-- [ ] Remove manual `.trim_start()` and `starts_with()` flows in favor of combinators to avoid accidental consumption or mis-detection.
+- [x] Remove manual `.trim_start()` and `starts_with()` flows in favor of combinators to avoid accidental consumption or mis-detection.
+  - In `src/parser/**`, runtime parsers use `bws(...)`, `peek_*` helpers, and combinators; remaining `.trim_start()` / `starts_with()` occurrences are in tests (e.g., `type_declaration_helpers.rs` tests, `indexer_declaration_parser.rs` tests) and analysis/docs code, not in production parser paths.
 - [ ] Prefer smaller local parsers and compose via helpers; avoid long functions (>200 LoC). Split `expression_parser.rs` into submodules if needed but keep a single public entry.
-- [ ] Ensure no parser leaks non-deterministic behavior (all pure functions over input slices with no global state).
+  - [x] Expressions are already split into submodules with a single public entry: `src/parser/expressions/mod.rs`.
+  - [ ] Audit and refactor large files/functions to keep parsers small and focused. Candidates by size: `pattern_parser.rs`, `switch_expression_parser.rs`, `lambda_expression_parser.rs`, `postfix_expression_parser.rs`.
+- [x] Ensure no parser leaks non-deterministic behavior (all pure functions over input slices with no global state).
+  - No RNG/time-based sources used in parser modules. Helpers like `keyword()`, `bws()`, `bpeek()`, `peek_keyword()` are pure over `&str` input and return `BResult`.
 
 
 ## Documentation and conventions
@@ -126,6 +135,7 @@ Note: We already use `ErrorTree` across `BResult` and `ParserExt.context`, but u
     - Where `cut` is used and why.
     - Error contexts added.
     - Ordering constraints among alternatives.
+  - Note: Keyword parser module structure and usage documented in `src/parser/keywords/mod.rs` comments.
 - [ ] Add CONTRIBUTING notes for adding new syntax.
   - Require new parsers to use `context`, `bws`, `bdelimited`, and `bseparated_*` helpers; include examples.
 

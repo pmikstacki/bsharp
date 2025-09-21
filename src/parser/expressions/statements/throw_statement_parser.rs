@@ -9,7 +9,8 @@ use nom::combinator::cut;
 
 use crate::parser::expressions::primary_expression_parser::parse_expression;
 use crate::syntax::errors::BResult;
-use crate::syntax::parser_helpers::{bchar, bws, context, keyword};
+use crate::syntax::parser_helpers::{bchar, bws, context};
+use crate::parser::keywords::exception_and_safety_keywords::kw_throw;
 
 // Original parse_throw_statement function from statement_parser.rs
 pub fn parse_throw_statement(input: &str) -> BResult<&str, Statement> {
@@ -17,7 +18,7 @@ pub fn parse_throw_statement(input: &str) -> BResult<&str, Statement> {
         "throw statement (expected 'throw' optionally followed by expression and semicolon)",
         map(
             tuple((
-                context("throw keyword (expected 'throw')", keyword("throw")),
+                context("throw keyword (expected 'throw')", kw_throw()),
                 context("optional exception expression", opt(bws(parse_expression))),
                 context(
                     "semicolon after throw statement (expected ';')",

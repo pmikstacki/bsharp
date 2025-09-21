@@ -29,8 +29,8 @@ fn test_parse_simple_new_expr() {
     );
 
     if let Ok(Expression::New(new_expr)) = result {
-        assert!(matches!(new_expr.ty, Type::Reference(_)));
-        if let Type::Reference(id) = &new_expr.ty {
+        assert!(matches!(new_expr.ty, Some(Type::Reference(_))));
+        if let Some(Type::Reference(id)) = &new_expr.ty {
             assert_eq!(id.name, "Exception");
         }
         assert_eq!(new_expr.arguments.len(), 0);
@@ -203,7 +203,7 @@ fn test_parse_new_primitive_type() {
     );
 
     if let Ok(Expression::New(new_expr)) = result {
-        assert!(matches!(new_expr.ty, Type::Primitive(PrimitiveType::Int)));
+        assert!(matches!(new_expr.ty, Some(Type::Primitive(PrimitiveType::Int))));
         assert_eq!(new_expr.arguments.len(), 0);
     } else {
         panic!("Expected New expression");

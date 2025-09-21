@@ -10,7 +10,8 @@ use nom::combinator::cut;
 use crate::parser::expressions::primary_expression_parser::parse_expression;
 use crate::syntax::comment_parser::ws;
 use crate::syntax::errors::BResult;
-use crate::syntax::parser_helpers::{bchar, bws, context, keyword};
+use crate::syntax::parser_helpers::{bchar, bws, context};
+use crate::parser::keywords::flow_control_keywords::kw_return;
 
 // Parse a return statement with an optional expression
 pub fn parse_return_statement(input: &str) -> BResult<&str, Statement> {
@@ -18,7 +19,7 @@ pub fn parse_return_statement(input: &str) -> BResult<&str, Statement> {
         "return statement (expected 'return' optionally followed by expression and semicolon)",
         map(
             tuple((
-                context("return keyword (expected 'return')", keyword("return")),
+                context("return keyword (expected 'return')", kw_return()),
                 context("whitespace after return keyword", ws),
                 // Optional expression, which may or may not be preceded by whitespace
                 context(

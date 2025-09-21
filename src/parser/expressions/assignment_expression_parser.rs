@@ -14,6 +14,9 @@ pub(crate) fn parse_assignment_expression_or_higher(input: &str) -> BResult<&str
     // Check for assignment operators - order matters, longer operators first
     let (input, assignment_op) = opt(bws(alt((
         // Multi-character assignment operators first
+        map(tuple((bchar('>'), bchar('>'), bchar('>'), bchar('='))), |_| {
+            BinaryOperator::UnsignedRightShiftAssign
+        }),
         map(tuple((bchar('?'), bchar('?'), bchar('='))), |_| {
             BinaryOperator::NullCoalescingAssign
         }),

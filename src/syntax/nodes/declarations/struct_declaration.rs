@@ -23,6 +23,8 @@ pub struct StructDeclaration {
     pub modifiers: Vec<Modifier>,
     pub name: Identifier,
     pub type_parameters: Option<Vec<TypeParameter>>,
+    /// C# 12 primary constructor parameters: struct Name(int X, int Y)
+    pub primary_constructor_parameters: Option<Vec<crate::syntax::nodes::types::Parameter>>,
     pub base_types: Vec<Type>,
     pub body_declarations: Vec<StructBodyDeclaration>,
 }

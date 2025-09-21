@@ -2,7 +2,8 @@ use crate::parser::types::type_parser::parse_type_expression;
 use crate::syntax::errors::BResult;
 use crate::syntax::nodes::expressions::expression::Expression;
 use crate::syntax::nodes::expressions::sizeof_expression::SizeofExpression;
-use crate::syntax::parser_helpers::{bchar, bws, context, keyword};
+use crate::syntax::parser_helpers::{bchar, bws, context};
+use crate::parser::keywords::expression_keywords::kw_sizeof;
 
 use nom::combinator::cut;
 use nom::{
@@ -16,7 +17,7 @@ pub fn parse_sizeof_expression(input: &str) -> BResult<&str, Expression> {
         "sizeof expression",
         map(
             preceded(
-                keyword("sizeof"),
+                kw_sizeof(),
                 delimited(
                     bws(bchar('(')),
                     bws(parse_type_expression),

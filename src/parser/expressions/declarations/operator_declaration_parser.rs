@@ -10,6 +10,8 @@ use crate::syntax::errors::BResult;
 use crate::syntax::nodes::declarations::{ConversionKind, OperatorDeclaration, OperatorKind};
 use crate::syntax::nodes::identifier::Identifier;
 use crate::syntax::parser_helpers::{bchar, bws, context, keyword};
+use crate::parser::keywords::declaration_keywords::{kw_operator, kw_explicit, kw_implicit};
+use crate::parser::keywords::literal_keywords::{kw_true, kw_false};
 
 /// Parse a C# operator declaration
 ///
@@ -33,9 +35,9 @@ pub fn parse_operator_declaration(input: &str) -> BResult<&str, OperatorDeclarat
 
             // Check if this is a conversion operator (implicit/explicit operator)
             // If so, we parse differently
-            if let Ok((_, _)) = keyword("implicit")(input) {
+            if let Ok((_, _)) = kw_implicit()(input) {
                 parse_conversion_operator(input, attributes, modifiers, ConversionKind::Implicit)
-            } else if let Ok((_, _)) = keyword("explicit")(input) {
+            } else if let Ok((_, _)) = kw_explicit()(input) {
                 parse_conversion_operator(input, attributes, modifiers, ConversionKind::Explicit)
             } else {
                 // Regular operator with return type
@@ -47,7 +49,7 @@ pub fn parse_operator_declaration(input: &str) -> BResult<&str, OperatorDeclarat
                 // Parse the "operator" keyword
                 let (input, _) = context(
                     "operator keyword (expected 'operator')",
-                    bws(keyword("operator")),
+                    bws(kw_operator()),
                 )(input)?;
 
                 // Parse the operator symbol
@@ -88,18 +90,18 @@ fn parse_conversion_operator(
     let (input, _) = match kind {
         ConversionKind::Implicit => context(
             "implicit keyword (expected 'implicit')",
-            bws(keyword("implicit")),
+            bws(kw_implicit()),
         )(input)?,
         ConversionKind::Explicit => context(
             "explicit keyword (expected 'explicit')",
-            bws(keyword("explicit")),
+            bws(kw_explicit()),
         )(input)?,
     };
 
     // Parse the "operator" keyword
     let (input, _) = context(
         "operator keyword (expected 'operator')",
-        bws(keyword("operator")),
+        bws(kw_operator()),
     )(input)?;
 
     // Parse the target type
@@ -142,8 +144,8 @@ fn parse_operator_symbol(input: &str) -> BResult<&str, Identifier> {
             map(keyword(">="), |_| Identifier::new(">=")),
             map(keyword("<="), |_| Identifier::new("<=")),
             // Keywords (these should also come before single characters)
-            map(keyword("true"), |_| Identifier::new("true")),
-            map(keyword("false"), |_| Identifier::new("false")),
+            map(kw_true(), |_| Identifier::new("true")),
+            map(kw_false(), |_| Identifier::new("false")),
             // Single character operators
             map(keyword("+"), |_| Identifier::new("+")),
             map(keyword("-"), |_| Identifier::new("-")),

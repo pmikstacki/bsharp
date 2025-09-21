@@ -30,6 +30,7 @@ fn test_basic_dependency_analysis() {
         modifiers: Vec::new(),
         name: create_test_identifier("UserService"),
         type_parameters: None,
+        primary_constructor_parameters: None,
         base_types: vec![
             Type::Reference(create_test_identifier("BaseService")),
             Type::Reference(create_test_identifier("IUserService")),
@@ -166,6 +167,7 @@ fn test_coupling_analysis() {
         modifiers: Vec::new(),
         name: create_test_identifier("HighlyCoupledClass"),
         type_parameters: None,
+        primary_constructor_parameters: None,
         base_types: Vec::new(),
         body_declarations: vec![
             ClassBodyDeclaration::Field(FieldDeclaration {
@@ -242,6 +244,7 @@ fn test_dependency_inversion_analysis() {
         modifiers: Vec::new(),
         name: create_test_identifier("GoodService"),
         type_parameters: None,
+        primary_constructor_parameters: None,
         base_types: Vec::new(),
         body_declarations: vec![ClassBodyDeclaration::Field(FieldDeclaration {
             modifiers: Vec::new(),
@@ -258,6 +261,7 @@ fn test_dependency_inversion_analysis() {
         modifiers: Vec::new(),
         name: create_test_identifier("BadService"),
         type_parameters: None,
+        primary_constructor_parameters: None,
         base_types: Vec::new(),
         body_declarations: vec![ClassBodyDeclaration::Field(FieldDeclaration {
             modifiers: Vec::new(),
@@ -410,6 +414,7 @@ fn test_interface_segregation_analysis() {
         modifiers: Vec::new(),
         name: create_test_identifier("SelectiveClient"),
         type_parameters: None,
+        primary_constructor_parameters: None,
         base_types: vec![Type::Reference(create_test_identifier("ILargeInterface"))],
         body_declarations: Vec::new(), // Simplified
     };

@@ -41,3 +41,4 @@ mdbook = "0.4.50"
 
 [features]
 default = []
+parser_recovery_trace = []

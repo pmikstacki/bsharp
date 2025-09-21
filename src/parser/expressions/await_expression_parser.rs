@@ -6,7 +6,8 @@ use crate::parser::expressions::primary_expression_parser::parse_expression;
 use crate::syntax::errors::BResult;
 use crate::syntax::nodes::expressions::await_expression::AwaitExpression;
 use crate::syntax::nodes::expressions::expression::Expression;
-use crate::syntax::parser_helpers::{bws, context, keyword};
+use crate::syntax::parser_helpers::{bws, context};
+use crate::parser::keywords::expression_keywords::kw_await;
 
 /// Enhanced await expression syntax using robust Nom combinators
 /// Handles complex patterns like: await _userRepository.GetByEmailAsync(email)
@@ -14,7 +15,7 @@ pub fn parse_await_expression(input: &str) -> BResult<&str, Expression> {
     context(
         "await expression",
         map(
-            preceded(keyword("await"), cut(bws(parse_awaitable_expression))),
+            preceded(kw_await(), cut(bws(parse_awaitable_expression))),
             |expr| {
                 Expression::Await(Box::new(AwaitExpression {
                     expr: Box::new(expr),

@@ -9,72 +9,56 @@ use crate::parser::types::type_parser::parse_type_expression;
 use crate::syntax::errors::BResult;
 use crate::syntax::nodes::statements::local_function_statement::LocalFunctionStatement;
 use crate::syntax::nodes::statements::statement::Statement;
-use crate::syntax::parser_helpers::{bws, context};
+use crate::syntax::parser_helpers::{bchar, bws, context};
 
 use nom::{
+    branch::alt,
     combinator::{map, opt},
-    sequence::tuple,
+    sequence::{preceded, tuple},
 };
-use nom_supreme::error::{BaseErrorKind, ErrorTree, Expectation};
+use nom_supreme::tag::complete::tag;
 
 /// Parse a local function body - similar to method body parsing
 fn parse_local_function_body(input: &str) -> BResult<&str, Statement> {
-    let trimmed_input = input.trim_start();
+    context(
+        "local function body (expected '{...}' or '=> expr;')",
+        alt((
+            // Block body
+            |i| {
+                let (i, body) = bws(parse_block_statement)(i)?;
+                Ok((i, body))
+            },
+            // Expression body: => expr;
+            |i| {
+                let (i, _) = preceded(bws(tag("=>")), bws(|j| Ok((j, ()))))(i)?;
+                // Consume the expression using the real expression parser but discard it
+                use crate::parser::expressions::primary_expression_parser::parse_expression;
+                let (i, _expr) = bws(parse_expression)(i)?;
+                let (i, _) = bws(bchar(';'))(i)?;
+                Ok((i, Statement::Empty))
+            },
+        )),
+    )(input)
+}
 
-    if trimmed_input.is_empty() {
-        let error_tree = ErrorTree::Base {
-            location: trimmed_input,
-            kind: BaseErrorKind::Expected(Expectation::Eof),
-        };
-        return Err(nom::Err::Error(error_tree));
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn parses_block_body() {
+        let src = "{ return; }";
+        let (rest, stmt) = parse_local_function_body(src).expect("parse");
+        assert!(rest.trim().is_empty());
+        assert!(matches!(stmt, Statement::Block(_)));
     }
 
-    let first_char = trimmed_input.chars().next().unwrap();
-
-    match first_char {
-        // Body block style: { ... }
-        '{' => match parse_block_statement(trimmed_input) {
-            Ok((rest, body_block)) => Ok((rest, body_block)),
-            Err(e) => Err(e),
-        },
-        // Expression body style: => expr;
-        '=' => {
-            if trimmed_input.len() > 1 && trimmed_input.chars().nth(1) == Some('>') {
-                let after_arrow_input = &trimmed_input[2..];
-                // Find the semicolon to consume the rest of the expression body
-                if let Some(semicolon_pos) = after_arrow_input.find(';') {
-                    let remainder = &after_arrow_input[semicolon_pos + 1..];
-                    // For now, just return an empty statement as a placeholder
-                    Ok((remainder, Statement::Empty))
-                } else {
-                    let error_tree = ErrorTree::Base {
-                        location: after_arrow_input,
-                        kind: BaseErrorKind::Expected(Expectation::Tag(
-                            "local function expression body (expected ';' after expression)",
-                        )),
-                    };
-                    Err(nom::Err::Error(error_tree))
-                }
-            } else {
-                let error_tree = ErrorTree::Base {
-                    location: trimmed_input,
-                    kind: BaseErrorKind::Expected(Expectation::Tag(
-                        "local function expression body (expected '=>')",
-                    )),
-                };
-                Err(nom::Err::Error(error_tree))
-            }
-        }
-        // Unexpected character
-        _ => {
-            let error_tree = ErrorTree::Base {
-                location: trimmed_input,
-                kind: BaseErrorKind::Expected(Expectation::Tag(
-                    "local function body (expected '{' for block or '=>' for expression body)",
-                )),
-            };
-            Err(nom::Err::Error(error_tree))
-        }
+    #[test]
+    fn parses_expression_body() {
+        let src = "=> x;";
+        let (rest, stmt) = parse_local_function_body(src).expect("parse");
+        assert!(rest.trim().is_empty());
+        assert!(matches!(stmt, Statement::Empty));
     }
 }
 

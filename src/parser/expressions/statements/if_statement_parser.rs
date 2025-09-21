@@ -9,7 +9,8 @@ use nom::{
 
 use crate::syntax::errors::BResult;
 use crate::syntax::nodes::statements::*;
-use crate::syntax::parser_helpers::{bchar, bws, context, keyword};
+use crate::syntax::parser_helpers::{bchar, bws, context};
+use crate::parser::keywords::selection_and_switch_keywords::{kw_if, kw_else};
 
 use crate::parser::expressions::primary_expression_parser::parse_expression;
 use crate::parser::statement_parser::parse_statement_ws;
@@ -22,7 +23,7 @@ pub fn parse_if_statement(input: &str) -> BResult<&str, Statement> {
         "if statement (expected 'if (condition) statement' with optional 'else statement')",
         map(
             tuple((
-                context("if keyword (expected 'if')", keyword("if")),
+                context("if keyword (expected 'if')", kw_if()),
                 bws(delimited(
                     context(
                         "opening parenthesis for if condition (expected '(')",
@@ -40,7 +41,7 @@ pub fn parse_if_statement(input: &str) -> BResult<&str, Statement> {
                 ),
                 context(
                     "optional else clause",
-                    opt(preceded(bws(keyword("else")), bws(parse_statement_ws))),
+                    opt(preceded(bws(kw_else()), bws(parse_statement_ws))),
                 ),
             )),
             |(_, condition, then_branch, else_branch)| {

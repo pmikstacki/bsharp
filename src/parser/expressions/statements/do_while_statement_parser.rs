@@ -11,7 +11,8 @@ use crate::parser::expressions::primary_expression_parser::parse_expression;
 use crate::parser::statement_parser::parse_statement_ws;
 use crate::syntax::errors::BResult;
 use crate::syntax::nodes::statements::do_while_statement::DoWhileStatement;
-use crate::syntax::parser_helpers::{bchar, bws, context, keyword};
+use crate::syntax::parser_helpers::{bchar, bws, context};
+use crate::parser::keywords::iteration_keywords::{kw_do, kw_while};
 
 // Parse a do-while statement
 pub fn parse_do_while_statement(input: &str) -> BResult<&str, Statement> {
@@ -19,9 +20,9 @@ pub fn parse_do_while_statement(input: &str) -> BResult<&str, Statement> {
         "do-while statement (expected 'do' followed by statement body, then 'while' with condition in parentheses and semicolon)",
         map(
             tuple((
-                keyword("do"),
+                kw_do(),
                 bws(parse_statement_ws),
-                bws(keyword("while")),
+                bws(kw_while()),
                 bws(delimited(bchar('('), parse_expression, cut(bchar(')')))),
                 cut(bws(bchar(';'))),
             )),

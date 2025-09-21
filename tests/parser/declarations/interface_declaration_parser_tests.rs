@@ -25,6 +25,36 @@ fn test_simple_interface_declaration() {
 }
 
 #[test]
+fn test_interface_property_with_body_rejected() {
+    let input = r#"
+    interface IBad {
+        int P { get { return 1; } }
+    }
+    "#;
+
+    let result = parse_interface_declaration(input);
+    // Parser performs error recovery, so overall parse succeeds but member is dropped
+    assert!(result.is_ok());
+    let (_remaining, decl) = result.unwrap();
+    assert!(decl.body_declarations.is_empty());
+}
+
+#[test]
+fn test_interface_property_with_initializer_rejected() {
+    let input = r#"
+    interface IBad2 {
+        int P { get; } = 1;
+    }
+    "#;
+
+    let result = parse_interface_declaration(input);
+    // Parser performs error recovery, so overall parse succeeds but member is dropped
+    assert!(result.is_ok());
+    let (_remaining, decl) = result.unwrap();
+    assert!(decl.body_declarations.is_empty());
+}
+
+#[test]
 fn test_interface_with_modifiers() {
     let input = "public interface IMyInterface { }";
     let result = parse_interface_declaration(input);

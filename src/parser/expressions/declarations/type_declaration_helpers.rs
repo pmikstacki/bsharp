@@ -8,12 +8,11 @@ use crate::parser::expressions::declarations::base_types_parser::parse_base_type
 use crate::parser::expressions::declarations::modifier_parser::parse_modifiers_for_decl_type;
 use crate::parser::expressions::declarations::type_parameter_parser::opt_parse_type_parameter_list;
 use crate::parser::identifier_parser::parse_identifier;
-use crate::syntax::comment_parser::ws;
 use crate::syntax::errors::BResult;
 use crate::syntax::nodes::declarations::{attribute::AttributeList, modifier::Modifier};
 use crate::syntax::nodes::identifier::Identifier;
 use crate::syntax::nodes::types::{Type, TypeParameter};
-use crate::syntax::parser_helpers::{bchar, bws, context};
+use crate::syntax::parser_helpers::{bchar, bws, context, peek_bchar};
 use nom::combinator::cut;
 
 /// Core structure for type declarations (class, struct, interface, record)
@@ -110,8 +109,8 @@ pub fn parse_close_brace(input: &str) -> BResult<&str, ()> {
 
 /// Skip whitespace and check if we've reached the end of a body (closing brace)
 pub fn at_end_of_body(input: &str) -> bool {
-    let (after_ws, _) = ws(input).unwrap_or((input, ""));
-    after_ws.trim_start().starts_with('}')
+    // Non-consuming lookahead for '}' after whitespace/comments
+    peek_bchar('}')(input).is_ok()
 }
 
 /// Skip malformed input within a type body until a safe, top-level recovery boundary.
@@ -145,9 +144,8 @@ pub fn skip_to_member_boundary_top_level(input: &str) -> &str {
 
     // Guardrails: discourage calling when already at a closing brace for the current body.
     // This is not a hard error in release builds, but it helps surface misuse during development.
-    let trimmed = input.trim_start();
     debug_assert!(
-        !trimmed.starts_with('}'),
+        peek_bchar('}')(input).is_err(),
         "skip_to_member_boundary_top_level called at a top-level closing brace; caller should handle '}}'"
     );
 

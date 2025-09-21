@@ -52,6 +52,7 @@ pub struct DeclarationHeader<'a> {
     pub modifiers: Vec<Modifier>,
     pub identifier: Identifier,
     pub type_parameters: Option<Vec<TypeParameter>>,
+    pub primary_constructor_parameters: Option<Vec<Parameter>>,
     pub base_types: Vec<Type>,
     pub _phantom: PhantomData<&'a ()>,
 }
@@ -80,6 +81,9 @@ pub fn parse_declaration_header<'a>(
             let (input, type_parameters_opt_opt) = bws(opt(opt_parse_type_parameter_list))(input)?;
             let type_parameters = type_parameters_opt_opt.and_then(|tp_opt| tp_opt);
 
+            // Parse optional primary constructor parameter list: ( ... )
+            let (input, primary_constructor_parameters) = bws(opt(parse_parameter_list))(input)?;
+
             // Parse optional base type list (interfaces and/or base class) - make this optional
             let (input, base_types_opt) = bws(opt(parse_base_type_list))(input)?;
             let base_types = base_types_opt.unwrap_or_default(); // Use empty vec if no base types
@@ -91,6 +95,7 @@ pub fn parse_declaration_header<'a>(
                     modifiers,
                     identifier,
                     type_parameters,
+                    primary_constructor_parameters,
                     base_types,
                     _phantom: PhantomData,
                 },
@@ -177,13 +182,8 @@ fn parse_class_member(input: &str) -> BResult<&str, ClassBodyDeclaration> {
             parse_destructor_declaration,
             ClassBodyDeclaration::Destructor,
         ),
-        // Try specialized member parser
-        map(parse_property_declaration, ClassBodyDeclaration::Property),
-        map(parse_indexer_declaration, ClassBodyDeclaration::Indexer),
-        map(parse_event_declaration, ClassBodyDeclaration::Event),
-        map(parse_operator_declaration, ClassBodyDeclaration::Operator),
-        // Try the unified member syntax for methods and constructors
-        // MOVED BEFORE enum syntax to prevent enum syntax from interfering with method parsing
+        // Try the unified member syntax for methods and constructors BEFORE property parsing.
+        // This avoids property parser committing on method signatures due to accessor cut.
         map(parse_member_declaration, |member_decl| {
             // Convert unified member declaration to specific types based on parser
             if member_decl.has_constructor_syntax() {
@@ -211,6 +211,11 @@ fn parse_class_member(input: &str) -> BResult<&str, ClassBodyDeclaration> {
                 })
             }
         }),
+        // Try specialized member parsers that are keyword-driven and less ambiguous
+        map(parse_property_declaration, ClassBodyDeclaration::Property),
+        map(parse_indexer_declaration, ClassBodyDeclaration::Indexer),
+        map(parse_event_declaration, ClassBodyDeclaration::Event),
+        map(parse_operator_declaration, ClassBodyDeclaration::Operator),
         // Try enum declaration AFTER method syntax to prevent interference
         map(parse_enum_declaration, ClassBodyDeclaration::NestedEnum),
         // Fields should be last since they have the most generic parser
@@ -277,6 +282,7 @@ pub fn parse_struct_declaration<'a>(input: &'a str) -> BResult<&'a str, StructDe
         modifiers: header.modifiers,
         name: header.identifier,
         type_parameters: header.type_parameters,
+        primary_constructor_parameters: header.primary_constructor_parameters,
         base_types: header.base_types,
         body_declarations: members,
     };
@@ -485,9 +491,9 @@ fn parse_interface_property(input: &str) -> BResult<&str, PropertyDeclaration> {
     // Check each accessor.
     for accessor in &property_decl.accessors {
         match accessor {
-            PropertyAccessor::Get(Some(_))
-            | PropertyAccessor::Set(Some(_))
-            | PropertyAccessor::Init(Some(_)) => {
+            PropertyAccessor::Get { body: Some(_), .. }
+            | PropertyAccessor::Set { body: Some(_), .. }
+            | PropertyAccessor::Init { body: Some(_), .. } => {
                 use nom_supreme::error::{BaseErrorKind, ErrorTree, Expectation};
                 let error_tree = ErrorTree::Base {
                     location: input,
@@ -539,19 +545,30 @@ pub fn parse_interface_event(input: &str) -> BResult<&str, EventDeclaration> {
 pub fn parse_interface_indexer(input: &str) -> BResult<&str, IndexerDeclaration> {
     let (input, indexer_decl) = parse_indexer_declaration(input)?;
 
-    // Interface indexer accessors cannot have a body.
-    // If get_accessor or set_accessor is Some, it implies a body/signature, which is disallowed for interfaces.
-    if indexer_decl.accessor_list.get_accessor.is_some()
-        || indexer_decl.accessor_list.set_accessor.is_some()
-    {
-        use nom_supreme::error::{BaseErrorKind, ErrorTree, Expectation};
-        let error_tree = ErrorTree::Base {
-            location: input,
-            kind: BaseErrorKind::Expected(Expectation::Tag(
-                "Interface indexer accessor cannot have a body",
-            )),
-        };
-        return Err(nom::Err::Failure(error_tree));
+    // Interface indexer accessors may be present, but cannot have bodies.
+    if let Some(get_acc) = &indexer_decl.accessor_list.get_accessor {
+        if get_acc.body.is_some() {
+            use nom_supreme::error::{BaseErrorKind, ErrorTree, Expectation};
+            let error_tree = ErrorTree::Base {
+                location: input,
+                kind: BaseErrorKind::Expected(Expectation::Tag(
+                    "Interface indexer 'get' accessor cannot have a body",
+                )),
+            };
+            return Err(nom::Err::Failure(error_tree));
+        }
+    }
+    if let Some(set_acc) = &indexer_decl.accessor_list.set_accessor {
+        if set_acc.body.is_some() {
+            use nom_supreme::error::{BaseErrorKind, ErrorTree, Expectation};
+            let error_tree = ErrorTree::Base {
+                location: input,
+                kind: BaseErrorKind::Expected(Expectation::Tag(
+                    "Interface indexer 'set' accessor cannot have a body",
+                )),
+            };
+            return Err(nom::Err::Failure(error_tree));
+        }
     }
 
     Ok((input, indexer_decl))
@@ -644,6 +661,7 @@ pub fn parse_class_declaration<'a>(input: &'a str) -> BResult<&'a str, ClassDecl
             modifiers: header.modifiers,
             name: header.identifier,
             type_parameters: header.type_parameters,
+            primary_constructor_parameters: header.primary_constructor_parameters,
             base_types: header.base_types,
             body_declarations: members,
             documentation: None,

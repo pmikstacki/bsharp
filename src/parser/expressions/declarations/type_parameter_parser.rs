@@ -8,14 +8,16 @@ use crate::syntax::nodes::types::{TypeParameter, Variance};
 use crate::syntax::parser_helpers::{
     bchar, bdelimited, bopt, bseparated_list0, bseparated_list1, btag, bws, context, keyword,
 };
+use crate::parser::keywords::parameter_modifier_keywords::{kw_in, kw_out};
+use crate::parser::keywords::linq_query_keywords::kw_where;
 
 // Parse variance keyword (in/out)
 fn parse_variance(input: &str) -> BResult<&str, Variance> {
     context(
         "variance modifier (expected 'in' or 'out')",
         alt((
-            value(Variance::In, keyword("in")),
-            value(Variance::Out, keyword("out")),
+            value(Variance::In, kw_in()),
+            value(Variance::Out, kw_out()),
         )),
     )(input)
 }
@@ -114,7 +116,7 @@ fn parse_type_parameter_constraint(input: &str) -> BResult<&str, TypeParameterCo
 fn parse_where_clause(input: &str) -> BResult<&str, TypeParameterConstraintClause> {
     let (input, _) = context(
         "where clause keyword (expected 'where')",
-        bws(keyword("where")),
+        bws(kw_where()),
     )(input)?;
     let (input, name) = context(
         "constrained type parameter name (expected valid identifier)",

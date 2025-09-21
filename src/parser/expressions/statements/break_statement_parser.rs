@@ -2,7 +2,8 @@
 use crate::syntax::errors::BResult;
 use crate::syntax::nodes::statements::statement::Statement;
 use crate::syntax::nodes::statements::*;
-use crate::syntax::parser_helpers::{bchar, bws, context, keyword};
+use crate::syntax::parser_helpers::{bchar, bws, context};
+use crate::parser::keywords::flow_control_keywords::kw_break;
 use nom::combinator::map;
 use nom::sequence::terminated;
 use nom::combinator::cut;
@@ -13,7 +14,7 @@ pub fn parse_break_statement(input: &str) -> BResult<&str, Statement> {
         "break statement (expected 'break' keyword followed by semicolon)",
         map(
             terminated(
-                context("break keyword (expected 'break')", keyword("break")),
+                context("break keyword (expected 'break')", kw_break()),
                 context(
                     "semicolon after break statement (expected ';')",
                     cut(bws(bchar(';'))),

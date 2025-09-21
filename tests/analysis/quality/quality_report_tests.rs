@@ -83,6 +83,7 @@ fn test_quality_report_with_multiple_classes() {
         modifiers: vec![bsharp::syntax::nodes::declarations::Modifier::Public],
         name: create_test_identifier("FirstClass"),
         type_parameters: None,
+        primary_constructor_parameters: None,
         base_types: Vec::new(),
         body_declarations: vec![ClassBodyDeclaration::Method(MethodDeclaration {
             modifiers: vec![bsharp::syntax::nodes::declarations::Modifier::Public],
@@ -101,6 +102,7 @@ fn test_quality_report_with_multiple_classes() {
         modifiers: vec![bsharp::syntax::nodes::declarations::Modifier::Public],
         name: create_test_identifier("SecondClass"),
         type_parameters: None,
+        primary_constructor_parameters: None,
         base_types: Vec::new(),
         body_declarations: vec![
             ClassBodyDeclaration::Method(MethodDeclaration {
@@ -300,6 +302,7 @@ fn test_complex_quality_analysis_scenario() {
         modifiers: vec![bsharp::syntax::nodes::declarations::Modifier::Public],
         name: create_test_identifier("ComplexClass"),
         type_parameters: None,
+        primary_constructor_parameters: None,
         base_types: Vec::new(),
         body_declarations: {
             let mut declarations = Vec::new();

@@ -62,7 +62,7 @@ fn test_parse_expression_statement() {
             Expression::Invocation(inv_expr) => {
                 assert!(matches!(*inv_expr.callee, Expression::MemberAccess(_)));
                 assert_eq!(inv_expr.arguments.len(), 1);
-                assert!(matches!(inv_expr.arguments[0], Expression::Binary { .. }));
+                assert!(matches!(inv_expr.arguments[0].expr, Expression::Binary { .. }));
             }
             _ => panic!("Expected InvocationExpression"),
         },

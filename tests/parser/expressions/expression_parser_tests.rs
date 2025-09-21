@@ -17,8 +17,8 @@ fn test_parse_simple_new_expression() {
     match expr {
         Expression::New(boxed_new_expr) => {
             match &boxed_new_expr.ty {
-                Type::Reference(ident) => assert_eq!(ident.name, "Exception"),
-                _ => panic!("Expected Type::Reference for new expression type"),
+                Some(Type::Reference(ident)) => assert_eq!(ident.name, "Exception"),
+                _ => panic!("Expected Some(Type::Reference) for new expression type"),
             }
             assert_eq!(boxed_new_expr.arguments.len(), 1);
             match &boxed_new_expr.arguments[0] {
@@ -46,8 +46,8 @@ fn test_parse_new_expression_no_args() {
     match expr {
         Expression::New(boxed_new_expr) => {
             match &boxed_new_expr.ty {
-                Type::Reference(ident) => assert_eq!(ident.name, "Object"),
-                _ => panic!("Expected Type::Reference for new expression type"),
+                Some(Type::Reference(ident)) => assert_eq!(ident.name, "Object"),
+                _ => panic!("Expected Some(Type::Reference) for new expression type"),
             }
             assert!(boxed_new_expr.arguments.is_empty());
         }
@@ -69,8 +69,8 @@ fn test_parse_new_expression_multiple_args() {
     match expr {
         Expression::New(boxed_new_expr) => {
             match &boxed_new_expr.ty {
-                Type::Reference(ident) => assert_eq!(ident.name, "Data"),
-                _ => panic!("Expected Type::Reference for new expression type"),
+                Some(Type::Reference(ident)) => assert_eq!(ident.name, "Data"),
+                _ => panic!("Expected Some(Type::Reference) for new expression type"),
             }
             assert_eq!(boxed_new_expr.arguments.len(), 3);
             match &boxed_new_expr.arguments[0] {

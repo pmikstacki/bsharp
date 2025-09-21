@@ -2,7 +2,8 @@ use crate::parser::identifier_parser::parse_identifier;
 use crate::syntax::errors::BResult;
 use crate::syntax::nodes::expressions::expression::Expression;
 use crate::syntax::nodes::expressions::nameof_expression::NameofExpression;
-use crate::syntax::parser_helpers::{bchar, bws, context, keyword};
+use crate::syntax::parser_helpers::{bchar, bws, context};
+use crate::parser::keywords::expression_keywords::kw_nameof;
 
 use nom::combinator::cut;
 use nom::{
@@ -38,7 +39,7 @@ pub fn parse_nameof_expression(input: &str) -> BResult<&str, Expression> {
         "nameof expression",
         map(
             preceded(
-                keyword("nameof"),
+                kw_nameof(),
                 delimited(
                     bws(bchar('(')),
                     bws(parse_qualified_name),
