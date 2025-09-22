@@ -6,6 +6,7 @@ use crate::syntax::nodes::{
     expressions::expression::Expression,
     statements::statement::Statement,
 };
+use crate::analysis::diagnostics::SourceLocation;
 
 /// Trait for navigating and searching through AST nodes
 pub trait AstNavigate {
@@ -65,7 +66,7 @@ pub trait FindDeclarations {
 pub struct DeclarationInfo {
     pub name: String,
     pub declaration_type: DeclarationType,
-    pub location: Option<String>, // File path or position info when available
+    pub location: Option<SourceLocation>, // Precise source location when available
 }
 
 #[derive(Debug, Clone, PartialEq)]

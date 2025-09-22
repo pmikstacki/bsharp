@@ -9,6 +9,7 @@ pub mod navigation; // AST navigation and search
 pub mod quality; // Code quality analysis
 pub mod semantic;
 pub mod types; // Type usage analysis // Semantic analysis
+pub mod context; // Shared analysis context and configuration
 
 // Re-export main analysis traits and types for easy access
 pub use control_flow::{ControlFlowAnalyzer, ControlFlowGraph, ControlFlowMetrics};
@@ -26,3 +27,4 @@ pub use types::{
     TypeAnalyzer, TypeCohesionMetrics, TypeComplexity, TypeComplexityMetrics, TypeMetrics,
     TypeUsage,
 };
+pub use context::{AnalysisConfig, AnalysisContext};
