@@ -1,7 +1,7 @@
 // Parser integration tests for the B# syntax
 // Tests that verify complete syntax functionality across different C# language features
 
-use bsharp::parser::csharp::parse_csharp_source;
+use bsharp::parser::bsharp::parse_csharp_source;
 
 #[test]
 fn test_integration_file_scoped_namespace() {

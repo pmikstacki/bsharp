@@ -1,4 +1,4 @@
-use crate::syntax::nodes::declarations::{Modifier, TypeParameterConstraintClause};
+use crate::syntax::nodes::declarations::{Modifier, TypeParameterConstraintClause, ConstructorInitializer};
 use crate::syntax::nodes::identifier::Identifier;
 use crate::syntax::nodes::statements::statement::Statement;
 use crate::syntax::nodes::types::{Parameter, Type, TypeParameter};
@@ -19,6 +19,8 @@ pub struct MemberDeclaration {
     pub parameters: Vec<Parameter>,
     pub body: Option<Statement>,
     pub constraints: Option<Vec<TypeParameterConstraintClause>>,
+    /// Optional constructor initializer (": base(...)" or ": this(...)") for constructor syntax
+    pub initializer: Option<ConstructorInitializer>,
 }
 
 /// Body types supported for member declarations

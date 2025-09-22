@@ -1,14 +1,18 @@
 // Import TypeSyntax from the same directory's mod.rs (which will re-export it)
 use super::Type;
 use crate::syntax::nodes::declarations::Modifier;
+use crate::syntax::nodes::declarations::Attribute;
+use crate::syntax::nodes::expressions::expression::Expression;
 use crate::syntax::nodes::identifier::Identifier;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct Parameter {
+    pub attributes: Vec<Attribute>,
     pub modifier: Option<ParameterModifier>,
     pub parameter_type: Type,
     pub name: Identifier,
+    pub default_value: Option<Expression>,
 }
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]

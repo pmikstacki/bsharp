@@ -27,11 +27,13 @@ fn test_parse_positional_record() {
         },
         is_struct: false,
         parameters: Some(vec![Parameter {
+            attributes: vec![],
             modifier: None,
             parameter_type: Type::Primitive(PrimitiveType::String),
             name: Identifier {
                 name: "Name".to_string(),
             },
+            default_value: None,
         }]),
         base_types: vec![],
         body_declarations: vec![],

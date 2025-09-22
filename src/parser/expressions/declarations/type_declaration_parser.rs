@@ -192,6 +192,7 @@ fn parse_class_member(input: &str) -> BResult<&str, ClassBodyDeclaration> {
                     name: member_decl.name,
                     parameters: member_decl.parameters,
                     body: member_decl.body,
+                    initializer: member_decl.initializer,
                 })
             } else {
                 // Has method parser (return type present)
@@ -239,6 +240,7 @@ fn parse_struct_member(input: &str) -> BResult<&str, StructBodyDeclaration> {
                     name: member_decl.name,
                     parameters: member_decl.parameters,
                     body: member_decl.body,
+                    initializer: member_decl.initializer,
                 })
             } else {
                 // Has method parser (return type present)

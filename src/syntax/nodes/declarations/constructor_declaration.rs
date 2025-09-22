@@ -1,4 +1,5 @@
 use crate::syntax::nodes::declarations::modifier::Modifier;
+use crate::syntax::nodes::declarations::ConstructorInitializer;
 use crate::syntax::nodes::identifier::Identifier;
 use crate::syntax::nodes::statements::statement::Statement;
 use crate::syntax::nodes::types::Parameter;
@@ -10,5 +11,6 @@ pub struct ConstructorDeclaration {
     pub name: Identifier, // Constructor name is same as class name
     pub parameters: Vec<Parameter>,
     pub body: Option<Statement>,
+    pub initializer: Option<ConstructorInitializer>,
     // Add attributes, etc. later if needed
 }

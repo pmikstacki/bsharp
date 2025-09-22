@@ -16,9 +16,11 @@ fn parse_parameter_test(code: &str) -> Result<Parameter, String> {
 fn test_parse_ref_parameter() {
     let code = "ref int value";
     let expected = Parameter {
+        attributes: vec![],
         modifier: Some(ParameterModifier::Ref),
         parameter_type: Type::Primitive(PrimitiveType::Int),
         name: Identifier::new("value"),
+        default_value: None,
     };
     assert_eq!(parse_parameter_test(code), Ok(expected));
 }
@@ -27,9 +29,11 @@ fn test_parse_ref_parameter() {
 fn test_parse_out_parameter() {
     let code = "out string result";
     let expected = Parameter {
+        attributes: vec![],
         modifier: Some(ParameterModifier::Out),
         parameter_type: Type::Primitive(PrimitiveType::String),
         name: Identifier::new("result"),
+        default_value: None,
     };
     assert_eq!(parse_parameter_test(code), Ok(expected));
 }
@@ -38,9 +42,11 @@ fn test_parse_out_parameter() {
 fn test_parse_in_parameter() {
     let code = "in BigStruct data";
     let expected = Parameter {
+        attributes: vec![],
         modifier: Some(ParameterModifier::In),
         parameter_type: Type::Reference(Identifier::new("BigStruct")),
         name: Identifier::new("data"),
+        default_value: None,
     };
     assert_eq!(parse_parameter_test(code), Ok(expected));
 }
@@ -49,12 +55,14 @@ fn test_parse_in_parameter() {
 fn test_parse_params_parameter() {
     let code = "params int[] values";
     let expected = Parameter {
+        attributes: vec![],
         modifier: Some(ParameterModifier::Params),
         parameter_type: Type::Array {
             element_type: Box::new(Type::Primitive(PrimitiveType::Int)),
             rank: 1,
         },
         name: Identifier::new("values"),
+        default_value: None,
     };
     assert_eq!(parse_parameter_test(code), Ok(expected));
 }
@@ -63,9 +71,11 @@ fn test_parse_params_parameter() {
 fn test_parse_regular_parameter() {
     let code = "double value";
     let expected = Parameter {
+        attributes: vec![],
         modifier: None,
         parameter_type: Type::Primitive(PrimitiveType::Double),
         name: Identifier::new("value"),
+        default_value: None,
     };
     assert_eq!(parse_parameter_test(code), Ok(expected));
 }

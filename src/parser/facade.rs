@@ -1,5 +1,5 @@
 use crate::syntax::ast;
-use crate::parser::csharp::parse_csharp_source;
+use crate::parser::bsharp::parse_csharp_source;
 use nom::Finish;
 
 /// Public parser facade re-exported by `syntax`.

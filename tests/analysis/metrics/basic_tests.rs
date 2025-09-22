@@ -300,6 +300,7 @@ fn test_metrics_accuracy_with_real_code() {
                 name: create_test_identifier("Calculator"),
                 parameters: Vec::new(),
                 body: Some(Statement::Block(Vec::new())),
+                initializer: None,
             }),
             // Method with complex body
             ClassBodyDeclaration::Method(MethodDeclaration {

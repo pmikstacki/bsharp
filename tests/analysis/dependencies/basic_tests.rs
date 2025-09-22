@@ -48,9 +48,11 @@ fn test_basic_dependency_analysis() {
                 name: create_test_identifier("GetUser"),
                 type_parameters: None,
                 parameters: vec![Parameter {
+                    attributes: vec![],
                     modifier: None,
                     parameter_type: Type::Reference(create_test_identifier("UserId")),
                     name: create_test_identifier("id"),
+                    default_value: None,
                 }],
                 body: None,
                 constraints: None,
@@ -194,9 +196,11 @@ fn test_coupling_analysis() {
                 name: create_test_identifier("ProcessA"),
                 type_parameters: None,
                 parameters: vec![Parameter {
+                    attributes: vec![],
                     modifier: None,
                     parameter_type: Type::Reference(create_test_identifier("InputA")),
                     name: create_test_identifier("input"),
+                    default_value: None,
                 }],
                 body: None,
                 constraints: None,

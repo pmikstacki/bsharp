@@ -93,6 +93,7 @@ impl SemanticAnalyzer {
                         parameters: method.parameters.clone(),
                         body: method.body.clone(),
                         constraints: method.constraints.clone(),
+                        initializer: None,
                     };
                     analyses.push(self.analyze_member(&unified_member, &class.name.name));
                 }
@@ -108,6 +109,7 @@ impl SemanticAnalyzer {
                         parameters: constructor.parameters.clone(),
                         body: constructor.body.clone(),
                         constraints: None,
+                        initializer: constructor.initializer.clone(),
                     };
                     analyses.push(self.analyze_member(&unified_member, &class.name.name));
                 }
@@ -296,6 +298,7 @@ mod tests {
             parameters: vec![],
             body: None,
             constraints: None,
+            initializer: None,
         };
 
         let analysis = analyzer.analyze_member(&async_constructor, "TestClass");
@@ -323,6 +326,7 @@ mod tests {
             parameters: vec![],
             body: None, // In interface context this would be valid
             constraints: None,
+            initializer: None,
         };
 
         let analysis = analyzer.analyze_member(&valid_method, "TestClass");
@@ -346,6 +350,7 @@ mod tests {
             parameters: vec![],
             body: None,
             constraints: None,
+            initializer: None,
         };
 
         let analysis = analyzer.analyze_member(&invalid_method, "TestClass");

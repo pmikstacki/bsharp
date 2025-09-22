@@ -15,6 +15,56 @@ fn test_integer_literal() {
 }
 
 #[test]
+fn test_integer_bases_and_underscores() {
+    for (src, expected) in [
+        ("1_000", 1000i64),
+        ("0xFF_FF", 0xFFFFi64),
+        ("0b1010_0001", 0b1010_0001i64),
+    ] {
+        let (rest, lit) = parse_literal(src).expect("parse");
+        assert!(rest.trim().is_empty());
+        assert_eq!(lit, Literal::Integer(expected));
+    }
+}
+
+#[test]
+fn test_float_with_exponent_and_underscores() {
+    for src in ["1.23e-4", "1_2.3_4e5", ".5", "0.125"] {
+        let (rest, lit) = parse_literal(src).expect("parse");
+        assert!(rest.trim().is_empty());
+        match lit { Literal::Float(_) => {}, other => panic!("expected float, got {:?}", other) }
+    }
+}
+
+#[test]
+fn test_char_escapes() {
+    for (src, expected) in [
+        ("'\\n'", '\n'),
+        ("'\\t'", '\t'),
+        ("'\\x41'", 'A'),
+        ("'\\u0041'", 'A'),
+        ("'\\''", '\''),
+    ] {
+        let (rest, lit) = parse_literal(src).expect("parse");
+        assert!(rest.trim().is_empty());
+        assert_eq!(lit, Literal::Char(expected));
+    }
+}
+
+#[test]
+fn test_verbatim_and_raw_strings() {
+    // Verbatim with doubled quotes
+    let (rest, lit) = parse_literal("@\"C:\\\\Dir\\\\\"\"Foo\"\"\"\"").expect("parse verbatim");
+    assert!(rest.trim().is_empty());
+    match lit { Literal::VerbatimString(s) => assert!(s.contains("\"Foo\"")), _ => panic!("expected verbatim") }
+
+    // Raw strings with N quotes
+    let (rest2, lit2) = parse_literal("\"\"\"hello\"\"\"").expect("parse raw");
+    assert!(rest2.trim().is_empty());
+    assert_eq!(lit2, Literal::RawString("hello".to_string()));
+}
+
+#[test]
 fn test_boolean_literal() {
     // Test true
     let input_true = "true";

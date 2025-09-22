@@ -4,9 +4,12 @@ use crate::syntax::errors::BResult;
 use crate::syntax::nodes::types::{Parameter, ParameterModifier};
 use crate::syntax::parser_helpers::{bchar, bws, context, parse_delimited_list0};
 use crate::parser::keywords::parameter_modifier_keywords::{kw_ref, kw_out, kw_in, kw_params};
+use crate::parser::expressions::declarations::attribute_parser::parse_attribute_lists;
+use crate::parser::expressions::declarations::type_declaration_parser::convert_attributes;
+use crate::parser::expressions::primary_expression_parser::parse_expression;
 use nom::branch::alt;
-use nom::combinator::map;
-use nom::combinator::opt;
+use nom::combinator::{map, opt};
+use nom::sequence::preceded;
 
 // Parse parameter modifiers (ref, out, in, params) and return the actual modifier
 fn parse_parameter_modifiers(input: &str) -> BResult<&str, Option<ParameterModifier>> {
@@ -20,6 +23,11 @@ fn parse_parameter_modifiers(input: &str) -> BResult<&str, Option<ParameterModif
 
 // Parse a single parameter
 pub fn parse_parameter(input: &str) -> BResult<&str, Parameter> {
+    // Optional attribute lists before modifiers
+    let (input, attribute_lists) = bws(parse_attribute_lists)(input)?;
+    let attributes = convert_attributes(attribute_lists);
+
+    // Optional parameter modifier
     let (input, modifier) = bws(parse_parameter_modifiers)(input)?;
     let (input, ty) = context(
         "parameter type (expected valid type expression)",
@@ -29,13 +37,17 @@ pub fn parse_parameter(input: &str) -> BResult<&str, Parameter> {
         "parameter name (expected valid identifier)",
         bws(parse_identifier),
     )(input)?;
+    // Optional default value: = expression
+    let (input, default_value) = opt(preceded(bws(bchar('=')), bws(parse_expression)))(input)?;
 
     Ok((
         input,
         Parameter {
+            attributes,
             modifier,
             parameter_type: ty,
             name,
+            default_value,
         },
     ))
 }

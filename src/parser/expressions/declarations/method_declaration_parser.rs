@@ -15,7 +15,62 @@ use crate::parser::types::type_parser::parse_type_expression;
 use crate::syntax::errors::BResult;
 use crate::syntax::nodes::declarations::MemberDeclaration;
 use crate::syntax::nodes::statements::statement::Statement;
-use crate::syntax::parser_helpers::{bchar, bws, context};
+use crate::syntax::parser_helpers::{bchar, bws, context, keyword};
+use crate::syntax::nodes::declarations::ConstructorInitializer;
+/// Parse an optional constructor initializer: ": base(args)" or ": this(args)"
+fn parse_constructor_initializer(input: &str) -> BResult<&str, ConstructorInitializer> {
+    use nom::branch::alt;
+    use nom::combinator::map;
+
+    context(
+        "constructor initializer (expected ': base(...)' or ': this(...)')",
+        |i| {
+            let (i, _) = bws(bchar(':'))(i)?;
+            alt((
+                map(
+                    |i2| {
+                        let (i2, _) = bws(keyword("base"))(i2)?;
+                        let (i2, args) = crate::syntax::parser_helpers::parse_delimited_list0::<
+                            _, _, _, _, char,
+                            crate::syntax::nodes::expressions::expression::Expression,
+                            char, char,
+                            crate::syntax::nodes::expressions::expression::Expression,
+                        >(
+                            bchar('('),
+                            crate::parser::expressions::primary_expression_parser::parse_expression,
+                            bchar(','),
+                            bchar(')'),
+                            false,
+                            true,
+                        )(i2)?;
+                        Ok((i2, ConstructorInitializer::Base(args)))
+                    },
+                    |x| x,
+                ),
+                map(
+                    |i2| {
+                        let (i2, _) = bws(keyword("this"))(i2)?;
+                        let (i2, args) = crate::syntax::parser_helpers::parse_delimited_list0::<
+                            _, _, _, _, char,
+                            crate::syntax::nodes::expressions::expression::Expression,
+                            char, char,
+                            crate::syntax::nodes::expressions::expression::Expression,
+                        >(
+                            bchar('('),
+                            crate::parser::expressions::primary_expression_parser::parse_expression,
+                            bchar(','),
+                            bchar(')'),
+                            false,
+                            true,
+                        )(i2)?;
+                        Ok((i2, ConstructorInitializer::This(args)))
+                    },
+                    |x| x,
+                ),
+            ))(i)
+        },
+    )(input)
+}
 
 /// Parse member body using unified logic for both methods and constructors
 /// Supports: block body ({ ... }), expression body (=> expr;), and abstract/interface (; only)
@@ -93,6 +148,7 @@ pub fn parse_member_declaration(input: &str) -> BResult<&str, MemberDeclaration>
                         parameters,
                         constraints: final_constraints,
                         body,
+                        initializer: None,
                     },
                 ));
             }
@@ -102,17 +158,19 @@ pub fn parse_member_declaration(input: &str) -> BResult<&str, MemberDeclaration>
     // If method parsing failed, try constructor parsing: Name(...)
     // This path is also taken if the structure doesn't match Type Name<...>(...) pattern
     let (input_after_mods, name) = bws(parse_identifier)(input)?;
-
     // 4. Parse type parameters (for generic constructors - though rare, syntactically possible)
     let (input_after_type_params, type_parameters) =
         opt(bws(parse_type_parameter_list))(input_after_mods)?;
 
     // 5. Parse parameters
-    let (input_after_params, parameters) = bws(parse_parameter_list)(input_after_type_params)?;
+    let (input_after_params, parameters) = bws(parse_parameter_list)(input_after_mods)?;
+
+    // 5.1 Optional constructor initializer
+    let (input_after_init, initializer) = opt(bws(parse_constructor_initializer))(input_after_params)?;
 
     // 6. Parse constraints (for generic members)
     let (input_after_constraints, constraints) =
-        opt(bws(parse_type_parameter_constraints_clauses))(input_after_params)?;
+        opt(bws(parse_type_parameter_constraints_clauses))(input_after_init)?;
 
     // 7. Parse body
     let (final_input, body) = parse_member_body(input_after_constraints)?;
@@ -139,6 +197,7 @@ pub fn parse_member_declaration(input: &str) -> BResult<&str, MemberDeclaration>
             parameters,
             constraints: final_constraints,
             body,
+            initializer,
         },
     ))
 }

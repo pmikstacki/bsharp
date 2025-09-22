@@ -8,12 +8,13 @@ use crate::syntax::nodes::expressions::literal::{
 use crate::syntax::parser_helpers::{bws, context};
 use nom::{
     branch::alt,
-    bytes::complete::{escaped_transform, is_not, tag, tag_no_case, take_until, take_while1},
-    character::complete::{char as nom_char, digit1, none_of /* anychar */}, // anychar was unused
-    combinator::{cut /* not, peek */, map, map_res, opt, recognize, value}, // not, peek were unused
-    multi::many0,                                                           // many1 was unused
-    sequence::{delimited, /* pair, */ preceded, tuple},                     // pair was unused
+    bytes::complete::{escaped_transform, is_not, tag, tag_no_case, take_until, take_while1, take_while_m_n},
+    character::complete::{char as nom_char, digit1, none_of},
+    combinator::{cut, map, map_opt, map_res, opt, peek, recognize, value},
+    multi::{many0, many1},
+    sequence::{delimited, preceded, tuple},
 };
+use nom::error::{make_error, ErrorKind};
 
 // Use the global comment-aware bws wrapper instead of a local whitespace helper
 
@@ -28,25 +29,64 @@ pub fn parse_boolean(input: &str) -> BResult<&str, Literal> {
     )(input)
 }
 
-// Parse an integer literal
+// Helpers for digits with underscores
+fn strip_underscores(s: &str) -> String {
+    s.chars().filter(|&c| c != '_').collect()
+}
+
+fn is_hex(c: char) -> bool { c.is_ascii_hexdigit() || c == '_' }
+fn is_bin(c: char) -> bool { c == '0' || c == '1' || c == '_' }
+fn is_dec(c: char) -> bool { c.is_ascii_digit() || c == '_' }
+
+// Parse an integer literal: supports decimal, 0x hex, 0b binary, underscores
 pub fn parse_integer(input: &str) -> BResult<&str, Literal> {
     context(
-        "integer literal (expected sequence of digits)",
-        map_res(digit1, |s: &str| s.parse::<i64>().map(Literal::Integer)),
+        "integer literal (decimal, 0x..., or 0b..., underscores allowed)",
+        alt((
+            // Hex 0x...
+            map_res(
+                recognize(tuple((tag_no_case("0x"), take_while1(is_hex)))),
+                |s: &str| {
+                    let digits = &s[2..];
+                    i64::from_str_radix(&strip_underscores(digits), 16).map(Literal::Integer)
+                },
+            ),
+            // Binary 0b...
+            map_res(
+                recognize(tuple((tag_no_case("0b"), take_while1(is_bin)))),
+                |s: &str| {
+                    let digits = &s[2..];
+                    i64::from_str_radix(&strip_underscores(digits), 2).map(Literal::Integer)
+                },
+            ),
+            // Decimal
+            map_res(take_while1(is_dec), |s: &str| {
+                strip_underscores(s).parse::<i64>().map(Literal::Integer)
+            }),
+        )),
     )(input)
 }
 
-// Parse a floating-point literal (e.g., 3.14, 2.0, .5)
+// Parse a floating-point literal with underscores and exponent: 1.23, .5, 1e10, 1_2.3_4e-5
 pub fn parse_float(input: &str) -> BResult<&str, Literal> {
     context(
-        "floating-point literal (expected decimal number like '3.14' or '.5')",
+        "floating-point literal (decimal with optional exponent, underscores allowed)",
         map_res(
             recognize(tuple((
-                opt(digit1), // Optional digits before decimal point (e.g., "3" in "3.14" or empty in ".5")
-                nom_char('.'), // Decimal point
-                digit1,      // At least one digit after the decimal (required)
+                // integer or empty before dot
+                opt(take_while1(is_dec)),
+                nom_char('.'),
+                take_while1(is_dec),
+                // optional exponent part
+                opt(tuple((
+                    alt((nom_char('e'), nom_char('E'))),
+                    opt(alt((nom_char('+'), nom_char('-')))),
+                    take_while1(is_dec),
+                ))),
+                // optional float suffix f/F/d/D/m/M which we ignore
+                opt(map_opt(nom::character::complete::one_of("fFdDmM"), Some)),
             ))),
-            |s: &str| s.parse::<f64>().map(Literal::Float),
+            |s: &str| strip_underscores(s).parse::<f64>().map(Literal::Float),
         ),
     )(input)
 }
@@ -82,33 +122,65 @@ pub fn parse_string(input: &str) -> BResult<&str, Literal> {
 // Parse a verbatim string literal (@"...")
 pub fn parse_verbatim_string(input: &str) -> BResult<&str, Literal> {
     context(
-        "verbatim string literal (expected @\"...\" format)",
-        map(
-            preceded(
-                nom_char('@'),
-                delimited(
-                    nom_char('"'),
-                    opt(take_until("\"")), // Take everything until closing quote
-                    nom_char('"'),
-                ),
-            ),
-            |opt_s: Option<&str>| Literal::VerbatimString(opt_s.unwrap_or_default().to_string()),
-        ),
+        "verbatim string literal (expected @\"...\" with doubled quotes)",
+        |i| {
+            let (mut rest, _) = nom::character::complete::char('@')(i)?;
+            let (mut rest2, _) = nom_char('"')(rest)?;
+            let mut content = String::new();
+            let mut chars = rest2.chars().peekable();
+            let mut consumed = 0usize;
+            while let Some(ch) = chars.next() {
+                consumed += ch.len_utf8();
+                if ch == '"' {
+                    // doubled quote => literal quote
+                    if let Some('"') = chars.peek().copied() {
+                        // consume the second quote
+                        let _ = chars.next();
+                        consumed += 1;
+                        content.push('"');
+                        continue;
+                    } else {
+                        // closing quote
+                        // build remaining slice
+                        let remainder = &rest2[consumed..];
+                        rest = remainder;
+                        return Ok((rest, Literal::VerbatimString(content)));
+                    }
+                } else {
+                    content.push(ch);
+                }
+            }
+            // If we reach here, missing closing quote
+            Err(nom::Err::Error(make_error(i, ErrorKind::Tag)))
+        },
     )(input)
 }
 
 // Parse a raw string literal ("""text""")
 pub fn parse_raw_string(input: &str) -> BResult<&str, Literal> {
     context(
-        "raw string literal (expected \"\"\"...\"\"\" format)",
-        map(
-            delimited(
-                tag("\"\"\""),
-                opt(take_until("\"\"\"")), // Take everything until closing triple quote
-                tag("\"\"\""),
-            ),
-            |opt_s: Option<&str>| Literal::RawString(opt_s.unwrap_or_default().to_string()),
-        ),
+        "raw string literal (expected N quotes \"\"\"...\"\"\" with N >= 3)",
+        |i| {
+            // Count opening quotes
+            let mut chars = i.chars();
+            let mut qcount = 0usize;
+            while let Some('"') = chars.next() {
+                qcount += 1;
+            }
+            if qcount < 3 {
+                return Err(nom::Err::Error(make_error(i, ErrorKind::Tag)));
+            }
+            // Slice after opening quotes
+            let start = &i[qcount..];
+            // Find closing N quotes
+            let closing = "\"".repeat(qcount);
+            if let Some(idx) = start.find(&closing) {
+                let content = &start[..idx];
+                let rest = &start[idx + qcount..];
+                return Ok((rest, Literal::RawString(content.to_string())));
+            }
+            Err(nom::Err::Error(make_error(i, ErrorKind::Tag)))
+        },
     )(input)
 }
 
@@ -242,15 +314,60 @@ fn parse_interpolation(input: &str) -> BResult<&str, InterpolatedStringPart> {
     )(input)
 }
 
-// Parse a char literal (e.g., 'a', '\n')
+// Parse a char literal with escapes: '\\n', '\\t', '\\xFF', '\\u1234', '\\U0001F642'
 pub fn parse_char_literal(input: &str) -> BResult<&str, Literal> {
-    map(
-        delimited(
-            nom_char('\''),
-            none_of("'\\"), // Parse a single character that isn't a quote or backslash
-            nom_char('\''),
+    fn hex_to_char_opt(hex: &str) -> Option<char> {
+        let cp = u32::from_str_radix(hex, 16).ok()?;
+        char::from_u32(cp)
+    }
+    context(
+        "char literal (expected e.g. 'a', '\\n', '\\u0041')",
+        map(
+            delimited(
+                nom_char('\''),
+                alt((
+                    // simple escape
+                    map(preceded(nom_char('\\'), alt((
+                        value('\n', nom_char('n')),
+                        value('\t', nom_char('t')),
+                        value('\r', nom_char('r')),
+                        value('\\', nom_char('\\')),
+                        value('\'', nom_char('\'')),
+                        value('"', nom_char('"')),
+                    ))), |c| c),
+                    // hex escape \\xHH.. (1-4 hex digits)
+                    map_opt(
+                        preceded(
+                            tuple((nom_char('\\'), nom_char('x'))),
+                            recognize(many1(nom::character::complete::one_of(
+                                "0123456789abcdefABCDEF",
+                            ))),
+                        ),
+                        |hex: &str| hex_to_char_opt(hex),
+                    ),
+                    // unicode \\uHHHH
+                    map_opt(
+                        preceded(
+                            tuple((nom_char('\\'), nom_char('u'))),
+                            take_while_m_n(4, 4, |c: char| c.is_ascii_hexdigit()),
+                        ),
+                        |hex: &str| hex_to_char_opt(hex),
+                    ),
+                    // unicode \\UHHHHHHHH (8 hex digits)
+                    map_opt(
+                        preceded(
+                            tuple((nom_char('\\'), nom_char('U'))),
+                            take_while_m_n(8, 8, |c: char| c.is_ascii_hexdigit()),
+                        ),
+                        |hex: &str| hex_to_char_opt(hex),
+                    ),
+                    // single non-escape character
+                    map(none_of("'\\"), |c| c),
+                )),
+                nom_char('\''),
+            ),
+            Literal::Char,
         ),
-        Literal::Char,
     )(input)
 }
 
