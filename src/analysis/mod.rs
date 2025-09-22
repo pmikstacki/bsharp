@@ -17,7 +17,7 @@ pub use dependencies::{
     CircularDependency, ClassDependencies, DependencyAnalyzer, DependencyGraph, DependencyMetrics,
     ModuleDependencies,
 };
-pub use diagnostics::{Diagnostic, DiagnosticCode, DiagnosticCollection, DiagnosticSeverity};
+pub use diagnostics::{Diagnostic, DiagnosticCode, DiagnosticCollection, DiagnosticSeverity, SourceLocation};
 pub use metrics::{AstAnalysis, AstAnalyze, MetricCollector};
 pub use naming::{NamingAnalyzer, NamingMetrics, NamingViolation};
 pub use navigation::{AstNavigate, DeclarationInfo, DeclarationType, FindDeclarations};
