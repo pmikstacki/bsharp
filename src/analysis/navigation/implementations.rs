@@ -764,7 +764,457 @@ fn collect_expressions<'a, F>(stmt: &'a Statement, predicate: &F, results: &mut 
 where
     F: Fn(&Expression) -> bool,
 {
-    // TODO: Implement expression collection within statements
-    // This would require traversing all expression nodes within statements
-    let _ = (stmt, predicate, results); // Suppress unused warnings for now
+    // Inner recursive helpers to traverse expressions and patterns
+    fn visit_expr<'a, F>(expr: &'a Expression, predicate: &F, results: &mut Vec<&'a Expression>)
+    where
+        F: Fn(&Expression) -> bool,
+    {
+        if predicate(expr) {
+            results.push(expr);
+        }
+
+        use crate::syntax::nodes::expressions::expression::Expression as E;
+        match expr {
+            // Simple leaves
+            E::Literal(_) | E::Variable(_) | E::This | E::Base => {}
+
+            // Unary/postfix
+            E::Unary { expr: inner, .. } | E::PostfixUnary { expr: inner, .. } => {
+                visit_expr(inner, predicate, results)
+            }
+
+            // Binary
+            E::Binary { left, right, .. } => {
+                visit_expr(left, predicate, results);
+                visit_expr(right, predicate, results);
+            }
+
+            // Indexing expression (a[b])
+            E::Indexing(idx) => {
+                visit_expr(&idx.target, predicate, results);
+                visit_expr(&idx.index, predicate, results);
+            }
+
+            // Range and Index (^x, a..b)
+            E::Range(r) => {
+                if let Some(s) = &r.start {
+                    visit_expr(s, predicate, results);
+                }
+                if let Some(e) = &r.end {
+                    visit_expr(e, predicate, results);
+                }
+            }
+            E::Index(i) => {
+                visit_expr(&i.value, predicate, results);
+            }
+
+            // Member access and invocation
+            E::MemberAccess(ma) => {
+                visit_expr(&ma.object, predicate, results);
+            }
+            E::Invocation(inv) => {
+                visit_expr(&inv.callee, predicate, results);
+                for arg in &inv.arguments {
+                    visit_expr(&arg.expr, predicate, results);
+                }
+            }
+
+            // Assignment
+            E::Assignment(assign) => {
+                visit_expr(&assign.target, predicate, results);
+                visit_expr(&assign.value, predicate, results);
+            }
+
+            // Parent containers
+            E::Tuple(t) => {
+                for el in &t.elements {
+                    visit_expr(&el.value, predicate, results);
+                }
+            }
+            E::AnonymousObject(obj) => {
+                for m in &obj.initializers {
+                    visit_expr(&m.value, predicate, results);
+                }
+            }
+            E::New(n) => {
+                for a in &n.arguments {
+                    visit_expr(a, predicate, results);
+                }
+                if let Some(inits) = &n.object_initializer {
+                    for (_, v) in inits {
+                        visit_expr(v, predicate, results);
+                    }
+                }
+                if let Some(coll) = &n.collection_initializer {
+                    for v in coll {
+                        visit_expr(v, predicate, results);
+                    }
+                }
+            }
+
+            // Conditional operator
+            E::Conditional(c) => {
+                visit_expr(&c.condition, predicate, results);
+                visit_expr(&c.consequence, predicate, results);
+                visit_expr(&c.alternative, predicate, results);
+            }
+
+            // Lambda and anonymous methods
+            E::Lambda(lambda) => match &lambda.body {
+                crate::syntax::nodes::expressions::lambda_expression::LambdaBody::ExpressionSyntax(e) => {
+                    visit_expr(e, predicate, results)
+                }
+                crate::syntax::nodes::expressions::lambda_expression::LambdaBody::Block(stmts) => {
+                    for s in stmts {
+                        collect_expressions(s, predicate, results);
+                    }
+                }
+            },
+            E::AnonymousMethod(am) => match &am.body {
+                crate::syntax::nodes::expressions::lambda_expression::LambdaBody::ExpressionSyntax(e) => {
+                    visit_expr(e, predicate, results)
+                }
+                crate::syntax::nodes::expressions::lambda_expression::LambdaBody::Block(stmts) => {
+                    for s in stmts {
+                        collect_expressions(s, predicate, results);
+                    }
+                }
+            },
+
+            // Await
+            E::Await(a) => visit_expr(&a.expr, predicate, results),
+
+            // Query expressions: traverse all embedded expressions
+            E::Query(q) => {
+                use crate::syntax::nodes::expressions::query_expression as qx;
+                visit_expr(&q.from.expression, predicate, results);
+                for clause in &q.body {
+                    match clause {
+                        qx::QueryClause::From(f) => visit_expr(&f.expression, predicate, results),
+                        qx::QueryClause::Let(l) => visit_expr(&l.expression, predicate, results),
+                        qx::QueryClause::Where(w) => visit_expr(&w.condition, predicate, results),
+                        qx::QueryClause::Join(j) => {
+                            visit_expr(&j.in_expression, predicate, results);
+                            visit_expr(&j.on_expression, predicate, results);
+                            visit_expr(&j.equals_expression, predicate, results);
+                        }
+                        qx::QueryClause::OrderBy(ob) => {
+                            for ord in &ob.orderings {
+                                visit_expr(&ord.expression, predicate, results);
+                            }
+                        }
+                    }
+                }
+                match &q.select_or_group {
+                    qx::QuerySelectOrGroup::Select(e) => visit_expr(e, predicate, results),
+                    qx::QuerySelectOrGroup::Group { element, by } => {
+                        visit_expr(element, predicate, results);
+                        visit_expr(by, predicate, results);
+                    }
+                }
+                if let Some(cont) = &q.continuation {
+                    for clause in &cont.body {
+                        match clause {
+                            qx::QueryClause::From(f) => visit_expr(&f.expression, predicate, results),
+                            qx::QueryClause::Let(l) => visit_expr(&l.expression, predicate, results),
+                            qx::QueryClause::Where(w) => visit_expr(&w.condition, predicate, results),
+                            qx::QueryClause::Join(j) => {
+                                visit_expr(&j.in_expression, predicate, results);
+                                visit_expr(&j.on_expression, predicate, results);
+                                visit_expr(&j.equals_expression, predicate, results);
+                            }
+                            qx::QueryClause::OrderBy(ob) => {
+                                for ord in &ob.orderings {
+                                    visit_expr(&ord.expression, predicate, results);
+                                }
+                            }
+                        }
+                    }
+                    match &cont.select_or_group {
+                        qx::QuerySelectOrGroup::Select(e) => visit_expr(e, predicate, results),
+                        qx::QuerySelectOrGroup::Group { element, by } => {
+                            visit_expr(element, predicate, results);
+                            visit_expr(by, predicate, results);
+                        }
+                    }
+                }
+            }
+
+            // Switch expression
+            E::SwitchExpression(se) => {
+                visit_expr(&se.expression, predicate, results);
+                for arm in &se.arms {
+                    visit_pattern(&arm.pattern, predicate, results);
+                    if let Some(w) = &arm.when_clause {
+                        visit_expr(w, predicate, results);
+                    }
+                    visit_expr(&arm.expression, predicate, results);
+                }
+            }
+
+            // Pattern-containing expressions
+            E::Pattern(p) => visit_pattern(p, predicate, results),
+            E::IsPattern { expression, pattern } => {
+                visit_expr(expression, predicate, results);
+                visit_pattern(pattern, predicate, results);
+            }
+
+            // Cast/As
+            E::As { expression, .. } | E::Cast { expression, .. } => {
+                visit_expr(expression, predicate, results)
+            }
+
+            // Throw expression
+            E::Throw(t) => {
+                if let Some(e) = &t.expr {
+                    visit_expr(e, predicate, results);
+                }
+            }
+
+            // Nameof/Typeof/Sizeof/Default/StackAlloc/Checked/Unchecked/NullConditional
+            E::Nameof(n) => visit_expr(&n.expr, predicate, results),
+            E::Typeof(_) | E::Sizeof(_) | E::Default(_) => {}
+            E::StackAlloc(sa) => {
+                if let Some(count) = &sa.count {
+                    visit_expr(count, predicate, results);
+                }
+                if let Some(inits) = &sa.initializer {
+                    for e in inits {
+                        visit_expr(e, predicate, results);
+                    }
+                }
+            }
+            E::Checked(ce) => visit_expr(&ce.expr, predicate, results),
+            E::Unchecked(ue) => visit_expr(&ue.expr, predicate, results),
+            E::NullConditional(nc) => {
+                // Traverse the target, and argument when it's an element access
+                visit_expr(&nc.target, predicate, results);
+                if let Some(arg) = &nc.argument {
+                    visit_expr(arg, predicate, results);
+                }
+            }
+
+            // With-expressions and collection expressions
+            E::With { target, initializers } => {
+                visit_expr(target, predicate, results);
+                for (_, v) in initializers {
+                    visit_expr(v, predicate, results);
+                }
+            }
+            E::Collection(items) => {
+                for it in items {
+                    match it {
+                        crate::syntax::nodes::expressions::expression::CollectionElement::Expr(e) => {
+                            visit_expr(e, predicate, results)
+                        }
+                        crate::syntax::nodes::expressions::expression::CollectionElement::Spread(e) => {
+                            visit_expr(e, predicate, results)
+                        }
+                    }
+                }
+            }
+            // Ref expression
+            E::Ref(e) => visit_expr(e, predicate, results),
+        }
+    }
+
+    fn visit_pattern<'a, F>(
+        pat: &'a crate::syntax::nodes::expressions::pattern::Pattern,
+        predicate: &F,
+        results: &mut Vec<&'a Expression>,
+    ) where
+        F: Fn(&Expression) -> bool,
+    {
+        use crate::syntax::nodes::expressions::pattern::Pattern as P;
+        match pat {
+            P::Declaration { .. } | P::Var(_) | P::Discard => {}
+            P::Constant(e) => visit_expr(e, predicate, results),
+            P::Type { designation, .. } => {
+                if let Some(d) = designation {
+                    // No expressions inside designations
+                    let _ = d;
+                }
+            }
+            P::Property { subpatterns, .. } => {
+                for sp in subpatterns {
+                    visit_pattern(&sp.pattern, predicate, results);
+                }
+            }
+            P::Positional { subpatterns, .. } | P::Tuple(subpatterns) => {
+                for p in subpatterns {
+                    visit_pattern(p, predicate, results);
+                }
+            }
+            P::List { patterns } => {
+                for el in patterns {
+                    match el {
+                        crate::syntax::nodes::expressions::pattern::ListPatternElement::Pattern(p) => {
+                            visit_pattern(p, predicate, results)
+                        }
+                        crate::syntax::nodes::expressions::pattern::ListPatternElement::Slice(opt) => {
+                            if let Some(p) = opt {
+                                visit_pattern(p, predicate, results)
+                            }
+                        }
+                    }
+                }
+            }
+            P::Slice { pattern } => {
+                if let Some(p) = pattern {
+                    visit_pattern(p, predicate, results)
+                }
+            }
+            P::Relational { value, .. } => visit_expr(value, predicate, results),
+            P::LogicalAnd(a, b) | P::LogicalOr(a, b) => {
+                visit_pattern(a, predicate, results);
+                visit_pattern(b, predicate, results);
+            }
+            P::Not(p) | P::Parenthesized(p) => visit_pattern(p, predicate, results),
+        }
+    }
+
+    // Traverse the statement and collect all expressions found
+    match stmt {
+        Statement::Expression(e) => visit_expr(e, predicate, results),
+        Statement::Return(opt) | Statement::Throw(opt) => {
+            if let Some(e) = opt.as_deref() {
+                visit_expr(e, predicate, results);
+            }
+        }
+        Statement::If(s) => {
+            visit_expr(&s.condition, predicate, results);
+            collect_expressions(&s.consequence, predicate, results);
+            if let Some(alt) = &s.alternative {
+                collect_expressions(alt, predicate, results);
+            }
+        }
+        Statement::While(s) => {
+            visit_expr(&s.condition, predicate, results);
+            collect_expressions(&s.body, predicate, results);
+        }
+        Statement::DoWhile(s) => {
+            collect_expressions(&s.body, predicate, results);
+            visit_expr(&s.condition, predicate, results);
+        }
+        Statement::For(s) => {
+            // Initializer
+            if let Some(init) = &s.initializer {
+                match init {
+                    crate::syntax::nodes::statements::for_statement::ForInitializer::Declaration(d) => {
+                        for decl in &d.declarators {
+                            if let Some(init) = &decl.initializer {
+                                visit_expr(init, predicate, results);
+                            }
+                        }
+                    }
+                    crate::syntax::nodes::statements::for_statement::ForInitializer::Expressions(exprs) => {
+                        for e in exprs {
+                            visit_expr(e, predicate, results);
+                        }
+                    }
+                }
+            }
+            // Condition
+            if let Some(cond) = &s.condition {
+                visit_expr(cond, predicate, results);
+            }
+            // Iterators
+            for it in &s.iterator {
+                visit_expr(it, predicate, results);
+            }
+            collect_expressions(&s.body, predicate, results);
+        }
+        Statement::ForEach(s) => {
+            visit_expr(&s.collection, predicate, results);
+            collect_expressions(&s.body, predicate, results);
+        }
+        Statement::Switch(s) => {
+            visit_expr(&s.expression, predicate, results);
+            // Visit labels and statements
+            for sec in &s.sections {
+                for lbl in &sec.labels {
+                    match lbl {
+                        crate::syntax::nodes::statements::switch_label::SwitchLabel::Case(e) => {
+                            visit_expr(e, predicate, results)
+                        }
+                        crate::syntax::nodes::statements::switch_label::SwitchLabel::Default => {}
+                        crate::syntax::nodes::statements::switch_label::SwitchLabel::Pattern { pattern, when_clause } => {
+                            visit_pattern(pattern, predicate, results);
+                            if let Some(w) = when_clause {
+                                visit_expr(w, predicate, results);
+                            }
+                        }
+                    }
+                }
+                for st in &sec.statements {
+                    collect_expressions(st, predicate, results);
+                }
+            }
+        }
+        Statement::Try(s) => {
+            collect_expressions(&s.try_block, predicate, results);
+            for c in &s.catches {
+                collect_expressions(&c.block, predicate, results);
+                if let Some(w) = &c.when_clause {
+                    visit_expr(w, predicate, results);
+                }
+            }
+            if let Some(f) = &s.finally_clause {
+                collect_expressions(&f.block, predicate, results);
+            }
+        }
+        Statement::Using(s) => {
+            if let Some(expr) = &s.resource {
+                visit_expr(expr, predicate, results);
+            }
+            if let Some(decl) = &s.declaration {
+                for d in &decl.declarators {
+                    if let Some(init) = &d.initializer {
+                        visit_expr(init, predicate, results);
+                    }
+                }
+            }
+            if let Some(body) = &s.body {
+                collect_expressions(body, predicate, results);
+            }
+        }
+        Statement::Lock(s) => {
+            visit_expr(&s.expr, predicate, results);
+            collect_expressions(&s.body, predicate, results);
+        }
+        Statement::Checked(s) => collect_expressions(&s.body, predicate, results),
+        Statement::Unchecked(s) => collect_expressions(&s.body, predicate, results),
+        Statement::Fixed(s) => {
+            visit_expr(&s.initializer, predicate, results);
+            collect_expressions(&s.body, predicate, results);
+        }
+        Statement::Yield(y) => match y {
+            crate::syntax::nodes::statements::yield_statement::YieldStatement::Return(e) => {
+                visit_expr(e, predicate, results)
+            }
+            crate::syntax::nodes::statements::yield_statement::YieldStatement::Break => {}
+        },
+        Statement::Declaration(d) => {
+            for decl in &d.declarators {
+                if let Some(init) = &decl.initializer {
+                    visit_expr(init, predicate, results);
+                }
+            }
+        }
+        Statement::LocalFunction(lf) => {
+            collect_expressions(&lf.body, predicate, results);
+        }
+        Statement::GotoCase(gc) => match &gc.kind {
+            crate::syntax::nodes::statements::goto_case_statement::GotoCaseKind::Case(e) => {
+                visit_expr(e, predicate, results)
+            }
+            crate::syntax::nodes::statements::goto_case_statement::GotoCaseKind::Default => {}
+        },
+        Statement::Goto(_) | Statement::Break(_) | Statement::Continue(_) | Statement::Empty => {}
+        Statement::Block(stmts) => {
+            for s in stmts {
+                collect_expressions(s, predicate, results);
+            }
+        }
+    }
 }

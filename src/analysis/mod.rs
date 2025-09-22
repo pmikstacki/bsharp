@@ -9,6 +9,7 @@ pub mod navigation; // AST navigation and search
 pub mod quality; // Code quality analysis
 pub mod semantic;
 pub mod types; // Type usage analysis // Semantic analysis
+pub mod context; // Shared analysis context and configuration
 
 // Re-export main analysis traits and types for easy access
 pub use control_flow::{ControlFlowAnalyzer, ControlFlowGraph, ControlFlowMetrics};
@@ -16,7 +17,7 @@ pub use dependencies::{
     CircularDependency, ClassDependencies, DependencyAnalyzer, DependencyGraph, DependencyMetrics,
     ModuleDependencies,
 };
-pub use diagnostics::{Diagnostic, DiagnosticCode, DiagnosticCollection, DiagnosticSeverity};
+pub use diagnostics::{Diagnostic, DiagnosticCode, DiagnosticCollection, DiagnosticSeverity, SourceLocation};
 pub use metrics::{AstAnalysis, AstAnalyze, MetricCollector};
 pub use naming::{NamingAnalyzer, NamingMetrics, NamingViolation};
 pub use navigation::{AstNavigate, DeclarationInfo, DeclarationType, FindDeclarations};
@@ -26,3 +27,4 @@ pub use types::{
     TypeAnalyzer, TypeCohesionMetrics, TypeComplexity, TypeComplexityMetrics, TypeMetrics,
     TypeUsage,
 };
+pub use context::{AnalysisConfig, AnalysisContext};
