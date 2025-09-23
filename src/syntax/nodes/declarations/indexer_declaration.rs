@@ -1,4 +1,3 @@
-use super::property_declaration::PropertyDeclaration;
 use crate::syntax::nodes::statements::statement::Statement;
 use super::{Attribute, Modifier};
 use crate::syntax::nodes::types::Parameter;

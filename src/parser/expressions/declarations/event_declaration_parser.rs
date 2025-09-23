@@ -5,7 +5,7 @@ use crate::parser::statement_parser::parse_statement;
 use crate::parser::types::type_parser::parse_type_expression;
 use crate::syntax::errors::BResult;
 use crate::syntax::nodes::declarations::{EventAccessor, EventAccessorList, EventDeclaration};
-use crate::syntax::parser_helpers::{bchar, bws, context, keyword};
+use crate::syntax::parser_helpers::{bchar, bws, context};
 use crate::parser::keywords::declaration_keywords::kw_event;
 use crate::parser::keywords::accessor_keywords::{kw_add, kw_remove};
 

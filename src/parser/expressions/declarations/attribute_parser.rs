@@ -12,6 +12,7 @@ use nom::{
 };
 
 /// Parses an attribute argument which can be any expression
+#[allow(dead_code)]
 fn parse_attribute_argument(input: &str) -> BResult<&str, Expression> {
     context(
         "attribute argument (expected valid C# expression)",
@@ -21,6 +22,7 @@ fn parse_attribute_argument(input: &str) -> BResult<&str, Expression> {
 
 /// Parses a single attribute with optional arguments
 /// Example: `[Serializable]` or `[DataMember(Name = "firstName", Order = 1)]`
+#[allow(dead_code)]
 fn parse_single_attribute(input: &str) -> BResult<&str, Attribute> {
     context(
         "single attribute (expected identifier optionally followed by arguments in parentheses)",

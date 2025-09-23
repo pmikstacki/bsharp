@@ -2,7 +2,7 @@ use crate::parser::identifier_parser::parse_qualified_name;
 use crate::syntax::errors::BResult;
 use crate::syntax::nodes::declarations::UsingDirective;
 use crate::syntax::nodes::identifier::Identifier;
-use crate::syntax::parser_helpers::{bchar, bws, context, keyword, peek_bchar, peek_keyword};
+use crate::syntax::parser_helpers::{bchar, bws, context, peek_bchar};
 use crate::parser::keywords::declaration_keywords::kw_using;
 use crate::parser::keywords::modifier_keywords::{kw_static, peek_static};
 

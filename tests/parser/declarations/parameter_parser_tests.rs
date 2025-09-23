@@ -1,7 +1,6 @@
 // Tests for parsing parameters: attributes and default values
 
 use bsharp::parser::expressions::declarations::parameter_parser::{parse_parameter, parse_parameter_list};
-use bsharp::syntax::nodes::declarations::Attribute;
 use bsharp::syntax::nodes::expressions::expression::Expression;
 use bsharp::syntax::nodes::expressions::literal::Literal;
 use bsharp::syntax::nodes::identifier::Identifier;
@@ -19,8 +18,7 @@ fn parse_param_ok(code: &str) -> Parameter {
 fn parameter_with_single_attribute() {
     let p = parse_param_ok("[A] int x");
     assert_eq!(p.attributes.len(), 1);
-    assert_eq!(p.attributes[0].attributes.len(), 1);
-    assert_eq!(p.attributes[0].attributes[0].name.name, "A");
+    assert_eq!(p.attributes[0].name.name, "A");
     assert_eq!(p.parameter_type, Type::Primitive(PrimitiveType::Int));
     assert_eq!(p.name, Identifier::new("x"));
     assert!(p.default_value.is_none());
@@ -30,8 +28,8 @@ fn parameter_with_single_attribute() {
 fn parameter_with_multiple_attribute_lists_and_default() {
     let p = parse_param_ok("[A][B] string name = \"John\"");
     assert_eq!(p.attributes.len(), 2);
-    assert_eq!(p.attributes[0].attributes[0].name.name, "A");
-    assert_eq!(p.attributes[1].attributes[0].name.name, "B");
+    assert_eq!(p.attributes[0].name.name, "A");
+    assert_eq!(p.attributes[1].name.name, "B");
     assert_eq!(p.parameter_type, Type::Primitive(PrimitiveType::String));
     assert_eq!(p.name, Identifier::new("name"));
     assert!(matches!(p.default_value, Some(Expression::Literal(Literal::String(s))) if s == "John"));
@@ -54,7 +52,7 @@ fn parameter_list_with_attributes_and_defaults() {
     assert_eq!(list.len(), 2);
     // First param
     assert_eq!(list[0].attributes.len(), 1);
-    assert_eq!(list[0].attributes[0].attributes[0].name.name, "A");
+    assert_eq!(list[0].attributes[0].name.name, "A");
     assert_eq!(list[0].parameter_type, Type::Primitive(PrimitiveType::Int));
     assert!(matches!(list[0].default_value, Some(Expression::Literal(Literal::Integer(1)))));
     // Second param

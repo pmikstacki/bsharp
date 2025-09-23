@@ -4,9 +4,8 @@ use crate::syntax::nodes::expressions::expression::{CollectionElement, Expressio
 use crate::syntax::parser_helpers::{bchar, bseparated_list0, bws, context};
 
 use nom::{
-    branch::alt,
     combinator::{cut, map},
-    sequence::{preceded},
+    sequence::preceded,
 };
 
 /// Parse a collection expression: [elem1, ..spread, elem2]

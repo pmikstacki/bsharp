@@ -1013,6 +1013,10 @@ where
                     }
                 }
             }
+            // Deconstruction expression: visit the value being deconstructed
+            E::Deconstruction(d) => {
+                visit_expr(&d.value, predicate, results);
+            }
             // Ref expression
             E::Ref(e) => visit_expr(e, predicate, results),
         }
@@ -1081,6 +1085,7 @@ where
                 visit_expr(e, predicate, results);
             }
         }
+        Statement::Label(_) => {}
         Statement::If(s) => {
             visit_expr(&s.condition, predicate, results);
             collect_expressions(&s.consequence, predicate, results);
@@ -1184,6 +1189,7 @@ where
         }
         Statement::Checked(s) => collect_expressions(&s.body, predicate, results),
         Statement::Unchecked(s) => collect_expressions(&s.body, predicate, results),
+        Statement::Unsafe(s) => collect_expressions(&s.body, predicate, results),
         Statement::Fixed(s) => {
             visit_expr(&s.initializer, predicate, results);
             collect_expressions(&s.body, predicate, results);
@@ -1215,6 +1221,9 @@ where
             for s in stmts {
                 collect_expressions(s, predicate, results);
             }
+        }
+        Statement::Deconstruction(d) => {
+            visit_expr(&d.value, predicate, results);
         }
     }
 }

@@ -16,41 +16,31 @@ fn parse_interpolated_string_test(code: &str) -> Result<Literal, String> {
 }
 
 #[test]
-fn test_parse_simple_interpolated_string() {
-    let code = r#"$"Hello {name}""#;
-    let result = parse_interpolated_string_test(code);
-    assert!(
-        result.is_ok(),
-        "Failed to parse simple interpolated string: {:?}",
-        result
-    );
-
-    if let Ok(Literal::InterpolatedString(interpolated)) = result {
-        assert!(!interpolated.is_verbatim);
-        assert_eq!(interpolated.parts.len(), 2);
-
-        // First part should be text "Hello "
-        if let InterpolatedStringPart::Text(text) = &interpolated.parts[0] {
-            assert_eq!(text, "Hello ");
-        } else {
-            panic!("Expected text part, got: {:?}", interpolated.parts[0]);
-        }
-
-        // Second part should be interpolation {name}
-        if let InterpolatedStringPart::Interpolation { expression, .. } = &interpolated.parts[1] {
-            if let Expression::Variable(var) = expression {
-                assert_eq!(var.name, "name");
-            } else {
-                panic!("Expected variable expression, got: {:?}", expression);
+fn test_parse_raw_interpolated_simple() {
+    let code = r#"$"""Hello {name}""""#;
+    let result = parse_interpolated_string_test(code).expect("parse");
+    match result {
+        Literal::InterpolatedString(s) => {
+            assert!(s.is_verbatim);
+            assert_eq!(s.parts.len(), 2);
+            match &s.parts[0] {
+                InterpolatedStringPart::Text(t) => assert_eq!(t, "Hello "),
+                _ => panic!("expected text"),
             }
-        } else {
-            panic!(
-                "Expected interpolation part, got: {:?}",
-                interpolated.parts[1]
-            );
+            match &s.parts[1] {
+                InterpolatedStringPart::Interpolation { expression, .. } => {
+                    if let Expression::Variable(id) = expression {
+                        assert_eq!(id.name, "name");
+                    } else {
+                        panic!("expected variable");
+                    }
+                }
+                _ => panic!("expected interpolation"),
+            }
         }
-    } else {
-        panic!("Expected interpolated string literal");
+        _ => {
+            panic!("Expected interpolated string literal");
+        }
     }
 }
 

@@ -162,8 +162,8 @@ pub fn parse_member_declaration(input: &str) -> BResult<&str, MemberDeclaration>
     let (input_after_type_params, type_parameters) =
         opt(bws(parse_type_parameter_list))(input_after_mods)?;
 
-    // 5. Parse parameters
-    let (input_after_params, parameters) = bws(parse_parameter_list)(input_after_mods)?;
+    // 5. Parse parameters (must continue after type parameters when present)
+    let (input_after_params, parameters) = bws(parse_parameter_list)(input_after_type_params)?;
 
     // 5.1 Optional constructor initializer
     let (input_after_init, initializer) = opt(bws(parse_constructor_initializer))(input_after_params)?;

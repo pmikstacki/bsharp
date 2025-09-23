@@ -8,11 +8,10 @@ use crate::parser::expressions::statements::block_statement_parser::parse_block_
 use crate::parser::types::type_parser::parse_type_expression;
 use crate::syntax::errors::BResult;
 use crate::syntax::nodes::declarations::{IndexerAccessorList, IndexerAccessor, IndexerDeclaration};
-use crate::syntax::nodes::statements::statement::Statement;
 use crate::syntax::nodes::types::Parameter;
 use crate::syntax::parser_helpers::{bchar, bws, context, parse_delimited_list0};
 use nom::combinator::{cut, peek};
-use crate::parser::keywords::accessor_keywords::{kw_get, kw_set, peek_get, peek_set};
+use crate::parser::keywords::accessor_keywords::{kw_get, kw_set};
 use crate::parser::keywords::contextual_misc_keywords::kw_this;
 
 /// Parse a C# indexer declaration
@@ -151,6 +150,7 @@ fn parse_accessors(input: &str) -> BResult<&str, (Option<IndexerAccessor>, Optio
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::syntax::nodes::statements::statement::Statement;
 
     #[test]
     fn parses_get_set_accessors_in_any_order() {

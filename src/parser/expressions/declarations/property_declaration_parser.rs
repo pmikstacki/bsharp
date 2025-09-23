@@ -12,7 +12,6 @@ use crate::syntax::parser_helpers::{bchar, bws, context};
 use nom::bytes::complete::tag_no_case;
 use nom::{
     branch::alt,
-    bytes::complete::take_until,
     combinator::{map, opt},
     multi::many0,
     sequence::{tuple, delimited, preceded},

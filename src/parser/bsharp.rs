@@ -3,7 +3,6 @@
 
 use nom::branch::alt;
 use nom::combinator::map;
-use nom::multi::many0;
 
 // parser_helpers imported selectively in sub-parser; this module only needs ws
 use crate::parser::expressions::declarations::file_scoped_namespace_parser::parse_file_scoped_namespace_declaration;
@@ -67,16 +66,13 @@ pub fn parse_csharp_source(input: &str) -> BResult<&str, CompilationUnit> {
             let (r, _) = bws(keyword("global"))(remaining)?;
             // next must be 'using'
             if bpeek(keyword("using"))(r).is_ok() {
-                let (r2, _) = bws(keyword("using"))(r)?;
                 // parse the rest of using directive by reusing parser on the remainder that starts after 'using'
                 // We need a helper that expects we've already consumed 'using', but to keep it simple,
                 // rebuild input by prefixing 'using ' back is cumbersome. Instead, call parse_using_directive starting at 'using'.
                 // So we back up to a string that starts with 'using' by ignoring the consumed token above.
                 // As a simpler approach, parse_using_directive from remaining after 'global' by expecting 'using' again.
                 // We'll emulate by constructing a small closure.
-                let using_input = format!("using{}", r2);
-                // Not ideal to allocate, fallback: call parse_using_directive on original input (r) which still begins with 'using'.
-                // We already consumed 'using' into r2, but we can instead not consume 'using' and just call the parser on r.
+                // Call parse_using_directive on original input (r) which still begins with 'using'.
                 let (r_after, using_dir) = parse_using_directive(r)?;
                 usings.push(using_dir);
                 remaining = r_after;
