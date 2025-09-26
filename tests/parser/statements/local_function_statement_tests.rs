@@ -285,3 +285,24 @@ fn test_parse_local_function_errors() {
         assert!(result.is_err(), "Expected parsing to fail for: '{}'", code);
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn parses_block_body() {
+        let src = "{ return; }";
+        let (rest, stmt) = parse_local_function_body(src).expect("parse");
+        assert!(rest.trim().is_empty());
+        assert!(matches!(stmt, Statement::Block(_)));
+    }
+
+    #[test]
+    fn parses_expression_body() {
+        let src = "=> x;";
+        let (rest, stmt) = parse_local_function_body(src).expect("parse");
+        assert!(rest.trim().is_empty());
+        assert!(matches!(stmt, Statement::Empty));
+    }
+}

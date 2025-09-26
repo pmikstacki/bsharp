@@ -42,7 +42,7 @@ pub fn parse_block_statement(input: &str) -> BResult<&str, Statement> {
                     cut(bws(bchar('}'))),
                 ),
             ),
-            |statements| Statement::Block(statements),
+            Statement::Block,
         ),
     )(input)
 }

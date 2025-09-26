@@ -1,7 +1,7 @@
 use crate::parser::expressions::primary_expression_parser::parse_expression;
 use crate::parser::identifier_parser::parse_identifier;
 use crate::syntax::errors::BResult;
-use crate::syntax::nodes::expressions::expression::Expression;
+use crate::syntax::nodes::expressions::expression::{Expression, WithInitializerEntry};
 use crate::syntax::nodes::expressions::indexing_expression::IndexingExpression;
 use crate::syntax::nodes::expressions::invocation_expression::{InvocationExpression, Argument, ArgumentModifier};
 use crate::syntax::nodes::expressions::member_access_expression::MemberAccessExpression;
@@ -27,7 +27,7 @@ enum PostfixOpKind {
     PostfixIncrement,
     PostfixDecrement,
     NullForgiving,
-    With(Vec<(String, Expression)>),
+    With(Vec<WithInitializerEntry>),
 }
 
 /// Parse a single invocation argument supporting optional modifier and name:
@@ -134,21 +134,41 @@ fn simple_postfix_operations(input: &str) -> BResult<&str, PostfixOpKind> {
 
 /// Parse with-expression postfix: `with { Name = expr, ... }`
 fn enhanced_with_expression(input: &str) -> BResult<&str, PostfixOpKind> {
+    use nom::branch::alt;
     map(
         tuple((
             bws(kw_with()),
             bws(bchar('{')),
-            // zero or more property initializers separated by commas
+            // zero or more initializers (property or indexer) separated by commas
             nom::multi::separated_list0(
                 bws(bchar(',')),
-                map(
-                    tuple((bws(parse_identifier), bws(bchar('=')), bws(parse_expression))),
-                    |(id, _, expr)| (id.name, expr),
-                ),
+                alt((
+                    parse_with_indexer_assignment,
+                    map(
+                        tuple((bws(parse_identifier), bws(bchar('=')), bws(parse_expression))),
+                        |(id, _, expr)| WithInitializerEntry::Property { name: id.name, value: expr },
+                    ),
+                )),
             ),
             bws(bchar('}')),
         )),
-        |(_, _, pairs, _)| PostfixOpKind::With(pairs),
+        |(_, _, inits, _)| PostfixOpKind::With(inits),
+    )(input)
+}
+
+/// Indexer assignment inside with-initializer: [expr (, expr)* ] = expr
+fn parse_with_indexer_assignment(input: &str) -> BResult<&str, WithInitializerEntry> {
+    use nom::combinator::cut;
+    use nom::multi::separated_list1;
+    map(
+        tuple((
+            bws(bchar('[')),
+            separated_list1(bws(bchar(',')), bws(parse_expression)),
+            cut(bws(bchar(']'))),
+            cut(bws(bchar('='))),
+            cut(bws(parse_expression)),
+        )),
+        |(_, indices, _, _, value)| WithInitializerEntry::Indexer { indices, value },
     )(input)
 }
 
@@ -211,9 +231,7 @@ fn apply_postfix_operation(expr: Expression, op: PostfixOpKind) -> Expression {
             op: UnaryOperator::NullForgiving,
             expr: Box::new(expr),
         },
-        PostfixOpKind::With(inits) => {
-            Expression::With { target: Box::new(expr), initializers: inits }
-        }
+        PostfixOpKind::With(inits) => Expression::With { target: Box::new(expr), initializers: inits },
     }
 }
 

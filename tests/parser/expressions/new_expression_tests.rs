@@ -2,6 +2,7 @@
 
 use bsharp::parser::expressions::primary_expression_parser::parse_expression;
 use bsharp::syntax::nodes::expressions::expression::Expression;
+use bsharp::syntax::nodes::expressions::new_expression::ObjectInitializerEntry;
 use bsharp::syntax::nodes::expressions::literal::Literal;
 use bsharp::syntax::nodes::types::{PrimitiveType, Type};
 
@@ -16,6 +17,17 @@ fn parse_new_expr(code: &str) -> Result<Expression, String> {
         }
         Err(e) => Err(format!("Parse error: {:?}", e)),
     }
+}
+
+#[test]
+fn test_typed_new_mixed_object_and_collection_initializer_should_error() {
+    // Mixed initializer elements like property + value are invalid
+    let res = parse_expression("new List<int> { P = 1, 2 }");
+    assert!(
+        res.is_err(),
+        "expected parse error for mixed object/collection initializer, got: {:?}",
+        res
+    );
 }
 
 #[test]
@@ -83,11 +95,11 @@ fn test_parse_new_with_object_initializer() {
             // Check that we have Name and Age properties
             let mut has_name = false;
             let mut has_age = false;
-            for (prop_name, _) in obj_init {
-                if prop_name == "Name" {
-                    has_name = true;
-                } else if prop_name == "Age" {
-                    has_age = true;
+            for entry in obj_init {
+                match entry {
+                    ObjectInitializerEntry::Property { name, .. } if name == "Name" => has_name = true,
+                    ObjectInitializerEntry::Property { name, .. } if name == "Age" => has_age = true,
+                    _ => {}
                 }
             }
             assert!(has_name, "Expected Name property");
@@ -225,4 +237,55 @@ fn test_parse_new_complex_nested_initializer() {
         }
     }
     // Even if this complex case doesn't fully work, we should not panic
+}
+
+#[test]
+fn test_parse_new_with_indexer_object_initializer() {
+    use bsharp::syntax::nodes::expressions::new_expression::ObjectInitializerEntry;
+    use bsharp::syntax::nodes::expressions::literal::Literal;
+    use bsharp::parser::expressions::primary_expression_parser::parse_expression;
+    use bsharp::syntax::nodes::expressions::expression::Expression;
+
+    let code = "new Dictionary<int, string> { [1] = \"a\", [2] = \"b\" }";
+    let (rest, expr) = parse_expression(code).expect("parse ok");
+    assert!(rest.trim().is_empty(), "unparsed: {}", rest);
+
+    match expr {
+        Expression::New(new_expr_box) => {
+            let new_expr = *new_expr_box;
+            let inits = new_expr.object_initializer.expect("object initializer");
+            assert_eq!(inits.len(), 2);
+
+            match &inits[0] {
+                ObjectInitializerEntry::Indexer { indices, value } => {
+                    assert_eq!(indices.len(), 1);
+                    match &indices[0] {
+                        Expression::Literal(Literal::Integer(i)) => assert_eq!(*i, 1),
+                        other => panic!("expected integer index 1, got {:?}", other),
+                    }
+                    match value {
+                        Expression::Literal(Literal::String(s)) => assert_eq!(s, "a"),
+                        other => panic!("expected string value 'a', got {:?}", other),
+                    }
+                }
+                other => panic!("expected Indexer entry, got {:?}", other),
+            }
+
+            match &inits[1] {
+                ObjectInitializerEntry::Indexer { indices, value } => {
+                    assert_eq!(indices.len(), 1);
+                    match &indices[0] {
+                        Expression::Literal(Literal::Integer(i)) => assert_eq!(*i, 2),
+                        other => panic!("expected integer index 2, got {:?}", other),
+                    }
+                    match value {
+                        Expression::Literal(Literal::String(s)) => assert_eq!(s, "b"),
+                        other => panic!("expected string value 'b', got {:?}", other),
+                    }
+                }
+                other => panic!("expected Indexer entry, got {:?}", other),
+            }
+        }
+        other => panic!("Expected New expression, got {:?}", other),
+    }
 }

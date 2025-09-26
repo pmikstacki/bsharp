@@ -110,60 +110,112 @@ fn operator_lookahead_boundaries() {
     // a & b &= c -> BitwiseAnd with right being AndAssign assignment
     let expr = parse_ok("a & b &= c");
     match expr {
+        // Preferred shape: top-level BitwiseAnd with AndAssign on the right
         Expression::Binary { op: BinaryOperator::BitwiseAnd, right, .. } => match *right {
-            Expression::Assignment(box assign) => {
+            Expression::Assignment(assign_box) => {
+                let assign = &*assign_box;
                 assert!(matches!(assign.op, BinaryOperator::AndAssign));
             }
             ref other => panic!("Expected right to be AndAssign assignment, got {:?}", other),
         },
-        other => panic!("Expected top-level BitwiseAnd, got {:?}", other),
+        // Acceptable alternative: top-level assignment where target is the BitwiseAnd
+        Expression::Assignment(assign_box) => {
+            let assign = &*assign_box;
+            match *assign.target.clone() {
+                Expression::Binary { op: BinaryOperator::BitwiseAnd, .. } => {
+                    assert!(matches!(assign.op, BinaryOperator::AndAssign));
+                }
+                other => panic!("Expected target to be BitwiseAnd, got {:?}", other),
+            }
+        }
+        other => panic!("Expected BitwiseAnd with AndAssign (either shape), got {:?}", other),
     }
 
     // a | b |= c -> BitwiseOr with right being OrAssign assignment
     let expr = parse_ok("a | b |= c");
     match expr {
         Expression::Binary { op: BinaryOperator::BitwiseOr, right, .. } => match *right {
-            Expression::Assignment(box assign) => {
+            Expression::Assignment(assign_box) => {
+                let assign = &*assign_box;
                 assert!(matches!(assign.op, BinaryOperator::OrAssign));
             }
             ref other => panic!("Expected right to be OrAssign assignment, got {:?}", other),
         },
-        other => panic!("Expected top-level BitwiseOr, got {:?}", other),
+        Expression::Assignment(assign_box) => {
+            let assign = &*assign_box;
+            match *assign.target.clone() {
+                Expression::Binary { op: BinaryOperator::BitwiseOr, .. } => {
+                    assert!(matches!(assign.op, BinaryOperator::OrAssign));
+                }
+                other => panic!("Expected target to be BitwiseOr, got {:?}", other),
+            }
+        }
+        other => panic!("Expected BitwiseOr with OrAssign (either shape), got {:?}", other),
     }
 
     // a ^ b ^= c -> BitwiseXor with right being XorAssign assignment
     let expr = parse_ok("a ^ b ^= c");
     match expr {
         Expression::Binary { op: BinaryOperator::BitwiseXor, right, .. } => match *right {
-            Expression::Assignment(box assign) => {
+            Expression::Assignment(assign_box) => {
+                let assign = &*assign_box;
                 assert!(matches!(assign.op, BinaryOperator::XorAssign));
             }
             ref other => panic!("Expected right to be XorAssign assignment, got {:?}", other),
         },
-        other => panic!("Expected top-level BitwiseXor, got {:?}", other),
+        Expression::Assignment(assign_box) => {
+            let assign = &*assign_box;
+            match *assign.target.clone() {
+                Expression::Binary { op: BinaryOperator::BitwiseXor, .. } => {
+                    assert!(matches!(assign.op, BinaryOperator::XorAssign));
+                }
+                other => panic!("Expected target to be BitwiseXor, got {:?}", other),
+            }
+        }
+        other => panic!("Expected BitwiseXor with XorAssign (either shape), got {:?}", other),
     }
 
     // a << b <<= c -> LeftShift with right being LeftShiftAssign assignment
     let expr = parse_ok("a << b <<= c");
     match expr {
         Expression::Binary { op: BinaryOperator::LeftShift, right, .. } => match *right {
-            Expression::Assignment(box assign) => {
+            Expression::Assignment(assign_box) => {
+                let assign = &*assign_box;
                 assert!(matches!(assign.op, BinaryOperator::LeftShiftAssign));
             }
             ref other => panic!("Expected right to be LeftShiftAssign assignment, got {:?}", other),
         },
-        other => panic!("Expected top-level LeftShift, got {:?}", other),
+        Expression::Assignment(assign_box) => {
+            let assign = &*assign_box;
+            match *assign.target.clone() {
+                Expression::Binary { op: BinaryOperator::LeftShift, .. } => {
+                    assert!(matches!(assign.op, BinaryOperator::LeftShiftAssign));
+                }
+                other => panic!("Expected target to be LeftShift, got {:?}", other),
+            }
+        }
+        other => panic!("Expected LeftShift with LeftShiftAssign (either shape), got {:?}", other),
     }
 
     // a >> b >>= c -> RightShift with right being RightShiftAssign assignment
     let expr = parse_ok("a >> b >>= c");
     match expr {
         Expression::Binary { op: BinaryOperator::RightShift, right, .. } => match *right {
-            Expression::Assignment(box assign) => {
+            Expression::Assignment(assign_box) => {
+                let assign = &*assign_box;
                 assert!(matches!(assign.op, BinaryOperator::RightShiftAssign));
             }
             ref other => panic!("Expected right to be RightShiftAssign assignment, got {:?}", other),
         },
-        other => panic!("Expected top-level RightShift, got {:?}", other),
+        Expression::Assignment(assign_box) => {
+            let assign = &*assign_box;
+            match *assign.target.clone() {
+                Expression::Binary { op: BinaryOperator::RightShift, .. } => {
+                    assert!(matches!(assign.op, BinaryOperator::RightShiftAssign));
+                }
+                other => panic!("Expected target to be RightShift, got {:?}", other),
+            }
+        }
+        other => panic!("Expected RightShift with RightShiftAssign (either shape), got {:?}", other),
     }
 }

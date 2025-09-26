@@ -18,6 +18,30 @@ fn parse_pattern_test(code: &str) -> Result<Pattern, String> {
     }
 }
 
+#[test]
+fn test_parse_tuple_pattern_missing_first_element_should_error() {
+    let input = "(, 2)";
+    let result = parse_pattern_test(input);
+    assert!(
+        result.is_err(),
+        "Expected error for malformed tuple pattern '{}', got: {:?}",
+        input,
+        result
+    );
+}
+
+#[test]
+fn test_parse_relational_pattern_missing_value_should_error() {
+    let input = ">";
+    let result = parse_pattern_test(input);
+    assert!(
+        result.is_err(),
+        "Expected error for relational pattern missing value '{}', got: {:?}",
+        input,
+        result
+    );
+}
+
 fn parse_switch_test(code: &str) -> Result<Expression, String> {
     match parse_switch_expression(code) {
         Ok((remaining, expr)) => {

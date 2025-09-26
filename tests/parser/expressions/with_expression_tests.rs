@@ -1,5 +1,5 @@
 use bsharp::parser::expressions::primary_expression_parser::parse_expression;
-use bsharp::syntax::nodes::expressions::expression::Expression;
+use bsharp::syntax::nodes::expressions::expression::{Expression, WithInitializerEntry};
 use bsharp::syntax::nodes::identifier::Identifier;
 
 fn parse_expr_ok(src: &str) -> Expression {
@@ -17,8 +17,14 @@ fn test_simple_with_expression() {
             assert!(matches!(*target, Expression::Variable(Identifier { ref name }) if name == "x"));
             // two initializers
             assert_eq!(initializers.len(), 2);
-            assert_eq!(initializers[0].0, "P");
-            assert_eq!(initializers[1].0, "Q");
+            match &initializers[0] {
+                WithInitializerEntry::Property { name, .. } => assert_eq!(name, "P"),
+                other => panic!("expected Property init, got {:?}", other),
+            }
+            match &initializers[1] {
+                WithInitializerEntry::Property { name, .. } => assert_eq!(name, "Q"),
+                other => panic!("expected Property init, got {:?}", other),
+            }
         }
         other => panic!("expected with expression, got {:?}", other),
     }

@@ -290,8 +290,9 @@ pub fn parse_decimal_literal(input: &str) -> BResult<&str, Literal> {
 pub fn parse_string(input: &str) -> BResult<&str, Literal> {
     context(
         "string literal (expected text enclosed in double quotes)",
-        map(
-            delimited(
+        |i| {
+            // Parse core string content
+            let (rest_after_quote, inner) = delimited(
                 nom_char('"'),
                 // Use opt to handle the case of an empty string content ""
                 opt(escaped_transform(
@@ -307,10 +308,18 @@ pub fn parse_string(input: &str) -> BResult<&str, Literal> {
                     )),
                 )),
                 nom_char('"'),
-            ),
-            // Map Option<String> to Literal::String
-            |opt_s: Option<String>| Literal::String(opt_s.unwrap_or_default()),
-        ),
+            )(i)?;
+
+            let content = inner.unwrap_or_default();
+
+            // Optional C# 11 u8 suffix immediately after string literal (no whitespace allowed)
+            if rest_after_quote.starts_with("u8") {
+                let rest_after_suffix = &rest_after_quote[2..];
+                return Ok((rest_after_suffix, Literal::Utf8String(content.into_bytes())));
+            }
+
+            Ok((rest_after_quote, Literal::String(content)))
+        },
     )(input)
 }
 

@@ -41,27 +41,6 @@ fn parse_local_function_body(input: &str) -> BResult<&str, Statement> {
     )(input)
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn parses_block_body() {
-        let src = "{ return; }";
-        let (rest, stmt) = parse_local_function_body(src).expect("parse");
-        assert!(rest.trim().is_empty());
-        assert!(matches!(stmt, Statement::Block(_)));
-    }
-
-    #[test]
-    fn parses_expression_body() {
-        let src = "=> x;";
-        let (rest, stmt) = parse_local_function_body(src).expect("parse");
-        assert!(rest.trim().is_empty());
-        assert!(matches!(stmt, Statement::Empty));
-    }
-}
-
 /// Parse a local function statement
 ///
 /// Examples:

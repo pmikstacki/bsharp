@@ -74,7 +74,7 @@ pub enum Expression {
     Unchecked(Box<UncheckedExpression>),     // unchecked(expr)
     With {
         target: Box<Expression>,
-        initializers: Vec<(String, Expression)>,
+        initializers: Vec<WithInitializerEntry>,
     }, // with-expressions: expr with { P = v }
     Collection(Vec<CollectionElement>), // Collection expressions: [a, ..b]
 }
@@ -83,6 +83,12 @@ pub enum Expression {
 pub enum CollectionElement {
     Expr(Expression),
     Spread(Expression),
+}
+
+#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+pub enum WithInitializerEntry {
+    Property { name: String, value: Expression },
+    Indexer { indices: Vec<Expression>, value: Expression },
 }
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]

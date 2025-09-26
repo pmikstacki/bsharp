@@ -16,6 +16,11 @@ fn test_parse_global_attribute() {
                 name: "MyAttr".to_string(),
             },
             arguments: vec![],
+            structured: Some(bsharp::syntax::nodes::declarations::attribute::AttributeName {
+                qualifier: vec![],
+                name: Identifier { name: "MyAttr".to_string() },
+                type_arguments: vec![],
+            }),
         },
     };
 
@@ -46,6 +51,7 @@ fn test_parse_module_attribute() {
     assert_eq!(attr.target.name, "module");
     assert_eq!(attr.attribute.name.name, "TestAttribute");
     assert!(attr.attribute.arguments.is_empty());
+    assert!(attr.attribute.structured.is_some());
 }
 
 #[test]
@@ -63,4 +69,5 @@ fn test_parse_assembly_attribute_with_arguments() {
     assert_eq!(attr.target.name, "assembly");
     assert_eq!(attr.attribute.name.name, "AssemblyVersion");
     assert_eq!(attr.attribute.arguments.len(), 1);
+    assert!(attr.attribute.structured.is_some());
 }

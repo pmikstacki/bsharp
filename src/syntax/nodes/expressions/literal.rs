@@ -9,6 +9,7 @@ pub enum Literal {
     Decimal(String), // Decimal literal with exact source text (suffix M/m)
     Boolean(bool),
     String(String),
+    Utf8String(Vec<u8>), // C# 11: "text"u8 -> UTF-8 byte string
     Char(char),                                    // Added char literal
     Null,                                          // null literal
     InterpolatedString(InterpolatedStringLiteral), // String interpolation: $"Hello {name}"

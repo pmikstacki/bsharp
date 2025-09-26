@@ -6,20 +6,21 @@ use crate::syntax::nodes::expressions::anonymous_object_creation_expression::{
     AnonymousObjectCreationExpression, AnonymousObjectMember,
 };
 use crate::syntax::nodes::expressions::expression::Expression;
-use crate::syntax::nodes::expressions::new_expression::NewExpression;
-use crate::syntax::parser_helpers::{bchar, bws, context, parse_delimited_list0};
+use crate::syntax::nodes::expressions::new_expression::{NewExpression, ObjectInitializerEntry};
+use crate::syntax::nodes::expressions::member_access_expression::MemberAccessExpression;
+use crate::syntax::parser_helpers::{bchar, bws, context, parse_delimited_list0, peek_bchar};
 use crate::parser::keywords::expression_keywords::kw_new;
 
 use nom::{
     branch::alt,
-    combinator::{cut, map, opt},
+    combinator::{cut, map, opt, peek},
     multi::{separated_list0, separated_list1},
     sequence::{delimited, preceded, tuple},
 };
 
 #[derive(Debug, Clone)]
 enum InitializerKind {
-    Object(Vec<(String, Expression)>),
+    Object(Vec<ObjectInitializerEntry>),
     Collection(Vec<Expression>),
 }
 
@@ -35,13 +36,10 @@ pub(crate) fn parse_new_expression(input: &str) -> BResult<&str, Expression> {
                     kw_new(),
                     context(
                         "anonymous object creation",
-                        parse_delimited_list0::<_, _, _, _, char, AnonymousObjectMember, char, char, AnonymousObjectMember>(
-                            bchar('{'),
-                            parse_anonymous_object_member,
-                            bchar(','),
-                            bchar('}'),
-                            false,
-                            true,
+                        delimited(
+                            bws(bchar('{')),
+                            separated_list0(bws(bchar(',')), bws(parse_anonymous_object_member)),
+                            bws(bchar('}')),
                         ),
                     ),
                 ),
@@ -51,10 +49,10 @@ pub(crate) fn parse_new_expression(input: &str) -> BResult<&str, Expression> {
                     })
                 },
             ),
-            // Then try new with type and initializer
-            enhanced_new_with_type_and_initializer,
-            // Target-typed new (no type)
+            // Target-typed new (no type) must be tried before typed-with-cut
             target_typed_new_expression,
+            // Then try new with type and optional initializer (guarded so it won't consume `new()`)
+            enhanced_new_with_type_and_initializer,
             // Simple new expression as fallback (with type)
             simple_new_expression,
         )),
@@ -125,17 +123,20 @@ fn target_typed_new_expression(input: &str) -> BResult<&str, Expression> {
     map(
         tuple((
             kw_new(),
-            opt(parse_delimited_list0::<_, _, _, _, char, Expression, char, char, Expression>(
+            // Ensure the next token is '(' to disambiguate from typed-new
+            bws(peek_bchar('(')),
+            // Parse the argument list
+            parse_delimited_list0::<_, _, _, _, char, Expression, char, char, Expression>(
                 bchar('('),
                 parse_expression,
                 bchar(','),
                 bchar(')'),
                 false,
                 true,
-            )),
+            ),
             opt(bws(enhanced_initializer)),
         )),
-        |(_new_kw, arguments, initializer)| {
+        |(_new_kw, _peek_paren, arguments, initializer)| {
             let (object_initializer, collection_initializer) = match initializer {
                 Some(InitializerKind::Object(obj)) => (Some(obj), None),
                 Some(InitializerKind::Collection(coll)) => (None, Some(coll)),
@@ -143,7 +144,7 @@ fn target_typed_new_expression(input: &str) -> BResult<&str, Expression> {
             };
             Expression::New(Box::new(NewExpression {
                 ty: None,
-                arguments: arguments.unwrap_or_default(),
+                arguments,
                 object_initializer,
                 collection_initializer,
             }))
@@ -155,7 +156,12 @@ fn target_typed_new_expression(input: &str) -> BResult<&str, Expression> {
 fn enhanced_initializer(input: &str) -> BResult<&str, InitializerKind> {
     delimited(
         bws(bchar('{')),
-        alt((enhanced_object_initializer, enhanced_collection_initializer)),
+        alt((
+            // If it looks like an object initializer (identifier '=' or '['), commit to object initializer
+            preceded(peek(object_initializer_guard), cut(enhanced_object_initializer)),
+            // Otherwise treat as collection initializer
+            enhanced_collection_initializer,
+        )),
         cut(bws(bchar('}'))),
     )(input)
 }
@@ -165,35 +171,49 @@ fn enhanced_object_initializer(input: &str) -> BResult<&str, InitializerKind> {
     map(
         separated_list1(
             bws(bchar(',')),
-            alt((enhanced_property_assignment, fallback_property_assignment)),
+            alt((parse_indexer_assignment, enhanced_property_assignment, fallback_property_assignment)),
         ),
         InitializerKind::Object,
     )(input)
 }
 
+/// Lookahead guard to decide if we are parsing an object initializer.
+/// Matches starts like: Identifier '=' ... or '[' ...
+fn object_initializer_guard(input: &str) -> BResult<&str, ()> {
+    use nom::combinator::map;
+    use nom::sequence::tuple;
+    map(
+        alt((
+            map(tuple((bws(parse_identifier), bws(bchar('=')))), |_| ()),
+            map(bws(bchar('[')), |_| ()),
+        )),
+        |_| (),
+    )(input)
+}
+
 /// Enhanced property assignment parsing
-fn enhanced_property_assignment(input: &str) -> BResult<&str, (String, Expression)> {
+fn enhanced_property_assignment(input: &str) -> BResult<&str, ObjectInitializerEntry> {
     map(
         tuple((
             bws(parse_identifier),
             cut(bws(bchar('='))),
             cut(bws(parse_expression)),
         )),
-        |(id, _, expr)| (id.name, expr),
+        |(id, _, expr)| ObjectInitializerEntry::Property { name: id.name, value: expr },
     )(input)
 }
 
 /// Fallback property assignment for simple cases
-fn fallback_property_assignment(input: &str) -> BResult<&str, (String, Expression)> {
+fn fallback_property_assignment(input: &str) -> BResult<&str, ObjectInitializerEntry> {
     use crate::parser::identifier_parser::parse_identifier;
 
     map(
         tuple((
             bws(parse_identifier),
             bws(bchar('=')),
-            bws(map(parse_identifier, |id| Expression::Variable(id))),
+            bws(map(parse_identifier, Expression::Variable)),
         )),
-        |(id, _, expr)| (id.name, expr),
+        |(id, _, expr)| ObjectInitializerEntry::Property { name: id.name, value: expr },
     )(input)
 }
 
@@ -202,6 +222,20 @@ fn enhanced_collection_initializer(input: &str) -> BResult<&str, InitializerKind
     map(
         separated_list0(bws(bchar(',')), bws(parse_expression)),
         InitializerKind::Collection,
+    )(input)
+}
+
+/// Indexer assignment: [expr (, expr)* ] = expr
+fn parse_indexer_assignment(input: &str) -> BResult<&str, ObjectInitializerEntry> {
+    map(
+        tuple((
+            bws(bchar('[')),
+            separated_list1(bws(bchar(',')), bws(parse_expression)),
+            cut(bws(bchar(']'))),
+            cut(bws(bchar('='))),
+            cut(bws(parse_expression)),
+        )),
+        |(_, indices, _, _, value)| ObjectInitializerEntry::Indexer { indices, value },
     )(input)
 }
 
@@ -220,10 +254,33 @@ fn parse_anonymous_object_member(input: &str) -> BResult<&str, AnonymousObjectMe
                 value,
             },
         ),
-        // Implicit initializer: just an expression (for projection)
-        map(bws(parse_expression), |value| AnonymousObjectMember {
-            name: None,
-            value,
-        }),
+        // Implicit initializer: only identifiers allowed (e.g., new { Name, Age })
+        parse_implicit_anon_member,
     ))(input)
+}
+
+/// Implicit anonymous object member accepts only an identifier (C# inference).
+fn parse_implicit_anon_member(input: &str) -> BResult<&str, AnonymousObjectMember> {
+    map(parse_dotted_member_expression, |value| AnonymousObjectMember {
+        name: None,
+        value,
+    })(input)
+}
+
+/// Parse a dotted member expression like `x.Name` or `x.y.z` limited to identifiers only.
+fn parse_dotted_member_expression(input: &str) -> BResult<&str, Expression> {
+    let (input, first) = bws(parse_identifier)(input)?;
+    let (input, rest) = nom::multi::many0(preceded(bws(bchar('.')), bws(parse_identifier)))(input)?;
+    if rest.is_empty() {
+        Ok((input, Expression::Variable(first)))
+    } else {
+        let mut expr = Expression::Variable(first);
+        for id in rest {
+            expr = Expression::MemberAccess(Box::new(MemberAccessExpression {
+                object: Box::new(expr),
+                member: id,
+            }));
+        }
+        Ok((input, expr))
+    }
 }

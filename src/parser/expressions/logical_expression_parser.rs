@@ -7,7 +7,7 @@ use crate::syntax::nodes::expressions::{BinaryOperator, Expression};
 use crate::syntax::parser_helpers::{bchar, bws};
 use nom::branch::alt;
 use nom::combinator::{map, recognize};
-use nom::sequence::{pair, tuple};
+use nom::sequence::{pair, tuple, preceded};
 use crate::parser::keywords::expression_keywords::{kw_as, kw_is};
 
 pub(crate) fn parse_logical_or_expression_or_higher(input: &str) -> BResult<&str, Expression> {
@@ -74,16 +74,39 @@ fn parse_equality_expression_or_higher(input: &str) -> BResult<&str, Expression>
 
 fn parse_relational_expression_or_higher(input: &str) -> BResult<&str, Expression> {
     left_chain(parse_shift_expression_or_higher, |i| {
-        bws(alt((
-            map(recognize(pair(bchar('<'), bchar('='))), |_| {
-                BinaryOperator::LessEqual
-            }),
-            map(recognize(pair(bchar('>'), bchar('='))), |_| {
-                BinaryOperator::GreaterEqual
-            }),
-            map(bchar('<'), |_| BinaryOperator::LessThan),
-            map(bchar('>'), |_| BinaryOperator::GreaterThan),
-        )))(i)
+        // Guard: if the next tokens begin a shift or shift-assign sequence, do not match relational here
+        let guard = nom::combinator::not(alt((
+            recognize(tuple((bchar('<'), bchar('<'), bchar('=')))), // <<=
+            recognize(tuple((bchar('>'), bchar('>'), bchar('=')))), // >>=
+            recognize(tuple((bchar('>'), bchar('>'), bchar('>')))), // >>>
+            recognize(tuple((bchar('<'), bchar('<')))),            // <<
+            recognize(tuple((bchar('>'), bchar('>')))),            // >>
+        )));
+
+        bws(map(
+            preceded(
+                guard,
+                alt((
+                    map(recognize(pair(bchar('<'), bchar('='))), |_| {
+                        BinaryOperator::LessEqual
+                    }),
+                    map(recognize(pair(bchar('>'), bchar('='))), |_| {
+                        BinaryOperator::GreaterEqual
+                    }),
+                    // Single '<' relational: ensure it's not the start of '<<' or '<='
+                    map(
+                        tuple((bchar('<'), nom::combinator::not(alt((bchar('<'), bchar('=')))))),
+                        |_| BinaryOperator::LessThan,
+                    ),
+                    // Single '>' relational: ensure it's not the start of '>>' or '>='
+                    map(
+                        tuple((bchar('>'), nom::combinator::not(alt((bchar('>'), bchar('=')))))),
+                        |_| BinaryOperator::GreaterThan,
+                    ),
+                )),
+            ),
+            |op| op,
+        ))(i)
     })(input)
 }
 

@@ -841,13 +841,33 @@ where
                     visit_expr(a, predicate, results);
                 }
                 if let Some(inits) = &n.object_initializer {
-                    for (_, v) in inits {
-                        visit_expr(v, predicate, results);
+                    for entry in inits {
+                        match entry {
+                            crate::syntax::nodes::expressions::new_expression::ObjectInitializerEntry::Property { value, .. } => {
+                                visit_expr(value, predicate, results);
+                            }
+                            crate::syntax::nodes::expressions::new_expression::ObjectInitializerEntry::Indexer { indices, value } => {
+                                for idx in indices { visit_expr(idx, predicate, results); }
+                                visit_expr(value, predicate, results);
+                            }
+                        }
                     }
                 }
                 if let Some(coll) = &n.collection_initializer {
                     for v in coll {
                         visit_expr(v, predicate, results);
+                    }
+                }
+            }
+            E::With { target, initializers } => {
+                visit_expr(target, predicate, results);
+                for init in initializers {
+                    match init {
+                        crate::syntax::nodes::expressions::expression::WithInitializerEntry::Property { value, .. } => visit_expr(value, predicate, results),
+                        crate::syntax::nodes::expressions::expression::WithInitializerEntry::Indexer { indices, value } => {
+                            for idx in indices { visit_expr(idx, predicate, results); }
+                            visit_expr(value, predicate, results);
+                        }
                     }
                 }
             }
@@ -997,8 +1017,14 @@ where
             // With-expressions and collection expressions
             E::With { target, initializers } => {
                 visit_expr(target, predicate, results);
-                for (_, v) in initializers {
-                    visit_expr(v, predicate, results);
+                for init in initializers {
+                    match init {
+                        crate::syntax::nodes::expressions::expression::WithInitializerEntry::Property { value, .. } => visit_expr(value, predicate, results),
+                        crate::syntax::nodes::expressions::expression::WithInitializerEntry::Indexer { indices, value } => {
+                            for idx in indices { visit_expr(idx, predicate, results); }
+                            visit_expr(value, predicate, results);
+                        }
+                    }
                 }
             }
             E::Collection(items) => {

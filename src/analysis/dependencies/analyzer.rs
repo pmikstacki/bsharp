@@ -141,7 +141,7 @@ impl DependencyAnalyzer {
         let mut violations = Vec::new();
 
         // Define layer order (higher layers can depend on lower layers)
-        let layer_order = vec!["Presentation", "Business", "Data"];
+        let layer_order = ["Presentation", "Business", "Data"];
 
         for (from_layer, from_modules) in &self.layer_definitions {
             for (to_layer, to_modules) in &self.layer_definitions {

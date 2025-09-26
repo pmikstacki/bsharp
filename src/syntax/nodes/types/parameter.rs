@@ -21,6 +21,9 @@ pub enum ParameterModifier {
     Out,
     In,
     Params,
+    ScopedRef,
+    ScopedOut,
+    ScopedIn,
 }
 
 impl ParameterModifier {
@@ -39,23 +42,24 @@ impl ParameterModifier {
     pub fn is_by_reference(&self) -> bool {
         matches!(
             self,
-            ParameterModifier::Ref | ParameterModifier::Out | ParameterModifier::In
+            ParameterModifier::Ref | ParameterModifier::Out | ParameterModifier::In |
+            ParameterModifier::ScopedRef | ParameterModifier::ScopedOut | ParameterModifier::ScopedIn
         )
     }
 
     /// Check if the parameter requires initialization before use
     pub fn requires_initialization(&self) -> bool {
-        matches!(self, ParameterModifier::Ref | ParameterModifier::In)
+        matches!(self, ParameterModifier::Ref | ParameterModifier::In | ParameterModifier::ScopedRef | ParameterModifier::ScopedIn)
     }
 
     /// Check if the parameter must be assigned in the method
     pub fn must_be_assigned(&self) -> bool {
-        matches!(self, ParameterModifier::Out)
+        matches!(self, ParameterModifier::Out | ParameterModifier::ScopedOut)
     }
 
     /// Check if the parameter is read-only
     pub fn is_read_only(&self) -> bool {
-        matches!(self, ParameterModifier::In)
+        matches!(self, ParameterModifier::In | ParameterModifier::ScopedIn)
     }
 
     /// Check if this is a params parameter (variable arguments)

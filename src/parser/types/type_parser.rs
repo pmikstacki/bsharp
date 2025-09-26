@@ -10,6 +10,7 @@ use crate::parser::keywords::type_keywords::{
 };
 use crate::parser::keywords::contextual_misc_keywords::{kw_dynamic, kw_var};
 use crate::parser::keywords::parameter_modifier_keywords::kw_ref;
+use crate::parser::keywords::modifier_keywords::kw_readonly;
 use nom::combinator::cut;
 use nom::combinator::{map, opt};
 use nom::{branch::alt, character::complete::char as nom_char, combinator::value};
@@ -47,6 +48,19 @@ fn parse_primitive_type(input: &str) -> BResult<&str, Type> {
             map(kw_dynamic(), |_| Type::Dynamic),
             map(kw_var(), |_| Type::Var),
         )),
+    )(input)
+}
+
+// Parse a ref readonly return type (ref readonly Type)
+fn parse_ref_readonly_return_type(input: &str) -> BResult<&str, Type> {
+    context(
+        "ref readonly return type (expected 'ref readonly' followed by a type)",
+        |input| {
+            let (input, _) = bws(kw_ref())(input)?;
+            let (input, _) = bws(kw_readonly())(input)?;
+            let (input, inner_type) = parse_type_expression(input)?;
+            Ok((input, Type::RefReadOnlyReturn(Box::new(inner_type))))
+        },
     )(input)
 }
 
@@ -194,6 +208,7 @@ pub fn parse_type_expression(input: &str) -> BResult<&str, Type> {
         // Try function pointer first, then ref return, then primitive, then identifier
         let (input, ty) = alt((
             parse_function_pointer_type,
+            parse_ref_readonly_return_type,
             parse_ref_return_type,
             parse_primitive_type,
             parse_identifier_type,

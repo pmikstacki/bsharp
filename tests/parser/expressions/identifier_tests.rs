@@ -1,6 +1,6 @@
 // Tests for parsing identifiers and qualified names
-use bsharp::parser::nodes::identifier::Identifier;
-use bsharp::syntax::identifier_parser::{parse_identifier, parse_qualified_name};
+use bsharp::syntax::nodes::identifier::Identifier;
+use bsharp::parser::identifier_parser::{parse_identifier, parse_qualified_name};
 
 #[test]
 fn test_parse_identifier_simple() {

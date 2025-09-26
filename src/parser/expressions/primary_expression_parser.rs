@@ -55,7 +55,7 @@ pub fn parse_primary_expression(input: &str) -> BResult<&str, Expression> {
             // Default expressions - must come before variables/identifiers
             parse_default_expression,
             // Literals
-            map(parse_literal, |lit| Expression::Literal(lit)),
+            map(parse_literal, Expression::Literal),
             // this keyword
             map(kw_this(), |_| Expression::This),
             // base keyword
@@ -65,7 +65,7 @@ pub fn parse_primary_expression(input: &str) -> BResult<&str, Expression> {
             // Lambda expressions
             parse_lambda_or_anonymous_method,
             // Variables/identifiers
-            map(parse_identifier, |id| Expression::Variable(id)),
+            map(parse_identifier, Expression::Variable),
             // Stackalloc expressions
             parse_stackalloc_expression,
         )),

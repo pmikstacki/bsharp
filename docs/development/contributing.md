@@ -19,6 +19,22 @@ git clone https://github.com/your-repo/bsharp.git
 cd bsharp
 ```
 
+#### Parser Testing Best Practices
+
+- Prefer `expect_ok(input, parse(input))` from `syntax::test_helpers` when asserting successful parses. It prints readable, rustc-like diagnostics on failure via `format_error_tree`.
+- Keep tests focused and minimal; add a separate negative test when ambiguity is possible (e.g., ternary vs `?.` vs `??`, range vs dot vs float).
+- For lookahead/disambiguation boundaries, add cases to `tests/parser/expressions/lookahead_boundaries2_tests.rs`.
+- For complex constructs (e.g., `new` with object/collection initializers), add positive and negative cases near `tests/parser/expressions/new_expression_tests.rs` and `target_typed_new_tests.rs`.
+- Invalid-input diagnostics: place small snapshot-style assertions in `tests/parser/expressions/invalid_diagnostics_tests.rs` that check for line/column and caret presence. Avoid overfitting on exact wording.
+- When adding delimited constructs (parentheses, brackets, braces), guard the closing delimiter with `cut(...)` once committed to that branch to prevent misleading backtracking.
+- Always wrap sub-parsers with `bws(...)` to ensure whitespace/comments are handled consistently.
+
+#### Adding New Parser Test Files
+
+- In `tests/parser/expressions/`, simply add a new `*_tests.rs` file; it will be discovered by the existing integration test harness.
+- For declarations/statements/types, follow the existing directory structure under `tests/parser/` and mimic module organization.
+- Keep tests deterministic and avoid relying on environment-specific paths or random data.
+
 2. Build the project:
 ```bash
 cargo build

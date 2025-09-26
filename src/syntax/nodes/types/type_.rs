@@ -28,6 +28,7 @@ pub enum Type {
     },
     NullableReference(Box<Type>), // C# 8+ nullable reference types (string?)
     RefReturn(Box<Type>),         // ref return types (ref int, ref MyClass)
+    RefReadOnlyReturn(Box<Type>), // ref readonly return types (C# 7.2+)
 }
 
 // Helper functions can be added here, e.g., for checking type compatibility

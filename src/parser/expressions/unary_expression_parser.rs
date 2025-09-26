@@ -57,16 +57,17 @@ pub(crate) fn parse_unary_expression_or_higher(input: &str) -> BResult<&str, Exp
 
     // Try prefix unary operators
     if let Ok((input, op)) = bws(alt((
-        map(bchar('+'), |_| UnaryOperator::Plus),
-        map(bchar('-'), |_| UnaryOperator::Minus),
-        map(bchar('!'), |_| UnaryOperator::LogicalNot),
-        map(bchar('~'), |_| UnaryOperator::BitwiseNot),
+        // Try multi-char operators first to avoid consuming a single '+' or '-' too early
         map(recognize(pair(bchar('+'), bchar('+'))), |_| {
             UnaryOperator::Increment
         }),
         map(recognize(pair(bchar('-'), bchar('-'))), |_| {
             UnaryOperator::Decrement
         }),
+        map(bchar('+'), |_| UnaryOperator::Plus),
+        map(bchar('-'), |_| UnaryOperator::Minus),
+        map(bchar('!'), |_| UnaryOperator::LogicalNot),
+        map(bchar('~'), |_| UnaryOperator::BitwiseNot),
         map(bchar('&'), |_| UnaryOperator::AddressOf),
         map(bchar('*'), |_| UnaryOperator::PointerIndirection),
         // ^ (index from end) operator as unary
@@ -95,18 +96,15 @@ pub(crate) fn parse_unary_expression_or_higher(input: &str) -> BResult<&str, Exp
     // Try cast expression: (Type)expression - but be more careful to avoid conflicts with parenthesized expressions
     if let Ok((input_after_paren, _)) = bws(bchar('('))(input) {
         // Try to parse as a type, but only if it's followed by something that looks like an expression
-        if let Ok((input_after_type, _ty)) = parse_type_expression(input_after_paren) {
+        if let Ok((input_after_type, ty)) = parse_type_expression(input_after_paren) {
             if let Ok((input_after_close_paren, _)) = bws(bchar(')'))(input_after_type) {
-                // Only treat as cast if there's actually something after the closing parenthesis
-                // that could be an expression (not end of input)
-                if !input_after_close_paren.trim().is_empty() {
-                    let (input, operand) =
-                        parse_unary_expression_or_higher(input_after_close_paren)?;
+                // Only treat as cast if the operand parses successfully; otherwise, backtrack.
+                if let Ok((input, operand)) = parse_unary_expression_or_higher(input_after_close_paren) {
                     return Ok((
                         input,
-                        Expression::Unary {
-                            op: UnaryOperator::Cast,
-                            expr: Box::new(operand),
+                        Expression::Cast {
+                            expression: Box::new(operand),
+                            target_type: ty,
                         },
                     ));
                 }

@@ -1,7 +1,7 @@
 use crate::syntax::errors::BResult;
 use crate::syntax::nodes::declarations::Modifier;
 use crate::syntax::parser_helpers::{bws, context, keyword};
-use crate::parser::keywords::access_keywords::{kw_public, kw_private, kw_protected, kw_internal};
+use crate::parser::keywords::access_keywords::{kw_public, kw_private, kw_protected, kw_internal, kw_file};
 use crate::parser::keywords::modifier_keywords::{
     kw_static, kw_abstract, kw_sealed, kw_virtual, kw_override, kw_extern, kw_unsafe, kw_readonly,
     kw_volatile, kw_partial, kw_new, kw_async, kw_required,
@@ -20,6 +20,7 @@ fn parse_single_modifier(input: &str) -> BResult<&str, Modifier> {
                 value(Modifier::Private, kw_private()),
                 value(Modifier::Protected, kw_protected()),
                 value(Modifier::Internal, kw_internal()),
+                value(Modifier::File, kw_file()),
                 value(Modifier::Static, kw_static()),
                 value(Modifier::Abstract, kw_abstract()),
             )),
@@ -70,7 +71,7 @@ pub fn parse_modifiers(input: &str) -> BResult<&str, Vec<Modifier>> {
     // This version uses many0(bws(parse_single_modifier)) for consistency.
     let (input, mut modifiers) = many0(bws(parse_single_modifier))(input)?;
 
-    Modifier::order_modifiers(&mut modifiers);
+    Modifier::order_modifiers(modifiers.as_mut_slice());
 
     Ok((input, modifiers))
 }

@@ -3,7 +3,7 @@ use crate::parser::types::type_parser::parse_type_expression;
 use crate::syntax::errors::BResult;
 use crate::syntax::nodes::types::{Parameter, ParameterModifier};
 use crate::syntax::parser_helpers::{bchar, bws, context, parse_delimited_list0};
-use crate::parser::keywords::parameter_modifier_keywords::{kw_ref, kw_out, kw_in, kw_params};
+use crate::parser::keywords::parameter_modifier_keywords::{kw_ref, kw_out, kw_in, kw_params, kw_scoped};
 use crate::parser::expressions::declarations::attribute_parser::parse_attribute_lists;
 use crate::parser::expressions::declarations::type_declaration_parser::convert_attributes;
 use crate::parser::expressions::primary_expression_parser::parse_expression;
@@ -13,6 +13,15 @@ use nom::sequence::preceded;
 
 // Parse parameter modifiers (ref, out, in, params) and return the actual modifier
 fn parse_parameter_modifiers(input: &str) -> BResult<&str, Option<ParameterModifier>> {
+    // If 'scoped' is present, only ref/in/out are valid to follow for this feature set
+    if let Ok((after_scoped, _)) = bws(kw_scoped())(input) {
+        let (rest, m) = alt((
+            map(kw_ref(), |_| ParameterModifier::ScopedRef),
+            map(kw_out(), |_| ParameterModifier::ScopedOut),
+            map(kw_in(), |_| ParameterModifier::ScopedIn),
+        ))(after_scoped)?;
+        return Ok((rest, Some(m)));
+    }
     opt(alt((
         map(kw_ref(), |_| ParameterModifier::Ref),
         map(kw_out(), |_| ParameterModifier::Out),

@@ -34,6 +34,7 @@ pub enum Modifier {
     Private,
     Protected,
     Internal,
+    File,
 
     // Static/instance modifier
     Static,
@@ -85,6 +86,10 @@ impl Modifier {
                 order: 1,
             },
             Modifier::Internal => ModifierInfo {
+                category: ModifierCategory::Access,
+                order: 1,
+            },
+            Modifier::File => ModifierInfo {
                 category: ModifierCategory::Access,
                 order: 1,
             },
@@ -239,6 +244,7 @@ impl Modifier {
                 Modifier::Private,
                 Modifier::Protected,
                 Modifier::Internal,
+                Modifier::File,
                 Modifier::Static,
                 Modifier::Abstract,
                 Modifier::Sealed,
@@ -250,6 +256,7 @@ impl Modifier {
                 Modifier::Private,
                 Modifier::Protected,
                 Modifier::Internal,
+                Modifier::File,
                 Modifier::Static,
                 Modifier::Readonly,
                 Modifier::Partial,
@@ -261,6 +268,7 @@ impl Modifier {
                 Modifier::Private,
                 Modifier::Protected,
                 Modifier::Internal,
+                Modifier::File,
                 Modifier::Partial,
                 Modifier::New,
             ],
@@ -269,6 +277,7 @@ impl Modifier {
                 Modifier::Private,
                 Modifier::Protected,
                 Modifier::Internal,
+                Modifier::File,
                 Modifier::Static,
                 Modifier::Abstract,
                 Modifier::Sealed,
@@ -358,7 +367,7 @@ impl Modifier {
     }
 
     /// Order modifiers according to C# conventional ordering
-    pub fn order_modifiers(modifiers: &mut Vec<Modifier>) {
+    pub fn order_modifiers(modifiers: &mut [Modifier]) {
         modifiers.sort_by(|a, b| {
             let a_info = a.get_info();
             let b_info = b.get_info();

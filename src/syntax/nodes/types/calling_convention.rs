@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use std::str::FromStr;
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub enum CallingConvention {
@@ -7,20 +8,23 @@ pub enum CallingConvention {
 }
 
 impl CallingConvention {
-    /// Parse a calling convention from a string
-    pub fn from_str(s: &str) -> Option<Self> {
-        match s {
-            "managed" => Some(CallingConvention::Managed),
-            "unmanaged" => Some(CallingConvention::Unmanaged),
-            _ => None,
-        }
-    }
-
     /// Convert calling convention to string
     pub fn as_str(&self) -> &'static str {
         match self {
             CallingConvention::Managed => "managed",
             CallingConvention::Unmanaged => "unmanaged",
+        }
+    }
+}
+
+impl FromStr for CallingConvention {
+    type Err = ();
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "managed" => Ok(CallingConvention::Managed),
+            "unmanaged" => Ok(CallingConvention::Unmanaged),
+            _ => Err(()),
         }
     }
 }

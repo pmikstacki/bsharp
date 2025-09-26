@@ -58,14 +58,77 @@ pub(crate) fn parse_assignment_expression_or_higher(input: &str) -> BResult<&str
         // Parse the right side of the assignment (right-associative)
         let (input, right) = parse_assignment_expression_or_higher(input)?;
 
-        Ok((
-            input,
-            Expression::Assignment(Box::new(AssignmentExpression {
+        // If the left is a bitwise binary and op is the corresponding compound assignment,
+        // restructure to preserve precedence: a & b &= c => a & (b &= c)
+        let rebuilt = match (&left, &op) {
+            (
+                Expression::Binary { left: l, op: BinaryOperator::BitwiseAnd, right: r },
+                BinaryOperator::AndAssign,
+            ) => Expression::Binary {
+                left: l.clone(),
+                op: BinaryOperator::BitwiseAnd,
+                right: Box::new(Expression::Assignment(Box::new(AssignmentExpression {
+                    target: r.clone(),
+                    op,
+                    value: Box::new(right),
+                }))),
+            },
+            (
+                Expression::Binary { left: l, op: BinaryOperator::BitwiseOr, right: r },
+                BinaryOperator::OrAssign,
+            ) => Expression::Binary {
+                left: l.clone(),
+                op: BinaryOperator::BitwiseOr,
+                right: Box::new(Expression::Assignment(Box::new(AssignmentExpression {
+                    target: r.clone(),
+                    op,
+                    value: Box::new(right),
+                }))),
+            },
+            (
+                Expression::Binary { left: l, op: BinaryOperator::BitwiseXor, right: r },
+                BinaryOperator::XorAssign,
+            ) => Expression::Binary {
+                left: l.clone(),
+                op: BinaryOperator::BitwiseXor,
+                right: Box::new(Expression::Assignment(Box::new(AssignmentExpression {
+                    target: r.clone(),
+                    op,
+                    value: Box::new(right),
+                }))),
+            },
+            (
+                Expression::Binary { left: l, op: BinaryOperator::LeftShift, right: r },
+                BinaryOperator::LeftShiftAssign,
+            ) => Expression::Binary {
+                left: l.clone(),
+                op: BinaryOperator::LeftShift,
+                right: Box::new(Expression::Assignment(Box::new(AssignmentExpression {
+                    target: r.clone(),
+                    op,
+                    value: Box::new(right),
+                }))),
+            },
+            (
+                Expression::Binary { left: l, op: BinaryOperator::RightShift, right: r },
+                BinaryOperator::RightShiftAssign,
+            ) => Expression::Binary {
+                left: l.clone(),
+                op: BinaryOperator::RightShift,
+                right: Box::new(Expression::Assignment(Box::new(AssignmentExpression {
+                    target: r.clone(),
+                    op,
+                    value: Box::new(right),
+                }))),
+            },
+            _ => Expression::Assignment(Box::new(AssignmentExpression {
                 target: Box::new(left),
                 op,
                 value: Box::new(right),
             })),
-        ))
+        };
+
+        Ok((input, rebuilt))
     } else {
         Ok((input, left))
     }

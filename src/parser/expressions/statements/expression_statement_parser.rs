@@ -22,7 +22,7 @@ pub fn parse_expression_statement(input: &str) -> BResult<&str, Statement> {
                     cut(bws(bchar(';'))),
                 ),
             ),
-            |expr| Statement::Expression(expr),
+            Statement::Expression,
         ),
     )(input)
 }

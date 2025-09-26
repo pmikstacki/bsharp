@@ -152,23 +152,23 @@ where
 {
     move |input: &'a str| {
         // Wrap the inner parser with bws so peek sees past comments/whitespace
-        peek(bws(|i| inner(i)))(input)
+        peek(bws(&mut inner))(input)
     }
 }
 
 /// Peek for a specific character without consuming input (whitespace/comment aware)
 pub fn peek_bchar(c: char) -> impl Fn(&str) -> BResult<&str, char> {
-    move |input: &str| bpeek(|i| bchar(c)(i))(input)
+    move |input: &str| bpeek(bchar(c))(input)
 }
 
 /// Peek for a keyword with word-boundary handling without consuming input (whitespace/comment aware)
 pub fn peek_keyword(kw: &'static str) -> impl Fn(&str) -> BResult<&str, &str> {
-    move |input: &str| bpeek(|i| keyword(kw)(i))(input)
+    move |input: &str| bpeek(keyword(kw))(input)
 }
 
 /// Peek for an exact tag without consuming input (whitespace/comment aware)
 pub fn peek_tag(tag_str: &'static str) -> impl Fn(&str) -> BResult<&str, &str> {
-    move |input: &str| bpeek(|i| btag(tag_str)(i))(input)
+    move |input: &str| bpeek(btag(tag_str))(input)
 }
 
 /// Result of parsing either a singleton value or a delimited list of values
@@ -208,7 +208,7 @@ where
 
         // Disambiguate by peeking the closing delimiter.
         // If close is next -> singleton; otherwise it's a list (expect a separator and parse rest).
-        if bpeek(|i| close(i))(input).is_ok() {
+        if bpeek(&mut close)(input).is_ok() {
             // Singleton path: close without cut
             // Once we've seen 'open' and successfully parsed a first element,
             // commit to the closing delimiter as part of a parenthesized singleton.
@@ -218,7 +218,7 @@ where
         } else {
             // List path: require a separator, then parse the remaining elements
             let (input, _) = bws(&mut sep)(input)?;
-            let (input, mut rest) = separated_list0(bws(|i| sep(i)), |i| bws(|j| rest_elem(j))(i))(input)?;
+            let (input, mut rest) = separated_list0(bws(&mut sep), bws(&mut rest_elem))(input)?;
 
             // Optional trailing separator
             let (input, _) = if allow_trailing_sep {
@@ -260,7 +260,7 @@ where
         let (input, _) = bws(&mut open)(input)?;
 
         // Empty list if immediately closed
-        if bpeek(|i| close(i))(input).is_ok() {
+        if bpeek(&mut close)(input).is_ok() {
             let (input, _) = if cut_close { cut(bws(&mut close))(input)? } else { bws(&mut close)(input)? };
             return Ok((input, Vec::new()));
         }
@@ -326,7 +326,7 @@ where
     FE: FnMut(&'a str) -> BResult<&'a str, T>,
     FS: FnMut(&'a str) -> BResult<&'a str, OSep>,
 {
-    move |input: &'a str| separated_list0(bws(|i| sep(i)), |i| bws(|j| elem(j))(i))(input)
+    move |input: &'a str| separated_list0(bws(&mut sep), bws(&mut elem))(input)
 }
 
 /// Convert nom syntax to BSharp syntax (adapter)

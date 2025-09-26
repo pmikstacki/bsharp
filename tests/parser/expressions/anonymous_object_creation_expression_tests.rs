@@ -17,6 +17,26 @@ fn parse_anon_obj_expr(code: &str) -> Result<Expression, String> {
 }
 
 #[test]
+fn test_parse_implicit_dotted_and_identifier_members() {
+    let code = "new { x.Name, adult }";
+    let result = parse_anon_obj_expr(code);
+    assert!(
+        result.is_ok(),
+        "Failed to parse implicit dotted/identifier members: {:?}",
+        result
+    );
+
+    if let Ok(Expression::AnonymousObject(anon_obj)) = result {
+        assert_eq!(anon_obj.initializers.len(), 2);
+        // name should be None for implicit members
+        assert!(anon_obj.initializers[0].name.is_none());
+        assert!(anon_obj.initializers[1].name.is_none());
+    } else {
+        panic!("Expected anonymous object creation expression");
+    }
+}
+
+#[test]
 fn test_parse_simple_anonymous_object() {
     let code = r#"new { Name = "John", Age = 30 }"#;
     let result = parse_anon_obj_expr(code);
@@ -240,6 +260,7 @@ fn test_anonymous_object_parse_errors() {
         "new { = \"John\" }", // Missing property name in explicit assignment
         "new { Name = }",     // Missing value in explicit assignment
         "new { , }",          // Invalid comma usage
+        "new { 1, 2 }",       // Invalid positional-like entries in anonymous object
         "new { Name Name }",  // Missing assignment or comma
     ];
 

@@ -39,19 +39,19 @@ fn parse_primitive_type_identifier(input: &str) -> BResult<&str, Identifier> {
             kw_long(),
             kw_double(),
             kw_decimal(),
-            kw_float(),
             kw_string(),
             kw_object(),
             kw_char(),
             kw_dynamic(),
         )),
-        |name| Identifier::new(name),
-    )(input)
+        Identifier::from,
+    ))(input)
 }
 
 /// Parse a complete LINQ query expression
 pub fn parse_query_expression(input: &str) -> BResult<&str, Expression> {
     map(
+{{ ... }}
         tuple((
             parse_from_clause,
             many0(parse_query_clause),
@@ -220,7 +220,7 @@ fn parse_select_or_group_clause(input: &str) -> BResult<&str, QuerySelectOrGroup
 fn parse_select_clause(input: &str) -> BResult<&str, QuerySelectOrGroup> {
     map(
         preceded(kw_select(), bws(parse_expression)),
-        |expression| QuerySelectOrGroup::Select(expression),
+        QuerySelectOrGroup::Select,
     )(input)
 }
 

@@ -1,10 +1,12 @@
 use crate::parser::expressions::primary_expression_parser::parse_expression;
 use crate::parser::identifier_parser::{parse_identifier, parse_qualified_name};
+use crate::parser::types::type_parser::parse_type_expression;
 use crate::syntax::comment_parser::ws;
 use crate::syntax::errors::BResult;
 use crate::syntax::nodes::declarations::attribute::{Attribute, AttributeList};
 use crate::syntax::nodes::expressions::expression::Expression;
 use crate::syntax::parser_helpers::{bchar, bws, context, parse_delimited_list0};
+use nom::character::complete::char as nom_char;
 use nom::{
     combinator::{map, opt},
     multi::many0,
@@ -40,7 +42,7 @@ fn parse_single_attribute(input: &str) -> BResult<&str, Attribute> {
             )),
             |(name, opt_args)| {
                 let arguments = opt_args.unwrap_or_default();
-                Attribute { name, arguments }
+                Attribute { name, arguments, structured: None }
             },
         ),
     )(input)
@@ -78,33 +80,52 @@ pub fn parse_attribute_lists(input: &str) -> BResult<&str, Vec<AttributeList>> {
 pub fn parse_attribute(input: &str) -> BResult<&str, Attribute> {
     context(
         "attribute (expected qualified name optionally followed by arguments in parentheses)",
-        map(
-            tuple((
-                // Attribute name (qualified name like System.Reflection.AssemblyVersion)
-                parse_qualified_name,
-                // Optional argument list
-                opt(parse_delimited_list0::<_, _, _, _, char, Expression, char, char, Expression>(
-                    bchar('('),
-                    parse_expression,
-                    bchar(','),
-                    bchar(')'),
+        |i| {
+            // Parse the qualified (dotted) identifier first
+            let (rest0, name_parts) = parse_qualified_name(i)?;
+
+            // Optional generic type argument list on the last segment
+            let (rest, type_args_opt) = opt(
+                crate::syntax::parser_helpers::parse_delimited_list0::<_, _, _, _, char, crate::syntax::nodes::types::Type, char, char, crate::syntax::nodes::types::Type>(
+                    nom_char('<'),
+                    parse_type_expression,
+                    nom_char(','),
+                    nom_char('>'),
                     false,
                     true,
-                )),
-            )),
-            |(name_parts, arguments)| {
-                // Convert qualified name to single identifier by joining with dots
-                let name_str = name_parts
-                    .iter()
-                    .map(|id| id.name.clone())
-                    .collect::<Vec<_>>()
-                    .join(".");
+                ),
+            )(rest0)?;
+
+            // Optional argument list ( ... )
+            let (rest_after_args, args_opt) = opt(parse_delimited_list0::<_, _, _, _, char, Expression, char, char, Expression>(
+                bchar('('),
+                parse_expression,
+                bchar(','),
+                bchar(')'),
+                false,
+                true,
+            ))(rest)?;
+
+            let mut name_str = name_parts
+                .iter()
+                .map(|id| id.name.clone())
+                .collect::<Vec<_>>()
+                .join(".");
+            // Keep name string without generic arguments; use 'structured' to capture generics.
+
+            Ok((
+                rest_after_args,
                 Attribute {
                     name: crate::syntax::nodes::identifier::Identifier { name: name_str },
-                    arguments: arguments.unwrap_or_default(),
-                }
-            },
-        ),
+                    arguments: args_opt.unwrap_or_default(),
+                    structured: Some(crate::syntax::nodes::declarations::attribute::AttributeName {
+                        qualifier: name_parts[..name_parts.len().saturating_sub(1)].to_vec(),
+                        name: name_parts.last().cloned().unwrap_or_else(|| crate::syntax::nodes::identifier::Identifier { name: String::new() }),
+                        type_arguments: type_args_opt.unwrap_or_default(),
+                    }),
+                },
+            ))
+        },
     )(input)
 }
 
