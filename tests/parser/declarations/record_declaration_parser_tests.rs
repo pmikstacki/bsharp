@@ -5,6 +5,7 @@ use bsharp::syntax::nodes::identifier::Identifier;
 use bsharp::syntax::nodes::types::Type;
 
 // Local test helper to avoid import issues
+#[allow(dead_code)]
 fn parse_full_input<'a, O, F>(input: &'a str, parser: F) -> Result<(&'a str, O), String>
 where
     F: FnOnce(&'a str) -> bsharp::syntax::errors::BResult<&'a str, O>,

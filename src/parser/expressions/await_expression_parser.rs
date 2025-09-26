@@ -40,5 +40,5 @@ fn parse_complex_method_chain(input: &str) -> BResult<&str, Expression> {
 fn parse_simple_awaitable(input: &str) -> BResult<&str, Expression> {
     // Parse identifier or simple expressions
     use crate::parser::identifier_parser::parse_identifier;
-    map(parse_identifier, |id| Expression::Variable(id))(input)
+    map(parse_identifier, Expression::Variable)(input)
 }

@@ -126,7 +126,7 @@ fn parse_lambda_body(input: &str) -> BResult<&str, LambdaBody> {
                 LambdaBody::Block(statements)
             }),
             // Expression body: expression
-            map(parse_expression, |expr| LambdaBody::ExpressionSyntax(expr)),
+            map(parse_expression, LambdaBody::ExpressionSyntax),
         )),
     )(input)
 }

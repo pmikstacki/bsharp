@@ -7,6 +7,7 @@ use bsharp::analysis::quality::*;
 use bsharp::syntax::Parser;
 use bsharp::syntax::nodes::identifier::Identifier;
 
+#[allow(dead_code)]
 fn create_test_identifier(name: &str) -> Identifier {
     Identifier {
         name: name.to_string(),

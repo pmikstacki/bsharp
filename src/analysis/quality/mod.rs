@@ -12,7 +12,7 @@ pub struct QualityAnalyzer;
 
 impl QualityAnalyzer {
     pub fn new() -> Self {
-        Self::default()
+        Self
     }
 
     /// Analyze quality issues in a compilation unit
@@ -30,10 +30,10 @@ impl QualityAnalyzer {
     ) {
         for declaration in &compilation_unit.declarations {
             if let TopLevelDeclaration::Namespace(namespace) = declaration {
-                self.analyze_namespace(&namespace, report);
+                self.analyze_namespace(namespace, report);
             }
             if let TopLevelDeclaration::Class(class_decl) = declaration {
-                self.analyze_class(&class_decl, report);
+                self.analyze_class(class_decl, report);
             }
             // Add other top-level declarations analysis if needed
         }
@@ -42,7 +42,7 @@ impl QualityAnalyzer {
     fn analyze_namespace(&self, namespace: &NamespaceDeclaration, report: &mut QualityReport) {
         for member in &namespace.declarations {
             if let crate::syntax::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration::Class(class_decl) = member {
-                self.analyze_class(&class_decl, report);
+                self.analyze_class(class_decl, report);
             }
             // Add other namespace members analysis if needed
         }
@@ -142,8 +142,7 @@ impl QualityAnalyzer {
 
         // Check for high cyclomatic complexity (threshold: 10)
         if let Some(body) = &method.body {
-            let complexity_analyzer = ComplexityAnalyzer::new();
-            let complexity = complexity_analyzer.calculate_cyclomatic_complexity(body, 1);
+            let complexity = ComplexityAnalyzer::calculate_cyclomatic_complexity(body, 1);
 
             if complexity > 10 {
                 issues.push(QualityIssue::HighComplexity {
@@ -389,19 +388,14 @@ impl QualityMetrics {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
 pub enum QualityGrade {
     A, // Excellent (90-100%)
     B, // Good (80-89%)
     C, // Fair (70-79%)
     D, // Poor (60-69%)
+    #[default]
     F, // Failing (<60%)
-}
-
-impl Default for QualityGrade {
-    fn default() -> Self {
-        QualityGrade::F
-    }
 }
 
 #[cfg(test)]

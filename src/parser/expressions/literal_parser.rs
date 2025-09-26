@@ -313,9 +313,8 @@ pub fn parse_string(input: &str) -> BResult<&str, Literal> {
             let content = inner.unwrap_or_default();
 
             // Optional C# 11 u8 suffix immediately after string literal (no whitespace allowed)
-            if rest_after_quote.starts_with("u8") {
-                let rest_after_suffix = &rest_after_quote[2..];
-                return Ok((rest_after_suffix, Literal::Utf8String(content.into_bytes())));
+            if let Some(stripped) = rest_after_quote.strip_prefix("u8") {
+                return Ok((stripped, Literal::Utf8String(content.into_bytes())));
             }
 
             Ok((rest_after_quote, Literal::String(content)))
@@ -490,7 +489,7 @@ fn fallback_simple_expression(
 
     context(
         "simple expression (expected identifier as fallback)",
-        map(parse_identifier, |id| Expression::Variable(id)),
+        map(parse_identifier, Expression::Variable),
     )(input)
 }
 

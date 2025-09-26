@@ -318,9 +318,9 @@ fn test_type_usage_analysis() {
     let metrics = analyzer.analyze_class(&class_with_various_types);
 
     // Check that complex types are properly analyzed
-    assert!(metrics.array_types.len() > 0);
-    assert!(metrics.nullable_types.len() > 0);
-    assert!(metrics.generic_type_usages.len() > 0);
+    assert!(!metrics.array_types.is_empty());
+    assert!(!metrics.nullable_types.is_empty());
+    assert!(!metrics.generic_type_usages.is_empty());
     assert!(metrics.ref_parameters > 0);
     assert!(metrics.out_parameters > 0);
 }
@@ -534,9 +534,9 @@ fn test_comprehensive_type_analysis() {
     assert_eq!(metrics.generic_type_parameters, 2); // T and U
     assert_eq!(metrics.inheritance_depth, 1); // Inherits from BaseClass
     assert_eq!(metrics.interface_implementations, 2); // IInterface1, IInterface2
-    assert!(metrics.array_types.len() > 0);
-    assert!(metrics.nullable_types.len() > 0);
-    assert!(metrics.async_return_types.len() > 0);
+    assert!(!metrics.array_types.is_empty());
+    assert!(!metrics.nullable_types.is_empty());
+    assert!(!metrics.async_return_types.is_empty());
 
     let complexity = analyzer.calculate_type_complexity(&metrics);
     assert!(complexity.overall_complexity >= 0.0);

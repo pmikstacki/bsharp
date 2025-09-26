@@ -1,3 +1,4 @@
+#![allow(unused_variables)]
 // Tests for parsing attribute declarations
 
 use bsharp::syntax::nodes::declarations::Attribute;

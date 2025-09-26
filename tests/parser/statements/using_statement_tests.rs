@@ -1,3 +1,4 @@
+#![allow(unused_variables)]
 // Tests for parsing using statements
 
 use bsharp::parser::expressions::statements::using_statement_parser::parse_using_statement;

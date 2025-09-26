@@ -1,3 +1,4 @@
+#![allow(clippy::module_inception)]
 #[cfg(test)]
 mod statement_counting_tests {
     use bsharp::analysis::AstAnalyze;

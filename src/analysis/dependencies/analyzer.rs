@@ -300,10 +300,11 @@ impl DependencyAnalyzer {
 
     /// Calculate overall dependency metrics
     pub fn calculate_overall_metrics(&self) -> OverallDependencyMetrics {
-        let mut metrics = OverallDependencyMetrics::default();
-
-        metrics.total_modules = self.modules.len();
-        metrics.total_dependencies = self.dependency_graph.edge_count();
+        let mut metrics = OverallDependencyMetrics {
+            total_modules: self.modules.len(),
+            total_dependencies: self.dependency_graph.edge_count(),
+            ..Default::default()
+        };
 
         if metrics.total_modules > 0 {
             let total_fan_out: usize = self
@@ -385,17 +386,17 @@ impl DependencyAnalyzer {
 
         match member {
             ClassBodyDeclaration::Field(field) => {
-                let type_name = self.extract_type_name_from_type(&field.ty);
+                let type_name = Self::extract_type_name_from_type(&field.ty);
                 dependencies.field_dependencies.push(type_name);
             }
             ClassBodyDeclaration::Method(method) => {
                 // Return type dependency
-                let type_name = self.extract_type_name_from_type(&method.return_type);
+                let type_name = Self::extract_type_name_from_type(&method.return_type);
                 dependencies.method_dependencies.push(type_name);
 
                 // Parameter dependencies
                 for param in &method.parameters {
-                    let type_name = self.extract_type_name_from_type(&param.parameter_type);
+                    let type_name = Self::extract_type_name_from_type(&param.parameter_type);
                     dependencies.method_dependencies.push(type_name);
                 }
             }
@@ -403,7 +404,7 @@ impl DependencyAnalyzer {
         }
     }
 
-    fn extract_type_name_from_type(&self, type_ref: &crate::syntax::nodes::types::Type) -> String {
+    fn extract_type_name_from_type(type_ref: &crate::syntax::nodes::types::Type) -> String {
         use crate::syntax::nodes::types::Type;
 
         match type_ref {
@@ -412,8 +413,8 @@ impl DependencyAnalyzer {
             Type::Array {
                 element_type,
                 rank: _,
-            } => self.extract_type_name_from_type(element_type),
-            Type::Nullable(inner) => self.extract_type_name_from_type(inner),
+            } => Self::extract_type_name_from_type(element_type),
+            Type::Nullable(inner) => Self::extract_type_name_from_type(inner),
             Type::Generic { base, args: _ } => base.name.clone(),
             Type::Void => "void".to_string(),
             _ => "unknown".to_string(),

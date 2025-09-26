@@ -1,3 +1,4 @@
+#![allow(unused_variables)]
 #![cfg(test)]
 use bsharp::parser::expressions::declarations::attribute_parser::*;
 use bsharp::syntax::nodes::expressions::expression::Expression;

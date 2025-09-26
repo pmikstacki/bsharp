@@ -1,3 +1,5 @@
+#![allow(unused_comparisons)]
+
 use bsharp::analysis::dependencies::*;
 use bsharp::syntax::nodes::declarations::{
     ClassBodyDeclaration, ClassDeclaration, FieldDeclaration, InterfaceDeclaration,
@@ -115,7 +117,6 @@ fn test_dependency_metrics_calculation() {
         internal_classes: 3,
         abstract_classes: 1,
         interfaces: 1,
-        ..Default::default()
     };
 
     analyzer.add_module(module_a);
@@ -449,8 +450,7 @@ fn test_module_cohesion_analysis() {
     let low_cohesion_metrics = analyzer.calculate_module_cohesion(&low_cohesion_module);
 
     // Since depends_on returns false, internal coupling will be 0 for now
-    assert!(high_cohesion_metrics.internal_coupling >= 0);
-    assert!(low_cohesion_metrics.internal_coupling >= 0);
+    // Non-negative checks on usize are tautologies; skip those.
     assert!(high_cohesion_metrics.cohesion_ratio >= 0.0);
     assert!(low_cohesion_metrics.cohesion_ratio >= 0.0);
 }
@@ -492,7 +492,7 @@ fn test_dependency_metrics_comprehensive() {
     let overall_metrics = analyzer.calculate_overall_metrics();
 
     assert!(overall_metrics.total_modules > 0);
-    assert!(overall_metrics.total_dependencies >= 0);
+    // total_dependencies is usize; just ensure computed metrics are present
     assert!(overall_metrics.average_fan_out >= 0.0);
     assert!(overall_metrics.average_fan_in >= 0.0);
     assert!(overall_metrics.coupling_density >= 0.0 && overall_metrics.coupling_density <= 1.0);

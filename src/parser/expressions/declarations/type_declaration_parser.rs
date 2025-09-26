@@ -325,7 +325,7 @@ fn parse_record_body(input: &str) -> BResult<&str, (Vec<Parameter>, Vec<ClassBod
 ///    public string LastName { get; init; }
 /// }
 /// ```
-pub fn parse_record_class_declaration<'a>(input: &'a str) -> BResult<&'a str, RecordDeclaration> {
+pub fn parse_record_class_declaration(input: &str) -> BResult<&str, RecordDeclaration> {
     // Parse attributes (can be empty)
     let (input, attributes) = parse_attribute_lists(input)?;
 
@@ -369,6 +369,7 @@ pub fn parse_record_class_declaration<'a>(input: &'a str) -> BResult<&'a str, Re
 }
 
 /// Parse record class body which handles the unique record parser
+#[allow(clippy::type_complexity)]
 fn parse_record_class_body(
     input: &str,
 ) -> BResult<&str, (Vec<Parameter>, Vec<Type>, Vec<ClassBodyDeclaration>)> {

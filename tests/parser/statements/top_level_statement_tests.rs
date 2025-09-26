@@ -488,7 +488,7 @@ Console.WriteLine("Another valid");"#;
     match result {
         Ok(statements) => {
             assert!(
-                statements.len() >= 1,
+                !statements.is_empty(),
                 "Should parse at least one valid statement"
             );
         }

@@ -1,3 +1,4 @@
+#![allow(clippy::approx_constant)]
 // Integration tests for local variable declaration statements
 // Moved from statement_tests.rs
 

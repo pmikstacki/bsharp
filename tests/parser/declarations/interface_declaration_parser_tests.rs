@@ -438,7 +438,7 @@ fn test_error_recovery_with_malformed_member() {
 
     // We should have parsed at least Method1, possibly Method2 as well with error recovery
     assert!(
-        decl.body_declarations.len() >= 1,
+        !decl.body_declarations.is_empty(),
         "Expected at least one method with error recovery"
     );
 

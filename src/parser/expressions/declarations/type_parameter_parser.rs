@@ -148,14 +148,9 @@ pub fn parse_type_parameter_constraints_clauses(
     let mut clauses = Vec::new();
     let mut current_input = input;
 
-    loop {
-        match bws(parse_where_clause)(current_input) {
-            Ok((rest, clause)) => {
-                clauses.push(clause);
-                current_input = rest;
-            }
-            Err(_) => break,
-        }
+    while let Ok((rest, clause)) = bws(parse_where_clause)(current_input) {
+        clauses.push(clause);
+        current_input = rest;
     }
 
     Ok((current_input, clauses))

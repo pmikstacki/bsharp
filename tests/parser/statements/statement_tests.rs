@@ -48,15 +48,11 @@ fn test_parse_statement_dispatch() {
     assert!(bsharp::syntax::test_helpers::parse_statement_all("{} ").is_ok());
     assert!(bsharp::syntax::test_helpers::parse_statement_all("int y;").is_ok());
 }
-
 #[test]
 fn test_debug_individual_parsers() {
     let input = "{ foo; 42; }";
     let debug_output = debug_test_individual_parsers(input);
     println!("DEBUG OUTPUT for input '{}':\n{}", input, debug_output);
-
-    // This test always passes - it's just for debugging
-    assert!(true);
 }
 
 #[test]
@@ -78,7 +74,5 @@ fn test_direct_block_statement_call() {
             println!("❌ DIRECT parse_block_statement FAILED - {:?}", e);
         }
     }
-
-    // This test always passes - it's just for debugging
-    assert!(true);
+    // This test prints debug output; no assertion needed
 }

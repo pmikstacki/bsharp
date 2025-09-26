@@ -13,45 +13,44 @@ impl ControlFlowAnalyzer {
 
     /// Analyze control flow for a compilation unit
     pub fn analyze_compilation_unit(&self, _unit: &CompilationUnit) -> ControlFlowGraph {
-        let graph = ControlFlowGraph::new();
         // TODO: Implement control flow analysis
-        graph
+        ControlFlowGraph::new()
     }
 
     /// Calculate cyclomatic complexity for a method
     pub fn calculate_cyclomatic_complexity(&self, method: &MethodDeclaration) -> usize {
         if let Some(body) = &method.body {
-            self.calculate_statement_complexity(body, 1)
+            Self::calculate_statement_complexity(body, 1)
         } else {
             1 // Base complexity for methods without body
         }
     }
 
     /// Calculate complexity for a statement
-    fn calculate_statement_complexity(&self, stmt: &Statement, base_complexity: usize) -> usize {
+    fn calculate_statement_complexity(stmt: &Statement, base_complexity: usize) -> usize {
         match stmt {
             Statement::If(if_stmt) => {
                 let mut complexity = base_complexity + 1; // +1 for if
-                complexity += self.calculate_statement_complexity(&if_stmt.consequence, 0);
+                complexity += Self::calculate_statement_complexity(&if_stmt.consequence, 0);
                 if let Some(alt) = &if_stmt.alternative {
-                    complexity += self.calculate_statement_complexity(alt, 0);
+                    complexity += Self::calculate_statement_complexity(alt, 0);
                 }
                 complexity
             }
             Statement::For(for_stmt) => {
-                base_complexity + 1 + self.calculate_statement_complexity(&for_stmt.body, 0)
+                base_complexity + 1 + Self::calculate_statement_complexity(&for_stmt.body, 0)
             }
             Statement::While(while_stmt) => {
-                base_complexity + 1 + self.calculate_statement_complexity(&while_stmt.body, 0)
+                base_complexity + 1 + Self::calculate_statement_complexity(&while_stmt.body, 0)
             }
             Statement::DoWhile(do_while_stmt) => {
-                base_complexity + 1 + self.calculate_statement_complexity(&do_while_stmt.body, 0)
+                base_complexity + 1 + Self::calculate_statement_complexity(&do_while_stmt.body, 0)
             }
             Statement::Switch(switch_stmt) => {
                 let mut complexity = base_complexity + switch_stmt.sections.len(); // Each case adds complexity
                 for section in &switch_stmt.sections {
                     for s in &section.statements {
-                        complexity += self.calculate_statement_complexity(s, 0);
+                        complexity += Self::calculate_statement_complexity(s, 0);
                     }
                 }
                 complexity
@@ -62,7 +61,7 @@ impl ControlFlowAnalyzer {
             Statement::Block(statements) => {
                 let mut complexity = base_complexity;
                 for stmt in statements {
-                    complexity += self.calculate_statement_complexity(stmt, 0);
+                    complexity += Self::calculate_statement_complexity(stmt, 0);
                 }
                 complexity
             }
@@ -83,7 +82,7 @@ impl ControlFlowAnalyzer {
         }
 
         if let Some(body) = &method.body {
-            let nesting_depth = self.calculate_max_nesting_depth(body, 0);
+            let nesting_depth = Self::calculate_max_nesting_depth(body, 0);
             if nesting_depth > 4 {
                 smells.push(ControlFlowSmell::DeepNesting {
                     method_name: method.name.name.clone(),
@@ -96,33 +95,33 @@ impl ControlFlowAnalyzer {
     }
 
     /// Calculate maximum nesting depth
-    fn calculate_max_nesting_depth(&self, stmt: &Statement, current_depth: usize) -> usize {
+    fn calculate_max_nesting_depth(stmt: &Statement, current_depth: usize) -> usize {
         match stmt {
             Statement::If(if_stmt) => {
                 let new_depth = current_depth + 1;
                 let consequence_depth =
-                    self.calculate_max_nesting_depth(&if_stmt.consequence, new_depth);
+                    Self::calculate_max_nesting_depth(&if_stmt.consequence, new_depth);
                 let alternative_depth = if let Some(alt) = &if_stmt.alternative {
-                    self.calculate_max_nesting_depth(alt, new_depth)
+                    Self::calculate_max_nesting_depth(alt, new_depth)
                 } else {
                     new_depth
                 };
                 consequence_depth.max(alternative_depth)
             }
             Statement::For(for_stmt) => {
-                self.calculate_max_nesting_depth(&for_stmt.body, current_depth + 1)
+                Self::calculate_max_nesting_depth(&for_stmt.body, current_depth + 1)
             }
             Statement::While(while_stmt) => {
-                self.calculate_max_nesting_depth(&while_stmt.body, current_depth + 1)
+                Self::calculate_max_nesting_depth(&while_stmt.body, current_depth + 1)
             }
             Statement::DoWhile(do_while_stmt) => {
-                self.calculate_max_nesting_depth(&do_while_stmt.body, current_depth + 1)
+                Self::calculate_max_nesting_depth(&do_while_stmt.body, current_depth + 1)
             }
             Statement::Switch(switch_stmt) => {
                 let mut max_depth = current_depth + 1;
                 for section in &switch_stmt.sections {
                     for s in &section.statements {
-                        let depth = self.calculate_max_nesting_depth(s, current_depth + 1);
+                        let depth = Self::calculate_max_nesting_depth(s, current_depth + 1);
                         max_depth = max_depth.max(depth);
                     }
                 }
@@ -131,7 +130,7 @@ impl ControlFlowAnalyzer {
             Statement::Block(statements) => {
                 let mut max_depth = current_depth;
                 for stmt in statements {
-                    let depth = self.calculate_max_nesting_depth(stmt, current_depth);
+                    let depth = Self::calculate_max_nesting_depth(stmt, current_depth);
                     max_depth = max_depth.max(depth);
                 }
                 max_depth

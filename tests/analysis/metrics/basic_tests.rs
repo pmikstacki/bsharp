@@ -476,6 +476,7 @@ fn test_collector_integration() {
     assert_eq!(metrics.total_while_loops, 2); // while + do-while
 }
 
+#[allow(dead_code)]
 fn create_complex_method_for_analysis() -> MethodDeclaration {
     let complex_body = Statement::Block(vec![Statement::If(Box::new(IfStatement {
         condition: bsharp::syntax::nodes::expressions::expression::Expression::Literal(

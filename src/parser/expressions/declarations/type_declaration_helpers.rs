@@ -200,11 +200,11 @@ pub fn skip_to_member_boundary_top_level(input: &str) -> &str {
                 }
             }
             '(' => { paren_depth = paren_depth.saturating_add(1); }
-            ')' => { if paren_depth > 0 { paren_depth -= 1; } }
+            ')' => { paren_depth = paren_depth.saturating_sub(1); }
             '[' => { bracket_depth = bracket_depth.saturating_add(1); }
-            ']' => { if bracket_depth > 0 { bracket_depth -= 1; } }
+            ']' => { bracket_depth = bracket_depth.saturating_sub(1); }
             '<' => { angle_depth = angle_depth.saturating_add(1); }
-            '>' => { if angle_depth > 0 { angle_depth -= 1; } }
+            '>' => { angle_depth = angle_depth.saturating_sub(1); }
             ';' => {
                 if brace_depth == 0 && paren_depth == 0 && bracket_depth == 0 && angle_depth == 0 {
                     // Consume the semicolon and stop
@@ -224,35 +224,3 @@ pub fn skip_to_member_boundary_top_level(input: &str) -> &str {
     ""
 }
 
-#[cfg(test)]
-mod tests {
-    use super::skip_to_member_boundary_top_level as recover;
-
-    #[test]
-    fn stops_at_top_level_semicolon() {
-        let inp = "bad bad bad; int y;";
-        let out = recover(inp);
-        assert_eq!(out.trim_start(), "int y;");
-    }
-
-    #[test]
-    fn stops_before_top_level_close_brace() {
-        let inp = "bad() // oops\n}";
-        let out = recover(inp);
-        assert!(out.starts_with('}'));
-    }
-
-    #[test]
-    fn ignores_semicolons_in_strings_and_comments() {
-        let inp = "var s = \"; not boundary }\"; /* } ; */ int z;";
-        let out = recover(inp);
-        assert!(out.contains("int z;"));
-    }
-
-    #[test]
-    fn handles_nested_brackets_and_generics() {
-        let inp = "var x = new List<Dictionary<string, List<int>>>(42); int y;";
-        let out = recover(inp);
-        assert_eq!(out.trim_start(), "int y;");
-    }
-}

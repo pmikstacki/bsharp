@@ -93,7 +93,7 @@ fn test_quality_score_calculation() {
 fn test_maintainability_analyzer_new() {
     let analyzer = MaintainabilityAnalyzer::new();
     // Test that the analyzer is created successfully
-    assert_eq!(analyzer, MaintainabilityAnalyzer::default());
+    assert_eq!(analyzer, MaintainabilityAnalyzer::new());
 }
 
 #[test]
@@ -121,7 +121,7 @@ fn test_maintainability_index_calculation() {
     let mi = analyzer.calculate_maintainability_index(&basic_metrics, &complexity_metrics);
 
     // MI should be calculated according to Microsoft formula
-    assert!(mi >= 0.0 && mi <= 100.0);
+    assert!((0.0..=100.0).contains(&mi));
     assert!(mi > 0.0); // Should not be zero for non-trivial code
 }
 
@@ -298,7 +298,7 @@ fn test_maintainability_metrics_comprehensive() {
     let defect_density = analyzer.estimate_defect_density(&complexity_metrics, &basic_metrics);
 
     // Verify realistic ranges
-    assert!(mi >= 0.0 && mi <= 100.0);
+    assert!((0.0..=100.0).contains(&mi));
     assert!(debt.debt_ratio > 0.0);
     assert!(debt.debt_in_hours > 0.0);
     assert!(defect_density > 0.0);
@@ -324,7 +324,7 @@ fn test_maintainability_metrics_comprehensive() {
     let quality_score = comprehensive_metrics.quality_score();
     let grade = comprehensive_metrics.maintainability_grade();
 
-    assert!(quality_score >= 0.0 && quality_score <= 100.0);
+    assert!((0.0..=100.0).contains(&quality_score));
     assert!(matches!(
         grade,
         MaintainabilityGrade::Excellent

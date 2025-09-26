@@ -1,3 +1,4 @@
+#![allow(unused_variables)]
 // Integration tests for parsing using directives (including global)
 
 use bsharp::syntax::nodes::declarations::{GlobalUsingDirective, UsingDirective};

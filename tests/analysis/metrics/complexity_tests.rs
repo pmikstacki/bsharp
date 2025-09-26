@@ -1,3 +1,5 @@
+#![allow(unused_variables)]
+
 use bsharp::analysis::metrics::complexity::*;
 use bsharp::syntax::nodes::declarations::MethodDeclaration;
 use bsharp::syntax::nodes::expressions::expression::Expression;
@@ -86,7 +88,7 @@ fn test_halstead_metrics_zero_division() {
 #[test]
 fn test_complexity_analyzer_new() {
     let analyzer = ComplexityAnalyzer::new();
-    assert_eq!(analyzer, ComplexityAnalyzer::default());
+    assert_eq!(analyzer, ComplexityAnalyzer::new());
 }
 
 #[test]
@@ -121,7 +123,7 @@ fn test_cyclomatic_complexity_if_statement() {
         alternative: None,
     }));
 
-    let complexity = analyzer.calculate_cyclomatic_complexity(&if_stmt, 1);
+    let complexity = ComplexityAnalyzer::calculate_cyclomatic_complexity(&if_stmt, 1);
     assert_eq!(complexity, 2); // Base + 1 for if
 }
 
@@ -135,7 +137,7 @@ fn test_cyclomatic_complexity_if_else() {
         alternative: Some(Box::new(Statement::Block(Vec::new()))),
     }));
 
-    let complexity = analyzer.calculate_cyclomatic_complexity(&if_stmt, 1);
+    let complexity = ComplexityAnalyzer::calculate_cyclomatic_complexity(&if_stmt, 1);
     assert_eq!(complexity, 2); // Base + 1 for if (else doesn't add complexity)
 }
 
@@ -153,7 +155,7 @@ fn test_cyclomatic_complexity_nested_if() {
         alternative: None,
     }));
 
-    let complexity = analyzer.calculate_cyclomatic_complexity(&nested_if, 1);
+    let complexity = ComplexityAnalyzer::calculate_cyclomatic_complexity(&nested_if, 1);
     assert_eq!(complexity, 3); // Base + 1 for outer if + 1 for inner if
 }
 
@@ -168,7 +170,7 @@ fn test_cyclomatic_complexity_for_loop() {
         body: Box::new(Statement::Block(Vec::new())),
     }));
 
-    let complexity = analyzer.calculate_cyclomatic_complexity(&for_stmt, 1);
+    let complexity = ComplexityAnalyzer::calculate_cyclomatic_complexity(&for_stmt, 1);
     assert_eq!(complexity, 2); // Base + 1 for for
 }
 
@@ -194,7 +196,7 @@ fn test_cyclomatic_complexity_switch() {
         ],
     }));
 
-    let complexity = analyzer.calculate_cyclomatic_complexity(&switch_stmt, 1);
+    let complexity = ComplexityAnalyzer::calculate_cyclomatic_complexity(&switch_stmt, 1);
     assert_eq!(complexity, 4); // Base + 3 for each case
 }
 
@@ -208,7 +210,7 @@ fn test_cognitive_complexity_simple_if() {
         alternative: None,
     }));
 
-    let complexity = analyzer.calculate_cognitive_complexity(&if_stmt, 0, 0);
+    let complexity = ComplexityAnalyzer::calculate_cognitive_complexity(&if_stmt, 0, 0);
     assert_eq!(complexity, 1); // +1 for if, +0 for nesting depth 0
 }
 
@@ -226,7 +228,7 @@ fn test_cognitive_complexity_nested_if() {
         alternative: None,
     }));
 
-    let complexity = analyzer.calculate_cognitive_complexity(&nested_if, 0, 0);
+    let complexity = ComplexityAnalyzer::calculate_cognitive_complexity(&nested_if, 0, 0);
     assert_eq!(complexity, 3); // +1 for outer if, +2 for inner if (1 + nesting depth 1)
 }
 
@@ -244,7 +246,7 @@ fn test_cognitive_complexity_else_if() {
         })))),
     }));
 
-    let complexity = analyzer.calculate_cognitive_complexity(&else_if, 0, 0);
+    let complexity = ComplexityAnalyzer::calculate_cognitive_complexity(&else_if, 0, 0);
     assert_eq!(complexity, 2); // +1 for if, +1 for else if (no extra nesting)
 }
 
@@ -256,11 +258,11 @@ fn test_cognitive_complexity_break_continue() {
     let continue_stmt = Statement::Continue(ContinueStatement);
 
     assert_eq!(
-        analyzer.calculate_cognitive_complexity(&break_stmt, 0, 0),
+        ComplexityAnalyzer::calculate_cognitive_complexity(&break_stmt, 0, 0),
         1
     );
     assert_eq!(
-        analyzer.calculate_cognitive_complexity(&continue_stmt, 0, 0),
+        ComplexityAnalyzer::calculate_cognitive_complexity(&continue_stmt, 0, 0),
         1
     );
 }
@@ -275,7 +277,7 @@ fn test_max_nesting_depth_simple() {
         alternative: None,
     }));
 
-    let depth = analyzer.calculate_max_nesting_depth(&if_stmt, 0);
+    let depth = ComplexityAnalyzer::calculate_max_nesting_depth(&if_stmt, 0);
     assert_eq!(depth, 1);
 }
 
@@ -297,7 +299,7 @@ fn test_max_nesting_depth_nested() {
         alternative: None,
     }));
 
-    let depth = analyzer.calculate_max_nesting_depth(&deeply_nested, 0);
+    let depth = ComplexityAnalyzer::calculate_max_nesting_depth(&deeply_nested, 0);
     assert_eq!(depth, 3); // if -> for -> while
 }
 
@@ -323,7 +325,7 @@ fn test_abc_complexity_calculation() {
         })),
     ]);
 
-    let abc = analyzer.calculate_abc_complexity(&complex_stmt);
+    let abc = ComplexityAnalyzer::calculate_abc_complexity(&complex_stmt);
     assert_eq!(abc.conditions, 2); // if + for
     assert_eq!(abc.branches, 2); // if + for
     assert_eq!(abc.assignments, 2); // 2 expressions

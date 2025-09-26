@@ -6,7 +6,7 @@ use bsharp::syntax::nodes::types::{PrimitiveType, Type};
 // Helper function for unwrapping syntax results
 fn parse_test(code: &str) -> Result<Type, String> {
     match parse_type_expression(code) {
-        Ok((remaining, ty)) if remaining.is_empty() => Ok(ty),
+        Ok(("", ty)) => Ok(ty),
         Ok((remaining, _)) => Err(format!(
             "Didn't consume all input. Remaining: '{}'",
             remaining

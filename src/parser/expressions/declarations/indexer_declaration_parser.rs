@@ -135,7 +135,7 @@ fn parse_accessors(input: &str) -> BResult<&str, (Option<IndexerAccessor>, Optio
 
             let one_accessor = |i| alt((map(get_branch, |a| (true, a)), map(set_branch, |a| (false, a))))(i);
 
-            let (cur, pairs) = many0(|i| one_accessor(i))(input)?;
+            let (cur, pairs) = many0(one_accessor)(input)?;
             let mut get_accessor: Option<IndexerAccessor> = None;
             let mut set_accessor: Option<IndexerAccessor> = None;
             for (is_get, accessor) in pairs {
@@ -147,34 +147,7 @@ fn parse_accessors(input: &str) -> BResult<&str, (Option<IndexerAccessor>, Optio
     )(input)
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use crate::syntax::nodes::statements::statement::Statement;
-
-    #[test]
-    fn parses_get_set_accessors_in_any_order() {
-        let src = " {  get; /*c*/ set { } }";
-        let (rest, list) = parse_indexer_accessor_list(src).expect("parse");
-        assert!(rest.is_empty() || rest.trim().is_empty());
-        // get; is present with no body
-        assert!(list.get_accessor.is_some());
-        assert!(list.get_accessor.as_ref().unwrap().body.is_none());
-        // set { } has a block body -> Some(Block)
-        assert!(matches!(list.set_accessor.as_ref().unwrap().body, Some(Statement::Block(_))));
-    }
-
-    #[test]
-    fn stops_before_close_brace_without_consuming() {
-        let src = " get; } tail";
-        let (rest, (g, s)) = parse_accessors(src).expect("parse");
-        // get; present with no body
-        assert!(g.is_some());
-        assert!(g.as_ref().unwrap().body.is_none());
-        assert!(s.is_none());
-        assert!(rest.trim_start().starts_with('}'));
-    }
-}
+ 
 
 /// Parse a get accessor declaration
 fn parse_get_accessor_declaration(input: &str) -> BResult<&str, IndexerAccessor> {
@@ -205,7 +178,7 @@ fn parse_get_accessor_declaration(input: &str) -> BResult<&str, IndexerAccessor>
                         "get accessor body (expected block statement)",
                         parse_block_statement,
                     ),
-                    |blk| Some(blk),
+                    Some,
                 ),
             ))(input)?;
 
@@ -243,7 +216,7 @@ fn parse_set_accessor_declaration(input: &str) -> BResult<&str, IndexerAccessor>
                         "set accessor body (expected block statement)",
                         parse_block_statement,
                     ),
-                    |blk| Some(blk),
+                    Some,
                 ),
             ))(input)?;
 

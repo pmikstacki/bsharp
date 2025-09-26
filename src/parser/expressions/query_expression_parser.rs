@@ -12,7 +12,7 @@ use crate::parser::keywords::linq_query_keywords::{
 use crate::parser::keywords::parameter_modifier_keywords::kw_in;
 use crate::parser::keywords::type_keywords::{
     kw_ushort, kw_uint, kw_ulong, kw_sbyte, kw_short, kw_byte, kw_bool, kw_int, kw_long, kw_double,
-    kw_decimal, kw_float, kw_string, kw_object, kw_char,
+    kw_decimal, kw_string, kw_object, kw_char,
 };
 use crate::parser::keywords::contextual_misc_keywords::kw_dynamic;
 
@@ -44,14 +44,13 @@ fn parse_primitive_type_identifier(input: &str) -> BResult<&str, Identifier> {
             kw_char(),
             kw_dynamic(),
         )),
-        Identifier::from,
-    ))(input)
+        Identifier::new,
+    )(input)
 }
 
 /// Parse a complete LINQ query expression
 pub fn parse_query_expression(input: &str) -> BResult<&str, Expression> {
     map(
-{{ ... }}
         tuple((
             parse_from_clause,
             many0(parse_query_clause),

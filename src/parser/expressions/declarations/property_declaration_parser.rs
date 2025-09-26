@@ -43,7 +43,7 @@ fn parse_get_accessor(input: &str) -> BResult<&str, PropertyAccessor> {
         // Block body: get { ... }
         map(
             context("get accessor body (expected block)", crate::parser::expressions::statements::block_statement_parser::parse_block_statement),
-            |stmt| Some(stmt),
+            Some,
         ),
         // Auto-property with just semicolon: "get;"
         map(
@@ -79,7 +79,7 @@ fn parse_set_accessor(input: &str) -> BResult<&str, PropertyAccessor> {
         ),
         map(
             context("set accessor body (expected block)", crate::parser::expressions::statements::block_statement_parser::parse_block_statement),
-            |stmt| Some(stmt),
+            Some,
         ),
         map(
             context("set accessor terminator (expected ';')", bws(bchar(';'))),
@@ -114,7 +114,7 @@ fn parse_init_accessor(input: &str) -> BResult<&str, PropertyAccessor> {
         ),
         map(
             context("init accessor body (expected block)", crate::parser::expressions::statements::block_statement_parser::parse_block_statement),
-            |stmt| Some(stmt),
+            Some,
         ),
         map(
             context("init accessor terminator (expected ';')", bws(bchar(';'))),

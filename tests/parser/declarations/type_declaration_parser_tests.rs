@@ -43,7 +43,7 @@ fn test_record_class() {
         Ok((remaining, decl)) => {
             assert_eq!(remaining, "");
             assert_eq!(decl.name.to_string(), "Person");
-            assert_eq!(decl.is_struct, false);
+            assert!(!decl.is_struct);
             assert!(decl.parameters.is_some());
             assert_eq!(decl.parameters.unwrap().len(), 2);
         }
@@ -59,7 +59,7 @@ fn test_record_struct() {
         Ok((remaining, decl)) => {
             assert_eq!(remaining, "");
             assert_eq!(decl.name.to_string(), "Point");
-            assert_eq!(decl.is_struct, true);
+            assert!(decl.is_struct);
             assert!(decl.parameters.is_some());
             assert_eq!(decl.parameters.unwrap().len(), 2);
         }

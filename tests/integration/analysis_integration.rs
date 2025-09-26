@@ -1,3 +1,5 @@
+#![allow(unused_variables)]
+
 // Comprehensive integration tests for B# analysis modules
 // Tests how quality, metrics, navigation, types, dependencies, etc. work together
 
@@ -416,7 +418,7 @@ namespace EdgeCases
     // Verify all analyzers returned results without panicking
     assert_eq!(ast_analysis.total_classes, 3);
     assert_eq!(quality_report.class_reports.len(), 3);
-    assert!(naming_metrics.violations.len() > 0); // Should detect naming violations
+    assert!(!naming_metrics.violations.is_empty()); // Should detect naming violations
 
     // Verify specific edge case handling
     // Empty class should not cause issues

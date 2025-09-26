@@ -151,6 +151,12 @@ pub struct CodeGenerator {
     _data_context: DataContext,
 }
 
+impl Default for CodeGenerator {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl CodeGenerator {
     pub fn new() -> Self {
         // Use settings which are appropriate for the target triple.

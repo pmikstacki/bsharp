@@ -1,3 +1,4 @@
+#![allow(unused_variables)]
 // Integration tests for parsing record declarations (class and struct)
 
 use bsharp::syntax::nodes::declarations::{Modifier, RecordDeclaration};

@@ -26,7 +26,7 @@ fn parse_event_accessor(input: &str) -> BResult<&str, (String, EventAccessor)> {
                     kw_add(),
                     alt((
                         map(bws(bchar(';')), |_| None),
-                        map(bws(parse_statement), |stmt| Some(stmt)),
+                        map(bws(parse_statement), Some),
                     )),
                 )),
                 |(_, body)| {
@@ -45,7 +45,7 @@ fn parse_event_accessor(input: &str) -> BResult<&str, (String, EventAccessor)> {
                     kw_remove(),
                     alt((
                         map(bws(bchar(';')), |_| None),
-                        map(bws(parse_statement), |stmt| Some(stmt)),
+                        map(bws(parse_statement), Some),
                     )),
                 )),
                 |(_, body)| {
@@ -129,7 +129,7 @@ pub fn parse_event_declaration(input: &str) -> BResult<&str, EventDeclaration> {
                 bws(parse_identifier),
                 // 6. Optional accessor list or semicolon
                 alt((
-                    map(bws(parse_event_accessor_list), |list| Some(list)),
+                    map(bws(parse_event_accessor_list), Some),
                     map(bws(bchar(';')), |_| None),
                 )),
             )),

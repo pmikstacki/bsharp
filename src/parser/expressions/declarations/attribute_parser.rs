@@ -106,7 +106,7 @@ pub fn parse_attribute(input: &str) -> BResult<&str, Attribute> {
                 true,
             ))(rest)?;
 
-            let mut name_str = name_parts
+            let name_str = name_parts
                 .iter()
                 .map(|id| id.name.clone())
                 .collect::<Vec<_>>()

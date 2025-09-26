@@ -80,7 +80,7 @@ namespace TestApp
     assert_eq!(methods.len(), 3);
 
     let if_statements = ast.find_if_statements();
-    assert!(if_statements.len() > 0, "Should find if statements");
+    assert!(!if_statements.is_empty(), "Should find if statements");
 
     let for_loops = ast.find_for_loops();
     assert_eq!(for_loops.len(), 1, "Should find exactly one for loop");

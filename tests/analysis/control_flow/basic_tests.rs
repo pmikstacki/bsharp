@@ -1,3 +1,8 @@
+#![allow(unused_variables)]
+#![allow(unused_comparisons)]
+#![allow(clippy::assertions_on_constants)]
+#![allow(clippy::absurd_extreme_comparisons)]
+
 use bsharp::analysis::control_flow::*;
 use bsharp::syntax::nodes::expressions::expression::Expression;
 use bsharp::syntax::nodes::expressions::literal::Literal;
@@ -8,6 +13,7 @@ use bsharp::syntax::nodes::statements::{
     SwitchLabel, SwitchSection, SwitchStatement, TryStatement, WhileStatement,
 };
 
+#[allow(dead_code)]
 fn create_test_identifier(name: &str) -> Identifier {
     Identifier {
         name: name.to_string(),
@@ -18,7 +24,7 @@ fn create_test_identifier(name: &str) -> Identifier {
 fn test_control_flow_analyzer_new() {
     let analyzer = ControlFlowAnalyzer::new();
     // Since ControlFlowAnalyzer doesn't have a graph field, just test creation
-    assert!(true); // Placeholder assertion
+    // Placeholder – creation succeeded
 }
 
 #[test]
@@ -55,8 +61,7 @@ fn test_if_statement_control_flow() {
     // The analyze_statement method doesn't exist, so we'll create a simple test
     let flow_graph = ControlFlowGraph::new();
 
-    // Placeholder assertions
-    assert!(true);
+    // Placeholder – no assertion needed here
 }
 
 #[test]
@@ -73,8 +78,7 @@ fn test_while_loop_control_flow() {
     // The analyze_statement method doesn't exist, so we'll create a simple test
     let flow_graph = ControlFlowGraph::new();
 
-    // Placeholder assertions
-    assert!(true);
+    // Placeholder – no assertion needed here
 }
 
 #[test]
@@ -242,8 +246,7 @@ fn test_unreachable_code_detection() {
     // The analyze_statement method doesn't exist, so we'll create a simple test
     let flow_graph = ControlFlowGraph::new();
 
-    // Placeholder assertions - would find unreachable nodes when implemented
-    assert!(true);
+    // Placeholder – would find unreachable nodes when implemented
 }
 
 #[test]
@@ -267,8 +270,7 @@ fn test_dominance_analysis() {
     // The analyze_statement method doesn't exist, so we'll create a simple test
     let flow_graph = ControlFlowGraph::new();
 
-    // Placeholder assertions - would compute dominance tree when implemented
-    assert!(true);
+    // Placeholder – would compute dominance tree when implemented
 }
 
 #[test]
@@ -288,8 +290,7 @@ fn test_post_dominance_analysis() {
     // The analyze_statement method doesn't exist, so we'll create a simple test
     let flow_graph = ControlFlowGraph::new();
 
-    // Placeholder assertions - would compute post-dominance tree when implemented
-    assert!(true);
+    // Placeholder – would compute post-dominance tree when implemented
 }
 
 #[test]
@@ -318,8 +319,7 @@ fn test_loop_detection() {
     // The analyze_compilation_unit method exists but takes a CompilationUnit, not a Statement
     let flow_graph = ControlFlowGraph::new();
 
-    // Placeholder assertions - would detect loops when implemented
-    assert!(true);
+    // Placeholder – would detect loops when implemented
 }
 
 #[test]
@@ -348,8 +348,7 @@ fn test_exception_flow_paths() {
     // The analyze_statement method doesn't exist, so we'll create a simple test
     let flow_graph = ControlFlowGraph::new();
 
-    // Placeholder assertions - would analyze exception paths when implemented
-    assert!(true);
+    // Placeholder – would analyze exception paths when implemented
 }
 
 #[test]
@@ -391,11 +390,5 @@ fn test_control_flow_metrics() {
     let flow_graph = ControlFlowGraph::new();
     let metrics = ControlFlowMetrics::default();
 
-    // Verify basic metrics structure exists
-    assert!(metrics.cyclomatic_complexity >= 0);
-    assert!(metrics.max_nesting_depth >= 0);
-    assert!(metrics.decision_points >= 0);
-    assert!(metrics.exit_points >= 0);
-    assert!(metrics.loop_count >= 0);
-    assert!(metrics.conditional_count >= 0);
+    // Verify metrics struct exists (no tautological comparisons)
 }

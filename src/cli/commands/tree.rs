@@ -171,7 +171,7 @@ fn generate_svg_ast(ast: &ast::CompilationUnit, _output_path: &Path) -> Result<S
     }
 
     // Save the SVG document to a string
-    let mut svg_content = format!("{}{}{}", SVG_HEADER, document.to_string(), SVG_FOOTER);
+    let mut svg_content = format!("{}{}{}", SVG_HEADER, document, SVG_FOOTER);
     // Safety: Some environments have produced unexpectedly small/empty files; pad to ensure
     // the basic-size check in tests remains stable and to make artifacts inspectable.
     const MIN_LEN: usize = 128;

@@ -82,7 +82,7 @@ fn test_parse_new_expression_multiple_args() {
                 _ => panic!("Expected string literal for second argument"),
             }
             match &boxed_new_expr.arguments[2] {
-                Expression::Literal(Literal::Boolean(b)) => assert_eq!(*b, true),
+                Expression::Literal(Literal::Boolean(b)) => assert!(*b),
                 _ => panic!("Expected boolean literal for third argument"),
             }
         }

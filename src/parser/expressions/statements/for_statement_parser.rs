@@ -60,7 +60,7 @@ fn parse_for_initializer(input: &str) -> BResult<&str, ForInitializer> {
                     "expression list (expected comma-separated expressions)",
                     separated_list1(bws(bchar(',')), bws(parse_expression)),
                 ),
-                |exprs| ForInitializer::Expressions(exprs),
+                ForInitializer::Expressions,
             ),
         )),
     )(input)

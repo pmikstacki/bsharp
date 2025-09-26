@@ -19,11 +19,11 @@
 #[macro_export]
 macro_rules! define_keyword_pair {
     ($kw_fn:ident, $peek_fn:ident, $lit:literal) => {
-        pub fn $kw_fn() -> impl Fn(&str) -> crate::syntax::errors::BResult<&str, &str> {
-            crate::syntax::parser_helpers::keyword($lit)
+        pub fn $kw_fn() -> impl Fn(&str) -> $crate::syntax::errors::BResult<&str, &str> {
+            $crate::syntax::parser_helpers::keyword($lit)
         }
-        pub fn $peek_fn() -> impl Fn(&str) -> crate::syntax::errors::BResult<&str, &str> {
-            crate::syntax::parser_helpers::peek_keyword($lit)
+        pub fn $peek_fn() -> impl Fn(&str) -> $crate::syntax::errors::BResult<&str, &str> {
+            $crate::syntax::parser_helpers::peek_keyword($lit)
         }
     };
 }

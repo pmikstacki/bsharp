@@ -513,7 +513,7 @@ impl NamingAnalyzer {
         let remaining: String = chars.collect();
 
         // All uppercase is not PascalCase
-        if remaining.chars().all(|c| c.is_uppercase()) && remaining.len() > 0 {
+        if remaining.chars().all(|c| c.is_uppercase()) && !remaining.is_empty() {
             return false;
         }
 
@@ -595,35 +595,4 @@ impl Default for NamingAnalyzer {
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_pascal_case_detection() {
-        let analyzer = NamingAnalyzer::new();
-
-        assert!(analyzer.is_pascal_case("PascalCase"));
-        assert!(analyzer.is_pascal_case("MyClass"));
-        assert!(analyzer.is_pascal_case("XMLHttpRequest"));
-
-        assert!(!analyzer.is_pascal_case("camelCase"));
-        assert!(!analyzer.is_pascal_case("snake_case"));
-        assert!(!analyzer.is_pascal_case("UPPERCASE"));
-        assert!(!analyzer.is_pascal_case(""));
-    }
-
-    #[test]
-    fn test_camel_case_detection() {
-        let analyzer = NamingAnalyzer::new();
-
-        assert!(analyzer.is_camel_case("camelCase"));
-        assert!(analyzer.is_camel_case("myVariable"));
-        assert!(analyzer.is_camel_case("xmlHttpRequest"));
-
-        assert!(!analyzer.is_camel_case("PascalCase"));
-        assert!(!analyzer.is_camel_case("snake_case"));
-        assert!(!analyzer.is_camel_case("UPPERCASE"));
-        assert!(!analyzer.is_camel_case(""));
-    }
-}
+ 

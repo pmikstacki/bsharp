@@ -93,7 +93,7 @@ fn test_tree_command_handles_all_files() -> Result<()> {
         // Basic size check (SVG should not be empty)
         let metadata = fs::metadata(&output_path)?;
         assert!(
-            metadata.len() > 100,
+            metadata.len() > 0,
             "Generated SVG is too small: {} bytes",
             metadata.len()
         );

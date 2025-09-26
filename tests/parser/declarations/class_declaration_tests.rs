@@ -51,7 +51,6 @@ fn test_parse_generic_class() {
                     variance: Variance::None,
                 },
             ]
-            .into(),
         ),
         primary_constructor_parameters: None,
         base_types: vec![],

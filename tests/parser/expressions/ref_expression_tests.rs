@@ -348,7 +348,7 @@ fn test_parse_ref_as_parameter() {
 
             // First argument should be marked as ref and carry a variable expr
             let arg0 = &invocation.arguments[0];
-            assert!(matches!(arg0.modifier, Some(_)));
+            assert!(arg0.modifier.is_some());
             assert!(matches!(arg0.expr, Expression::Variable(_)));
 
             // Second argument should be normal variable with no modifier

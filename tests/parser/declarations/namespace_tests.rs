@@ -1,3 +1,4 @@
+#![allow(unused_variables)]
 // Integration tests for parsing namespace declarations (block-scoped and file-scoped)
 
 use bsharp::syntax::nodes::declarations::{FileScopedNamespaceDeclaration, NamespaceDeclaration};

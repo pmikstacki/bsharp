@@ -202,31 +202,4 @@ pub fn parse_member_declaration(input: &str) -> BResult<&str, MemberDeclaration>
     ))
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn member_body_parses_block() {
-        let src = "{ }";
-        let (rest, body) = parse_member_body(src).expect("parse");
-        assert!(rest.trim().is_empty());
-        assert!(matches!(body, Some(Statement::Block(_)) | Some(Statement::Empty) | Some(_)));
-    }
-
-    #[test]
-    fn member_body_parses_expression_arrow() {
-        let src = "=> x;";
-        let (rest, body) = parse_member_body(src).expect("parse");
-        assert!(rest.trim().is_empty());
-        assert!(matches!(body, Some(Statement::Expression(_))));
-    }
-
-    #[test]
-    fn member_body_parses_semicolon_none() {
-        let src = ";";
-        let (rest, body) = parse_member_body(src).expect("parse");
-        assert!(rest.trim().is_empty());
-        assert!(body.is_none());
-    }
-}
+ 

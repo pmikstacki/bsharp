@@ -10,11 +10,11 @@ use crate::syntax::nodes::{
 };
 
 // Internal helpers to streamline iteration over declarations across namespaces and file-scoped namespaces
-fn iter_namespace_members<'a>(
-    cu: &'a CompilationUnit,
+fn iter_namespace_members(
+    cu: &CompilationUnit,
 ) -> impl Iterator<
-    Item = &'a crate::syntax::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration,
-> + 'a {
+    Item = &crate::syntax::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration,
+> + '_ {
     let top_level = cu
         .declarations
         .iter()
@@ -1014,19 +1014,7 @@ where
                 }
             }
 
-            // With-expressions and collection expressions
-            E::With { target, initializers } => {
-                visit_expr(target, predicate, results);
-                for init in initializers {
-                    match init {
-                        crate::syntax::nodes::expressions::expression::WithInitializerEntry::Property { value, .. } => visit_expr(value, predicate, results),
-                        crate::syntax::nodes::expressions::expression::WithInitializerEntry::Indexer { indices, value } => {
-                            for idx in indices { visit_expr(idx, predicate, results); }
-                            visit_expr(value, predicate, results);
-                        }
-                    }
-                }
-            }
+            // With-expression is handled earlier; avoid duplicate arm here
             E::Collection(items) => {
                 for it in items {
                     match it {

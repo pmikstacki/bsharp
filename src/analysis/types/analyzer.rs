@@ -187,19 +187,19 @@ impl TypeAnalyzer {
 
         match member {
             ClassBodyDeclaration::Field(field) => {
-                let type_name = self.extract_type_name(&field.ty);
+                let type_name = Self::extract_type_name(&field.ty);
                 metrics.field_types.push(type_name);
-                self.analyze_type_for_metrics(&field.ty, metrics);
+                Self::analyze_type_for_metrics(&field.ty, metrics);
             }
             ClassBodyDeclaration::Property(property) => {
-                let type_name = self.extract_type_name(&property.ty);
+                let type_name = Self::extract_type_name(&property.ty);
                 metrics.property_types.push(type_name);
-                self.analyze_type_for_metrics(&property.ty, metrics);
+                Self::analyze_type_for_metrics(&property.ty, metrics);
             }
             ClassBodyDeclaration::Method(method) => {
-                let type_name = self.extract_type_name(&method.return_type);
+                let type_name = Self::extract_type_name(&method.return_type);
                 metrics.method_return_types.push(type_name.clone());
-                self.analyze_type_for_metrics(&method.return_type, metrics);
+                Self::analyze_type_for_metrics(&method.return_type, metrics);
 
                 // Check for async return types
                 if type_name.starts_with("Task") {
@@ -207,9 +207,9 @@ impl TypeAnalyzer {
                 }
 
                 for param in &method.parameters {
-                    let type_name = self.extract_type_name(&param.parameter_type);
+                    let type_name = Self::extract_type_name(&param.parameter_type);
                     metrics.method_parameter_types.push(type_name);
-                    self.analyze_type_for_metrics(&param.parameter_type, metrics);
+                    Self::analyze_type_for_metrics(&param.parameter_type, metrics);
 
                     // Check parameter modifiers
                     if let Some(modifier) = &param.modifier {
@@ -234,7 +234,7 @@ impl TypeAnalyzer {
         }
     }
 
-    fn analyze_type_for_metrics(&self, type_ref: &Type, metrics: &mut TypeMetrics) {
+    fn analyze_type_for_metrics(type_ref: &Type, metrics: &mut TypeMetrics) {
         match type_ref {
             Type::Array {
                 element_type,
@@ -242,12 +242,12 @@ impl TypeAnalyzer {
             } => {
                 metrics.array_types.push("array".to_string());
                 // Recursively analyze the element type
-                self.analyze_type_for_metrics(element_type, metrics);
+                Self::analyze_type_for_metrics(element_type, metrics);
             }
             Type::Nullable(inner) => {
                 metrics.nullable_types.push("nullable".to_string());
                 // Recursively analyze the inner type
-                self.analyze_type_for_metrics(inner, metrics);
+                Self::analyze_type_for_metrics(inner, metrics);
             }
             Type::Generic { base, args } => {
                 let base_name = base.name.clone();
@@ -257,22 +257,22 @@ impl TypeAnalyzer {
 
                 // Recursively analyze generic arguments
                 for arg in args {
-                    self.analyze_type_for_metrics(arg, metrics);
+                    Self::analyze_type_for_metrics(arg, metrics);
                 }
             }
             _ => {}
         }
     }
 
-    fn extract_type_name(&self, type_ref: &Type) -> String {
+    fn extract_type_name(type_ref: &Type) -> String {
         match type_ref {
             Type::Reference(ident) => ident.name.clone(),
             Type::Primitive(prim) => format!("{:?}", prim).to_lowercase(),
             Type::Array {
                 element_type,
                 rank: _,
-            } => format!("{}[]", self.extract_type_name(element_type)),
-            Type::Nullable(inner) => format!("{}?", self.extract_type_name(inner)),
+            } => format!("{}[]", Self::extract_type_name(element_type)),
+            Type::Nullable(inner) => format!("{}?", Self::extract_type_name(inner)),
             Type::Generic { base, args: _ } => format!("{}<T>", base.name),
             Type::Void => "void".to_string(),
             _ => "unknown".to_string(),

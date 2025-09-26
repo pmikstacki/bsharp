@@ -60,31 +60,4 @@ pub fn parse_using_directive(input: &str) -> BResult<&str, UsingDirective> {
     })(input)
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn parses_namespace_using() {
-        let src = "using System.Text;";
-        let (rest, ud) = parse_using_directive(src).expect("parse");
-        assert!(matches!(ud, UsingDirective::Namespace{..}));
-        assert!(rest.is_empty());
-    }
-
-    #[test]
-    fn parses_static_using() {
-        let src = "using static System.Math;";
-        let (rest, ud) = parse_using_directive(src).expect("parse");
-        assert!(matches!(ud, UsingDirective::Static{..}));
-        assert!(rest.is_empty());
-    }
-
-    #[test]
-    fn parses_alias_using() {
-        let src = "using Project = MyCompany.MyProject;";
-        let (rest, ud) = parse_using_directive(src).expect("parse");
-        assert!(matches!(ud, UsingDirective::Alias{..}));
-        assert!(rest.is_empty());
-    }
-}
+ 

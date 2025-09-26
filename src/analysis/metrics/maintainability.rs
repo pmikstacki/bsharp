@@ -71,19 +71,14 @@ pub struct TechnicalDebt {
     pub remediation_cost: f64,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
 pub enum SQALERating {
+    #[default]
     A, // <= 5% debt ratio
     B, // 6-10%
     C, // 11-20%
     D, // 21-50%
     E, // > 50%
-}
-
-impl Default for SQALERating {
-    fn default() -> Self {
-        SQALERating::A
-    }
 }
 
 impl SQALERating {
@@ -153,7 +148,7 @@ impl MaintainabilityAnalyzer {
         let mi = 171.0 - halstead_term - complexity_term - loc_term + comment_term;
 
         // Normalize to 0-100 range
-        mi.max(0.0).min(100.0)
+        mi.clamp(0.0, 100.0)
     }
 
     /// Calculate technical debt metrics
@@ -232,16 +227,11 @@ pub struct ChangeImpactAnalysis {
     pub estimated_effort_hours: f64,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
 pub enum RiskLevel {
+    #[default]
     Low,
     Medium,
     High,
     Critical,
-}
-
-impl Default for RiskLevel {
-    fn default() -> Self {
-        RiskLevel::Low
-    }
 }

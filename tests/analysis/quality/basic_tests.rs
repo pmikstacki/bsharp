@@ -20,7 +20,7 @@ fn create_test_identifier(name: &str) -> Identifier {
 fn test_quality_analyzer_new() {
     let analyzer = QualityAnalyzer::new();
     // Test that the analyzer is created successfully
-    assert_eq!(analyzer, QualityAnalyzer::default());
+    assert_eq!(analyzer, QualityAnalyzer::new());
 }
 
 #[test]
