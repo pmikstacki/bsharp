@@ -10,6 +10,7 @@ use nom_supreme::tag::complete::tag;
 use crate::syntax::comment_parser::ws as ws_comments;
 use crate::syntax::errors::BResult;
 use nom_supreme::ParserExt;
+use nom::Offset;
 use nom::combinator::{cut, peek};
 
 /// Parse a keyword with proper word boundaries and enhanced error reporting
@@ -370,5 +371,27 @@ fn is_word_boundary_after(input: &str, keyword_len: usize) -> bool {
     match next_char {
         Some(c) => !c.is_alphanumeric() && c != '_',
         None => true,
+    }
+}
+
+/// Wrap a parser and return its output paired with the exact byte span it consumed
+/// in the original `whole` input slice. This uses nom-supreme's `.with_recognized()`
+/// and nom's `Offset` trait, so no extra dependencies are required.
+pub fn with_recognized_span<'a, F, O>(
+    whole: &'a str,
+    parser: F,
+) -> impl FnMut(&'a str) -> BResult<&'a str, (O, std::ops::Range<usize>)>
+where
+    F: Clone + FnMut(&'a str) -> BResult<&'a str, O>,
+{
+    move |input: &'a str| {
+        // Clone the parser per-call since with_recognized() takes self by value
+        let p = parser.clone();
+        // Get (recognized_slice, parsed_output)
+        let (rest, (recognized, out)) = p.with_recognized().parse(input)?;
+        // Compute absolute byte offsets into the original source
+        let start = whole.offset(recognized);
+        let end = start + recognized.len();
+        Ok((rest, (out, start..end)))
     }
 }

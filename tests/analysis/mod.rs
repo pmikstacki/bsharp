@@ -1,12 +1,14 @@
 // Tests for code analysis functionality
 
 pub mod control_flow;
-pub mod dependencies;
 pub mod metrics;
 pub mod naming;
 pub mod navigation;
 pub mod quality;
 pub mod types;
+pub mod symbols_index;
+pub mod cfg_pass;
+pub mod deps_pass;
 
 // These modules don't exist yet:
 // pub mod security;

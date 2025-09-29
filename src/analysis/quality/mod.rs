@@ -1,10 +1,15 @@
 use crate::analysis::metrics::complexity::ComplexityAnalyzer;
-use crate::analysis::naming::NamingViolation;
 use crate::syntax::ast::{CompilationUnit, TopLevelDeclaration};
 use crate::syntax::nodes::declarations::{
     ClassDeclaration, MethodDeclaration, NamespaceDeclaration,
 };
 use serde::{Deserialize, Serialize};
+
+// Minimal placeholder for naming violation type to preserve QualityIssue interface
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum NamingViolation {
+    Violation,
+}
 
 /// Quality issues and code smells detector
 #[derive(Debug, PartialEq)]
@@ -198,7 +203,7 @@ pub enum QualityIssue {
         member_type: String,
     },
 
-    // Naming issues
+    // Naming issues (placeholder enum defined locally after refactor)
     NamingViolation(NamingViolation),
 
     // Design issues

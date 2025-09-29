@@ -3,6 +3,7 @@
 
 use nom::branch::alt;
 use nom::combinator::map;
+use nom::Offset;
 
 // parser_helpers imported selectively in sub-parser; this module only needs ws
 use crate::parser::expressions::declarations::file_scoped_namespace_parser::parse_file_scoped_namespace_declaration;
@@ -14,9 +15,11 @@ use crate::parser::expressions::statements::top_level_statement_parser::parse_to
 use crate::syntax::ast::{CompilationUnit, TopLevelDeclaration};
 use crate::syntax::comment_parser::ws;
 use crate::syntax::parser_helpers::{bpeek, bws, keyword};
+use crate::syntax::parser_helpers::with_recognized_span;
 use crate::syntax::errors::BResult;
 use crate::syntax::nodes::declarations::TypeDeclaration;
 use log::trace;
+use crate::parser::SpanTable;
 
 /// Parse a C# source file following Roslyn's model where a source file contains:
 /// - global attributes (assembly/module attributes)
@@ -210,4 +213,206 @@ fn parse_top_level_member(input: &str) -> BResult<&str, TopLevelDeclaration> {
             TypeDeclaration::Delegate(decl) => TopLevelDeclaration::Delegate(decl),
         }),
     ))(input)
+}
+
+/// Parse a C# source file and collect byte-span ranges for top-level declarations.
+/// Returns the CompilationUnit and a SpanTable keyed by a stable textual key.
+pub fn parse_csharp_source_with_spans(
+    input: &str,
+) -> BResult<&str, (CompilationUnit, SpanTable)> {
+    trace!(
+        "Starting source file parsing (with spans) with input length: {}",
+        input.len()
+    );
+
+    let mut span_table: SpanTable = SpanTable::new();
+
+    // Skip any leading whitespace/comments and remove any BOM or other text markers
+    let (remaining, _) = ws(input)?;
+
+    // Parse global attributes first
+    let (remaining, global_attributes) = parse_global_attributes(remaining)?;
+
+    // Parse using directives
+    let mut remaining = remaining;
+    let mut usings = Vec::new();
+    loop {
+        let (r, _) = ws(remaining)?;
+        remaining = r;
+        if bpeek(keyword("global"))(remaining).is_ok() {
+            let (r, _) = bws(keyword("global"))(remaining)?;
+            if bpeek(keyword("using"))(r).is_ok() {
+                let (r_after, using_dir) = parse_using_directive(r)?;
+                usings.push(using_dir);
+                remaining = r_after;
+                continue;
+            } else {
+                break;
+            }
+        } else if bpeek(keyword("using"))(remaining).is_ok() {
+            let (r_after, using_dir) = bws(parse_using_directive)(remaining)?;
+            usings.push(using_dir);
+            remaining = r_after;
+            continue;
+        } else {
+            break;
+        }
+    }
+
+    // File-scoped namespace (collect span if present)
+    let mut file_scoped_namespace = None;
+    if bpeek(keyword("namespace"))(remaining).is_ok() {
+        if let Ok((rest, (ns, range))) = with_recognized_span(input, parse_file_scoped_namespace_declaration)(remaining) {
+            let key = format!("namespace::{}", ns.name.name);
+            span_table.insert(key, range);
+            file_scoped_namespace = Some(ns);
+            remaining = rest;
+        }
+    }
+
+    // Top-level members
+    let mut members = Vec::new();
+    let mut top_level_statements = Vec::new();
+
+    let (mut remaining, _) = ws(remaining)?;
+    while !remaining.trim().is_empty() {
+        match with_recognized_span(input, parse_top_level_member)(remaining) {
+            Ok((rest, (member, recognized_range))) => {
+                // Compute file-scoped namespace prefix if present
+                let ns_prefix = file_scoped_namespace
+                    .as_ref()
+                    .map(|fs| fs.name.name.as_str());
+                let range_for_entry = recognized_range.clone();
+                if let Some(key) = build_decl_key_with_prefix(&member, ns_prefix) {
+                    span_table.insert(key, range_for_entry.clone());
+                }
+                // If this is a class, collect member-level spans by reparsing its body with a span-aware member parser
+                if let TopLevelDeclaration::Class(class_decl) = &member {
+                    let class_slice = &input[range_for_entry.clone()];
+                    collect_class_member_spans(
+                        input,
+                        class_slice,
+                        ns_prefix,
+                        &class_decl.name.name,
+                        &mut span_table,
+                    );
+                }
+                members.push(member);
+                remaining = rest;
+                let (after_ws, _) = ws(remaining)?;
+                remaining = after_ws;
+            }
+            Err(_) => {
+                match parse_top_level_statements(remaining) {
+                    Ok((rest, statements)) => {
+                        top_level_statements.extend(statements);
+                        remaining = rest;
+                        break;
+                    }
+                    Err(e) => {
+                        trace!("Failed to parse top-level member or statements (with spans): {:?}", e);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    let compilation_unit = CompilationUnit {
+        using_directives: usings,
+        declarations: members,
+        file_scoped_namespace,
+        top_level_statements,
+        global_attributes,
+    };
+
+    Ok((remaining, (compilation_unit, span_table)))
+}
+
+/// Build a stable textual key for a top-level declaration to store span ranges,
+/// optionally prefixing type declarations with the file-scoped namespace name.
+fn build_decl_key_with_prefix(
+    decl: &TopLevelDeclaration,
+    file_scoped_ns: Option<&str>,
+) -> Option<String> {
+    let prefixed = |kind: &str, name: &str| -> String {
+        match file_scoped_ns {
+            Some(ns) => format!("{}::{}::{}", kind, ns, name),
+            None => format!("{}::{}", kind, name),
+        }
+    };
+
+    match decl {
+        TopLevelDeclaration::Namespace(ns) => Some(format!("namespace::{}", ns.name.name)),
+        TopLevelDeclaration::Class(c) => Some(prefixed("class", &c.name.name)),
+        TopLevelDeclaration::Struct(s) => Some(prefixed("struct", &s.name.name)),
+        TopLevelDeclaration::Record(r) => Some(prefixed("record", &r.name.name)),
+        TopLevelDeclaration::Interface(i) => Some(prefixed("interface", &i.name.name)),
+        TopLevelDeclaration::Enum(e) => Some(prefixed("enum", &e.name.name)),
+        TopLevelDeclaration::Delegate(d) => Some(prefixed("delegate", &d.name.name)),
+        TopLevelDeclaration::FileScopedNamespace(fs) => Some(format!("namespace::{}", fs.name.name)),
+        TopLevelDeclaration::GlobalAttribute(_) => None,
+    }
+}
+
+/// Temporary no-op: member-level span collection will be implemented in Milestone B.
+fn collect_class_member_spans(
+    whole: &str,
+    class_slice: &str,
+    file_scoped_ns: Option<&str>,
+    class_name: &str,
+    spans: &mut SpanTable,
+) {
+    // Find the class body start
+    let Some(brace_idx) = class_slice.find('{') else { return; };
+    let body_input = &class_slice[brace_idx..];
+
+    // Owner prefix for member keys
+    let owner_prefix = match file_scoped_ns {
+        Some(ns) => format!("{}::{}", ns, class_name),
+        None => class_name.to_string(),
+    };
+
+    // Manually iterate class members
+    use crate::parser::expressions::declarations::type_declaration_parser::parse_class_member_for_spans as parse_member;
+    use crate::syntax::comment_parser::parse_whitespace_or_comments as ws_comments;
+    use crate::syntax::nodes::declarations::ClassBodyDeclaration as CBD;
+
+    // Skip the opening '{'
+    let mut cur = if body_input.starts_with('{') { &body_input[1..] } else { body_input };
+    loop {
+        // Consume whitespace/comments
+        if let Ok((after, _)) = ws_comments(cur) {
+            cur = after;
+        }
+        // Stop at closing '}'
+        let ahead = cur.trim_start();
+        if ahead.starts_with('}') || cur.is_empty() {
+            break;
+        }
+
+        match parse_member(cur) {
+            Ok((rest, member)) => {
+                let start = whole.offset(cur);
+                let end = whole.offset(rest);
+                let range = start..end;
+                match &member {
+                    CBD::Method(m) => {
+                        let key = format!("method::{}::{}", owner_prefix, m.name.name);
+                        spans.insert(key, range);
+                    }
+                    CBD::Constructor(_) => {
+                        let key = format!("ctor::{}", owner_prefix);
+                        spans.insert(key, range);
+                    }
+                    _ => {}
+                }
+                cur = rest;
+            }
+            Err(_) => {
+                // Unable to parse further safely; stop
+                break;
+            }
+        }
+    }
 }

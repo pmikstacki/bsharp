@@ -46,6 +46,12 @@ pub fn convert_attributes(attribute_lists: Vec<AttributeList>) -> Vec<Attribute>
         .collect()
 }
 
+/// Public wrapper to allow span-aware tools to parse a single class member.
+/// This preserves the internal member parsing order and recovery behavior.
+pub fn parse_class_member_for_spans(input: &str) -> BResult<&str, ClassBodyDeclaration> {
+    parse_class_member(input)
+}
+
 /// Common structure holding the parts of a declaration header for any type
 pub struct DeclarationHeader<'a> {
     pub attributes: Vec<AttributeList>,

@@ -26,6 +26,7 @@
 # Analysis Framework
 
 - [Analysis Overview](./analysis/overview.md)
+- [Analysis Pipeline](./analysis/pipeline.md)
 - [Control Flow Analysis](./analysis/control-flow.md)
 - [Dependency Analysis](./analysis/dependencies.md)
 - [Metrics Collection](./analysis/metrics.md)

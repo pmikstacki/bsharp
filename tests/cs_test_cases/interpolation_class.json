@@ -1,0 +1,113 @@
+{
+  "global_attributes": [],
+  "using_directives": [],
+  "declarations": [
+    {
+      "Class": {
+        "attributes": [],
+        "modifiers": [
+          "Public"
+        ],
+        "name": {
+          "name": "TestClass"
+        },
+        "type_parameters": null,
+        "primary_constructor_parameters": null,
+        "base_types": [],
+        "body_declarations": [
+          {
+            "Method": {
+              "modifiers": [
+                "Public"
+              ],
+              "return_type": {
+                "Primitive": "Void"
+              },
+              "name": {
+                "name": "Loops"
+              },
+              "type_parameters": null,
+              "parameters": [],
+              "body": {
+                "Block": [
+                  {
+                    "Declaration": {
+                      "is_const": false,
+                      "is_ref": false,
+                      "declaration_type": {
+                        "Primitive": "Int"
+                      },
+                      "declarators": [
+                        {
+                          "name": {
+                            "name": "i"
+                          },
+                          "initializer": {
+                            "Literal": {
+                              "Integer": 5
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Expression": {
+                      "Invocation": {
+                        "callee": {
+                          "MemberAccess": {
+                            "object": {
+                              "Variable": {
+                                "name": "Console"
+                              }
+                            },
+                            "member": {
+                              "name": "WriteLine"
+                            }
+                          }
+                        },
+                        "arguments": [
+                          {
+                            "name": null,
+                            "modifier": null,
+                            "expr": {
+                              "Literal": {
+                                "InterpolatedString": {
+                                  "parts": [
+                                    {
+                                      "Text": "test "
+                                    },
+                                    {
+                                      "Interpolation": {
+                                        "expression": {
+                                          "Variable": {
+                                            "name": "i"
+                                          }
+                                        },
+                                        "alignment": null,
+                                        "format_string": null
+                                      }
+                                    }
+                                  ],
+                                  "is_verbatim": false
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                ]
+              },
+              "constraints": null
+            }
+          }
+        ],
+        "documentation": null
+      }
+    }
+  ],
+  "file_scoped_namespace": null,
+  "top_level_statements": []
+}

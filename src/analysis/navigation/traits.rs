@@ -6,7 +6,7 @@ use crate::syntax::nodes::{
     expressions::expression::Expression,
     statements::statement::Statement,
 };
-use crate::analysis::diagnostics::SourceLocation;
+use crate::analysis::diagnostics::source_location::SourceLocation;
 
 /// Trait for navigating and searching through AST nodes
 pub trait AstNavigate {

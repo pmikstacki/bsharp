@@ -4,7 +4,7 @@ use anyhow::Result;
 use clap::{Parser, Subcommand};
 use std::path::PathBuf;
 
-use self::commands::{compile, parse, tree};
+use self::commands::{compile, parse, tree, analyze};
 
 #[derive(Parser)]
 #[command(name = "bsharp")]
@@ -44,6 +44,41 @@ pub enum Commands {
         #[arg(required = true)]
         input: PathBuf,
     },
+
+    /// Analyze a C# file, project or solution and print analysis results
+    Analyze {
+        /// The input C# file to analyze
+        #[arg(required = true)]
+        input: PathBuf,
+
+        /// Optional symbol name to search for; if omitted, prints all top-level declaration spans
+        #[arg(short, long)]
+        symbol: Option<String>,
+
+        /// Optional analysis config file (JSON/TOML)
+        #[arg(long)]
+        config: Option<PathBuf>,
+
+        /// Optional output file path for the analysis JSON report
+        #[arg(long, value_name = "FILE")]
+        out: Option<PathBuf>,
+
+        /// Follow ProjectReference dependencies (default: true)
+        #[arg(long, default_value_t = true)]
+        follow_refs: bool,
+
+        /// Include only files matching these globs (workspace mode). Multiple allowed.
+        #[arg(long, value_name = "GLOB", num_args = 0..)]
+        include: Vec<String>,
+
+        /// Exclude files matching these globs (workspace mode). Multiple allowed.
+        #[arg(long, value_name = "GLOB", num_args = 0..)]
+        exclude: Vec<String>,
+
+        /// Output format: json (compact) or pretty-json (default)
+        #[arg(long, value_parser = ["json", "pretty-json"], default_value = "pretty-json")]
+        format: String,
+    },
 }
 
 pub fn run() -> Result<()> {
@@ -55,5 +90,8 @@ pub fn run() -> Result<()> {
         Commands::Tree { input, output } => tree::execute(input, output),
 
         Commands::Compile { input } => compile::execute(input),
+
+        Commands::Analyze { input, symbol, config, out, follow_refs, include, exclude, format } =>
+            analyze::execute(input, symbol, config, out, follow_refs, include, exclude, format),
     }
 }

@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\testDependency\testDependency.csproj" />
+    <!-- Macro-based reference to trigger a warning (non-existent path) -->
+    <ProjectReference Include="$(SomePath)\Nonexistent.csproj" />
+  </ItemGroup>
+
+  <!-- Patterns for tests: Include, Remove, Update and Condition -->
+  <ItemGroup>
+    <Compile Include="manually_included/Extra.cs" />
+    <Compile Update="updated/Updated.cs" />
+    <Compile Remove="excluded/**/*.cs" />
+    <Compile Include="conditional/Conditional.cs" Condition="'$(Configuration)'=='Debug'" />
+  </ItemGroup>
+
+  <!-- Additional patterns: overlapping Include/Remove for overlap directory -->
+  <ItemGroup>
+    <Compile Include="overlap/**/*.cs" />
+    <Compile Remove="overlap/Exclude.cs" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>

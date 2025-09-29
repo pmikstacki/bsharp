@@ -11,4 +11,5 @@ pub mod codegen;
 pub mod compiler;
 pub mod parser;
 pub mod syntax;
+pub mod workspace;
 // Export the CLI module

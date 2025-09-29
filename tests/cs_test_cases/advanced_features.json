@@ -1,4 +1,1163 @@
 {
-  "usings": [],
-  "members": []
+  "global_attributes": [],
+  "using_directives": [
+    {
+      "Namespace": {
+        "namespace": {
+          "name": "System"
+        }
+      }
+    },
+    {
+      "Namespace": {
+        "namespace": {
+          "name": "System.Collections.Generic"
+        }
+      }
+    },
+    {
+      "Namespace": {
+        "namespace": {
+          "name": "System.Linq"
+        }
+      }
+    },
+    {
+      "Namespace": {
+        "namespace": {
+          "name": "System.Threading.Tasks"
+        }
+      }
+    }
+  ],
+  "declarations": [
+    {
+      "Namespace": {
+        "name": {
+          "name": "TestApp"
+        },
+        "using_directives": [],
+        "declarations": [
+          {
+            "Interface": {
+              "attributes": [],
+              "modifiers": [
+                "Public"
+              ],
+              "name": {
+                "name": "IRepository"
+              },
+              "type_parameters": [
+                {
+                  "name": {
+                    "name": "T"
+                  },
+                  "variance": "None"
+                }
+              ],
+              "base_types": [],
+              "body_declarations": [
+                {
+                  "Method": {
+                    "modifiers": [],
+                    "return_type": {
+                      "Reference": {
+                        "name": "T"
+                      }
+                    },
+                    "name": {
+                      "name": "GetById"
+                    },
+                    "type_parameters": null,
+                    "parameters": [
+                      {
+                        "attributes": [],
+                        "modifier": null,
+                        "parameter_type": {
+                          "Primitive": "Int"
+                        },
+                        "name": {
+                          "name": "id"
+                        },
+                        "default_value": null
+                      }
+                    ],
+                    "body": null,
+                    "constraints": null
+                  }
+                },
+                {
+                  "Method": {
+                    "modifiers": [],
+                    "return_type": {
+                      "Generic": {
+                        "base": {
+                          "name": "IEnumerable"
+                        },
+                        "args": [
+                          {
+                            "Reference": {
+                              "name": "T"
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    "name": {
+                      "name": "GetAll"
+                    },
+                    "type_parameters": null,
+                    "parameters": [],
+                    "body": null,
+                    "constraints": null
+                  }
+                },
+                {
+                  "Method": {
+                    "modifiers": [],
+                    "return_type": {
+                      "Primitive": "Void"
+                    },
+                    "name": {
+                      "name": "Add"
+                    },
+                    "type_parameters": null,
+                    "parameters": [
+                      {
+                        "attributes": [],
+                        "modifier": null,
+                        "parameter_type": {
+                          "Reference": {
+                            "name": "T"
+                          }
+                        },
+                        "name": {
+                          "name": "entity"
+                        },
+                        "default_value": null
+                      }
+                    ],
+                    "body": null,
+                    "constraints": null
+                  }
+                },
+                {
+                  "Method": {
+                    "modifiers": [],
+                    "return_type": {
+                      "Primitive": "Void"
+                    },
+                    "name": {
+                      "name": "Update"
+                    },
+                    "type_parameters": null,
+                    "parameters": [
+                      {
+                        "attributes": [],
+                        "modifier": null,
+                        "parameter_type": {
+                          "Reference": {
+                            "name": "T"
+                          }
+                        },
+                        "name": {
+                          "name": "entity"
+                        },
+                        "default_value": null
+                      }
+                    ],
+                    "body": null,
+                    "constraints": null
+                  }
+                },
+                {
+                  "Method": {
+                    "modifiers": [],
+                    "return_type": {
+                      "Primitive": "Void"
+                    },
+                    "name": {
+                      "name": "Delete"
+                    },
+                    "type_parameters": null,
+                    "parameters": [
+                      {
+                        "attributes": [],
+                        "modifier": null,
+                        "parameter_type": {
+                          "Primitive": "Int"
+                        },
+                        "name": {
+                          "name": "id"
+                        },
+                        "default_value": null
+                      }
+                    ],
+                    "body": null,
+                    "constraints": null
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "Class": {
+              "attributes": [],
+              "modifiers": [
+                "Public"
+              ],
+              "name": {
+                "name": "Product"
+              },
+              "type_parameters": null,
+              "primary_constructor_parameters": null,
+              "base_types": [],
+              "body_declarations": [
+                {
+                  "Property": {
+                    "attributes": [],
+                    "modifiers": [
+                      "Public"
+                    ],
+                    "ty": {
+                      "Primitive": "Int"
+                    },
+                    "name": {
+                      "name": "Id"
+                    },
+                    "accessors": [
+                      {
+                        "Get": {
+                          "modifiers": [],
+                          "attributes": [],
+                          "body": null
+                        }
+                      },
+                      {
+                        "Set": {
+                          "modifiers": [],
+                          "attributes": [],
+                          "body": null
+                        }
+                      }
+                    ],
+                    "initializer": null
+                  }
+                },
+                {
+                  "Property": {
+                    "attributes": [],
+                    "modifiers": [
+                      "Public"
+                    ],
+                    "ty": {
+                      "Primitive": "String"
+                    },
+                    "name": {
+                      "name": "Name"
+                    },
+                    "accessors": [
+                      {
+                        "Get": {
+                          "modifiers": [],
+                          "attributes": [],
+                          "body": null
+                        }
+                      },
+                      {
+                        "Set": {
+                          "modifiers": [],
+                          "attributes": [],
+                          "body": null
+                        }
+                      }
+                    ],
+                    "initializer": null
+                  }
+                },
+                {
+                  "Property": {
+                    "attributes": [],
+                    "modifiers": [
+                      "Public"
+                    ],
+                    "ty": {
+                      "Primitive": "Decimal"
+                    },
+                    "name": {
+                      "name": "Price"
+                    },
+                    "accessors": [
+                      {
+                        "Get": {
+                          "modifiers": [],
+                          "attributes": [],
+                          "body": null
+                        }
+                      },
+                      {
+                        "Set": {
+                          "modifiers": [],
+                          "attributes": [],
+                          "body": null
+                        }
+                      }
+                    ],
+                    "initializer": null
+                  }
+                }
+              ],
+              "documentation": null
+            }
+          },
+          {
+            "Class": {
+              "attributes": [],
+              "modifiers": [
+                "Public"
+              ],
+              "name": {
+                "name": "ProductRepository"
+              },
+              "type_parameters": null,
+              "primary_constructor_parameters": null,
+              "base_types": [
+                {
+                  "Generic": {
+                    "base": {
+                      "name": "IRepository"
+                    },
+                    "args": [
+                      {
+                        "Reference": {
+                          "name": "Product"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ],
+              "body_declarations": [
+                {
+                  "Field": {
+                    "modifiers": [
+                      "Private",
+                      "Readonly"
+                    ],
+                    "ty": {
+                      "Generic": {
+                        "base": {
+                          "name": "List"
+                        },
+                        "args": [
+                          {
+                            "Reference": {
+                              "name": "Product"
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    "name": {
+                      "name": "_products"
+                    },
+                    "initializer": {
+                      "New": {
+                        "ty": {
+                          "Generic": {
+                            "base": {
+                              "name": "List"
+                            },
+                            "args": [
+                              {
+                                "Reference": {
+                                  "name": "Product"
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        "arguments": [],
+                        "object_initializer": null,
+                        "collection_initializer": null
+                      }
+                    }
+                  }
+                },
+                {
+                  "Method": {
+                    "modifiers": [
+                      "Public"
+                    ],
+                    "return_type": {
+                      "Primitive": "Void"
+                    },
+                    "name": {
+                      "name": "Add"
+                    },
+                    "type_parameters": null,
+                    "parameters": [
+                      {
+                        "attributes": [],
+                        "modifier": null,
+                        "parameter_type": {
+                          "Reference": {
+                            "name": "Product"
+                          }
+                        },
+                        "name": {
+                          "name": "entity"
+                        },
+                        "default_value": null
+                      }
+                    ],
+                    "body": {
+                      "Block": [
+                        {
+                          "Expression": {
+                            "Invocation": {
+                              "callee": {
+                                "MemberAccess": {
+                                  "object": {
+                                    "Variable": {
+                                      "name": "_products"
+                                    }
+                                  },
+                                  "member": {
+                                    "name": "Add"
+                                  }
+                                }
+                              },
+                              "arguments": [
+                                {
+                                  "name": null,
+                                  "modifier": null,
+                                  "expr": {
+                                    "Variable": {
+                                      "name": "entity"
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    "constraints": null
+                  }
+                },
+                {
+                  "Method": {
+                    "modifiers": [
+                      "Public"
+                    ],
+                    "return_type": {
+                      "Primitive": "Void"
+                    },
+                    "name": {
+                      "name": "Delete"
+                    },
+                    "type_parameters": null,
+                    "parameters": [
+                      {
+                        "attributes": [],
+                        "modifier": null,
+                        "parameter_type": {
+                          "Primitive": "Int"
+                        },
+                        "name": {
+                          "name": "id"
+                        },
+                        "default_value": null
+                      }
+                    ],
+                    "body": {
+                      "Block": [
+                        {
+                          "Declaration": {
+                            "is_const": false,
+                            "is_ref": false,
+                            "declaration_type": "Var",
+                            "declarators": [
+                              {
+                                "name": {
+                                  "name": "product"
+                                },
+                                "initializer": {
+                                  "Invocation": {
+                                    "callee": {
+                                      "Variable": {
+                                        "name": "GetById"
+                                      }
+                                    },
+                                    "arguments": [
+                                      {
+                                        "name": null,
+                                        "modifier": null,
+                                        "expr": {
+                                          "Variable": {
+                                            "name": "id"
+                                          }
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "If": {
+                            "condition": {
+                              "Assignment": {
+                                "target": {
+                                  "PostfixUnary": {
+                                    "op": "NullForgiving",
+                                    "expr": {
+                                      "Variable": {
+                                        "name": "product"
+                                      }
+                                    }
+                                  }
+                                },
+                                "op": "Assign",
+                                "value": {
+                                  "Literal": "Null"
+                                }
+                              }
+                            },
+                            "consequence": {
+                              "Block": [
+                                {
+                                  "Expression": {
+                                    "Invocation": {
+                                      "callee": {
+                                        "MemberAccess": {
+                                          "object": {
+                                            "Variable": {
+                                              "name": "_products"
+                                            }
+                                          },
+                                          "member": {
+                                            "name": "Remove"
+                                          }
+                                        }
+                                      },
+                                      "arguments": [
+                                        {
+                                          "name": null,
+                                          "modifier": null,
+                                          "expr": {
+                                            "Variable": {
+                                              "name": "product"
+                                            }
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                }
+                              ]
+                            },
+                            "alternative": null
+                          }
+                        }
+                      ]
+                    },
+                    "constraints": null
+                  }
+                },
+                {
+                  "Method": {
+                    "modifiers": [
+                      "Public"
+                    ],
+                    "return_type": {
+                      "Generic": {
+                        "base": {
+                          "name": "IEnumerable"
+                        },
+                        "args": [
+                          {
+                            "Reference": {
+                              "name": "Product"
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    "name": {
+                      "name": "GetAll"
+                    },
+                    "type_parameters": null,
+                    "parameters": [],
+                    "body": {
+                      "Block": [
+                        {
+                          "Return": {
+                            "Variable": {
+                              "name": "_products"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    "constraints": null
+                  }
+                },
+                {
+                  "Method": {
+                    "modifiers": [
+                      "Public"
+                    ],
+                    "return_type": {
+                      "Reference": {
+                        "name": "Product"
+                      }
+                    },
+                    "name": {
+                      "name": "GetById"
+                    },
+                    "type_parameters": null,
+                    "parameters": [
+                      {
+                        "attributes": [],
+                        "modifier": null,
+                        "parameter_type": {
+                          "Primitive": "Int"
+                        },
+                        "name": {
+                          "name": "id"
+                        },
+                        "default_value": null
+                      }
+                    ],
+                    "body": {
+                      "Block": [
+                        {
+                          "Return": {
+                            "Invocation": {
+                              "callee": {
+                                "MemberAccess": {
+                                  "object": {
+                                    "Variable": {
+                                      "name": "_products"
+                                    }
+                                  },
+                                  "member": {
+                                    "name": "FirstOrDefault"
+                                  }
+                                }
+                              },
+                              "arguments": [
+                                {
+                                  "name": null,
+                                  "modifier": null,
+                                  "expr": {
+                                    "Lambda": {
+                                      "parameters": [
+                                        {
+                                          "name": {
+                                            "name": "p"
+                                          },
+                                          "ty": null,
+                                          "modifier": null
+                                        }
+                                      ],
+                                      "body": {
+                                        "ExpressionSyntax": {
+                                          "Binary": {
+                                            "left": {
+                                              "MemberAccess": {
+                                                "object": {
+                                                  "Variable": {
+                                                    "name": "p"
+                                                  }
+                                                },
+                                                "member": {
+                                                  "name": "Id"
+                                                }
+                                              }
+                                            },
+                                            "op": "Equal",
+                                            "right": {
+                                              "Variable": {
+                                                "name": "id"
+                                              }
+                                            }
+                                          }
+                                        }
+                                      },
+                                      "is_async": false
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    "constraints": null
+                  }
+                },
+                {
+                  "Method": {
+                    "modifiers": [
+                      "Public"
+                    ],
+                    "return_type": {
+                      "Primitive": "Void"
+                    },
+                    "name": {
+                      "name": "Update"
+                    },
+                    "type_parameters": null,
+                    "parameters": [
+                      {
+                        "attributes": [],
+                        "modifier": null,
+                        "parameter_type": {
+                          "Reference": {
+                            "name": "Product"
+                          }
+                        },
+                        "name": {
+                          "name": "entity"
+                        },
+                        "default_value": null
+                      }
+                    ],
+                    "body": {
+                      "Block": [
+                        {
+                          "Declaration": {
+                            "is_const": false,
+                            "is_ref": false,
+                            "declaration_type": "Var",
+                            "declarators": [
+                              {
+                                "name": {
+                                  "name": "product"
+                                },
+                                "initializer": {
+                                  "Invocation": {
+                                    "callee": {
+                                      "Variable": {
+                                        "name": "GetById"
+                                      }
+                                    },
+                                    "arguments": [
+                                      {
+                                        "name": null,
+                                        "modifier": null,
+                                        "expr": {
+                                          "MemberAccess": {
+                                            "object": {
+                                              "Variable": {
+                                                "name": "entity"
+                                              }
+                                            },
+                                            "member": {
+                                              "name": "Id"
+                                            }
+                                          }
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "If": {
+                            "condition": {
+                              "Assignment": {
+                                "target": {
+                                  "PostfixUnary": {
+                                    "op": "NullForgiving",
+                                    "expr": {
+                                      "Variable": {
+                                        "name": "product"
+                                      }
+                                    }
+                                  }
+                                },
+                                "op": "Assign",
+                                "value": {
+                                  "Literal": "Null"
+                                }
+                              }
+                            },
+                            "consequence": {
+                              "Block": [
+                                {
+                                  "Expression": {
+                                    "Assignment": {
+                                      "target": {
+                                        "MemberAccess": {
+                                          "object": {
+                                            "Variable": {
+                                              "name": "product"
+                                            }
+                                          },
+                                          "member": {
+                                            "name": "Name"
+                                          }
+                                        }
+                                      },
+                                      "op": "Assign",
+                                      "value": {
+                                        "MemberAccess": {
+                                          "object": {
+                                            "Variable": {
+                                              "name": "entity"
+                                            }
+                                          },
+                                          "member": {
+                                            "name": "Name"
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                },
+                                {
+                                  "Expression": {
+                                    "Assignment": {
+                                      "target": {
+                                        "MemberAccess": {
+                                          "object": {
+                                            "Variable": {
+                                              "name": "product"
+                                            }
+                                          },
+                                          "member": {
+                                            "name": "Price"
+                                          }
+                                        }
+                                      },
+                                      "op": "Assign",
+                                      "value": {
+                                        "MemberAccess": {
+                                          "object": {
+                                            "Variable": {
+                                              "name": "entity"
+                                            }
+                                          },
+                                          "member": {
+                                            "name": "Price"
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              ]
+                            },
+                            "alternative": null
+                          }
+                        }
+                      ]
+                    },
+                    "constraints": null
+                  }
+                }
+              ],
+              "documentation": null
+            }
+          },
+          {
+            "Class": {
+              "attributes": [],
+              "modifiers": [
+                "Public"
+              ],
+              "name": {
+                "name": "AsyncExample"
+              },
+              "type_parameters": null,
+              "primary_constructor_parameters": null,
+              "base_types": [],
+              "body_declarations": [
+                {
+                  "Method": {
+                    "modifiers": [
+                      "Public",
+                      "Async"
+                    ],
+                    "return_type": {
+                      "Generic": {
+                        "base": {
+                          "name": "Task"
+                        },
+                        "args": [
+                          {
+                            "Primitive": "String"
+                          }
+                        ]
+                      }
+                    },
+                    "name": {
+                      "name": "FetchDataAsync"
+                    },
+                    "type_parameters": null,
+                    "parameters": [],
+                    "body": {
+                      "Block": [
+                        {
+                          "Expression": {
+                            "Await": {
+                              "expr": {
+                                "Invocation": {
+                                  "callee": {
+                                    "MemberAccess": {
+                                      "object": {
+                                        "Variable": {
+                                          "name": "Task"
+                                        }
+                                      },
+                                      "member": {
+                                        "name": "Delay"
+                                      }
+                                    }
+                                  },
+                                  "arguments": [
+                                    {
+                                      "name": null,
+                                      "modifier": null,
+                                      "expr": {
+                                        "Literal": {
+                                          "Integer": 1000
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        },
+                        {
+                          "Return": {
+                            "Literal": {
+                              "String": "Data fetched successfully"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    "constraints": null
+                  }
+                },
+                {
+                  "Method": {
+                    "modifiers": [
+                      "Public",
+                      "Async"
+                    ],
+                    "return_type": {
+                      "Reference": {
+                        "name": "Task"
+                      }
+                    },
+                    "name": {
+                      "name": "ProcessDataAsync"
+                    },
+                    "type_parameters": null,
+                    "parameters": [],
+                    "body": {
+                      "Block": [
+                        {
+                          "Try": {
+                            "try_block": {
+                              "Block": [
+                                {
+                                  "Declaration": {
+                                    "is_const": false,
+                                    "is_ref": false,
+                                    "declaration_type": {
+                                      "Primitive": "String"
+                                    },
+                                    "declarators": [
+                                      {
+                                        "name": {
+                                          "name": "data"
+                                        },
+                                        "initializer": {
+                                          "Await": {
+                                            "expr": {
+                                              "Invocation": {
+                                                "callee": {
+                                                  "Variable": {
+                                                    "name": "FetchDataAsync"
+                                                  }
+                                                },
+                                                "arguments": []
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    ]
+                                  }
+                                },
+                                {
+                                  "Expression": {
+                                    "Invocation": {
+                                      "callee": {
+                                        "MemberAccess": {
+                                          "object": {
+                                            "Variable": {
+                                              "name": "Console"
+                                            }
+                                          },
+                                          "member": {
+                                            "name": "WriteLine"
+                                          }
+                                        }
+                                      },
+                                      "arguments": [
+                                        {
+                                          "name": null,
+                                          "modifier": null,
+                                          "expr": {
+                                            "Variable": {
+                                              "name": "data"
+                                            }
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                }
+                              ]
+                            },
+                            "catches": [
+                              {
+                                "exception_type": {
+                                  "Reference": {
+                                    "name": "Exception"
+                                  }
+                                },
+                                "exception_variable": {
+                                  "name": "ex"
+                                },
+                                "block": {
+                                  "Block": [
+                                    {
+                                      "Expression": {
+                                        "Invocation": {
+                                          "callee": {
+                                            "MemberAccess": {
+                                              "object": {
+                                                "Variable": {
+                                                  "name": "Console"
+                                                }
+                                              },
+                                              "member": {
+                                                "name": "WriteLine"
+                                              }
+                                            }
+                                          },
+                                          "arguments": [
+                                            {
+                                              "name": null,
+                                              "modifier": null,
+                                              "expr": {
+                                                "Literal": {
+                                                  "InterpolatedString": {
+                                                    "parts": [
+                                                      {
+                                                        "Text": "Error: "
+                                                      },
+                                                      {
+                                                        "Interpolation": {
+                                                          "expression": {
+                                                            "MemberAccess": {
+                                                              "object": {
+                                                                "Variable": {
+                                                                  "name": "ex"
+                                                                }
+                                                              },
+                                                              "member": {
+                                                                "name": "Message"
+                                                              }
+                                                            }
+                                                          },
+                                                          "alignment": null,
+                                                          "format_string": null
+                                                        }
+                                                      }
+                                                    ],
+                                                    "is_verbatim": false
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          ]
+                                        }
+                                      }
+                                    }
+                                  ]
+                                },
+                                "when_clause": null
+                              }
+                            ],
+                            "finally_clause": {
+                              "block": {
+                                "Block": [
+                                  {
+                                    "Expression": {
+                                      "Invocation": {
+                                        "callee": {
+                                          "MemberAccess": {
+                                            "object": {
+                                              "Variable": {
+                                                "name": "Console"
+                                              }
+                                            },
+                                            "member": {
+                                              "name": "WriteLine"
+                                            }
+                                          }
+                                        },
+                                        "arguments": [
+                                          {
+                                            "name": null,
+                                            "modifier": null,
+                                            "expr": {
+                                              "Literal": {
+                                                "String": "Processing completed"
+                                              }
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    "constraints": null
+                  }
+                }
+              ],
+              "documentation": null
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "file_scoped_namespace": null,
+  "top_level_statements": []
 }
