@@ -1,0 +1,771 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Architecture Decisions - BSharp C# Parser Documentation</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Comprehensive documentation for the BSharp C# parser and analysis toolkit">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../custom.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BSharp C# Parser Documentation</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/mikserek/bsharp" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/mikserek/bsharp/edit/main/docs/./development/architecture.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="architecture-decisions"><a class="header" href="#architecture-decisions">Architecture Decisions</a></h1>
+<p>This document explains the key architectural decisions made in the BSharp project, their rationale, and their implications for contributors.</p>
+<hr />
+<h2 id="core-design-philosophy"><a class="header" href="#core-design-philosophy">Core Design Philosophy</a></h2>
+<p>BSharp is designed as a <strong>modular, extensible C# parser and analysis toolkit</strong> written in Rust. The architecture prioritizes:</p>
+<ol>
+<li><strong>Correctness</strong> - Accurate parsing of C# syntax</li>
+<li><strong>Performance</strong> - Efficient parsing and analysis of large codebases</li>
+<li><strong>Maintainability</strong> - Clear module boundaries and minimal coupling</li>
+<li><strong>Extensibility</strong> - Easy addition of new language features and analyzers</li>
+</ol>
+<hr />
+<h2 id="parser-architecture"><a class="header" href="#parser-architecture">Parser Architecture</a></h2>
+<h3 id="why-nom-parser-combinators"><a class="header" href="#why-nom-parser-combinators">Why nom Parser Combinators?</a></h3>
+<p><strong>Decision:</strong> Use the <code>nom</code> parser combinator library as the foundation for parsing.</p>
+<p><strong>Rationale:</strong></p>
+<ul>
+<li><strong>Composability</strong>: Small, focused parsers combine to handle complex syntax</li>
+<li><strong>Type Safety</strong>: Rust's type system catches parser errors at compile time</li>
+<li><strong>Performance</strong>: Zero-copy parsing with minimal allocations</li>
+<li><strong>Testability</strong>: Individual parser functions are easily unit tested</li>
+<li><strong>Maintainability</strong>: Declarative style is easier to understand than hand-written parsers</li>
+</ul>
+<p><strong>Trade-offs:</strong></p>
+<ul>
+<li>Learning curve for contributors unfamiliar with parser combinators</li>
+<li>Error messages require additional work (addressed with nom-supreme)</li>
+</ul>
+<p><strong>Implementation:</strong></p>
+<ul>
+<li>Core parsing infrastructure: <code>src/syntax/parser_helpers.rs</code></li>
+<li>Parser implementations: <code>src/parser/</code></li>
+<li>All parsers return <code>BResult&lt;I, O&gt;</code> type alias</li>
+</ul>
+<h3 id="error-handling-strategy"><a class="header" href="#error-handling-strategy">Error Handling Strategy</a></h3>
+<p><strong>Decision:</strong> Use <code>nom-supreme::ErrorTree</code> for all parser errors.</p>
+<p><strong>Rationale:</strong></p>
+<ul>
+<li><strong>Rich Context</strong>: Tree structure preserves full parse failure path</li>
+<li><strong>Better Diagnostics</strong>: Context annotations via <code>.context()</code> method</li>
+<li><strong>Integration</strong>: Seamless integration with nom combinators</li>
+<li><strong>Debugging</strong>: Pretty-printing via <code>format_error_tree()</code></li>
+</ul>
+<p><strong>Evolution:</strong></p>
+<ul>
+<li>Initially used custom <code>BSharpParseError</code> type</li>
+<li>Migrated to <code>ErrorTree</code> for better diagnostics</li>
+<li>Custom error type deprecated and removed</li>
+</ul>
+<p><strong>Implementation:</strong></p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub type BResult&lt;I, O&gt; = IResult&lt;I, O, ErrorTree&lt;I&gt;&gt;;
+<span class="boring">}</span></code></pre></pre>
+<p><strong>Helper Functions:</strong></p>
+<ul>
+<li><code>context()</code> - Adds contextual information</li>
+<li><code>cut()</code> - Commits to parse branch (prevents misleading backtracking)</li>
+<li><code>bws()</code> - Whitespace-aware wrapper with error context</li>
+<li><code>bdelimited()</code> - Delimited parsing with cut on closing delimiter</li>
+</ul>
+<h3 id="module-organization"><a class="header" href="#module-organization">Module Organization</a></h3>
+<p><strong>Decision:</strong> Separate <code>parser/</code> (implementations) from <code>syntax/</code> (infrastructure).</p>
+<p><strong>Structure:</strong></p>
+<pre><code>src/
+├── parser/           # Parser implementations
+│   ├── expressions/  # Expression parsers
+│   ├── keywords/     # Keyword parsing (modularized)
+│   ├── types/        # Type system parsers
+│   └── ...
+├── syntax/           # Parser infrastructure
+│   ├── ast.rs        # Root AST definitions
+│   ├── nodes/        # AST node definitions
+│   ├── parser_helpers.rs  # Parsing utilities
+│   ├── errors.rs     # Error formatting
+│   └── ...
+</code></pre>
+<p><strong>Rationale:</strong></p>
+<ul>
+<li><strong>Separation of Concerns</strong>: Infrastructure vs implementation</li>
+<li><strong>Reusability</strong>: Helpers used across all parsers</li>
+<li><strong>API Clarity</strong>: <code>syntax</code> module is the public API</li>
+<li><strong>Testing</strong>: Infrastructure can be tested independently</li>
+</ul>
+<h3 id="keyword-modularization"><a class="header" href="#keyword-modularization">Keyword Modularization</a></h3>
+<p><strong>Decision:</strong> Organize keywords by category in dedicated modules.</p>
+<p><strong>Structure:</strong></p>
+<pre><code>src/parser/keywords/
+├── mod.rs                      # Keyword infrastructure
+├── access_keywords.rs          # public, private, protected, internal
+├── accessor_keywords.rs        # get, set, init, add, remove
+├── type_keywords.rs            # class, struct, interface, enum, record
+├── modifier_keywords.rs        # static, abstract, virtual, sealed
+├── flow_control_keywords.rs    # if, else, switch, case, default
+├── iteration_keywords.rs       # for, foreach, while, do
+├── expression_keywords.rs      # new, this, base, typeof, sizeof
+├── linq_query_keywords.rs      # from, where, select, orderby
+└── ...
+</code></pre>
+<p><strong>Rationale:</strong></p>
+<ul>
+<li><strong>Maintainability</strong>: Easy to find and update keyword parsers</li>
+<li><strong>Consistency</strong>: Uniform keyword parsing strategy</li>
+<li><strong>Word Boundaries</strong>: All keywords use <code>keyword()</code> helper for boundary checking</li>
+<li><strong>Prevents Bugs</strong>: Avoids partial matches (e.g., "int" vs "int32")</li>
+</ul>
+<p><strong>Implementation:</strong></p>
+<ul>
+<li><code>keyword()</code> function enforces <code>[A-Za-z0-9_]</code> word boundaries</li>
+<li>Macro-based keyword parser generation for consistency</li>
+<li>Centralized keyword list prevents drift</li>
+</ul>
+<hr />
+<h2 id="ast-design"><a class="header" href="#ast-design">AST Design</a></h2>
+<h3 id="naming-convention"><a class="header" href="#naming-convention">Naming Convention</a></h3>
+<p><strong>Decision:</strong> Use PascalCase names without 'Syntax' suffix for all AST nodes.</p>
+<p><strong>Examples:</strong></p>
+<ul>
+<li><code>ClassDeclaration</code> (not <code>ClassDeclarationSyntax</code>)</li>
+<li><code>MethodDeclaration</code> (not <code>MethodDeclarationSyntax</code>)</li>
+<li><code>ExpressionStatement</code> (not <code>ExpressionStatementSyntax</code>)</li>
+<li><code>IfStatement</code> (not <code>IfStatementSyntax</code>)</li>
+</ul>
+<p><strong>Rationale:</strong></p>
+<ul>
+<li><strong>Clarity</strong>: Shorter, clearer names</li>
+<li><strong>Roslyn Inspiration</strong>: Mirrors Roslyn's structure where appropriate</li>
+<li><strong>Consistency</strong>: Uniform naming across entire codebase</li>
+<li><strong>User Preference</strong>: Explicit design decision (documented in memories)</li>
+</ul>
+<p><strong>Implications:</strong></p>
+<ul>
+<li>All AST node types follow this convention</li>
+<li>Test code uses these names</li>
+<li>Documentation uses these names</li>
+<li>Breaking change from earlier versions with 'Syntax' suffix</li>
+</ul>
+<h3 id="ast-ownership-model"><a class="header" href="#ast-ownership-model">AST Ownership Model</a></h3>
+<p><strong>Decision:</strong> Parent nodes own their children; no circular references.</p>
+<p><strong>Structure:</strong></p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct ClassDeclaration {
+    pub attributes: Vec&lt;Attribute&gt;,
+    pub modifiers: Vec&lt;Modifier&gt;,
+    pub identifier: Identifier,
+    pub type_parameters: Option&lt;Vec&lt;TypeParameter&gt;&gt;,
+    pub base_types: Vec&lt;Type&gt;,
+    pub body_declarations: Vec&lt;ClassBodyDeclaration&gt;,  // Owned
+    pub type_parameter_constraints: Vec&lt;TypeParameterConstraint&gt;,
+}
+<span class="boring">}</span></code></pre></pre>
+<p><strong>Rationale:</strong></p>
+<ul>
+<li><strong>Rust Ownership</strong>: Leverages Rust's ownership system</li>
+<li><strong>Memory Safety</strong>: No reference cycles or lifetime complexity</li>
+<li><strong>Simplicity</strong>: Clear ownership semantics</li>
+<li><strong>Traversal</strong>: Navigation traits provide search without ownership issues</li>
+</ul>
+<p><strong>Trade-offs:</strong></p>
+<ul>
+<li>Cannot directly reference parent from child</li>
+<li>Navigation requires traversal from root</li>
+<li>Mitigated by <code>AstNavigate</code> and <code>FindDeclarations</code> traits</li>
+</ul>
+<h3 id="zero-copy-parsing"><a class="header" href="#zero-copy-parsing">Zero-Copy Parsing</a></h3>
+<p><strong>Decision:</strong> Minimize string allocations during parsing where possible.</p>
+<p><strong>Implementation:</strong></p>
+<ul>
+<li>String slices reference original input</li>
+<li>Identifiers store <code>String</code> (owned) for convenience</li>
+<li>Literals preserve original format as <code>String</code></li>
+</ul>
+<p><strong>Rationale:</strong></p>
+<ul>
+<li><strong>Performance</strong>: Reduces allocation overhead</li>
+<li><strong>Memory Efficiency</strong>: Lower memory footprint</li>
+<li><strong>Trade-off</strong>: Some allocations necessary for AST lifetime</li>
+</ul>
+<hr />
+<h2 id="analysis-framework"><a class="header" href="#analysis-framework">Analysis Framework</a></h2>
+<h3 id="framework-driven-architecture"><a class="header" href="#framework-driven-architecture">Framework-Driven Architecture</a></h3>
+<p><strong>Decision:</strong> Implement a pipeline-based analysis framework with passes, rules, and visitors.</p>
+<p><strong>Structure:</strong></p>
+<pre><code>src/analysis/
+├── framework/        # Core analysis infrastructure
+│   ├── pipeline.rs   # Analysis pipeline orchestration
+│   ├── passes.rs     # Analysis pass trait and phases
+│   ├── rules.rs      # Rule trait and rulesets
+│   ├── walker.rs     # AST walker and visitor pattern
+│   ├── registry.rs   # Analyzer registry
+│   └── session.rs    # Analysis session and state
+├── passes/           # Concrete analysis passes
+├── rules/            # Concrete analysis rules
+├── artifacts/        # Analysis artifacts (symbols, metrics, CFG)
+└── ...
+</code></pre>
+<p><strong>Rationale:</strong></p>
+<ul>
+<li><strong>Extensibility</strong>: Easy to add new analyzers</li>
+<li><strong>Composability</strong>: Passes and rules compose via registry</li>
+<li><strong>Performance</strong>: Single-pass traversal for local rules</li>
+<li><strong>Configurability</strong>: Enable/disable passes and rules via config</li>
+</ul>
+<p><strong>Phases:</strong></p>
+<ol>
+<li><strong>Index</strong> - Symbol indexing and scope building</li>
+<li><strong>Local</strong> - Single-pass local rules and metrics collection</li>
+<li><strong>Global</strong> - Cross-file analysis (dependencies, etc.)</li>
+<li><strong>Semantic</strong> - Type checking and semantic rules</li>
+<li><strong>Reporting</strong> - Report generation and formatting</li>
+</ol>
+<h3 id="visitor-pattern"><a class="header" href="#visitor-pattern">Visitor Pattern</a></h3>
+<p><strong>Decision:</strong> Use visitor pattern for AST traversal.</p>
+<p><strong>Implementation:</strong></p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub trait Visit {
+    fn enter(&amp;mut self, node: &amp;NodeRef, session: &amp;mut AnalysisSession);
+    fn exit(&amp;mut self, node: &amp;NodeRef, session: &amp;mut AnalysisSession) {}
+}
+
+pub struct AstWalker {
+    visitors: Vec&lt;Box&lt;dyn Visit&gt;&gt;,
+}
+<span class="boring">}</span></code></pre></pre>
+<p><strong>Rationale:</strong></p>
+<ul>
+<li><strong>Separation of Concerns</strong>: Traversal logic separate from analysis logic</li>
+<li><strong>Composability</strong>: Multiple visitors in single traversal</li>
+<li><strong>Performance</strong>: Single pass for multiple analyses</li>
+<li><strong>Extensibility</strong>: Easy to add new visitors</li>
+</ul>
+<h3 id="navigation-traits"><a class="header" href="#navigation-traits">Navigation Traits</a></h3>
+<p><strong>Decision:</strong> Provide <code>AstNavigate</code> and <code>FindDeclarations</code> traits for AST search.</p>
+<p><strong>Implementation:</strong></p>
+<ul>
+<li><code>AstNavigate</code> - Find statements (if, for, while, switch, try, using)</li>
+<li><code>FindDeclarations</code> - Find declarations (classes, methods, interfaces, etc.)</li>
+<li>Implemented for <code>CompilationUnit</code> and major AST nodes</li>
+</ul>
+<p><strong>Rationale:</strong></p>
+<ul>
+<li><strong>Convenience</strong>: High-level search API</li>
+<li><strong>Reusability</strong>: Common patterns extracted</li>
+<li><strong>Type Safety</strong>: Returns strongly-typed results</li>
+<li><strong>CLI Integration</strong>: Used by analyze command for symbol search</li>
+</ul>
+<hr />
+<h2 id="workspace-loading"><a class="header" href="#workspace-loading">Workspace Loading</a></h2>
+<h3 id="multi-format-support"><a class="header" href="#multi-format-support">Multi-Format Support</a></h3>
+<p><strong>Decision:</strong> Support loading from .sln, .csproj, or directory.</p>
+<p><strong>Implementation:</strong></p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct WorkspaceLoader;
+
+impl WorkspaceLoader {
+    pub fn from_path(path: &amp;Path) -&gt; Result&lt;Workspace&gt;;
+    pub fn from_path_with_options(path: &amp;Path, opts: WorkspaceLoadOptions) -&gt; Result&lt;Workspace&gt;;
+}
+<span class="boring">}</span></code></pre></pre>
+<p><strong>Rationale:</strong></p>
+<ul>
+<li><strong>Flexibility</strong>: Support different entry points</li>
+<li><strong>IDE Integration</strong>: Match IDE project loading behavior</li>
+<li><strong>Incremental Analysis</strong>: Load only what's needed</li>
+</ul>
+<p><strong>Features:</strong></p>
+<ul>
+<li>Solution file (.sln) parsing</li>
+<li>Project file (.csproj) parsing with XML</li>
+<li>Transitive ProjectReference following</li>
+<li>Source file discovery with glob patterns</li>
+<li>Deterministic project ordering</li>
+</ul>
+<h3 id="error-resilience"><a class="header" href="#error-resilience">Error Resilience</a></h3>
+<p><strong>Decision:</strong> Continue loading workspace even if individual projects fail.</p>
+<p><strong>Implementation:</strong></p>
+<ul>
+<li>Failed projects recorded as stubs with error messages</li>
+<li>Workspace loading succeeds with partial results</li>
+<li>Errors accessible via <code>Project::errors</code> field</li>
+</ul>
+<p><strong>Rationale:</strong></p>
+<ul>
+<li><strong>Robustness</strong>: Don't fail entire workspace for one bad project</li>
+<li><strong>User Experience</strong>: Show what can be analyzed</li>
+<li><strong>Debugging</strong>: Error messages preserved for investigation</li>
+</ul>
+<hr />
+<h2 id="testing-strategy"><a class="header" href="#testing-strategy">Testing Strategy</a></h2>
+<h3 id="external-test-organization"><a class="header" href="#external-test-organization">External Test Organization</a></h3>
+<p><strong>Decision:</strong> All parser tests in <code>tests/</code> directory, not inline <code>#[cfg(test)]</code> modules.</p>
+<p><strong>Structure:</strong></p>
+<pre><code>tests/
+├── parser/
+│   ├── expressions/
+│   │   ├── expression_tests.rs
+│   │   ├── lambda_expression_tests.rs
+│   │   └── ...
+│   ├── statements/
+│   │   ├── if_statement_tests.rs
+│   │   └── ...
+│   ├── declarations/
+│   │   ├── class_declaration_tests.rs
+│   │   └── ...
+│   └── types/
+│       └── type_tests.rs
+└── fixtures/
+    ├── happy_path/
+    └── complex/
+</code></pre>
+<p><strong>Rationale:</strong></p>
+<ul>
+<li><strong>Separation</strong>: Test code separate from implementation</li>
+<li><strong>Organization</strong>: Clear test structure mirrors parser structure</li>
+<li><strong>Compilation</strong>: Tests don't bloat production binary</li>
+<li><strong>User Preference</strong>: Explicit design decision (documented in memories)</li>
+</ul>
+<p><strong>Implications:</strong></p>
+<ul>
+<li>NO <code>#[cfg(test)] mod tests {}</code> in <code>src/parser/</code> files</li>
+<li>All tests use <code>tests/parser/</code> structure</li>
+<li>Test helpers in <code>src/syntax/test_helpers.rs</code></li>
+</ul>
+<h3 id="test-helpers"><a class="header" href="#test-helpers">Test Helpers</a></h3>
+<p><strong>Decision:</strong> Provide <code>expect_ok()</code> helper for readable test failures.</p>
+<p><strong>Implementation:</strong></p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub fn expect_ok&lt;T&gt;(input: &amp;str, result: BResult&lt;&amp;str, T&gt;) -&gt; T {
+    match result {
+        Ok((_, value)) =&gt; value,
+        Err(e) =&gt; {
+            eprintln!("{}", format_error_tree(&amp;input, &amp;e));
+            panic!("Parse failed");
+        }
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<p><strong>Rationale:</strong></p>
+<ul>
+<li><strong>Diagnostics</strong>: Pretty-printed errors on failure</li>
+<li><strong>Debugging</strong>: Shows parse failure context</li>
+<li><strong>Consistency</strong>: Uniform test error reporting</li>
+</ul>
+<h3 id="snapshot-testing"><a class="header" href="#snapshot-testing">Snapshot Testing</a></h3>
+<p><strong>Decision:</strong> Use <code>insta</code> crate for snapshot testing.</p>
+<p><strong>Implementation:</strong></p>
+<ul>
+<li><code>Cargo.toml</code> includes <code>insta</code> in dev-dependencies</li>
+<li>Snapshot tests for complex AST structures</li>
+<li>JSON serialization for comparison</li>
+</ul>
+<p><strong>Rationale:</strong></p>
+<ul>
+<li><strong>Regression Prevention</strong>: Catch unintended AST changes</li>
+<li><strong>Review</strong>: Visual diff of AST changes</li>
+<li><strong>Maintenance</strong>: Update snapshots when intentional</li>
+</ul>
+<hr />
+<h2 id="performance-considerations"><a class="header" href="#performance-considerations">Performance Considerations</a></h2>
+<h3 id="parallel-analysis"><a class="header" href="#parallel-analysis">Parallel Analysis</a></h3>
+<p><strong>Decision:</strong> Optional parallel analysis via <code>rayon</code> feature.</p>
+<p><strong>Implementation:</strong></p>
+<pre><code class="language-toml">[features]
+parallel_analysis = ["rayon"]
+</code></pre>
+<p><strong>Rationale:</strong></p>
+<ul>
+<li><strong>Scalability</strong>: Faster analysis for large workspaces</li>
+<li><strong>Optional</strong>: Not required for single-file use cases</li>
+<li><strong>Trade-off</strong>: Adds dependency and complexity</li>
+</ul>
+<h3 id="incremental-parsing"><a class="header" href="#incremental-parsing">Incremental Parsing</a></h3>
+<p><strong>Decision:</strong> Not implemented yet; designed for future addition.</p>
+<p><strong>Future Design:</strong></p>
+<ul>
+<li>Cache parsed ASTs by file hash</li>
+<li>Reparse only changed files</li>
+<li>Incremental analysis based on change scope</li>
+</ul>
+<p><strong>Rationale:</strong></p>
+<ul>
+<li><strong>Performance</strong>: Critical for IDE integration</li>
+<li><strong>Complexity</strong>: Requires careful cache invalidation</li>
+<li><strong>Priority</strong>: Deferred until core features stable</li>
+</ul>
+<hr />
+<h2 id="compiler-backend"><a class="header" href="#compiler-backend">Compiler Backend</a></h2>
+<h3 id="cranelift-integration"><a class="header" href="#cranelift-integration">Cranelift Integration</a></h3>
+<p><strong>Decision:</strong> Use Cranelift as the code generation backend.</p>
+<p><strong>Implementation:</strong></p>
+<ul>
+<li><code>src/codegen/</code> - Code generation infrastructure</li>
+<li><code>src/compiler.rs</code> - Compilation orchestration</li>
+<li>Cranelift dependencies in <code>Cargo.toml</code></li>
+</ul>
+<p><strong>Rationale:</strong></p>
+<ul>
+<li><strong>Performance</strong>: Fast JIT and AOT compilation</li>
+<li><strong>Portability</strong>: Cross-platform code generation</li>
+<li><strong>Rust Integration</strong>: Well-integrated with Rust ecosystem</li>
+<li><strong>Simplicity</strong>: Simpler than LLVM for initial implementation</li>
+</ul>
+<p><strong>Status:</strong></p>
+<ul>
+<li>Basic infrastructure in place</li>
+<li>Full compilation pipeline under development</li>
+</ul>
+<hr />
+<h2 id="cli-design"><a class="header" href="#cli-design">CLI Design</a></h2>
+<h3 id="subcommand-structure"><a class="header" href="#subcommand-structure">Subcommand Structure</a></h3>
+<p><strong>Decision:</strong> Use <code>clap</code> with subcommands for different operations.</p>
+<p><strong>Commands:</strong></p>
+<ul>
+<li><code>parse</code> - Parse C# file to JSON</li>
+<li><code>tree</code> - Generate SVG visualization</li>
+<li><code>compile</code> - Compile C# file</li>
+<li><code>analyze</code> - Run analysis and generate report</li>
+</ul>
+<p><strong>Rationale:</strong></p>
+<ul>
+<li><strong>Clarity</strong>: Each command has clear purpose</li>
+<li><strong>Extensibility</strong>: Easy to add new commands</li>
+<li><strong>Discoverability</strong>: <code>--help</code> shows all options</li>
+<li><strong>Consistency</strong>: Follows common CLI patterns</li>
+</ul>
+<h3 id="output-formats"><a class="header" href="#output-formats">Output Formats</a></h3>
+<p><strong>Decision:</strong> Support multiple output formats (JSON, pretty-JSON, SVG).</p>
+<p><strong>Implementation:</strong></p>
+<ul>
+<li>JSON for machine consumption</li>
+<li>Pretty-JSON for human readability</li>
+<li>SVG for visualization</li>
+</ul>
+<p><strong>Rationale:</strong></p>
+<ul>
+<li><strong>Integration</strong>: JSON for tool integration</li>
+<li><strong>Debugging</strong>: Pretty-JSON for manual inspection</li>
+<li><strong>Visualization</strong>: SVG for understanding AST structure</li>
+</ul>
+<hr />
+<h2 id="future-extensibility"><a class="header" href="#future-extensibility">Future Extensibility</a></h2>
+<h3 id="planned-enhancements"><a class="header" href="#planned-enhancements">Planned Enhancements</a></h3>
+<ol>
+<li>
+<p><strong>Incremental Parsing</strong></p>
+<ul>
+<li>Cache parsed ASTs</li>
+<li>Reparse only changed regions</li>
+<li>Critical for IDE integration</li>
+</ul>
+</li>
+<li>
+<p><strong>Language Server Protocol (LSP)</strong></p>
+<ul>
+<li>IDE integration</li>
+<li>Real-time diagnostics</li>
+<li>Code completion</li>
+</ul>
+</li>
+<li>
+<p><strong>More Analysis Passes</strong></p>
+<ul>
+<li>Nullability analysis</li>
+<li>Lifetime analysis</li>
+<li>Security analysis</li>
+</ul>
+</li>
+<li>
+<p><strong>Code Transformation</strong></p>
+<ul>
+<li>AST modification API</li>
+<li>Code generation from AST</li>
+<li>Refactoring support</li>
+</ul>
+</li>
+</ol>
+<h3 id="design-for-extension"><a class="header" href="#design-for-extension">Design for Extension</a></h3>
+<p><strong>Principles:</strong></p>
+<ul>
+<li><strong>Trait-Based</strong>: Use traits for extensibility points</li>
+<li><strong>Registry Pattern</strong>: Dynamic registration of analyzers</li>
+<li><strong>Configuration</strong>: Enable/disable features via config</li>
+<li><strong>Versioning</strong>: Stable API with clear versioning</li>
+</ul>
+<hr />
+<h2 id="lessons-learned"><a class="header" href="#lessons-learned">Lessons Learned</a></h2>
+<h3 id="what-worked-well"><a class="header" href="#what-worked-well">What Worked Well</a></h3>
+<ol>
+<li><strong>Parser Combinators</strong>: Excellent for composability and testing</li>
+<li><strong>Module Organization</strong>: Clear boundaries reduce coupling</li>
+<li><strong>Error Context</strong>: <code>ErrorTree</code> provides excellent diagnostics</li>
+<li><strong>External Tests</strong>: Clean separation improves maintainability</li>
+</ol>
+<h3 id="what-wed-do-differently"><a class="header" href="#what-wed-do-differently">What We'd Do Differently</a></h3>
+<ol>
+<li><strong>Earlier Keyword Modularization</strong>: Should have organized keywords from start</li>
+<li><strong>Error Type Migration</strong>: Earlier adoption of <code>ErrorTree</code> would have saved refactoring</li>
+<li><strong>Documentation</strong>: More inline documentation from the beginning</li>
+</ol>
+<h3 id="recent-refactoring"><a class="header" href="#recent-refactoring">Recent Refactoring</a></h3>
+<p>Major refactoring improvements completed:</p>
+<ul>
+<li>Expression precedence chain builder implemented</li>
+<li>Statement group deduplication completed</li>
+<li>Consistent error recovery with <code>skip_to_member_boundary_top_level()</code></li>
+<li>Whitespace handling standardization via <code>bws()</code> combinator</li>
+<li>Keyword modularization by category</li>
+</ul>
+<hr />
+<h2 id="contributing-guidelines"><a class="header" href="#contributing-guidelines">Contributing Guidelines</a></h2>
+<p>When adding new features, follow these architectural principles:</p>
+<ol>
+<li><strong>Use Existing Patterns</strong>: Follow established parser patterns</li>
+<li><strong>Add Tests</strong>: External tests in <code>tests/</code> directory</li>
+<li><strong>Document Decisions</strong>: Update this file for significant changes</li>
+<li><strong>Error Context</strong>: Add <code>.context()</code> calls for debugging</li>
+<li><strong>Naming Convention</strong>: PascalCase without 'Syntax' suffix</li>
+<li><strong>Keyword Boundaries</strong>: Use <code>keyword()</code> helper for all keywords</li>
+</ol>
+<p>See <code>docs/development/contributing.md</code> for detailed contribution guidelines.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../development/testing.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../development/testing.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

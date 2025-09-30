@@ -50,7 +50,7 @@ BSharp is designed as a **modular, extensible C# parser and analysis toolkit** w
 **Evolution:**
 - Initially used custom `BSharpParseError` type
 - Migrated to `ErrorTree` for better diagnostics
-- Custom error type deprecated (see `parser_review.md`)
+- Custom error type deprecated and removed
 
 **Implementation:**
 ```rust
@@ -522,13 +522,14 @@ parallel_analysis = ["rayon"]
 2. **Error Type Migration**: Earlier adoption of `ErrorTree` would have saved refactoring
 3. **Documentation**: More inline documentation from the beginning
 
-### Ongoing Refactoring
+### Recent Refactoring
 
-See `parser_review.md` for detailed refactoring progress:
-- Expression precedence chain builder
-- Statement group deduplication
-- Consistent error recovery
-- Whitespace handling standardization
+Major refactoring improvements completed:
+- Expression precedence chain builder implemented
+- Statement group deduplication completed
+- Consistent error recovery with `skip_to_member_boundary_top_level()`
+- Whitespace handling standardization via `bws()` combinator
+- Keyword modularization by category
 
 ---
 

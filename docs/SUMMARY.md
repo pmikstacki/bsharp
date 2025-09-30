@@ -40,6 +40,11 @@
 - [Parse Command](./cli/parse.md)
 - [Tree Visualization](./cli/tree.md)
 - [Compilation](./cli/compile.md)
+- [Analysis Command](./cli/analyze.md)
+
+# Workspace
+
+- [Workspace Loading](./workspace/overview.md)
 
 # Development
 

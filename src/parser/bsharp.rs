@@ -38,7 +38,7 @@ pub fn parse_csharp_source(input: &str) -> BResult<&str, CompilationUnit> {
     // Skip any leading whitespace/comments and remove any BOM or other text markers
     let (remaining, _) = ws(input)?;
     // Skip initial preprocessor directives
-    let mut remaining = skip_preprocessor_directives(remaining, true);
+    let remaining = skip_preprocessor_directives(remaining, true);
 
     if log::log_enabled!(log::Level::Trace) {
         // Trace the input start (debug-only)
@@ -52,7 +52,7 @@ pub fn parse_csharp_source(input: &str) -> BResult<&str, CompilationUnit> {
     }
 
     // Skip any leading preprocessor directives (treat as trivia)
-    let mut remaining = skip_preprocessor_directives(remaining, true);
+    let remaining = skip_preprocessor_directives(remaining, true);
 
     // Parse global attributes first (assembly and module attributes)
     let (mut remaining, global_attributes) = parse_global_attributes(remaining)?;

@@ -25,6 +25,10 @@ pub enum Commands {
         /// The output JSON file (defaults to <input>.json)
         #[arg(short, long)]
         output: Option<PathBuf>,
+
+        /// Emit errors as JSON to stdout and exit with non-zero status (disables pretty errors)
+        #[arg(long, default_value_t = false)]
+        errors_json: bool,
     },
 
     /// Generate an SVG visualization of the AST from a C# file
@@ -105,7 +109,7 @@ pub fn run() -> Result<()> {
     let cli = Cli::parse();
 
     match cli.command {
-        Commands::Parse { input, output } => parse::execute(input, output),
+        Commands::Parse { input, output, errors_json } => parse::execute(input, output, errors_json),
 
         Commands::Tree { input, output } => tree::execute(input, output),
 

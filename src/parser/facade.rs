@@ -14,7 +14,18 @@ impl Parser {
 
     pub fn parse(&self, input: &str) -> Result<ast::CompilationUnit, String> {
         match parse_csharp_source(input).finish() {
-            Ok((_, compilation_unit)) => Ok(compilation_unit),
+            Ok((remaining, compilation_unit)) => {
+                // Treat significant trailing input as a parse error to surface failures in CLI
+                if remaining.trim().is_empty() {
+                    Ok(compilation_unit)
+                } else {
+                    let preview: String = remaining.chars().take(80).collect();
+                    Err(format!(
+                        "Unparsed trailing input after parse: {:?}",
+                        preview
+                    ))
+                }
+            }
             Err(e) => Err(format!("Failed to parse C# code: {:?}", e)),
         }
     }

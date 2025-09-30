@@ -7,25 +7,26 @@ The BSharp parser is the core component of an alternative C# compiler implementa
 
 As part of the BSharp compiler, the parser follows a modular architecture with clear separation of concerns. The parser serves as the frontend of the compiler pipeline, feeding structured AST data to subsequent compilation phases:
 
-### Core Parser Infrastructure (`src/parser/`)
+### Parser Infrastructure (`src/syntax/`)
 
-- **`mod.rs`**: Main parser entry point and public API
+- **`mod.rs`**: Public API and re-exports
 - **`ast.rs`**: Root AST node definitions (`CompilationUnit`, `TopLevelDeclaration`)
-- **`errors.rs`**: Custom error types with rich context information
-- **`parser_helpers.rs`**: Utility functions for error handling and parser composition
-- **`test_helpers.rs`**: Testing utilities for parser validation
-- **`navigation.rs`**: AST traversal and search capabilities
+- **`errors.rs`**: Error formatting utilities (`format_error_tree`)
+- **`parser_helpers.rs`**: Core parsing utilities (`context`, `bws`, `keyword`, etc.)
+- **`test_helpers.rs`**: Testing utilities (`expect_ok`, etc.)
+- **`nodes/`**: AST node definitions organized by category
 
-### Specific Parser Implementations (`src/parsers/`)
+### Parser Implementations (`src/parser/`)
 
 The parsers are organized by language construct type:
 
 - **`expressions/`**: All expression parsing (literals, operators, method calls, etc.)
-- **`statements/`**: Statement parsing (if, for, while, try-catch, etc.)
-- **`declarations/`**: Declaration parsing (classes, methods, properties, etc.)
+- **`keywords/`**: Keyword parsing organized by category
 - **`types/`**: Type system parsing (primitives, generics, arrays, etc.)
+- **`helpers/`**: Declaration helpers and utilities
+- **`preprocessor/`**: Preprocessor directive parsing
 
-### AST Node Definitions (`src/parser/nodes/`)
+### AST Node Definitions (`src/syntax/nodes/`)
 
 Structured node definitions that mirror C# language constructs:
 

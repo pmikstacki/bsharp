@@ -5,19 +5,19 @@ BSharp implements a comprehensive error handling system that provides detailed c
 
 ## Error Types
 
-The parser uses a custom error type `BResult` which provides structured error information:
+The parser uses `ErrorTree` from nom-supreme for structured error information:
 
 ```rust
-pub type BResult<I, O> = nom::IResult<I, O, BError>;
+pub type BResult<I, O> = nom::IResult<I, O, ErrorTree<I>>;
 ```
 
-### BError Structure
+### ErrorTree Structure
 
-The `BError` type contains:
-- **Context**: Descriptive information about what was being parsed
-- **Location**: Position in the source code where the error occurred
-- **Expected**: What the parser expected to find
-- **Found**: What was actually encountered
+The `ErrorTree` type provides:
+- **Context Stack**: Hierarchical parsing context via `.context()` calls
+- **Location**: Span tracking for error positions
+- **Error Tree**: Complete parse failure path
+- **Rich Diagnostics**: Detailed error information for debugging
 
 ## Error Recovery
 
@@ -112,10 +112,12 @@ The directive is skipped and not present as a namespace member.
 Errors include contextual information about the parsing context:
 
 ```rust
-bs_context("method declaration", parse_method_body)(input)
+context("method declaration", parse_method_body)(input)
 ```
 
 This provides clear error messages like "expected method body in method declaration context".
+
+**Helper Location:** `src/syntax/parser_helpers.rs`
 
 ### 3. Graceful Degradation
 

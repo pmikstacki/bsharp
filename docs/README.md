@@ -42,13 +42,49 @@ The codebase is organized into several main modules:
 
 ```
 src/
-├── parser/           # Core parsing infrastructure
-├── parsers/          # Specific parser implementations
+├── parser/           # Parser implementations (expressions, statements, declarations)
+├── syntax/           # Parser infrastructure (AST nodes, helpers, errors)
 ├── analysis/         # Code analysis framework
+├── workspace/        # Solution and project file loading
 ├── cli/              # Command-line interface
 ├── codegen/          # Code generation utilities
-└── compiler/         # Compilation infrastructure
+└── compiler.rs       # Compilation orchestration
 ```
+
+### Key Components
+
+**Parser (`src/parser/`, `src/syntax/`)**
+- Modular parser using nom combinators
+- Complete C# language support
+- Rich error diagnostics with ErrorTree
+- Keyword parsing organized by category
+- AST nodes follow PascalCase naming without 'Syntax' suffix
+
+**Workspace Loading (`src/workspace/`)**
+- Solution file (.sln) parsing
+- Project file (.csproj) parsing with XML
+- Transitive ProjectReference resolution
+- Source file discovery with glob patterns
+- Deterministic project ordering
+
+**Analysis Framework (`src/analysis/`)**
+- Pipeline-based architecture with phases
+- Extensible passes and rules system
+- Metrics collection (complexity, maintainability)
+- Control flow analysis
+- Dependency tracking
+- Code quality assessment
+
+**Code Generation (`src/codegen/`, `src/compiler.rs`)**
+- Cranelift backend integration
+- IR generation from AST
+- Native code compilation (experimental)
+
+**CLI Tools (`src/cli/`)**
+- `parse` - Parse C# to JSON
+- `tree` - Generate AST visualization
+- `compile` - Compile to native binary
+- `analyze` - Comprehensive code analysis
 
 ## Getting Started
 

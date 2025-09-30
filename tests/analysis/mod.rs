@@ -9,6 +9,7 @@ pub mod types;
 pub mod symbols_index;
 pub mod cfg_pass;
 pub mod deps_pass;
+pub mod visitors;
 
 // These modules don't exist yet:
 // pub mod security;

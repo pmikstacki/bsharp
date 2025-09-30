@@ -23,31 +23,47 @@ The `Parser` provides a clean, simple interface that abstracts away the complexi
 
 ## Error System
 
-### BSharpParseError
+### ErrorTree (nom-supreme)
 
-The custom error type that provides rich context for parse failures:
+BSharp uses nom-supreme's ErrorTree for rich error diagnostics:
 
 ```rust
-pub enum BSharpParseError<I> {
-    Nom(nom::error::Error<I>),
-    Custom { input: I, message: String, context: Vec<String> },
-    // ... other variants
-}
+pub type BResult<I, O> = IResult<I, O, ErrorTree<I>>;
 ```
 
+**Location:** Type alias defined in parser infrastructure
+
 Key features:
-- **Context Stack**: Maintains a stack of parsing contexts for debugging
-- **Position Tracking**: Tracks line and column information
-- **Custom Messages**: Allows for domain-specific error messages
-- **Nom Integration**: Seamlessly integrates with nom parser errors
+- **Context Stack**: Maintains parsing contexts via `.context()` calls
+- **Position Tracking**: Built-in span tracking for error locations
+- **Rich Diagnostics**: Tree structure shows complete parse failure path
+- **Integration**: Seamless with nom combinators
 
 ### Error Helpers
 
 Utility functions for enhanced error handling:
 
-- `bs_context()`: Adds contextual information to parser errors
-- `wrap_std_parser()`: Converts standard nom parsers to use BSharpParseError
+**Location:** `src/syntax/parser_helpers.rs`
+
+- `context()`: Adds contextual information to parser errors
+- `bws()`: Whitespace-aware wrapper with error context
+- `bdelimited()`: Delimited parsing with cut on closing delimiter
+- `cut()`: Commits to parse branch, preventing misleading backtracking
 - Error recovery mechanisms for common parsing scenarios
+
+### Pretty Error Formatting
+
+**Location:** `src/syntax/errors.rs`
+
+```rust
+pub fn format_error_tree(input: &str, error: &ErrorTree<&str>) -> String;
+```
+
+Produces rustc-like error messages with:
+- Line and column numbers
+- Source code context
+- Caret pointing to error location
+- Context stack showing parse path
 
 ## AST Foundation
 
@@ -85,6 +101,47 @@ pub enum TopLevelDeclaration {
 }
 ```
 
+## Keyword Parsing
+
+### Keyword Module Organization
+
+**Location:** `src/parser/keywords/`
+
+Keywords are organized by category in dedicated modules for maintainability and consistency:
+
+```
+src/parser/keywords/
+├── mod.rs                      # Keyword infrastructure
+├── access_keywords.rs          # public, private, protected, internal
+├── accessor_keywords.rs        # get, set, init, add, remove
+├── type_keywords.rs            # class, struct, interface, enum, record
+├── modifier_keywords.rs        # static, abstract, virtual, sealed
+├── flow_control_keywords.rs    # if, else, switch, case, default
+├── iteration_keywords.rs       # for, foreach, while, do
+├── expression_keywords.rs      # new, this, base, typeof, sizeof
+├── linq_query_keywords.rs      # from, where, select, orderby
+└── ...
+```
+
+### Keyword Parsing Strategy
+
+**Word Boundary Enforcement:**
+
+```rust
+pub fn keyword(kw: &'static str) -> impl Fn(&str) -> BResult<&str, &str>;
+```
+
+The `keyword()` helper enforces `[A-Za-z0-9_]` word boundaries to prevent partial matches:
+- Correctly rejects "int" when parsing "int32"
+- Ensures "class" doesn't match "classname"
+- Consistent across all keyword parsers
+
+**Benefits:**
+- **Maintainability**: Easy to find and update keyword parsers
+- **Consistency**: Uniform keyword parsing strategy
+- **Bug Prevention**: Avoids partial match issues
+- **Centralization**: Single source of truth for keywords
+
 ## Parser Helpers
 
 ### Context Management
@@ -92,7 +149,7 @@ pub enum TopLevelDeclaration {
 Functions for maintaining parsing context:
 
 ```rust
-pub fn bs_context<I, O, F>(
+pub fn context<I, O, F>(
     ctx: &'static str,
     parser: F
 ) -> impl FnMut(I) -> BResult<I, O>

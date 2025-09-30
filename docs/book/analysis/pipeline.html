@@ -1,0 +1,370 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Analysis Pipeline - BSharp C# Parser Documentation</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Comprehensive documentation for the BSharp C# parser and analysis toolkit">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../custom.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BSharp C# Parser Documentation</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/mikserek/bsharp" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/mikserek/bsharp/edit/main/docs/./analysis/pipeline.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="analysis-pipeline"><a class="header" href="#analysis-pipeline">Analysis Pipeline</a></h1>
+<p>This document describes the analysis pipeline architecture, artifacts, rulesets, configuration toggles, and determinism guarantees in the B# analyzer.</p>
+<h2 id="phases"><a class="header" href="#phases">Phases</a></h2>
+<p>The pipeline runs in deterministic phases (see <code>src/analysis/framework/pipeline.rs</code>):</p>
+<ul>
+<li><strong>Index</strong>
+<ul>
+<li>Runs early passes like <code>IndexingPass</code> to populate core artifacts (<code>SymbolIndex</code>, <code>NameIndex</code>, <code>FqnMap</code>).</li>
+</ul>
+</li>
+<li><strong>Local Rules</strong>
+<ul>
+<li>Single AST traversal via <code>AstWalker</code> that executes local rules and metrics collection.</li>
+<li>Metrics are collected by <code>MetricsVisitor</code> into <code>AstAnalysis</code>.</li>
+</ul>
+</li>
+<li><strong>Global</strong>
+<ul>
+<li>Passes that aggregate information across the file (or project) after initial indexing.</li>
+</ul>
+</li>
+<li><strong>Semantic</strong>
+<ul>
+<li>Rules and passes that require previously built artifacts (e.g., control flow, dependencies).</li>
+</ul>
+</li>
+<li><strong>Reporting</strong>
+<ul>
+<li>Finalization phase that can synthesize report artifacts.</li>
+</ul>
+</li>
+</ul>
+<p>Each phase is explicitly selected in <code>AnalyzerPipeline::run_for_file()</code> using <code>Phase</code> discriminants. Pass and ruleset registration is driven by <code>AnalyzerRegistry</code>.</p>
+<h2 id="artifacts"><a class="header" href="#artifacts">Artifacts</a></h2>
+<p>Artifacts are stored in the per-file <code>AnalysisSession.artifacts</code> and summarized into an <code>AnalysisReport</code>:</p>
+<ul>
+<li><strong>Symbols</strong> (<code>src/analysis/artifacts/symbols.rs</code>)
+<ul>
+<li><code>SymbolIndex</code> (by id and name), <code>NameIndex</code> (name frequencies), <code>FqnMap</code> (local name → FQNs).</li>
+</ul>
+</li>
+<li><strong>Control Flow</strong> (<code>src/analysis/artifacts/cfg.rs</code>)
+<ul>
+<li><code>ControlFlowIndex</code> keyed per method; summarized to <code>CfgSummary</code> with total methods and smell counts.</li>
+</ul>
+</li>
+<li><strong>Dependencies</strong> (<code>src/analysis/artifacts/dependencies.rs</code>)
+<ul>
+<li>Graph keyed by symbols; summarized to node/edge counts.</li>
+</ul>
+</li>
+<li><strong>Metrics</strong> (<code>src/analysis/artifacts/metrics.rs</code> → <code>AstAnalysis</code>)
+<ul>
+<li>Basic metrics gathered during the local traversal.</li>
+</ul>
+</li>
+</ul>
+<p>Artifacts are optional in the final report; missing artifacts simply result in <code>None</code> summaries.</p>
+<h2 id="rulesets-and-passes"><a class="header" href="#rulesets-and-passes">Rulesets and Passes</a></h2>
+<p>Rules implement the <code>Rule</code> trait and are grouped into logical rulesets. Passes implement <code>AnalyzerPass</code> and declare a <code>Phase</code>:</p>
+<ul>
+<li>Rulesets are separated into Local vs. Semantic groups and executed during the respective phases.</li>
+<li>Passes can be toggled individually by id.</li>
+<li>The registry is created with <code>AnalyzerRegistry::from_config(&amp;AnalysisConfig)</code> to honor config toggles.</li>
+</ul>
+<h2 id="configuration"><a class="header" href="#configuration">Configuration</a></h2>
+<p><code>AnalysisConfig</code> (<code>src/analysis/context.rs</code>) controls thresholds and toggles:</p>
+<ul>
+<li><strong>Control flow thresholds</strong>
+<ul>
+<li><code>cf_high_complexity_threshold</code> (default 10)</li>
+<li><code>cf_deep_nesting_threshold</code> (default 4)</li>
+</ul>
+</li>
+<li><strong>Toggles</strong>
+<ul>
+<li><code>enable_rulesets: HashMap&lt;String, bool&gt;</code></li>
+<li><code>enable_passes: HashMap&lt;String, bool&gt;</code></li>
+<li><code>rule_severities: HashMap&lt;String, DiagnosticSeverity&gt;</code></li>
+</ul>
+</li>
+<li><strong>Workspace filters</strong>
+<ul>
+<li><code>workspace.follow_refs: bool</code></li>
+<li><code>workspace.include: Vec&lt;String&gt;</code> (glob patterns)</li>
+<li><code>workspace.exclude: Vec&lt;String&gt;</code> (glob patterns)</li>
+</ul>
+</li>
+</ul>
+<p>CLI maps flags to these fields in <code>src/cli/commands/analyze.rs</code> and supports TOML/JSON config files.</p>
+<h2 id="workspace-analysis-and-determinism"><a class="header" href="#workspace-analysis-and-determinism">Workspace Analysis and Determinism</a></h2>
+<p><code>AnalyzerPipeline::run_workspace()</code> and <code>run_workspace_with_config()</code>:</p>
+<ul>
+<li>Discover files deterministically by sorting absolute paths and deduping.</li>
+<li>Analyze each file independently, then merge artifacts into a single <code>AnalysisReport</code>.</li>
+<li>Diagnostics are sorted by file, line, column, then diagnostic code for stable output.</li>
+<li>Workspace loader warnings/errors are merged into <code>workspace_warnings</code> (sorted, deduped).</li>
+<li>When the <code>parallel_analysis</code> feature is enabled, files are analyzed in parallel but merged deterministically in path order.</li>
+</ul>
+<h2 id="report-schema"><a class="header" href="#report-schema">Report Schema</a></h2>
+<p><code>AnalysisReport</code> (<code>src/analysis/report/mod.rs</code>) includes:</p>
+<ul>
+<li><code>schema_version: u32</code> (currently 1)</li>
+<li><code>diagnostics: DiagnosticCollection</code></li>
+<li><code>metrics: Option&lt;AstAnalysis&gt;</code></li>
+<li><code>cfg: Option&lt;CfgSummary&gt;</code></li>
+<li><code>deps: Option&lt;DependencySummary&gt;</code></li>
+<li><code>workspace_warnings: Vec&lt;String&gt;</code></li>
+<li><code>workspace_errors: Vec&lt;String&gt;</code> (reserved for future use)</li>
+</ul>
+<p>The JSON shape is intentionally stable; tests use snapshots with path normalization to ensure cross-platform consistency.</p>
+<h2 id="testing-guidance"><a class="header" href="#testing-guidance">Testing Guidance</a></h2>
+<ul>
+<li>Prefer deterministic fixtures under <code>tests/fixtures/</code>.</li>
+<li>Normalize absolute paths in snapshots (see <code>tests/integration/workspace_analysis_snapshot.rs</code>).</li>
+<li>For workspace filtering, use <code>run_workspace_with_config()</code> with <code>include</code>/<code>exclude</code> globs and snapshot the resulting report.</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../analysis/overview.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../analysis/traversal-guide.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../analysis/overview.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../analysis/traversal-guide.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

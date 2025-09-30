@@ -1,0 +1,534 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Control Flow Analysis - BSharp C# Parser Documentation</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Comprehensive documentation for the BSharp C# parser and analysis toolkit">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../custom.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BSharp C# Parser Documentation</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/mikserek/bsharp" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/mikserek/bsharp/edit/main/docs/./analysis/control-flow.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="control-flow-analysis"><a class="header" href="#control-flow-analysis">Control Flow Analysis</a></h1>
+<p>The control flow analysis system analyzes method control flow to calculate complexity metrics, detect control flow smells, and identify potential issues.</p>
+<hr />
+<h2 id="overview"><a class="header" href="#overview">Overview</a></h2>
+<p><strong>Location:</strong> <code>src/analysis/passes/control_flow.rs</code>, <code>src/analysis/artifacts/cfg.rs</code></p>
+<p>Control flow analysis provides:</p>
+<ul>
+<li>Cyclomatic complexity calculation</li>
+<li>Maximum nesting depth tracking</li>
+<li>Exit point counting</li>
+<li>Statement counting</li>
+<li>Control flow smell detection</li>
+</ul>
+<hr />
+<h2 id="control-flow-metrics"><a class="header" href="#control-flow-metrics">Control Flow Metrics</a></h2>
+<h3 id="cyclomatic-complexity"><a class="header" href="#cyclomatic-complexity">Cyclomatic Complexity</a></h3>
+<p><strong>Definition:</strong> Number of linearly independent paths through a method</p>
+<p><strong>Calculation:</strong> <code>CC = 1 + number of decision points</code></p>
+<p><strong>Decision Points:</strong></p>
+<ul>
+<li><code>if</code> statements</li>
+<li><code>case</code> labels in <code>switch</code></li>
+<li>Loop statements (<code>for</code>, <code>foreach</code>, <code>while</code>, <code>do-while</code>)</li>
+<li><code>catch</code> clauses</li>
+<li>Logical operators (<code>&amp;&amp;</code>, <code>||</code>) in conditions</li>
+<li>Ternary operators (<code>?:</code>)</li>
+<li>Null-coalescing operators (<code>??</code>)</li>
+</ul>
+<p><strong>Example:</strong></p>
+<pre><code class="language-csharp">public void ProcessOrder(Order order) {  // CC = 1 (base)
+    if (order == null) {                 // +1 = 2
+        throw new ArgumentNullException();
+    }
+    
+    if (order.IsValid) {                 // +1 = 3
+        if (order.Amount &gt; 1000) {       // +1 = 4
+            ApplyDiscount(order);
+        }
+        SaveOrder(order);
+    }
+}
+// Total CC = 4
+</code></pre>
+<h3 id="maximum-nesting-depth"><a class="header" href="#maximum-nesting-depth">Maximum Nesting Depth</a></h3>
+<p><strong>Definition:</strong> Deepest level of nested control structures</p>
+<p><strong>Example:</strong></p>
+<pre><code class="language-csharp">public void Example() {
+    if (condition1) {              // Depth 1
+        while (condition2) {       // Depth 2
+            if (condition3) {      // Depth 3
+                DoSomething();
+            }
+        }
+    }
+}
+// Max Nesting Depth = 3
+</code></pre>
+<h3 id="exit-points"><a class="header" href="#exit-points">Exit Points</a></h3>
+<p><strong>Definition:</strong> Number of points where method can return</p>
+<p><strong>Counted:</strong></p>
+<ul>
+<li><code>return</code> statements</li>
+<li><code>throw</code> statements</li>
+<li>End of void method</li>
+</ul>
+<p><strong>Example:</strong></p>
+<pre><code class="language-csharp">public int Calculate(int x) {
+    if (x &lt; 0) {
+        return -1;        // Exit point 1
+    }
+    if (x == 0) {
+        return 0;         // Exit point 2
+    }
+    return x * 2;         // Exit point 3
+}
+// Total Exit Points = 3
+</code></pre>
+<h3 id="statement-count"><a class="header" href="#statement-count">Statement Count</a></h3>
+<p><strong>Definition:</strong> Total number of statements in method body</p>
+<p>Includes all statement types:</p>
+<ul>
+<li>Expression statements</li>
+<li>Declaration statements</li>
+<li>Control flow statements</li>
+<li>Jump statements</li>
+</ul>
+<hr />
+<h2 id="control-flow-artifacts"><a class="header" href="#control-flow-artifacts">Control Flow Artifacts</a></h2>
+<h3 id="methodcontrolflowstats"><a class="header" href="#methodcontrolflowstats">MethodControlFlowStats</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct MethodControlFlowStats {
+    pub complexity: usize,
+    pub max_nesting: usize,
+    pub exit_points: usize,
+    pub statement_count: usize,
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="controlflowindex"><a class="header" href="#controlflowindex">ControlFlowIndex</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct ControlFlowIndex {
+    // Method identifier -&gt; stats
+    methods: HashMap&lt;String, MethodControlFlowStats&gt;,
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="cfgsummary"><a class="header" href="#cfgsummary">CfgSummary</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct CfgSummary {
+    pub total_methods: usize,
+    pub high_complexity_count: usize,
+    pub deep_nesting_count: usize,
+}
+<span class="boring">}</span></code></pre></pre>
+<hr />
+<h2 id="control-flow-smells"><a class="header" href="#control-flow-smells">Control Flow Smells</a></h2>
+<h3 id="high-complexity"><a class="header" href="#high-complexity">High Complexity</a></h3>
+<p><strong>Threshold:</strong> Configurable (default: 10)</p>
+<p><strong>Detection:</strong></p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>if stats.complexity &gt; config.cf_high_complexity_threshold {
+    session.diagnostics.add(
+        DiagnosticCode::HighComplexity,
+        format!("Method complexity {} exceeds threshold {}", 
+               stats.complexity, threshold)
+    );
+}
+<span class="boring">}</span></code></pre></pre>
+<p><strong>Diagnostic:</strong></p>
+<pre><code>warning[CF002]: High cyclomatic complexity
+  --&gt; src/OrderProcessor.cs:42:17
+   |
+42 |     public void ProcessOrder(Order order) {
+   |                 ^^^^^^^^^^^^ complexity = 15 (threshold: 10)
+   |
+   = help: Consider breaking this method into smaller methods
+</code></pre>
+<h3 id="deep-nesting"><a class="header" href="#deep-nesting">Deep Nesting</a></h3>
+<p><strong>Threshold:</strong> Configurable (default: 4)</p>
+<p><strong>Detection:</strong></p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>if stats.max_nesting &gt; config.cf_deep_nesting_threshold {
+    session.diagnostics.add(
+        DiagnosticCode::DeepNesting,
+        format!("Maximum nesting depth {} exceeds threshold {}", 
+               stats.max_nesting, threshold)
+    );
+}
+<span class="boring">}</span></code></pre></pre>
+<p><strong>Diagnostic:</strong></p>
+<pre><code>warning[CF003]: Deep nesting detected
+  --&gt; src/Validator.cs:15:9
+   |
+15 |         if (condition1) {
+   |         ^^ nesting depth = 5 (threshold: 4)
+   |
+   = help: Consider extracting nested logic into separate methods
+</code></pre>
+<hr />
+<h2 id="implementation"><a class="header" href="#implementation">Implementation</a></h2>
+<h3 id="analysis-pass"><a class="header" href="#analysis-pass">Analysis Pass</a></h3>
+<p><strong>Location:</strong> <code>src/analysis/passes/control_flow.rs</code></p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct ControlFlowPass;
+
+impl AnalyzerPass for ControlFlowPass {
+    fn id(&amp;self) -&gt; &amp;'static str { "control_flow" }
+    fn phase(&amp;self) -&gt; Phase { Phase::Semantic }
+    
+    fn run(&amp;self, cu: &amp;CompilationUnit, session: &amp;mut AnalysisSession) {
+        let mut index = ControlFlowIndex::new();
+        
+        // Analyze all methods in compilation unit
+        for decl in &amp;cu.declarations {
+            analyze_declaration(decl, &amp;mut index, session);
+        }
+        
+        session.artifacts.cfg = Some(index);
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="method-analysis"><a class="header" href="#method-analysis">Method Analysis</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn analyze_method(
+    method: &amp;MethodDeclaration,
+    index: &amp;mut ControlFlowIndex,
+    session: &amp;mut AnalysisSession
+) {
+    let stats = calculate_stats(method.body.as_ref());
+    
+    // Check thresholds
+    if stats.complexity &gt; session.config.cf_high_complexity_threshold {
+        session.diagnostics.add(/* high complexity diagnostic */);
+    }
+    
+    if stats.max_nesting &gt; session.config.cf_deep_nesting_threshold {
+        session.diagnostics.add(/* deep nesting diagnostic */);
+    }
+    
+    // Store in index
+    index.add_method(&amp;method.identifier.name, stats);
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="stats-calculation"><a class="header" href="#stats-calculation">Stats Calculation</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn calculate_stats(body: Option&lt;&amp;Statement&gt;) -&gt; MethodControlFlowStats {
+    let complexity = match body {
+        Some(stmt) =&gt; 1 + count_decision_points(stmt),
+        None =&gt; 1,
+    };
+    
+    let max_nesting = calculate_max_nesting(body, 0);
+    let exit_points = count_exit_points(body);
+    let statement_count = count_statements(body);
+    
+    MethodControlFlowStats {
+        complexity,
+        max_nesting,
+        exit_points,
+        statement_count,
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<hr />
+<h2 id="configuration"><a class="header" href="#configuration">Configuration</a></h2>
+<h3 id="thresholds"><a class="header" href="#thresholds">Thresholds</a></h3>
+<pre><code class="language-toml">[analysis.control_flow]
+cf_high_complexity_threshold = 10
+cf_deep_nesting_threshold = 4
+</code></pre>
+<h3 id="cli-usage"><a class="header" href="#cli-usage">CLI Usage</a></h3>
+<pre><code class="language-bash"># Analyze with custom thresholds
+bsharp analyze MyProject.csproj --config .bsharp.toml
+
+# Enable control flow pass
+bsharp analyze MyProject.csproj --enable-pass control_flow
+</code></pre>
+<hr />
+<h2 id="integration-with-pipeline"><a class="header" href="#integration-with-pipeline">Integration with Pipeline</a></h2>
+<h3 id="phase-semantic"><a class="header" href="#phase-semantic">Phase: Semantic</a></h3>
+<p>Control flow analysis runs in the <strong>Semantic</strong> phase after symbol indexing:</p>
+<pre><code>Phase::Index    -&gt; Build SymbolIndex
+Phase::Local    -&gt; Collect metrics
+Phase::Semantic -&gt; Control flow analysis
+</code></pre>
+<h3 id="artifacts"><a class="header" href="#artifacts">Artifacts</a></h3>
+<p>Results stored in <code>AnalysisSession</code>:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>session.artifacts.cfg = Some(ControlFlowIndex { ... });
+<span class="boring">}</span></code></pre></pre>
+<p>Summarized in <code>AnalysisReport</code>:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>report.cfg = Some(CfgSummary {
+    total_methods: 87,
+    high_complexity_count: 5,
+    deep_nesting_count: 3,
+});
+<span class="boring">}</span></code></pre></pre>
+<hr />
+<h2 id="related-documentation"><a class="header" href="#related-documentation">Related Documentation</a></h2>
+<ul>
+<li><a href="./pipeline.html">Analysis Pipeline</a> - Pipeline integration</li>
+<li><a href="./metrics.html">Metrics Collection</a> - Related metrics</li>
+<li><a href="./quality.html">Code Quality</a> - Quality rules</li>
+<li><a href="./traversal-guide.html">Traversal Guide</a> - AST traversal</li>
+</ul>
+<hr />
+<h2 id="references"><a class="header" href="#references">References</a></h2>
+<ul>
+<li><strong>Implementation:</strong> <code>src/analysis/passes/control_flow.rs</code></li>
+<li><strong>Artifacts:</strong> <code>src/analysis/artifacts/cfg.rs</code></li>
+<li><strong>Tests:</strong> <code>tests/analysis/types/basic_tests.rs</code></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../analysis/traversal-guide.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../analysis/dependencies.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../analysis/traversal-guide.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../analysis/dependencies.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

@@ -636,7 +636,7 @@ impl TypeAnalyzer {
         for bt in &c.base_types {
             if let Type::Reference(id) = bt {
                 bases.push(id.name.clone());
-                if !ns.is_empty() { bases.push(format!("{}.{},", ns.join("."), id.name).trim_end_matches(',').to_string()); }
+                if !ns.is_empty() { bases.push(format!("{}.{}", ns.join("."), id.name)); }
             }
         }
         let fqn = Self::fqn(ns, enclosing, &c.name.name);

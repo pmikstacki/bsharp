@@ -56,22 +56,13 @@ Understanding the codebase organization:
 
 ```
 src/
-├── parser/           # Core parsing infrastructure
-│   ├── ast.rs       # AST root definitions
-│   ├── errors.rs    # Error handling
-│   ├── navigation.rs # AST navigation traits
-│   └── nodes/       # AST node definitions
-├── parsers/          # Parser implementations
-│   ├── expressions/ # Expression parsers
-│   ├── statements/  # Statement parsers
-│   ├── declarations/ # Declaration parsers
-│   └── types/       # Type parsers
-├── analysis/         # Analysis framework
-├── cli/             # Command-line interface
+├── parser/           # Parser implementations (expressions, statements, etc.)
+├── syntax/           # Parser infrastructure (AST nodes, helpers, errors)
+├── analysis/         # Code analysis framework
+├── workspace/        # Solution and project file loading
+├── cli/              # Command-line interface
 └── lib.rs           # Library entry point
 ```
-
-## Contributing Guidelines
 
 ### Code Style
 
@@ -87,50 +78,53 @@ Follow Rust conventions:
 All contributions should include appropriate tests:
 
 #### Parser Tests
-```rust
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use crate::parser::test_helpers::*;
 
-    #[test]
-    fn test_parse_simple_class() {
-        let input = "public class MyClass { }";
-        let (remaining, class) = parse_input_unwrap(parse_class_declaration(input));
-        assert_eq!(remaining, "");
-        assert_eq!(class.identifier.name, "MyClass");
-    }
+**IMPORTANT:** All tests must be in external files under `tests/` directory, NOT inline `#[cfg(test)]` modules.
+
+```rust
+// ✅ CORRECT: External test file
+// tests/parser/declarations/class_declaration_tests.rs
+
+use bsharp::syntax::test_helpers::expect_ok;
+use bsharp::parser::expressions::declarations::parse_class_declaration;
+
+#[test]
+fn test_parse_simple_class() {
+    let input = "public class MyClass { }";
+    let class = expect_ok(input, parse_class_declaration(input));
+    assert_eq!(class.identifier.name, "MyClass");
 }
 ```
 
 #### Analysis Tests
-```rust
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use crate::parser::Parser;
 
-    #[test]
-    fn test_complexity_analysis() {
-        let source = r#"
-            public class Test {
-                public void Method() {
-                    if (true) {
-                        for (int i = 0; i < 10; i++) {
-                            // complexity += 2
-                        }
+```rust
+// tests/analysis/complexity_tests.rs
+
+use bsharp::syntax::Parser;
+use bsharp::analysis::metrics::cyclomatic_complexity;
+
+#[test]
+fn test_complexity_analysis() {
+    let source = r#"
+        public class Test {
+            public void Method() {
+                if (true) {
+                    for (int i = 0; i < 10; i++) {
+                        // complexity += 2
                     }
                 }
             }
-        "#;
-        
-        let parser = Parser::new();
-        let ast = parser.parse(source).unwrap();
-        let analyzer = ComplexityAnalyzer::new();
-        let result = analyzer.analyze(&ast);
-        
-        assert_eq!(result.cyclomatic_complexity, 3);
-    }
+        }
+    "#;
+    
+    let parser = Parser::new();
+    let cu = parser.parse(source).unwrap();
+    
+    // Find the method and calculate complexity
+    // (implementation details depend on analysis API)
+    
+    assert_eq!(complexity, 3);
 }
 ```
 
@@ -144,9 +138,9 @@ mod tests {
 
 When adding support for new C# language features:
 
-1. **Define AST Nodes**: Add node definitions in `src/parser/nodes/`
-2. **Implement Parser**: Add parser in appropriate `src/parsers/` subdirectory
-3. **Add Tests**: Include comprehensive tests for the new feature
+1. **Define AST Nodes**: Add node definitions in `src/syntax/nodes/`
+2. **Implement Parser**: Add parser in appropriate `src/parser/` subdirectory
+3. **Add Tests**: Include comprehensive tests in `tests/parser/` directory
 4. **Update Navigation**: Extend navigation traits if needed
 5. **Document**: Add documentation for the new feature
 
@@ -154,7 +148,7 @@ Example process for adding a new expression type:
 
 1. Define the AST node:
 ```rust
-// src/parser/nodes/expressions/new_expression.rs
+// src/syntax/nodes/expressions/new_expression.rs
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct NewExpression {
     pub keyword: String,  // "new"
@@ -164,7 +158,7 @@ pub struct NewExpression {
 
 2. Add to Expression enum:
 ```rust
-// src/parser/nodes/expressions/expression.rs
+// src/syntax/nodes/expressions/expression.rs
 pub enum Expression {
     // ... existing variants
     New(NewExpression),
@@ -173,7 +167,7 @@ pub enum Expression {
 
 3. Implement parser:
 ```rust
-// src/parsers/expressions/new_expression_parser.rs
+// src/parser/expressions/new_expression_parser.rs
 pub fn parse_new_expression(input: &str) -> BResult<&str, NewExpression> {
     // Parser implementation
 }
