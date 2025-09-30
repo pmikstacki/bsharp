@@ -1,7 +1,4 @@
-namespace test;
-
-class C
-{
-    void M()
-    {
-}
+class C {
+    void M() {
+        if (true) {
+    }

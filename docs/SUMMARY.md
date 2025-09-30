@@ -16,6 +16,7 @@
 - [Statement Parsing](./parser/statements.md)
 - [Declaration Parsing](./parser/declarations.md)
 - [Type System](./parser/types.md)
+- [Feature Completeness](./parser/feature-completeness.md)
 
 # Advanced Features
 
