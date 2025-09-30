@@ -30,7 +30,7 @@ impl Rule for CtorNoAsync {
     fn id(&self) -> &'static str { "semantic.ctor.no_async" }
     fn category(&self) -> &'static str { "Semantic" }
     fn visit(&self, node: &NodeRef, session: &mut AnalysisSession) {
-        let cu = match node { NodeRef::CompilationUnit(cu) => cu };
+        let cu = match node { NodeRef::CompilationUnit(cu) => cu, _ => return };
         for decl in &cu.declarations {
             if let TopLevelDeclaration::Class(class) = decl {
                 for member in &class.body_declarations {
@@ -54,7 +54,7 @@ impl Rule for CtorNameMatchesClass {
     fn id(&self) -> &'static str { "semantic.ctor.name_matches_class" }
     fn category(&self) -> &'static str { "Semantic" }
     fn visit(&self, node: &NodeRef, session: &mut AnalysisSession) {
-        let cu = match node { NodeRef::CompilationUnit(cu) => cu };
+        let cu = match node { NodeRef::CompilationUnit(cu) => cu, _ => return };
         for decl in &cu.declarations {
             if let TopLevelDeclaration::Class(class) = decl {
                 for member in &class.body_declarations {
@@ -82,7 +82,7 @@ impl Rule for CtorNoVirtualOrAbstract {
     fn id(&self) -> &'static str { "semantic.ctor.no_virtual_or_abstract" }
     fn category(&self) -> &'static str { "Semantic" }
     fn visit(&self, node: &NodeRef, session: &mut AnalysisSession) {
-        let cu = match node { NodeRef::CompilationUnit(cu) => cu };
+        let cu = match node { NodeRef::CompilationUnit(cu) => cu, _ => return };
         for decl in &cu.declarations {
             if let TopLevelDeclaration::Class(class) = decl {
                 for member in &class.body_declarations {
@@ -106,7 +106,7 @@ impl Rule for MethodNoAbstractBody {
     fn id(&self) -> &'static str { "semantic.method.no_abstract_body" }
     fn category(&self) -> &'static str { "Semantic" }
     fn visit(&self, node: &NodeRef, session: &mut AnalysisSession) {
-        let cu = match node { NodeRef::CompilationUnit(cu) => cu };
+        let cu = match node { NodeRef::CompilationUnit(cu) => cu, _ => return };
         for decl in &cu.declarations {
             if let TopLevelDeclaration::Class(class) = decl {
                 for member in &class.body_declarations {
@@ -130,7 +130,7 @@ impl Rule for MethodNoStaticOverride {
     fn id(&self) -> &'static str { "semantic.method.no_static_override" }
     fn category(&self) -> &'static str { "Semantic" }
     fn visit(&self, node: &NodeRef, session: &mut AnalysisSession) {
-        let cu = match node { NodeRef::CompilationUnit(cu) => cu };
+        let cu = match node { NodeRef::CompilationUnit(cu) => cu, _ => return };
         for decl in &cu.declarations {
             if let TopLevelDeclaration::Class(class) = decl {
                 for member in &class.body_declarations {
@@ -154,7 +154,7 @@ impl Rule for AsyncReturnsTask {
     fn id(&self) -> &'static str { "semantic.async.returns_task_or_task_t" }
     fn category(&self) -> &'static str { "Semantic" }
     fn visit(&self, node: &NodeRef, session: &mut AnalysisSession) {
-        let cu = match node { NodeRef::CompilationUnit(cu) => cu };
+        let cu = match node { NodeRef::CompilationUnit(cu) => cu, _ => return };
         for decl in &cu.declarations {
             if let TopLevelDeclaration::Class(class) = decl {
                 for member in &class.body_declarations {

@@ -15,4 +15,7 @@ pub enum PreprocessorDirective {
     Warning { message: String },
     Pragma { pragma: String },
     Line { line: String },
+    // Fallback for directives we do not currently model specifically.
+    // The text contains the rest of the line after '#'.
+    Unknown { text: String },
 }

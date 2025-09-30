@@ -104,16 +104,50 @@ impl MaintainabilityAnalyzer {
 
     /// Calculate maintainability metrics for a compilation unit
     pub fn analyze_compilation_unit(&self, unit: &CompilationUnit) -> MaintainabilityMetrics {
-        // TODO: Implement full maintainability analysis
-        let _ = unit; // Suppress unused warning for now
+        // Collect basic metrics
+        let mut basic_collector = crate::analysis::metrics::basic::BasicMetricsCollector::new();
+        basic_collector.collect_from_compilation_unit(unit);
+        let basic = basic_collector.get_metrics().clone();
 
-        let mut metrics = MaintainabilityMetrics::new();
+        // Aggregate complexity across methods in the compilation unit
+        let mut complexity_total = crate::analysis::metrics::complexity::ComplexityMetrics::default();
+        let complexity_analyzer = crate::analysis::metrics::complexity::ComplexityAnalyzer::new();
 
-        // Placeholder calculations - would be replaced with real analysis
-        metrics.maintainability_index = 75.0;
-        metrics.documentation_coverage = 60.0;
+        // Walk methods via a simple traversal of declarations
+        // Note: For deeper coverage, use the analysis walker; for now we traverse directly.
+        for decl in &unit.declarations {
+            if let crate::syntax::ast::TopLevelDeclaration::Class(class) = decl {
+                for m in &class.body_declarations {
+                    if let crate::syntax::nodes::declarations::ClassBodyDeclaration::Method(method) = m {
+                        let cm = complexity_analyzer.analyze_method(method);
+                        // Aggregate
+                        complexity_total.cyclomatic_complexity += cm.cyclomatic_complexity;
+                        complexity_total.cognitive_complexity += cm.cognitive_complexity;
+                        complexity_total.essential_complexity += cm.essential_complexity;
+                        complexity_total.max_nesting_depth = complexity_total.max_nesting_depth.max(cm.max_nesting_depth);
+                        complexity_total.abc_complexity.assignments += cm.abc_complexity.assignments;
+                        complexity_total.abc_complexity.branches += cm.abc_complexity.branches;
+                        complexity_total.abc_complexity.conditions += cm.abc_complexity.conditions;
+                        // Halstead metrics left as default for now
+                    }
+                }
+            }
+        }
 
-        metrics
+        // Calculate maintainability index
+        let mi = self.calculate_maintainability_index(&basic, &complexity_total);
+        let debt = self.calculate_technical_debt(&basic);
+
+        MaintainabilityMetrics {
+            maintainability_index: mi,
+            technical_debt_ratio: debt.debt_ratio,
+            code_coverage: 0.0, // Not available
+            documentation_coverage: basic.comment_ratio() * 100.0,
+            test_coverage: 0.0, // Not available
+            duplication_percentage: 0.0, // Not available
+            code_churn: 0.0, // Not available here
+            defect_density: self.estimate_defect_density(&complexity_total, &basic),
+        }
     }
 
     /// Calculate maintainability index using Microsoft formula

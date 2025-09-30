@@ -15,7 +15,7 @@ impl MetricsVisitor {
 
 impl Visit for MetricsVisitor {
     fn enter(&mut self, node: &NodeRef, session: &mut AnalysisSession) {
-        let cu = match node { NodeRef::CompilationUnit(cu) => cu };
+        let cu = match node { NodeRef::CompilationUnit(cu) => cu, _ => return };
         for decl in &cu.declarations {
             match decl {
                 TopLevelDeclaration::Class(class) => {
@@ -64,6 +64,7 @@ impl Visit for MetricsVisitor {
                 // Store the analysis artifact for reporting phase
                 session.artifacts.insert(self.analysis.clone());
             }
+            _ => {}
         }
     }
 }

@@ -21,7 +21,7 @@ public class A {
     AnalyzerPipeline::run_with_defaults(&cu, &mut session);
 
     let cfg = session.artifacts.get::<ControlFlowIndex>().expect("control flow index missing");
-    // We inserted both FQN and simple keys in the pass; check simple key
+    // Keys are fully-qualified only now; class without namespace uses just class name
     let stats = cfg.get("A::M").expect("stats for A::M");
     assert!(stats.complexity >= 3, "expected complexity >= 3");
     assert!(stats.max_nesting >= 2, "expected nesting >= 2");

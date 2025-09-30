@@ -63,6 +63,50 @@ match member_parser(cur) {
 }
 ```
 
+### 1.b Namespace Body: Using-Directives Before Members
+
+Inside a block-scoped namespace body, `using` directives are accepted before type and nested-namespace members.
+
+- Implementation: `parse_namespace_declaration()` scans for `using` immediately after the opening `{` and collects all consecutive directives before parsing members.
+- This ensures inputs like the following are parsed deterministically without interleaving usings with members:
+
+```csharp
+namespace Outer {
+    using System;
+    namespace Inner {
+        using System.Collections;
+        class MyClass {}
+    }
+}
+```
+
+Contract and limitations:
+- Only leading `using` directives at the current namespace body level are collected.
+- Interleaving `using` directives among members is not supported yet (matches common style and avoids ambiguous recovery).
+
+### 1.c File-Scoped Namespace
+
+When parsing a file-scoped namespace, the parser also skips preprocessor directives following the `namespace` line before parsing members, mirroring the block-scoped behavior.
+
+## Preprocessor Directives and Trivia
+
+Preprocessor directives (e.g., `#pragma`, `#line`) are treated as structured trivia, not AST declarations:
+
+- Parser entrypoints (e.g., `parse_csharp_source()`) skip directive lines anywhere they can appear at the compilation-unit level.
+- `parse_preprocessor_directive()` consumes the entire directive line including an optional trailing newline.
+- Current status: directives inside type and namespace bodies are planned to be skipped similarly; tests are tracked and temporarily ignored until this is integrated.
+
+Example:
+
+```csharp
+#pragma warning disable CS0168
+namespace N {
+    // class and members...
+}
+```
+
+The directive is skipped and not present as a namespace member.
+
 ### 2. Context-Aware Errors
 
 Errors include contextual information about the parsing context:

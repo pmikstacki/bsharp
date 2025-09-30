@@ -8,8 +8,7 @@ use cranelift_frontend::{FunctionBuilder, FunctionBuilderContext};
 use cranelift_module::{DataContext, Linkage, Module};
 use cranelift_object::{ObjectBuilder, ObjectModule};
 
-use std::str::FromStr;
-use target_lexicon::Triple;
+// use target_lexicon::Triple; // Reserved for future configurable targets
 
 use crate::syntax::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration;
 use crate::syntax::nodes::declarations::{
@@ -19,16 +18,13 @@ use crate::syntax::nodes::types::{PrimitiveType, Type};
 
 // Trait for AST nodes that can be compiled
 pub trait Compilable {
-    // TODO: Define the necessary context/parameters needed for compilation
-    // For now, let's pass the main parts of the CodeGenerator mutably.
+    // For now, pass main parts of the CodeGenerator mutably and an optional fully-qualified class name.
     fn compile_node(
         &self,
-        class_name: Option<&str>, // Added context for class name
+        class_name: Option<String>, // Fully-qualified class name if available
         module: &mut ObjectModule,
         builder_context: &mut FunctionBuilderContext,
         context: &mut Context,
-        // data_context: &mut DataContext, // Add if needed for data later
-        // symbol_table: &mut SymbolTable, // Add symbol table when needed
     ) -> Result<(), String>;
 }
 
@@ -36,18 +32,23 @@ pub trait Compilable {
 impl Compilable for ClassDeclaration {
     fn compile_node(
         &self,
-        _parent_class_name: Option<&str>, // Currently unused for class
+        parent_namespace: Option<String>,
         module: &mut ObjectModule,
         builder_context: &mut FunctionBuilderContext,
         context: &mut Context,
     ) -> Result<(), String> {
         log::info!("Compiling class: {}", self.name);
+        let class_fqn = if let Some(ns) = parent_namespace {
+            format!("{}.{}", ns, self.name.name)
+        } else {
+            self.name.name.clone()
+        };
         for member in &self.body_declarations {
             match member {
                 ClassBodyDeclaration::Method(method_decl) => {
-                    // Pass the current class name as context
+                    // Pass the fully-qualified class name as context
                     method_decl.compile_node(
-                        Some(&self.name.name),
+                        Some(class_fqn.clone()),
                         module,
                         builder_context,
                         context,
@@ -71,13 +72,12 @@ impl Compilable for ClassDeclaration {
 impl Compilable for MethodDeclaration {
     fn compile_node(
         &self,
-        class_name: Option<&str>, // Receive class name context
+        class_name: Option<String>,
         module: &mut ObjectModule,
         builder_context: &mut FunctionBuilderContext,
         context: &mut Context,
     ) -> Result<(), String> {
-        let current_class_name =
-            class_name.ok_or_else(|| "Method compilation requires class context".to_string())?;
+        let current_class_name = class_name.ok_or_else(|| "Method compilation requires class context".to_string())?;
         log::info!(
             "Compiling method: {}.{}",
             current_class_name,
@@ -159,8 +159,7 @@ impl Default for CodeGenerator {
 
 impl CodeGenerator {
     pub fn new() -> Self {
-        // Use settings which are appropriate for the target triple.
-        let _triple = Triple::from_str(TARGET_TRIPLE).unwrap();
+        // Use settings appropriate for the host by default; later configurable.
         let flag_builder = settings::builder();
         // flag_builder.enable("is_pic").unwrap(); // Position-independent code if needed
 
@@ -221,6 +220,7 @@ impl CodeGenerator {
                 if let NamespaceBodyDeclaration::Class(class_decl) = ns_member {
                     do_compile_class(
                         class_decl,
+                        Some(file_scoped_ns.name.name.clone()),
                         &mut self.module,
                         &mut self.builder_context,
                         &mut self.context,
@@ -238,6 +238,7 @@ impl CodeGenerator {
                         if let NamespaceBodyDeclaration::Class(class_decl) = ns_member {
                             do_compile_class(
                                 class_decl,
+                                Some(ns.name.name.clone()),
                                 &mut self.module,
                                 &mut self.builder_context,
                                 &mut self.context,
@@ -254,6 +255,7 @@ impl CodeGenerator {
                         if let NamespaceBodyDeclaration::Class(class_decl) = ns_member {
                             do_compile_class(
                                 class_decl,
+                                Some(file_scoped_ns.name.name.clone()),
                                 &mut self.module,
                                 &mut self.builder_context,
                                 &mut self.context,
@@ -264,6 +266,7 @@ impl CodeGenerator {
                 ast::TopLevelDeclaration::Class(class_decl) => {
                     do_compile_class(
                         class_decl,
+                        None,
                         &mut self.module,
                         &mut self.builder_context,
                         &mut self.context,
@@ -319,6 +322,7 @@ impl CodeGenerator {
 // Changed from a method to a free function
 fn do_compile_class(
     class_decl: &ast::ClassDeclaration,
+    parent_namespace: Option<String>,
     module: &mut ObjectModule,
     builder_context: &mut FunctionBuilderContext,
     context: &mut Context,
@@ -326,7 +330,7 @@ fn do_compile_class(
     // TODO: Implement actual class declaration visitation logic
     // This might involve calling class_decl.compile_node(...) if that's the pattern,
     // or other specific logic for classes.
-    class_decl.compile_node(None, module, builder_context, context)?;
+    class_decl.compile_node(parent_namespace, module, builder_context, context)?;
     Ok(())
 }
 
@@ -379,6 +383,4 @@ fn map_type_stub(ty: &Type) -> Option<types::Type> {
     }
 }
 
-// Define the target architecture
-// TODO: Make this configurable
-const TARGET_TRIPLE: &str = "x86_64-unknown-unknown-elf";
+// Target triple is host by default via cranelift_native; make configurable in future.

@@ -1,4 +1,5 @@
 use super::{EventDeclaration, IndexerDeclaration, MethodDeclaration, PropertyDeclaration};
+use super::{ClassDeclaration, StructDeclaration, InterfaceDeclaration, EnumDeclaration, RecordDeclaration};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
@@ -7,5 +8,10 @@ pub enum InterfaceBodyDeclaration {
     Property(PropertyDeclaration),
     Event(EventDeclaration),
     Indexer(IndexerDeclaration),
-    // TODO: Add other relevant interface members like nested types if necessary
+    // Nested types (C# 8.0+)
+    NestedClass(ClassDeclaration),
+    NestedStruct(StructDeclaration),
+    NestedInterface(InterfaceDeclaration),
+    NestedEnum(EnumDeclaration),
+    NestedRecord(RecordDeclaration),
 }

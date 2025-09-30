@@ -2,6 +2,10 @@ use super::attribute::AttributeList;
 use super::constructor_declaration::ConstructorDeclaration;
 use super::field_declaration::FieldDeclaration;
 use super::method_declaration::MethodDeclaration;
+use super::event_declaration::EventDeclaration;
+use super::indexer_declaration::IndexerDeclaration;
+use super::operator_declaration::OperatorDeclaration;
+use super::{ClassDeclaration, EnumDeclaration, InterfaceDeclaration, RecordDeclaration};
 use super::modifier::Modifier;
 use super::property_declaration::PropertyDeclaration;
 use crate::syntax::nodes::identifier::Identifier;
@@ -14,7 +18,15 @@ pub enum StructBodyDeclaration {
     Method(MethodDeclaration),
     Property(PropertyDeclaration),
     Constructor(ConstructorDeclaration),
-    // TODO: Add other struct members like nested types, etc.
+    Event(EventDeclaration),
+    Indexer(IndexerDeclaration),
+    Operator(OperatorDeclaration),
+    // Nested type declarations
+    NestedClass(ClassDeclaration),
+    NestedStruct(StructDeclaration),
+    NestedInterface(InterfaceDeclaration),
+    NestedEnum(EnumDeclaration),
+    NestedRecord(RecordDeclaration),
 }
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]

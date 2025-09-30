@@ -3,7 +3,6 @@ use crate::syntax::nodes::declarations::{
     RecordDeclaration, StructDeclaration, UsingDirective,
 };
 use crate::syntax::nodes::identifier::Identifier;
-use crate::syntax::nodes::preprocessor::PreprocessorDirective;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
@@ -26,5 +25,4 @@ pub enum NamespaceBodyDeclaration {
     Delegate(DelegateDeclaration),
     Record(RecordDeclaration),
     GlobalAttribute(GlobalAttribute),
-    Preprocessor(PreprocessorDirective),
 }

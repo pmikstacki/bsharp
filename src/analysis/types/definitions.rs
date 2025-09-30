@@ -95,9 +95,18 @@ pub struct TypeCohesionMetrics {
 /// Information about a discovered type
 #[derive(Debug, Clone, Serialize, Deserialize)] // Added Serialize, Deserialize
 pub struct TypeInfo {
+    /// Simple name of the type (no namespace / nesting)
     pub name: String,
-    pub type_kind: TypeKind,
-    pub dependencies: Vec<String>,
+    /// Fully-qualified name built from namespace and nesting (dot-joined)
+    pub fqn: String,
+    /// Namespace of the type, if any
+    pub namespace: Option<String>,
+    /// Kind of the type (class/struct/interface/record/enum/delegate)
+    pub kind: TypeKind,
+    /// Base types or implemented interfaces by FQN (best-effort; may be short names if unresolved)
+    pub base_types: Vec<String>,
+    /// Member counts summary for the type body
+    pub member_counts: MemberCounts,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)] // Added Serialize, Deserialize
@@ -107,4 +116,26 @@ pub enum TypeKind {
     Struct,
     Enum,
     Delegate,
+    Record,
+}
+
+/// Summary counts of members grouped by kind
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct MemberCounts {
+    pub fields: usize,
+    pub properties: usize,
+    pub methods: usize,
+    pub events: usize,
+    pub indexers: usize,
+    pub nested_types: usize,
+}
+
+/// Detailed, structural complexity for a single type reference
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct TypeComplexityDetail {
+    pub array_depth: usize,
+    pub generic_depth: usize,
+    pub total_generic_args: usize,
+    pub is_nullable: bool,
+    pub is_pointer: bool,
 }

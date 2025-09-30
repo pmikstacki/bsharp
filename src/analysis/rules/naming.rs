@@ -42,7 +42,7 @@ impl Rule for ClassPascalCase {
     fn id(&self) -> &'static str { "naming.class_pascal_case" }
     fn category(&self) -> &'static str { "Naming" }
     fn visit(&self, node: &NodeRef, session: &mut AnalysisSession) {
-        let cu = match node { NodeRef::CompilationUnit(cu) => cu };
+        let cu = match node { NodeRef::CompilationUnit(cu) => cu, _ => return };
         for decl in &cu.declarations {
             if let TopLevelDeclaration::Class(c) = decl {
                 let name = c.name.name.as_str();
@@ -64,7 +64,7 @@ impl Rule for InterfaceIPascalCase {
     fn id(&self) -> &'static str { "naming.interface_ipascal_case" }
     fn category(&self) -> &'static str { "Naming" }
     fn visit(&self, node: &NodeRef, session: &mut AnalysisSession) {
-        let cu = match node { NodeRef::CompilationUnit(cu) => cu };
+        let cu = match node { NodeRef::CompilationUnit(cu) => cu, _ => return };
         for decl in &cu.declarations {
             if let TopLevelDeclaration::Interface(i) = decl {
                 let name = i.name.name.as_str();

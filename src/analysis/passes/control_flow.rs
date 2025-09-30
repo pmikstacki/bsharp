@@ -38,8 +38,7 @@ fn analyze_namespace(ns: &NamespaceDeclaration, ns_path: String, index: &mut Con
             | NamespaceBodyDeclaration::Enum(_)
             | NamespaceBodyDeclaration::Delegate(_)
             | NamespaceBodyDeclaration::Record(_)
-            | NamespaceBodyDeclaration::GlobalAttribute(_)
-            | NamespaceBodyDeclaration::Preprocessor(_) => {}
+            | NamespaceBodyDeclaration::GlobalAttribute(_) => {}
         }
     }
 }
@@ -54,11 +53,8 @@ fn analyze_class(class: &ClassDeclaration, ns_path: Option<&str>, class_stack: &
             let statement_count = count_statements(m.body.as_ref());
             let class_path = class_stack.join(".");
             let fqn_key = if let Some(ns) = ns_path { format!("{}.{}::{}", ns, class_path, m.name.name) } else { format!("{}::{}", class_path, m.name.name) };
-            let simple_key = format!("{}::{}", class.name.name, m.name.name);
             let stats = MethodControlFlowStats { complexity, max_nesting, exit_points, statement_count };
-            index.insert(fqn_key, stats.clone());
-            // Also insert a simple key to preserve backwards compatibility for tests and tools
-            index.insert(simple_key, stats);
+            index.insert(fqn_key, stats);
         } else if let ClassBodyDeclaration::NestedClass(nested) = member {
             analyze_class(nested, ns_path, class_stack, index);
         }
@@ -81,8 +77,10 @@ fn decision_points(stmt: &Statement) -> usize {
             d
         }
         Statement::For(for_stmt) => 1 + decision_points(&for_stmt.body),
+        Statement::ForEach(fe) => 1 + decision_points(&fe.body),
         Statement::While(while_stmt) => 1 + decision_points(&while_stmt.body),
         Statement::DoWhile(dw) => 1 + decision_points(&dw.body),
+        Statement::Using(us) => 1 + us.body.as_ref().map(|b| decision_points(b)).unwrap_or(0),
         Statement::Switch(sw) => {
             let mut d = sw.sections.len();
             for sec in &sw.sections { for s in &sec.statements { d += decision_points(s); } }
@@ -116,8 +114,12 @@ fn max_nesting_of(stmt: &Statement, current: usize) -> usize {
             c.max(a)
         }
         Statement::For(for_stmt) => max_nesting_of(&for_stmt.body, current + 1),
+        Statement::ForEach(fe) => max_nesting_of(&fe.body, current + 1),
         Statement::While(while_stmt) => max_nesting_of(&while_stmt.body, current + 1),
         Statement::DoWhile(dw) => max_nesting_of(&dw.body, current + 1),
+        Statement::Using(us) => {
+            if let Some(b) = &us.body { max_nesting_of(b, current + 1) } else { current }
+        },
         Statement::Switch(sw) => {
             let mut max_d = current + 1;
             for sec in &sw.sections { for s in &sec.statements { max_d = max_d.max(max_nesting_of(s, current + 1)); } }
@@ -143,8 +145,12 @@ fn count_exit_points(stmt: Option<&Statement>) -> usize {
                 c
             }
             Statement::For(for_stmt) => count_exit_points(Some(&for_stmt.body)),
+            Statement::ForEach(fe) => count_exit_points(Some(&fe.body)),
             Statement::While(while_stmt) => count_exit_points(Some(&while_stmt.body)),
             Statement::DoWhile(dw) => count_exit_points(Some(&dw.body)),
+            Statement::Using(us) => {
+                if let Some(b) = &us.body { count_exit_points(Some(b)) } else { 0 }
+            },
             Statement::Switch(sw) => sw.sections.iter().map(|sec| sec.statements.iter().map(|s| count_exit_points(Some(s))).sum::<usize>()).sum(),
             Statement::Try(try_stmt) => {
                 let mut c = count_exit_points(Some(&try_stmt.try_block));

@@ -12,7 +12,8 @@ pub struct MethodControlFlowStats {
 }
 
 /// Index of control flow stats for methods within a single file.
-/// Key format (v1): "ClassName::MethodName". In multi-file v2, include FileId/FQN.
+/// Key format: fully-qualified name "Namespace.Nested.Type::Method".
+/// If no namespace is present, the key is "Type::Method".
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ControlFlowIndex(pub HashMap<String, MethodControlFlowStats>);
 

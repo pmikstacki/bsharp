@@ -20,6 +20,8 @@ use crate::syntax::errors::BResult;
 use crate::syntax::nodes::declarations::TypeDeclaration;
 use log::trace;
 use crate::parser::SpanTable;
+use crate::parser::preprocessor::parse_preprocessor_directive;
+use crate::parser::helpers::directives::skip_preprocessor_directives;
 
 /// Parse a C# source file following Roslyn's model where a source file contains:
 /// - global attributes (assembly/module attributes)
@@ -35,6 +37,8 @@ pub fn parse_csharp_source(input: &str) -> BResult<&str, CompilationUnit> {
 
     // Skip any leading whitespace/comments and remove any BOM or other text markers
     let (remaining, _) = ws(input)?;
+    // Skip initial preprocessor directives
+    let mut remaining = skip_preprocessor_directives(remaining, true);
 
     if log::log_enabled!(log::Level::Trace) {
         // Trace the input start (debug-only)
@@ -47,8 +51,11 @@ pub fn parse_csharp_source(input: &str) -> BResult<&str, CompilationUnit> {
         }
     }
 
+    // Skip any leading preprocessor directives (treat as trivia)
+    let mut remaining = skip_preprocessor_directives(remaining, true);
+
     // Parse global attributes first (assembly and module attributes)
-    let (remaining, global_attributes) = parse_global_attributes(remaining)?;
+    let (mut remaining, global_attributes) = parse_global_attributes(remaining)?;
     if !global_attributes.is_empty() {
         trace!(
             "Successfully parsed {} global attributes",
@@ -57,12 +64,23 @@ pub fn parse_csharp_source(input: &str) -> BResult<&str, CompilationUnit> {
     }
 
     // Parse using directives next (including optional 'global using' which we normalize to UsingDirective)
-    let mut remaining = remaining;
     let mut usings = Vec::new();
     loop {
         // Skip whitespace/comments between directives
         let (r, _) = ws(remaining)?;
         remaining = r;
+        // Skip any preprocessor directives between using directives
+        loop {
+            if bpeek(crate::syntax::parser_helpers::bchar('#'))(remaining).is_ok() {
+                if let Ok((rest, _dir)) = parse_preprocessor_directive(remaining) {
+                    remaining = rest;
+                    let (r2, _) = ws(remaining)?;
+                    remaining = r2;
+                    continue;
+                }
+            }
+            break;
+        }
         // Look for 'global using' or 'using'
         if bpeek(keyword("global"))(remaining).is_ok() {
             // consume 'global'
@@ -114,6 +132,32 @@ pub fn parse_csharp_source(input: &str) -> BResult<&str, CompilationUnit> {
             }
             file_scoped_namespace = Some(namespace);
             remaining = rest;
+            
+            // After a file-scoped namespace, parse using directives and skip directives before members
+            // 1) Skip any immediate preprocessor directives
+            remaining = skip_preprocessor_directives(remaining, true);
+            // 2) Collect using directives that appear after file-scoped namespace
+            loop {
+                let (r, _) = ws(remaining)?;
+                remaining = r;
+                if bpeek(keyword("using"))(remaining).is_ok() {
+                    let (r_after, using_dir) = bws(parse_using_directive)(remaining)?;
+                    usings.push(using_dir);
+                    remaining = r_after;
+                    continue;
+                }
+                // Allow global using after file-scoped namespace as well
+                if bpeek(keyword("global"))(remaining).is_ok() {
+                    let (r, _) = bws(keyword("global"))(remaining)?;
+                    if bpeek(keyword("using"))(r).is_ok() {
+                        let (r_after, using_dir) = parse_using_directive(r)?;
+                        usings.push(using_dir);
+                        remaining = r_after;
+                        continue;
+                    }
+                }
+                break;
+            }
         }
     }
 
@@ -126,6 +170,9 @@ pub fn parse_csharp_source(input: &str) -> BResult<&str, CompilationUnit> {
 
     // If there's still input, try to parse top-level members or statements
     while !remaining.trim().is_empty() {
+        // Skip any preprocessor directives between members/statements
+        remaining = skip_preprocessor_directives(remaining, true);
+        
         // First try to parse top-level members (classes, namespaces, etc.)
         match parse_top_level_member(remaining) {
             Ok((rest, member)) => {
@@ -140,14 +187,18 @@ pub fn parse_csharp_source(input: &str) -> BResult<&str, CompilationUnit> {
             Err(_) => {
                 // If we can't parse a member, try to parse top-level statements (C# 9+)
                 match parse_top_level_statements(remaining) {
-                    Ok((rest, statements)) => {
+                    Ok((rest, statements)) if !statements.is_empty() || rest != remaining => {
                         trace!(
-                            "Successfully parsed {} top-level statements",
-                            statements.len()
+                            "Parsed {} top-level statements (consumed: {})",
+                            statements.len(), rest.len() != remaining.len()
                         );
                         top_level_statements.extend(statements);
                         remaining = rest;
-                        break; // Top-level statements consume the rest of the file
+                        break; // Parsed some statements; remaining content handled or empty
+                    }
+                    Ok((_rest, _statements)) => {
+                        // Did not consume anything and found no statements; stop parsing loop gracefully
+                        break;
                     }
                     Err(e) => {
                         trace!("Failed to parse top-level member or statements: {:?}", e);
@@ -239,6 +290,18 @@ pub fn parse_csharp_source_with_spans(
     loop {
         let (r, _) = ws(remaining)?;
         remaining = r;
+        // Skip any preprocessor directives between using directives
+        loop {
+            if bpeek(crate::syntax::parser_helpers::bchar('#'))(remaining).is_ok() {
+                if let Ok((rest, _dir)) = parse_preprocessor_directive(remaining) {
+                    remaining = rest;
+                    let (r2, _) = ws(remaining)?;
+                    remaining = r2;
+                    continue;
+                }
+            }
+            break;
+        }
         if bpeek(keyword("global"))(remaining).is_ok() {
             let (r, _) = bws(keyword("global"))(remaining)?;
             if bpeek(keyword("using"))(r).is_ok() {
@@ -276,6 +339,18 @@ pub fn parse_csharp_source_with_spans(
 
     let (mut remaining, _) = ws(remaining)?;
     while !remaining.trim().is_empty() {
+        // Skip preprocessor directives between members/statements
+        loop {
+            let (r, _) = ws(remaining)?;
+            remaining = r;
+            if bpeek(crate::syntax::parser_helpers::bchar('#'))(remaining).is_ok() {
+                if let Ok((rest, _dir)) = parse_preprocessor_directive(remaining) {
+                    remaining = rest;
+                    continue;
+                }
+            }
+            break;
+        }
         match with_recognized_span(input, parse_top_level_member)(remaining) {
             Ok((rest, (member, recognized_range))) => {
                 // Compute file-scoped namespace prefix if present

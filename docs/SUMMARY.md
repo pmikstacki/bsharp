@@ -27,6 +27,7 @@
 
 - [Analysis Overview](./analysis/overview.md)
 - [Analysis Pipeline](./analysis/pipeline.md)
+- [Traversal Guide](./analysis/traversal-guide.md)
 - [Control Flow Analysis](./analysis/control-flow.md)
 - [Dependency Analysis](./analysis/dependencies.md)
 - [Metrics Collection](./analysis/metrics.md)

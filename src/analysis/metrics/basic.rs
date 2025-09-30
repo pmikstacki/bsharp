@@ -133,9 +133,199 @@ impl BasicMetricsCollector {
 
     /// Collect basic metrics from a compilation unit
     pub fn collect_from_compilation_unit(&mut self, unit: &CompilationUnit) {
-        // TODO: Implement collection from compilation unit
-        // This would traverse the AST and count elements
-        let _ = unit; // Suppress unused warning for now
+        // Count top-level declarations (including namespaced)
+        // File-scoped namespace members
+        if let Some(fs) = &unit.file_scoped_namespace {
+            for member in &fs.declarations {
+                self.collect_from_namespace_member(member);
+            }
+        }
+
+        for decl in &unit.declarations {
+            match decl {
+                crate::syntax::ast::TopLevelDeclaration::Namespace(ns) => {
+                    for member in &ns.declarations {
+                        self.collect_from_namespace_member(member);
+                    }
+                }
+                crate::syntax::ast::TopLevelDeclaration::Class(class) => {
+                    self.collect_from_class(class);
+                }
+                crate::syntax::ast::TopLevelDeclaration::Struct(struct_decl) => {
+                    self.metrics.total_structs += 1;
+                    // Count struct members
+                    for member in &struct_decl.body_declarations {
+                        match member {
+                            crate::syntax::nodes::declarations::StructBodyDeclaration::Method(m) => {
+                                self.metrics.total_methods += 1;
+                                if let Some(body) = &m.body { self.collect_from_statement(body); }
+                            }
+                            crate::syntax::nodes::declarations::StructBodyDeclaration::Field(_) => {
+                                self.metrics.total_fields += 1;
+                            }
+                            crate::syntax::nodes::declarations::StructBodyDeclaration::Property(_) => {
+                                self.metrics.total_properties += 1;
+                            }
+                            crate::syntax::nodes::declarations::StructBodyDeclaration::Constructor(c) => {
+                                self.metrics.total_constructors += 1;
+                                if let Some(body) = &c.body { self.collect_from_statement(body); }
+                            }
+                            crate::syntax::nodes::declarations::StructBodyDeclaration::Event(_) => {
+                                self.metrics.total_events += 1;
+                            }
+                            crate::syntax::nodes::declarations::StructBodyDeclaration::Indexer(_) => {
+                                // Indexers are properties-like; no separate count currently
+                                self.metrics.total_properties += 1;
+                            }
+                            crate::syntax::nodes::declarations::StructBodyDeclaration::Operator(_) => {
+                                // Count operator as a method for basic metrics
+                                self.metrics.total_methods += 1;
+                            }
+                            crate::syntax::nodes::declarations::StructBodyDeclaration::NestedClass(c) => {
+                                self.collect_from_class(c);
+                            }
+                            crate::syntax::nodes::declarations::StructBodyDeclaration::NestedStruct(s) => {
+                                // Recurse into nested struct
+                                // Increment count and collect members
+                                self.metrics.total_structs += 1;
+                                for m in &s.body_declarations {
+                                    match m {
+                                        crate::syntax::nodes::declarations::StructBodyDeclaration::Method(mm) => {
+                                            self.metrics.total_methods += 1;
+                                            if let Some(body) = &mm.body { self.collect_from_statement(body); }
+                                        }
+                                        crate::syntax::nodes::declarations::StructBodyDeclaration::Field(_) => self.metrics.total_fields += 1,
+                                        crate::syntax::nodes::declarations::StructBodyDeclaration::Property(_) => self.metrics.total_properties += 1,
+                                        crate::syntax::nodes::declarations::StructBodyDeclaration::Constructor(cc) => {
+                                            self.metrics.total_constructors += 1;
+                                            if let Some(body) = &cc.body { self.collect_from_statement(body); }
+                                        }
+                                        crate::syntax::nodes::declarations::StructBodyDeclaration::Event(_) => self.metrics.total_events += 1,
+                                        crate::syntax::nodes::declarations::StructBodyDeclaration::Indexer(_) => self.metrics.total_properties += 1,
+                                        crate::syntax::nodes::declarations::StructBodyDeclaration::Operator(_) => self.metrics.total_methods += 1,
+                                        crate::syntax::nodes::declarations::StructBodyDeclaration::NestedClass(nc) => self.collect_from_class(nc),
+                                        crate::syntax::nodes::declarations::StructBodyDeclaration::NestedStruct(ns) => {
+                                            // shallow recurse to avoid duplication; could extract helper
+                                            self.metrics.total_structs += 1;
+                                            for sm in &ns.body_declarations {
+                                                match sm {
+                                                    crate::syntax::nodes::declarations::StructBodyDeclaration::Method(mm) => {
+                                                        self.metrics.total_methods += 1;
+                                                        if let Some(body) = &mm.body { self.collect_from_statement(body); }
+                                                    }
+                                                    crate::syntax::nodes::declarations::StructBodyDeclaration::Field(_) => self.metrics.total_fields += 1,
+                                                    crate::syntax::nodes::declarations::StructBodyDeclaration::Property(_) => self.metrics.total_properties += 1,
+                                                    crate::syntax::nodes::declarations::StructBodyDeclaration::Constructor(cc) => {
+                                                        self.metrics.total_constructors += 1;
+                                                        if let Some(body) = &cc.body { self.collect_from_statement(body); }
+                                                    }
+                                                    crate::syntax::nodes::declarations::StructBodyDeclaration::Event(_) => self.metrics.total_events += 1,
+                                                    crate::syntax::nodes::declarations::StructBodyDeclaration::Indexer(_) => self.metrics.total_properties += 1,
+                                                    crate::syntax::nodes::declarations::StructBodyDeclaration::Operator(_) => self.metrics.total_methods += 1,
+                                                    _ => {}
+                                                }
+                                            }
+                                        }
+                                        crate::syntax::nodes::declarations::StructBodyDeclaration::NestedInterface(_) => self.metrics.total_interfaces += 1,
+                                        crate::syntax::nodes::declarations::StructBodyDeclaration::NestedEnum(_) => self.metrics.total_enums += 1,
+                                        crate::syntax::nodes::declarations::StructBodyDeclaration::NestedRecord(_) => self.metrics.total_records += 1,
+                                    }
+                                }
+                            }
+                            crate::syntax::nodes::declarations::StructBodyDeclaration::NestedInterface(_) => {
+                                self.metrics.total_interfaces += 1;
+                            }
+                            crate::syntax::nodes::declarations::StructBodyDeclaration::NestedEnum(_) => {
+                                self.metrics.total_enums += 1;
+                            }
+                            crate::syntax::nodes::declarations::StructBodyDeclaration::NestedRecord(_) => {
+                                self.metrics.total_records += 1;
+                            }
+                        }
+                    }
+                }
+                crate::syntax::ast::TopLevelDeclaration::Interface(_) => {
+                    self.metrics.total_interfaces += 1;
+                }
+                crate::syntax::ast::TopLevelDeclaration::Enum(_) => {
+                    self.metrics.total_enums += 1;
+                }
+                crate::syntax::ast::TopLevelDeclaration::Record(_) => {
+                    self.metrics.total_records += 1;
+                }
+                crate::syntax::ast::TopLevelDeclaration::Delegate(_) => {
+                    self.metrics.total_delegates += 1;
+                }
+                crate::syntax::ast::TopLevelDeclaration::GlobalAttribute(_) | crate::syntax::ast::TopLevelDeclaration::FileScopedNamespace(_) => {}
+            }
+        }
+
+        // Count top-level statements as logical lines where applicable
+        for stmt in &unit.top_level_statements {
+            self.collect_from_statement(stmt);
+        }
+    }
+
+    fn collect_from_namespace_member(
+        &mut self,
+        member: &crate::syntax::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration,
+    ) {
+        use crate::syntax::nodes::declarations::namespace_declaration::NamespaceBodyDeclaration as N;
+        match member {
+            N::Namespace(ns) => {
+                for m in &ns.declarations { self.collect_from_namespace_member(m); }
+            }
+            N::Class(c) => self.collect_from_class(c),
+            N::Struct(s) => {
+                self.metrics.total_structs += 1;
+                for member in &s.body_declarations {
+                    match member {
+                        crate::syntax::nodes::declarations::StructBodyDeclaration::Method(m) => {
+                            self.metrics.total_methods += 1;
+                            if let Some(body) = &m.body { self.collect_from_statement(body); }
+                        }
+                        crate::syntax::nodes::declarations::StructBodyDeclaration::Field(_) => self.metrics.total_fields += 1,
+                        crate::syntax::nodes::declarations::StructBodyDeclaration::Property(_) => self.metrics.total_properties += 1,
+                        crate::syntax::nodes::declarations::StructBodyDeclaration::Constructor(c) => {
+                            self.metrics.total_constructors += 1;
+                            if let Some(body) = &c.body { self.collect_from_statement(body); }
+                        }
+                        crate::syntax::nodes::declarations::StructBodyDeclaration::Event(_) => self.metrics.total_events += 1,
+                        crate::syntax::nodes::declarations::StructBodyDeclaration::Indexer(_) => self.metrics.total_properties += 1,
+                        crate::syntax::nodes::declarations::StructBodyDeclaration::Operator(_) => self.metrics.total_methods += 1,
+                        crate::syntax::nodes::declarations::StructBodyDeclaration::NestedClass(c) => self.collect_from_class(c),
+                        crate::syntax::nodes::declarations::StructBodyDeclaration::NestedStruct(ns) => {
+                            self.metrics.total_structs += 1;
+                            for sm in &ns.body_declarations {
+                                match sm {
+                                    crate::syntax::nodes::declarations::StructBodyDeclaration::Method(mm) => {
+                                        self.metrics.total_methods += 1;
+                                        if let Some(body) = &mm.body { self.collect_from_statement(body); }
+                                    }
+                                    crate::syntax::nodes::declarations::StructBodyDeclaration::Field(_) => self.metrics.total_fields += 1,
+                                    crate::syntax::nodes::declarations::StructBodyDeclaration::Property(_) => self.metrics.total_properties += 1,
+                                    crate::syntax::nodes::declarations::StructBodyDeclaration::Constructor(cc) => {
+                                        self.metrics.total_constructors += 1;
+                                        if let Some(body) = &cc.body { self.collect_from_statement(body); }
+                                    }
+                                    crate::syntax::nodes::declarations::StructBodyDeclaration::Event(_) => self.metrics.total_events += 1,
+                                    crate::syntax::nodes::declarations::StructBodyDeclaration::Indexer(_) => self.metrics.total_properties += 1,
+                                    crate::syntax::nodes::declarations::StructBodyDeclaration::Operator(_) => self.metrics.total_methods += 1,
+                                    _ => {}
+                                }
+                            }
+                        }
+                        crate::syntax::nodes::declarations::StructBodyDeclaration::NestedInterface(_) => self.metrics.total_interfaces += 1,
+                        crate::syntax::nodes::declarations::StructBodyDeclaration::NestedEnum(_) => self.metrics.total_enums += 1,
+                        crate::syntax::nodes::declarations::StructBodyDeclaration::NestedRecord(_) => self.metrics.total_records += 1,
+                    }
+                }
+            }
+            N::Interface(_) => self.metrics.total_interfaces += 1,
+            N::Enum(_) => self.metrics.total_enums += 1,
+            N::Record(_) => self.metrics.total_records += 1,
+            N::Delegate(_) | N::GlobalAttribute(_) => {}
+        }
     }
 
     /// Collect basic metrics from a class

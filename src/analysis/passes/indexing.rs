@@ -99,7 +99,7 @@ impl AnalyzerPass for IndexingPass {
                         symbols.insert(&name, SymbolKind::Record, Some(type_fqn), Some(file_path.to_string()), None, None);
                         names.0.insert(name.clone(), 1);
                     }
-                    NamespaceBodyDeclaration::GlobalAttribute(_) | NamespaceBodyDeclaration::Preprocessor(_) => {}
+                    NamespaceBodyDeclaration::GlobalAttribute(_) => {}
                 }
             }
         }

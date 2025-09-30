@@ -31,7 +31,7 @@ namespace N {
         .get::<ControlFlowIndex>()
         .expect("ControlFlowIndex missing");
 
-    // Key is "C::M" for this test
-    let stats = index.0.get("C::M").expect("missing method stats");
+    // Key is fully-qualified: "N.C::M" for this test
+    let stats = index.0.get("N.C::M").expect("missing method stats");
     assert!(stats.complexity >= 2);
 }

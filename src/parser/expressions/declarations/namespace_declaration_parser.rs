@@ -5,17 +5,20 @@ use crate::parser::expressions::declarations::type_declaration_parser::{
     parse_struct_declaration,
 };
 use crate::parser::identifier_parser::parse_qualified_name;
+use crate::parser::expressions::declarations::using_directive_parser::parse_using_directive;
 use crate::syntax::comment_parser::with_ws;
 use crate::syntax::errors::BResult;
 use crate::syntax::nodes::declarations::{
     namespace_declaration::NamespaceBodyDeclaration, NamespaceDeclaration,
 };
 use crate::syntax::nodes::identifier::Identifier;
-use crate::syntax::parser_helpers::{bchar, bws, context, keyword};
+use crate::syntax::parser_helpers::{bchar, bws, bpeek, context, keyword};
 use log::trace;
 use nom::branch::alt;
 use nom::combinator::{cut, map};
-use nom::multi::many0;
+// use nom::multi::many0; // replaced by manual loop to support directive skipping
+use crate::parser::preprocessor::parse_preprocessor_directive;
+use crate::parser::helpers::directives::skip_preprocessor_directives;
 
 /// Parse a namespace member (class, struct, interface, enum, record, or nested namespace)
 fn parse_namespace_member_safe(input: &str) -> BResult<&str, NamespaceBodyDeclaration> {
@@ -24,7 +27,7 @@ fn parse_namespace_member_safe(input: &str) -> BResult<&str, NamespaceBodyDeclar
         input.chars().take(60).collect::<String>()
     );
 
-    // Use with_ws to handle whitespace and comments before type declarations
+    // Use with_ws to handle whitespace and comments before type declarations, and skip directives
     with_ws(context(
         "namespace member (expected class, struct, interface, enum, record, delegate, or nested namespace)",
         alt((
@@ -85,9 +88,42 @@ pub fn parse_namespace_declaration(input: &str) -> BResult<&str, NamespaceDeclar
     let (input, _) = context("namespace body opening (expected '{')", bws(bchar('{')))(input)?;
     trace!("[DEBUG] parse_namespace_declaration: after open brace");
 
-    // Parse namespace members using many0 - this will parse 0 or more members
-    // and stop when it can't parse any more (which should be at the closing brace)
-    let (input, members) = many0(parse_namespace_member_safe)(input)?;
+    // Parse using directives inside namespace body (namespace-scoped usings)
+    let mut cur = input;
+    let mut using_directives: Vec<crate::syntax::nodes::declarations::UsingDirective> = Vec::new();
+    loop {
+        // consume whitespace/comments between usings
+        let (r, _) = crate::syntax::comment_parser::ws(cur)?;
+        cur = r;
+        if bpeek(keyword("using"))(cur).is_ok() {
+            let (r2, u) = bws(parse_using_directive)(cur)?;
+            using_directives.push(u);
+            cur = r2;
+            continue;
+        }
+        break;
+    }
+
+    // Parse namespace members with directive skipping between members
+    let mut members: Vec<NamespaceBodyDeclaration> = Vec::new();
+    loop {
+        // Skip whitespace/comments and any preprocessor directives
+        let (r, _) = crate::syntax::comment_parser::ws(cur)?;
+        cur = r;
+        cur = skip_preprocessor_directives(cur, false);
+
+        // Stop at closing brace
+        if bpeek(bchar('}'))(cur).is_ok() {
+            break;
+        }
+
+        // Try parse a member; break if it doesn't parse
+        match parse_namespace_member_safe(cur) {
+            Ok((rest, m)) => { members.push(m); cur = rest; }
+            Err(_) => break,
+        }
+    }
+    let input_after_members = cur;
 
     trace!(
         "[DEBUG] parse_namespace_declaration: parsed {} members",
@@ -95,18 +131,18 @@ pub fn parse_namespace_declaration(input: &str) -> BResult<&str, NamespaceDeclar
     );
 
     // Parse closing brace (commit once inside namespace body)
-    let (input, _) = context(
+    let (input_final, _) = context(
         "namespace body closing (expected '}')",
         cut(bws(bchar('}'))),
-    )(input)?;
+    )(input_after_members)?;
     trace!("[DEBUG] parse_namespace_declaration: successfully parsed closing brace");
 
     Ok((
-        input,
+        input_final,
         NamespaceDeclaration {
             name: Identifier { name: name_str },
-            using_directives: vec![], // Namespaces in C# don't directly contain 'using' directives in their body
-            declarations: members,    // Use the actual parsed members instead of empty vector
+            using_directives, // collected namespace-scoped usings
+            declarations: members,    // parsed members
         },
     ))
 }

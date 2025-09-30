@@ -31,6 +31,51 @@ pub fn analyze_namespace_member(
                         analysis.total_constructors += 1;
                         analysis.total_methods += 1; // Constructors should also count as methods
                     }
+                    crate::syntax::nodes::declarations::StructBodyDeclaration::Event(_) => {
+                        analysis.total_events += 1;
+                    }
+                    crate::syntax::nodes::declarations::StructBodyDeclaration::Indexer(_) => {
+                        // Treat indexers like properties for analysis summarization
+                        analysis.total_properties += 1;
+                    }
+                    crate::syntax::nodes::declarations::StructBodyDeclaration::Operator(_) => {
+                        // Treat operators as methods for analysis summarization
+                        analysis.total_methods += 1;
+                    }
+                    crate::syntax::nodes::declarations::StructBodyDeclaration::NestedClass(class) => {
+                        // Recurse into nested class
+                        analysis = analysis.combine(class.analyze());
+                    }
+                    crate::syntax::nodes::declarations::StructBodyDeclaration::NestedStruct(nested) => {
+                        // Shallow analysis: count struct and iterate its members
+                        analysis.total_structs += 1;
+                        for m in &nested.body_declarations {
+                            match m {
+                                crate::syntax::nodes::declarations::StructBodyDeclaration::Method(method) => {
+                                    analysis = analysis.combine(method.analyze());
+                                }
+                                crate::syntax::nodes::declarations::StructBodyDeclaration::Field(_) => analysis.total_fields += 1,
+                                crate::syntax::nodes::declarations::StructBodyDeclaration::Property(_) => analysis.total_properties += 1,
+                                crate::syntax::nodes::declarations::StructBodyDeclaration::Constructor(_) => {
+                                    analysis.total_constructors += 1;
+                                    analysis.total_methods += 1;
+                                }
+                                crate::syntax::nodes::declarations::StructBodyDeclaration::Event(_) => analysis.total_events += 1,
+                                crate::syntax::nodes::declarations::StructBodyDeclaration::Indexer(_) => analysis.total_properties += 1,
+                                crate::syntax::nodes::declarations::StructBodyDeclaration::Operator(_) => analysis.total_methods += 1,
+                                _ => {}
+                            }
+                        }
+                    }
+                    crate::syntax::nodes::declarations::StructBodyDeclaration::NestedInterface(_) => {
+                        analysis.total_interfaces += 1;
+                    }
+                    crate::syntax::nodes::declarations::StructBodyDeclaration::NestedEnum(_) => {
+                        analysis.total_enums += 1;
+                    }
+                    crate::syntax::nodes::declarations::StructBodyDeclaration::NestedRecord(_) => {
+                        analysis.total_records += 1;
+                    }
                 }
             }
 

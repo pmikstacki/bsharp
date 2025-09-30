@@ -19,7 +19,7 @@ expression: json
     "cyclomatic_complexity": 0,
     "documented_classes": 0,
     "documented_methods": 0,
-    "lines_of_code": 0,
+    "lines_of_code": 8,
     "max_nesting_depth": 0,
     "total_classes": 0,
     "total_constructors": 0,

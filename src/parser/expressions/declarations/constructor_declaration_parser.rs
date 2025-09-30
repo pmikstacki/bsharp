@@ -8,5 +8,5 @@ pub fn parse_any_member_declaration(input: &str) -> BResult<&str, MemberDeclarat
     parse_member_declaration(input)
 }
 
-// TODO: Later, add parse_constructor_initializer if needed.
-// fn parse_constructor_initializer(input: &str) -> BResult<&str, ConstructorInitializer> { ... }
+// Constructor initializer parsing is now implemented in method_declaration_parser.rs
+// as part of the unified member declaration parsing (parse_constructor_initializer)

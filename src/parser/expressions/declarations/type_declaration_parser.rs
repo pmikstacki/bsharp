@@ -35,6 +35,7 @@ use crate::parser::expressions::declarations::type_declaration_helpers::{
 };
 use crate::parser::expressions::declarations::type_parameter_parser::opt_parse_type_parameter_list;
 use crate::parser::identifier_parser::parse_identifier;
+use crate::parser::helpers::directives::skip_preprocessor_directives;
 
 pub use crate::parser::expressions::declarations::modifier_parser::parse_modifiers_for_decl_type;
 
@@ -138,6 +139,9 @@ where
                     let (after_ws, _) = crate::syntax::comment_parser::parse_whitespace_or_comments(cur)?;
                     cur = after_ws;
 
+                    // Skip any preprocessor directives inside the type body
+                    cur = skip_preprocessor_directives(cur, false);
+
                     if at_end_of_body(cur) {
                         break;
                     }
@@ -236,10 +240,13 @@ fn parse_struct_member(input: &str) -> BResult<&str, StructBodyDeclaration> {
 
     // Try parsing different member types in priority order
     alt((
-        map(parse_field_declaration, StructBodyDeclaration::Field),
-        // Use unified member syntax - analyzer will determine semantic meaning
+        // Keyword-driven nested type declarations FIRST
+        map(parse_record_declaration, StructBodyDeclaration::NestedRecord),
+        map(parse_class_declaration, StructBodyDeclaration::NestedClass),
+        map(parse_struct_declaration, StructBodyDeclaration::NestedStruct),
+        map(parse_interface_declaration, StructBodyDeclaration::NestedInterface),
+        // Unified member syntax for methods/constructors before property
         map(parse_member_declaration, |member_decl| {
-            // Convert unified member declaration to specific types based on parser
             if member_decl.has_constructor_syntax() {
                 StructBodyDeclaration::Constructor(ConstructorDeclaration {
                     modifiers: member_decl.modifiers,
@@ -249,10 +256,11 @@ fn parse_struct_member(input: &str) -> BResult<&str, StructBodyDeclaration> {
                     initializer: member_decl.initializer,
                 })
             } else {
-                // Has method parser (return type present)
                 StructBodyDeclaration::Method(MethodDeclaration {
                     modifiers: member_decl.modifiers,
-                    return_type: member_decl.return_type.unwrap(), // Safe unwrap since has_method_syntax is true
+                    return_type: member_decl
+                        .return_type
+                        .expect("Internal syntax error: method path must have return type"),
                     name: member_decl.name,
                     type_parameters: member_decl.type_parameters,
                     parameters: member_decl.parameters,
@@ -261,8 +269,13 @@ fn parse_struct_member(input: &str) -> BResult<&str, StructBodyDeclaration> {
                 })
             }
         }),
+        // Specialized parsers
         map(parse_property_declaration, StructBodyDeclaration::Property),
-        // TODO: Add other members like events, indexers, operators, nested types
+        map(parse_indexer_declaration, StructBodyDeclaration::Indexer),
+        map(parse_event_declaration, StructBodyDeclaration::Event),
+        map(parse_operator_declaration, StructBodyDeclaration::Operator),
+        // Fields last (most generic)
+        map(parse_field_declaration, StructBodyDeclaration::Field),
     ))(input)
 }
 
@@ -584,11 +597,18 @@ pub fn parse_interface_indexer(input: &str) -> BResult<&str, IndexerDeclaration>
 }
 
 /// Parse an interface member
+/// Note: C# 8.0+ allows nested types in interfaces
 fn parse_interface_member(input: &str) -> BResult<&str, InterfaceBodyDeclaration> {
     // Try parsing different types of interface members
     // Since alt() from nom uses the first syntax that succeeds,
     // the order matters here - put more specific patterns first
     context("interface member", alt((
+        // Nested types (C# 8.0+)
+        map(parse_class_declaration, InterfaceBodyDeclaration::NestedClass),
+        map(parse_struct_declaration, InterfaceBodyDeclaration::NestedStruct),
+        map(parse_interface_declaration, InterfaceBodyDeclaration::NestedInterface),
+        map(parse_enum_declaration, InterfaceBodyDeclaration::NestedEnum),
+        map(parse_record_declaration, InterfaceBodyDeclaration::NestedRecord),
         // Try parsing methods using unified syntax
         map(
             |i| {

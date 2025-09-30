@@ -6,6 +6,8 @@ pub mod identifier_parser;
 pub mod statement_parser;
 pub mod types;
 pub mod keywords;
+pub mod preprocessor;
+pub mod helpers;
 
 use std::collections::HashMap;
 
