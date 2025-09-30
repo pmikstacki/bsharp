@@ -1,34 +1,22 @@
-
 # Preprocessor Directives
 
-BSharp implements comprehensive parsing for C# preprocessor directives, which are processed before the main parsing phase and can affect code compilation and parsing behavior.
+This parser treats preprocessor directives as trivia that can appear at safe boundaries (file start, between members inside namespaces and type bodies). We currently parse only a small subset explicitly and skip the rest.
 
-## Directive Types
+## What is parsed today
 
-### 1. Conditional Compilation
+- `#pragma` lines are parsed into `PreprocessorDirective::Pragma { pragma: String }`.
+- `#line` lines are parsed into `PreprocessorDirective::Line { line: String }`.
+- Any other line starting with `#` is recognized and consumed as
+  `PreprocessorDirective::Unknown { text: String }` (the remainder of the line after `#`).
 
-#### #if, #elif, #else, #endif
+All directive parsers consume the optional trailing newline so the main parser can continue cleanly at the next token.
 
-```csharp
-#if DEBUG
-    Console.WriteLine("Debug mode");
-#elif RELEASE
-    Console.WriteLine("Release mode");
-#else
-    Console.WriteLine("Unknown mode");
-#endif
-```
+## Where directives are skipped
 
-#### Complex Conditions
+Directives are treated as trivia and skipped at these locations:
 
-```csharp
-#if DEBUG && (WINDOWS || LINUX)
-    // Platform-specific debug code
-#endif
 
-#if !(NET5_0_OR_GREATER)
-    // Legacy framework code
-#endif
+This skipping is centralized via `parser/helpers/directives.rs: skip_preprocessor_directives()`.
 ```
 
 ### 2. Symbol Definition

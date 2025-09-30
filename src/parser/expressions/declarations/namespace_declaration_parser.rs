@@ -17,7 +17,6 @@ use log::trace;
 use nom::branch::alt;
 use nom::combinator::{cut, map};
 // use nom::multi::many0; // replaced by manual loop to support directive skipping
-use crate::parser::preprocessor::parse_preprocessor_directive;
 use crate::parser::helpers::directives::skip_preprocessor_directives;
 
 /// Parse a namespace member (class, struct, interface, enum, record, or nested namespace)

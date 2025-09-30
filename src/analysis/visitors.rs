@@ -27,6 +27,30 @@ where
         Statement::Using(using_stmt) => {
             if let Some(body) = &using_stmt.body { walk_statements(body, f); }
         }
+        Statement::Lock(lock_stmt) => {
+            walk_statements(&lock_stmt.body, f);
+        }
+        Statement::Fixed(fixed_stmt) => {
+            walk_statements(&fixed_stmt.body, f);
+        }
+        Statement::Unsafe(unsafe_stmt) => {
+            walk_statements(&unsafe_stmt.body, f);
+        }
+        Statement::LocalFunction(local_fn) => {
+            walk_statements(&local_fn.body, f);
+        }
+        Statement::Yield(_)
+        | Statement::Break(_)
+        | Statement::Continue(_)
+        | Statement::Goto(_)
+        | Statement::GotoCase(_)
+        | Statement::Label(_)
+        | Statement::Declaration(_)
+        | Statement::Expression(_)
+        | Statement::Return(_)
+        | Statement::Throw(_)
+        | Statement::Empty
+        | Statement::Deconstruction(_) => { /* leaf or handled by expression walker elsewhere */ }
         Statement::Switch(switch_stmt) => {
             for section in &switch_stmt.sections {
                 for s in &section.statements {

@@ -521,7 +521,7 @@ impl TypeAnalyzer {
                 CBD::Event(_) => mc.events += 1,
                 CBD::Indexer(_) => mc.indexers += 1,
                 CBD::Operator(_) => mc.methods += 1,
-                CBD::NestedClass(_) | CBD::NestedStruct(_) | CBD::NestedInterface(_) | CBD::NestedEnum(_) | CBD::NestedRecord(_) => mc.nested_types += 1,
+                CBD::Record(_) | CBD::NestedClass(_) | CBD::NestedStruct(_) | CBD::NestedInterface(_) | CBD::NestedEnum(_) | CBD::NestedRecord(_) => mc.nested_types += 1,
             }
         }
         mc
@@ -541,7 +541,7 @@ impl TypeAnalyzer {
                 SBD::Event(_) => mc.events += 1,
                 SBD::Indexer(_) => mc.indexers += 1,
                 SBD::Operator(_) => mc.methods += 1,
-                SBD::NestedClass(_) | SBD::NestedStruct(_) | SBD::NestedInterface(_) | SBD::NestedRecord(_) => mc.nested_types += 1,
+                SBD::NestedClass(_) | SBD::NestedStruct(_) | SBD::NestedInterface(_) | SBD::NestedEnum(_) | SBD::NestedRecord(_) => mc.nested_types += 1,
             }
         }
         mc
@@ -633,7 +633,12 @@ impl TypeAnalyzer {
     fn record_class(&mut self, c: &ClassDeclaration, ns: &[&str], enclosing: &[&str]) {
         // Relationships
         let mut bases: Vec<String> = Vec::new();
-        for bt in &c.base_types { if let Type::Reference(id) = bt { bases.push(id.name.clone()); } }
+        for bt in &c.base_types {
+            if let Type::Reference(id) = bt {
+                bases.push(id.name.clone());
+                if !ns.is_empty() { bases.push(format!("{}.{},", ns.join("."), id.name).trim_end_matches(',').to_string()); }
+            }
+        }
         let fqn = Self::fqn(ns, enclosing, &c.name.name);
         if !bases.is_empty() {
             self.type_relationships.entry(fqn.clone()).or_default().extend(bases.clone());
@@ -667,7 +672,12 @@ impl TypeAnalyzer {
 
     fn record_struct(&mut self, s: &crate::syntax::nodes::declarations::StructDeclaration, ns: &[&str], enclosing: &[&str]) {
         let mut bases: Vec<String> = Vec::new();
-        for bt in &s.base_types { if let Type::Reference(id) = bt { bases.push(id.name.clone()); } }
+        for bt in &s.base_types {
+            if let Type::Reference(id) = bt {
+                bases.push(id.name.clone());
+                if !ns.is_empty() { bases.push(format!("{}.{},", ns.join("."), id.name).trim_end_matches(',').to_string()); }
+            }
+        }
         let fqn = Self::fqn(ns, enclosing, &s.name.name);
         if !bases.is_empty() { self.type_relationships.entry(fqn.clone()).or_default().extend(bases.clone()); }
         let mc = Self::count_struct_members(&s.body_declarations);
@@ -690,7 +700,12 @@ impl TypeAnalyzer {
 
     fn record_interface(&mut self, i: &crate::syntax::nodes::declarations::InterfaceDeclaration, ns: &[&str], enclosing: &[&str]) {
         let mut bases: Vec<String> = Vec::new();
-        for bt in &i.base_types { if let Type::Reference(id) = bt { bases.push(id.name.clone()); } }
+        for bt in &i.base_types {
+            if let Type::Reference(id) = bt {
+                bases.push(id.name.clone());
+                if !ns.is_empty() { bases.push(format!("{}.{},", ns.join("."), id.name).trim_end_matches(',').to_string()); }
+            }
+        }
         let fqn = Self::fqn(ns, enclosing, &i.name.name);
         if !bases.is_empty() { self.type_relationships.entry(fqn.clone()).or_default().extend(bases.clone()); }
         let mc = Self::count_interface_members(&i.body_declarations);
@@ -717,7 +732,12 @@ impl TypeAnalyzer {
 
     fn record_record(&mut self, r: &crate::syntax::nodes::declarations::RecordDeclaration, ns: &[&str], enclosing: &[&str]) {
         let mut bases: Vec<String> = Vec::new();
-        for bt in &r.base_types { if let Type::Reference(id) = bt { bases.push(id.name.clone()); } }
+        for bt in &r.base_types {
+            if let Type::Reference(id) = bt {
+                bases.push(id.name.clone());
+                if !ns.is_empty() { bases.push(format!("{}.{},", ns.join("."), id.name).trim_end_matches(',').to_string()); }
+            }
+        }
         let fqn = Self::fqn(ns, enclosing, &r.name.name);
         if !bases.is_empty() { self.type_relationships.entry(fqn.clone()).or_default().extend(bases.clone()); }
         // Records use class body declarations

@@ -200,3 +200,31 @@ fn test_line_directive_with_span_info() {
         _ => panic!("Expected Line directive"),
     }
 }
+
+#[test]
+fn test_unknown_region_directive() {
+    let code = "#region My Region";
+    let result = parse_preprocessor_directive(code);
+    assert!(result.is_ok());
+    let (_, directive) = result.unwrap();
+    match directive {
+        PreprocessorDirective::Unknown { text } => {
+            assert_eq!(text, "region My Region");
+        }
+        _ => panic!("Expected Unknown directive fallback for #region"),
+    }
+}
+
+#[test]
+fn test_unknown_define_directive() {
+    let code = "#define FOO";
+    let result = parse_preprocessor_directive(code);
+    assert!(result.is_ok());
+    let (_, directive) = result.unwrap();
+    match directive {
+        PreprocessorDirective::Unknown { text } => {
+            assert_eq!(text, "define FOO");
+        }
+        _ => panic!("Expected Unknown directive fallback for #define"),
+    }
+}
