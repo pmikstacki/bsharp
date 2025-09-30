@@ -10,24 +10,39 @@ use crate::workspace::source_map::SourceMap;
 
 pub struct WorkspaceLoader;
 
+#[derive(Debug, Clone, Copy)]
+pub struct WorkspaceLoadOptions {
+    pub follow_refs: bool,
+}
+
+impl Default for WorkspaceLoadOptions {
+    fn default() -> Self { Self { follow_refs: true } }
+}
+
 impl WorkspaceLoader {
     pub fn from_path(path: &Path) -> Result<Workspace> {
+        Self::from_path_with_options(path, WorkspaceLoadOptions::default())
+    }
+
+    pub fn from_path_with_options(path: &Path, opts: WorkspaceLoadOptions) -> Result<Workspace> {
         let meta = fs::metadata(path)?;
         if meta.is_file() {
             let ext = path.extension().and_then(|e| e.to_str()).unwrap_or("").to_ascii_lowercase();
             match ext.as_str() {
-                "sln" => Self::from_sln(path),
-                "csproj" => Self::from_csproj(path),
+                "sln" => Self::from_sln_with_options(path, opts),
+                "csproj" => Self::from_csproj_with_options(path, opts),
                 _ => Err(WorkspaceError::Unsupported(path.display().to_string())),
             }
         } else if meta.is_dir() {
-            Self::from_dir(path)
+            Self::from_dir_with_options(path, opts)
         } else {
             Err(WorkspaceError::InvalidPath(path.display().to_string()))
         }
     }
 
-    fn from_sln(path: &Path) -> Result<Workspace> {
+    fn from_sln(path: &Path) -> Result<Workspace> { Self::from_sln_with_options(path, WorkspaceLoadOptions::default()) }
+
+    fn from_sln_with_options(path: &Path, opts: WorkspaceLoadOptions) -> Result<Workspace> {
         let solution = SolutionReader::read(path)?;
         let root = solution.path.parent().unwrap_or(Path::new(".")).to_path_buf();
         let mut projects: Vec<Project> = Vec::new();
@@ -42,8 +57,10 @@ impl WorkspaceLoader {
                 }
             }
         }
-        // Follow ProjectReference transitively within root
-        Self::follow_project_references(&root, &mut projects);
+        // Follow ProjectReference transitively within root if enabled
+        if opts.follow_refs {
+            Self::follow_project_references(&root, &mut projects);
+        }
         // Deterministic ordering
         projects.sort_by(|a, b| a.path.cmp(&b.path));
         let source_paths = projects.iter().flat_map(|p| p.files.iter().map(|f| f.path.clone()));
@@ -51,12 +68,16 @@ impl WorkspaceLoader {
         Ok(Workspace { root, projects, solution: Some(solution), source_map })
     }
 
-    fn from_csproj(path: &Path) -> Result<Workspace> {
+    fn from_csproj(path: &Path) -> Result<Workspace> { Self::from_csproj_with_options(path, WorkspaceLoadOptions::default()) }
+
+    fn from_csproj_with_options(path: &Path, opts: WorkspaceLoadOptions) -> Result<Workspace> {
         let prj = CsprojReader::read(path)?;
         let root = prj.path.parent().unwrap_or(Path::new(".")).to_path_buf();
         let mut projects = vec![prj];
-        // Follow ProjectReference transitively within root
-        Self::follow_project_references(&root, &mut projects);
+        // Follow ProjectReference transitively within root if enabled
+        if opts.follow_refs {
+            Self::follow_project_references(&root, &mut projects);
+        }
         // Deterministic ordering
         projects.sort_by(|a, b| a.path.cmp(&b.path));
         let source_paths = projects.iter().flat_map(|p| p.files.iter().map(|f| f.path.clone()));
@@ -64,7 +85,9 @@ impl WorkspaceLoader {
         Ok(Workspace { root, projects, solution: None, source_map })
     }
 
-    fn from_dir(path: &Path) -> Result<Workspace> {
+    fn from_dir(path: &Path) -> Result<Workspace> { Self::from_dir_with_options(path, WorkspaceLoadOptions::default()) }
+
+    fn from_dir_with_options(path: &Path, opts: WorkspaceLoadOptions) -> Result<Workspace> {
         // Heuristic: prefer a solution in the directory; otherwise, all csproj files directly under dir.
         let mut slns: Vec<PathBuf> = Vec::new();
         let mut csprojs: Vec<PathBuf> = Vec::new();
@@ -79,8 +102,8 @@ impl WorkspaceLoader {
                 }
             }
         }
-        if let Some(sln) = slns.into_iter().next() { return Self::from_sln(&sln); }
-        if let Some(csproj) = csprojs.into_iter().next() { return Self::from_csproj(&csproj); }
+        if let Some(sln) = slns.into_iter().next() { return Self::from_sln_with_options(&sln, opts); }
+        if let Some(csproj) = csprojs.into_iter().next() { return Self::from_csproj_with_options(&csproj, opts); }
         Err(WorkspaceError::Unsupported(format!("No .sln or .csproj found in {}", path.display())))
     }
 

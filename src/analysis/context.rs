@@ -105,6 +105,11 @@ impl AnalysisContext {
         &self.source
     }
 
+    /// Get the file path associated with this analysis context.
+  pub fn file_path(&self) -> &str {
+      &self.file
+  }
+
     /// Get the text of a 1-based line number. Returns an empty string if out of range.
     pub fn line_text(&self, line: usize) -> &str {
         if line == 0 { return ""; }

@@ -20,6 +20,11 @@ pub fn execute(
     include: Vec<String>,
     exclude: Vec<String>,
     format: String,
+    enable_ruleset: Vec<String>,
+    disable_ruleset: Vec<String>,
+    enable_pass: Vec<String>,
+    disable_pass: Vec<String>,
+    severity: Vec<String>,
 ) -> Result<()> {
     let path_str = input
         .to_str()
@@ -47,7 +52,7 @@ pub fn execute(
         .unwrap_or(false);
 
     if is_dir || is_ws {
-        let ws = WorkspaceLoader::from_path(&input)
+        let ws = WorkspaceLoader::from_path_with_options(&input, crate::workspace::loader::WorkspaceLoadOptions { follow_refs })
             .map_err(|e| anyhow::anyhow!(e.to_string()))
             .with_context(|| format!("Failed to load workspace from {}", path_str))?;
         // Build final config: prefer file config, override with CLI flags if provided
@@ -55,6 +60,24 @@ pub fn execute(
         cfg.workspace.follow_refs = follow_refs;
         if !include.is_empty() { cfg.workspace.include = include.clone(); }
         if !exclude.is_empty() { cfg.workspace.exclude = exclude.clone(); }
+        // Apply toggles: enable overrides disable when both provided
+        for id in enable_ruleset { cfg.enable_rulesets.insert(id, true); }
+        for id in disable_ruleset { cfg.enable_rulesets.insert(id, false); }
+        for id in enable_pass { cfg.enable_passes.insert(id, true); }
+        for id in disable_pass { cfg.enable_passes.insert(id, false); }
+        // Severities: parse CODE=level
+        for pair in severity {
+            if let Some((code, lvl)) = pair.split_once('=') {
+                let sev = match lvl.to_ascii_lowercase().as_str() {
+                    "error" => crate::analysis::DiagnosticSeverity::Error,
+                    "warning" => crate::analysis::DiagnosticSeverity::Warning,
+                    "info" => crate::analysis::DiagnosticSeverity::Info,
+                    "hint" => crate::analysis::DiagnosticSeverity::Hint,
+                    _ => continue,
+                };
+                cfg.rule_severities.insert(code.to_string(), sev);
+            }
+        }
 
         let report = AnalyzerPipeline::run_workspace_with_config(&ws, cfg);
         let json = if format == "json" { serde_json::to_string(&report) } else { serde_json::to_string_pretty(&report) }
@@ -80,6 +103,22 @@ pub fn execute(
         cfg.workspace.follow_refs = follow_refs;
         if !include.is_empty() { cfg.workspace.include = include.clone(); }
         if !exclude.is_empty() { cfg.workspace.exclude = exclude.clone(); }
+        for id in enable_ruleset.clone() { cfg.enable_rulesets.insert(id, true); }
+        for id in disable_ruleset.clone() { cfg.enable_rulesets.insert(id, false); }
+        for id in enable_pass.clone() { cfg.enable_passes.insert(id, true); }
+        for id in disable_pass.clone() { cfg.enable_passes.insert(id, false); }
+        for pair in severity.clone() {
+            if let Some((code, lvl)) = pair.split_once('=') {
+                let sev = match lvl.to_ascii_lowercase().as_str() {
+                    "error" => crate::analysis::DiagnosticSeverity::Error,
+                    "warning" => crate::analysis::DiagnosticSeverity::Warning,
+                    "info" => crate::analysis::DiagnosticSeverity::Info,
+                    "hint" => crate::analysis::DiagnosticSeverity::Hint,
+                    _ => continue,
+                };
+                cfg.rule_severities.insert(code.to_string(), sev);
+            }
+        }
         ctx.config = cfg;
     }
 

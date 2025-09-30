@@ -26,10 +26,14 @@ namespace N {
     assert!(!class_ids.is_empty(), "expected class 'A' in symbol index");
     let class_sym = idx.get(class_ids[0]).expect("class symbol by id");
     assert_eq!(class_sym.kind, SymbolKind::Class);
+    assert_eq!(class_sym.fqn.as_deref(), Some("N.A"));
+    assert_eq!(class_sym.file.as_deref(), Some("test.cs"));
 
     // Method M
     let method_ids = idx.get_ids_by_name("M").cloned().unwrap_or_default();
     assert!(!method_ids.is_empty(), "expected method 'M' in symbol index");
     let method_sym = idx.get(method_ids[0]).expect("method symbol by id");
     assert_eq!(method_sym.kind, SymbolKind::Method);
+    assert_eq!(method_sym.fqn.as_deref(), Some("N.A::M"));
+    assert_eq!(method_sym.file.as_deref(), Some("test.cs"));
 }

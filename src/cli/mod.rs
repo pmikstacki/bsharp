@@ -78,6 +78,26 @@ pub enum Commands {
         /// Output format: json (compact) or pretty-json (default)
         #[arg(long, value_parser = ["json", "pretty-json"], default_value = "pretty-json")]
         format: String,
+
+        /// Enable specific rulesets by id (multiple allowed)
+        #[arg(long, value_name = "ID", num_args = 0..)]
+        enable_ruleset: Vec<String>,
+
+        /// Disable specific rulesets by id (multiple allowed)
+        #[arg(long, value_name = "ID", num_args = 0..)]
+        disable_ruleset: Vec<String>,
+
+        /// Enable specific passes by id (multiple allowed)
+        #[arg(long, value_name = "ID", num_args = 0..)]
+        enable_pass: Vec<String>,
+
+        /// Disable specific passes by id (multiple allowed)
+        #[arg(long, value_name = "ID", num_args = 0..)]
+        disable_pass: Vec<String>,
+
+        /// Override severities: CODE=level (level: error|warning|info|hint); multiple allowed
+        #[arg(long, value_name = "PAIR", num_args = 0..)]
+        severity: Vec<String>,
     },
 }
 
@@ -91,7 +111,7 @@ pub fn run() -> Result<()> {
 
         Commands::Compile { input } => compile::execute(input),
 
-        Commands::Analyze { input, symbol, config, out, follow_refs, include, exclude, format } =>
-            analyze::execute(input, symbol, config, out, follow_refs, include, exclude, format),
+        Commands::Analyze { input, symbol, config, out, follow_refs, include, exclude, format, enable_ruleset, disable_ruleset, enable_pass, disable_pass, severity } =>
+            analyze::execute(input, symbol, config, out, follow_refs, include, exclude, format, enable_ruleset, disable_ruleset, enable_pass, disable_pass, severity),
     }
 }
