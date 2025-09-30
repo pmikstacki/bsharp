@@ -1,0 +1,46 @@
+---
+source: tests/integration/workspace_analysis_snapshot.rs
+assertion_line: 45
+expression: json
+---
+{
+  "cfg": {
+    "deep_nesting_methods": 0,
+    "high_complexity_methods": 0,
+    "total_methods": 0
+  },
+  "deps": {
+    "edges": 0,
+    "nodes": 0
+  },
+  "diagnostics": {
+    "diagnostics": []
+  },
+  "metrics": {
+    "cyclomatic_complexity": 0,
+    "documented_classes": 0,
+    "documented_methods": 0,
+    "lines_of_code": 8,
+    "max_nesting_depth": 0,
+    "total_classes": 0,
+    "total_constructors": 0,
+    "total_delegates": 0,
+    "total_enums": 0,
+    "total_events": 0,
+    "total_fields": 0,
+    "total_for_loops": 0,
+    "total_if_statements": 0,
+    "total_interfaces": 0,
+    "total_methods": 0,
+    "total_properties": 0,
+    "total_records": 0,
+    "total_structs": 0,
+    "total_switch_statements": 0,
+    "total_try_statements": 0,
+    "total_using_statements": 0,
+    "total_while_loops": 0
+  },
+  "schema_version": 1,
+  "workspace_errors": [],
+  "workspace_warnings": []
+}
