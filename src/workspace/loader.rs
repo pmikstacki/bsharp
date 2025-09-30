@@ -40,6 +40,7 @@ impl WorkspaceLoader {
         }
     }
 
+    #[allow(dead_code)] // Convenience constructor retained for future direct calls in tests/CLI
     fn from_sln(path: &Path) -> Result<Workspace> { Self::from_sln_with_options(path, WorkspaceLoadOptions::default()) }
 
     fn from_sln_with_options(path: &Path, opts: WorkspaceLoadOptions) -> Result<Workspace> {
@@ -68,6 +69,7 @@ impl WorkspaceLoader {
         Ok(Workspace { root, projects, solution: Some(solution), source_map })
     }
 
+    #[allow(dead_code)] // Convenience constructor retained for future direct calls in tests/CLI
     fn from_csproj(path: &Path) -> Result<Workspace> { Self::from_csproj_with_options(path, WorkspaceLoadOptions::default()) }
 
     fn from_csproj_with_options(path: &Path, opts: WorkspaceLoadOptions) -> Result<Workspace> {
@@ -85,6 +87,7 @@ impl WorkspaceLoader {
         Ok(Workspace { root, projects, solution: None, source_map })
     }
 
+    #[allow(dead_code)] // Convenience constructor retained for future direct calls in tests/CLI
     fn from_dir(path: &Path) -> Result<Workspace> { Self::from_dir_with_options(path, WorkspaceLoadOptions::default()) }
 
     fn from_dir_with_options(path: &Path, opts: WorkspaceLoadOptions) -> Result<Workspace> {

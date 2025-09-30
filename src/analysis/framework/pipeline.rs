@@ -226,7 +226,6 @@ impl AnalyzerPipeline {
         let mut merged_diags = DiagnosticCollection::default();
         let mut merged_metrics: Option<AstAnalysis> = None;
         let mut merged_cfg: Option<CfgSummary> = None;
-        let mut merged_deps: Option<crate::analysis::artifacts::dependencies::DependencySummary> = None;
         let mut dep_node_keys: std::collections::HashSet<String> = std::collections::HashSet::new();
         let mut dep_edge_keys: std::collections::HashSet<String> = std::collections::HashSet::new();
         let mut ws_warnings: Vec<String> = Vec::new();
@@ -302,7 +301,7 @@ impl AnalyzerPipeline {
             }
         }
         // Finalize deps summary from deduped sets; keep non-null for stable schema
-        merged_deps = Some(crate::analysis::artifacts::dependencies::DependencySummary { nodes: dep_node_keys.len(), edges: dep_edge_keys.len() });
+        let deps = Some(crate::analysis::artifacts::dependencies::DependencySummary { nodes: dep_node_keys.len(), edges: dep_edge_keys.len() });
         merged_diags.diagnostics.sort_by(|a, b| {
             let af = a.location.as_ref().map(|l| l.file.clone()).unwrap_or_default();
             let bf = b.location.as_ref().map(|l| l.file.clone()).unwrap_or_default();
@@ -315,6 +314,6 @@ impl AnalyzerPipeline {
         for p in &workspace.projects { ws_warnings.extend(p.errors.clone()); }
         ws_warnings.sort();
         ws_warnings.dedup();
-        AnalysisReport { schema_version: 1, diagnostics: merged_diags, metrics: merged_metrics, cfg: merged_cfg, deps: merged_deps, workspace_warnings: ws_warnings, workspace_errors: Vec::new(), deps_node_keys: None, deps_edge_keys: None }
+        AnalysisReport { schema_version: 1, diagnostics: merged_diags, metrics: merged_metrics, cfg: merged_cfg, deps, workspace_warnings: ws_warnings, workspace_errors: Vec::new(), deps_node_keys: None, deps_edge_keys: None }
     }
 }

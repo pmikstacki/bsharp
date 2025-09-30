@@ -47,6 +47,15 @@
 
 - [Workspace Loading](./workspace/overview.md)
 
+# Planning
+
+- [vNext Vision](./planning/vnext-vision.md)
+- [LSP Module Plan](./planning/lsp-module-plan.md)
+- [LSP Tracking](./planning/lsp-tracking.md)
+- [Dotscope CIL Plan](./planning/dotscope-cil-plan.md)
+- [Dotscope CIL Tracking](./planning/dotscope-cil-tracking.md)
+- [Planning Index](./planning/README.md)
+
 # Development
 
 - [Contributing](./development/contributing.md)

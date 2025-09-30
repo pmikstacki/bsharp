@@ -1,0 +1,28 @@
+{
+  "global_attributes": [],
+  "using_directives": [],
+  "declarations": [],
+  "file_scoped_namespace": {
+    "name": {
+      "name": "test"
+    },
+    "declarations": [
+      {
+        "Class": {
+          "attributes": [],
+          "modifiers": [],
+          "name": {
+            "name": "C"
+          },
+          "type_parameters": null,
+          "primary_constructor_parameters": null,
+          "base_types": [],
+          "body_declarations": [],
+          "documentation": null
+        }
+      }
+    ],
+    "using_directives": []
+  },
+  "top_level_statements": []
+}

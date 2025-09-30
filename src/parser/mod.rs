@@ -8,6 +8,7 @@ pub mod types;
 pub mod keywords;
 pub mod preprocessor;
 pub mod helpers;
+pub mod parse_mode;
 
 use std::collections::HashMap;
 

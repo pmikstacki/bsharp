@@ -25,8 +25,8 @@ fn test_parse_command_creates_valid_json() -> Result<()> {
         let mut output_path = temp_dir.clone();
         output_path.push(format!("{}.json", file_name));
 
-        // Run the parse command
-        parse_execute(test_file.clone(), Some(output_path.clone()))?;
+        // Run the parse command (lenient to allow experimental recovery in fixtures)
+        parse_execute(test_file.clone(), Some(output_path.clone()), false, false, true)?;
 
         // Verify the output file exists
         assert!(
@@ -75,7 +75,7 @@ fn test_parse_command_handles_all_syntax_features() -> Result<()> {
         output_path.push(format!("{}.json", file_name));
 
         // Run the parse command
-        let result = parse_execute(test_file.clone(), Some(output_path.clone()));
+        let result = parse_execute(test_file.clone(), Some(output_path.clone()), false, false, true);
 
         // All test files should parse successfully
         assert!(result.is_ok(), "Failed to parse test file: {:?}", test_file);

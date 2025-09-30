@@ -33,6 +33,10 @@ pub enum Commands {
         /// Disable ANSI colors in error output (pretty mode only)
         #[arg(long, default_value_t = false)]
         no_color: bool,
+
+        /// Lenient mode: allow best-effort recovery (default: strict)
+        #[arg(long, default_value_t = false)]
+        lenient: bool,
     },
 
     /// Generate an SVG visualization of the AST from a C# file
@@ -113,7 +117,7 @@ pub fn run() -> Result<()> {
     let cli = Cli::parse();
 
     match cli.command {
-        Commands::Parse { input, output, errors_json, no_color } => parse::execute(input, output, errors_json, no_color),
+        Commands::Parse { input, output, errors_json, no_color, lenient } => parse::execute(input, output, errors_json, no_color, lenient),
 
         Commands::Tree { input, output } => tree::execute(input, output),
 

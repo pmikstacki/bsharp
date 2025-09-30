@@ -184,25 +184,30 @@ pub fn parse_csharp_source(input: &str) -> BResult<&str, CompilationUnit> {
                 let (after_ws, _) = ws(remaining)?;
                 remaining = after_ws;
             }
-            Err(_) => {
-                // If we can't parse a member, try to parse top-level statements (C# 9+)
-                match parse_top_level_statements(remaining) {
-                    Ok((rest, statements)) if !statements.is_empty() || rest != remaining => {
-                        trace!(
-                            "Parsed {} top-level statements (consumed: {})",
-                            statements.len(), rest.len() != remaining.len()
-                        );
-                        top_level_statements.extend(statements);
-                        remaining = rest;
-                        break; // Parsed some statements; remaining content handled or empty
-                    }
-                    Ok((_rest, _statements)) => {
-                        // Did not consume anything and found no statements; stop parsing loop gracefully
-                        break;
-                    }
-                    Err(e) => {
-                        trace!("Failed to parse top-level member or statements: {:?}", e);
-                        break;
+            Err(e) => {
+                // In strict mode, bubble the error immediately instead of attempting recovery
+                if crate::parser::parse_mode::is_strict() {
+                    return Err(e);
+                } else {
+                    // If we can't parse a member, try to parse top-level statements (C# 9+)
+                    match parse_top_level_statements(remaining) {
+                        Ok((rest, statements)) if !statements.is_empty() || rest != remaining => {
+                            trace!(
+                                "Parsed {} top-level statements (consumed: {})",
+                                statements.len(), rest.len() != remaining.len()
+                            );
+                            top_level_statements.extend(statements);
+                            remaining = rest;
+                            break; // Parsed some statements; remaining content handled or empty
+                        }
+                        Ok((_rest, _statements)) => {
+                            // Did not consume anything and found no statements; stop parsing loop gracefully
+                            break;
+                        }
+                        Err(e2) => {
+                            trace!("Failed to parse top-level member or statements: {:?}", e2);
+                            break;
+                        }
                     }
                 }
             }
@@ -240,6 +245,13 @@ pub fn parse_csharp_source(input: &str) -> BResult<&str, CompilationUnit> {
     }
 
     Ok((remaining, compilation_unit))
+}
+
+/// Strict entry point: require full consumption of input or return the original ErrorTree.
+/// This is used by the CLI default path to ensure any syntax error leads to a failure.
+pub fn parse_csharp_source_strict(input: &str) -> BResult<&str, CompilationUnit> {
+    use crate::syntax::test_helpers::parse_all;
+    parse_all(parse_csharp_source, input)
 }
 
 // parse_using_directive moved to parser/declarations/using_directive_parser.rs
@@ -377,16 +389,20 @@ pub fn parse_csharp_source_with_spans(
                 let (after_ws, _) = ws(remaining)?;
                 remaining = after_ws;
             }
-            Err(_) => {
-                match parse_top_level_statements(remaining) {
-                    Ok((rest, statements)) => {
-                        top_level_statements.extend(statements);
-                        remaining = rest;
-                        break;
-                    }
-                    Err(e) => {
-                        trace!("Failed to parse top-level member or statements (with spans): {:?}", e);
-                        break;
+            Err(e) => {
+                if crate::parser::parse_mode::is_strict() {
+                    return Err(e);
+                } else {
+                    match parse_top_level_statements(remaining) {
+                        Ok((rest, statements)) => {
+                            top_level_statements.extend(statements);
+                            remaining = rest;
+                            break;
+                        }
+                        Err(e2) => {
+                            trace!("Failed to parse top-level member or statements (with spans): {:?}", e2);
+                            break;
+                        }
                     }
                 }
             }

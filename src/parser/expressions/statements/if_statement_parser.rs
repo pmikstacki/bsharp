@@ -37,7 +37,7 @@ pub fn parse_if_statement(input: &str) -> BResult<&str, Statement> {
                 )),
                 context(
                     "if statement body (expected valid C# statement)",
-                    bws(parse_statement_ws),
+                    cut(bws(parse_statement_ws)),
                 ),
                 context(
                     "optional else clause",

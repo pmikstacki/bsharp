@@ -36,6 +36,7 @@ use crate::parser::expressions::declarations::type_declaration_helpers::{
 use crate::parser::expressions::declarations::type_parameter_parser::opt_parse_type_parameter_list;
 use crate::parser::identifier_parser::parse_identifier;
 use crate::parser::helpers::directives::skip_preprocessor_directives;
+use crate::parser::parse_mode;
 
 pub use crate::parser::expressions::declarations::modifier_parser::parse_modifiers_for_decl_type;
 
@@ -156,13 +157,18 @@ where
                             members.push(member);
                             cur = rest;
                         }
-                        Err(_) => {
-                            let next = skip_to_member_boundary_top_level(cur);
-                            if next.is_empty() || next == cur {
-                                // Cannot recover further; stop to avoid infinite loop
-                                break;
+                        Err(e) => {
+                            if parse_mode::is_strict() {
+                                // In strict mode, propagate the first error to fail the entire type body parse
+                                return Err(e);
+                            } else {
+                                let next = skip_to_member_boundary_top_level(cur);
+                                if next.is_empty() || next == cur {
+                                    // Cannot recover further; stop to avoid infinite loop
+                                    break;
+                                }
+                                cur = next;
                             }
-                            cur = next;
                         }
                     }
                 }
