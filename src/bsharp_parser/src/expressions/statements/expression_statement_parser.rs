@@ -29,7 +29,7 @@ pub fn parse_expression_statement(input: &str) -> BResult<&str, Statement> {
                     let consumed_len = input.len() - after_expr.len();
                     let prefix = &input[..consumed_len];
                     let trimmed_len = prefix
-                        .trim_end_matches(|c: char| c == ' ' || c == '\t' || c == '\r' || c == '\n')
+                        .trim_end_matches([' ', '\t', '\r', '\n'])
                         .len();
                     let expr_end_loc = &input[trimmed_len..];
                     Err(nom::Err::Failure(ErrorTree::Base {

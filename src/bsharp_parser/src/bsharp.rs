@@ -522,11 +522,7 @@ fn collect_class_member_spans(
     use crate::syntax::nodes::declarations::ClassBodyDeclaration as CBD;
 
     // Skip the opening '{'
-    let mut cur = if body_input.starts_with('{') {
-        &body_input[1..]
-    } else {
-        body_input
-    };
+    let mut cur = body_input.strip_prefix('{').unwrap_or(body_input);
     loop {
         // Consume whitespace/comments
         if let Ok((after, _)) = ws_comments(cur) {

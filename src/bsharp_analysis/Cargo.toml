@@ -18,6 +18,7 @@ bsharp_parser = { package = "bsharp_parser", path = "../bsharp_parser" }
 [features]
 default = []
 parallel_analysis = ["rayon"]
+dev_utils = []
 
 [dev-dependencies]
 insta = { version = "1.39.0", features = ["json"] }

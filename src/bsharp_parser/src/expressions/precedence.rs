@@ -24,7 +24,7 @@ where
         // loop for (op next)*
         loop {
             match op(i) {
-                Ok((i_after_op, bop)) => match cut(|rhs_input| next(rhs_input))(i_after_op) {
+                Ok((i_after_op, bop)) => match cut(&mut next)(i_after_op) {
                     Ok((i_after_rhs, right)) => {
                         left = Expression::Binary {
                             left: Box::new(left),

@@ -36,7 +36,7 @@ impl RuleSet {
         self
     }
 
-    pub fn iter(&self) -> impl Iterator<Item = &Box<dyn Rule>> {
-        self.rules.iter()
+    pub fn iter(&self) -> impl Iterator<Item = &dyn Rule> {
+        self.rules.iter().map(|b| b.as_ref())
     }
 }

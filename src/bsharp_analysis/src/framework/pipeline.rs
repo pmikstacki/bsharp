@@ -70,7 +70,7 @@ impl AnalyzerPipeline {
                 }
             }
             for r in rs.iter() {
-                all_rules.push(&**r);
+                all_rules.push(r);
             }
         }
         // Even if there are no rules, we still want to collect metrics in this phase
@@ -108,7 +108,7 @@ impl AnalyzerPipeline {
                 }
             }
             for r in rs.iter() {
-                all_rules.push(&**r);
+                all_rules.push(r);
             }
         }
         if all_rules.is_empty() {

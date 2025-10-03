@@ -1,5 +1,4 @@
 use anyhow::{Context, Result};
-use serde_json::to_string_pretty;
 use std::fs;
 use std::path::{Path, PathBuf};
 
@@ -8,6 +7,8 @@ use bsharp_analysis::diagnostics::parse as diag_parse;
 use bsharp_parser::bsharp::{parse_csharp_source, parse_csharp_source_strict};
 use bsharp_parser::helpers::brace_tracker;
 use bsharp_parser::parse_mode;
+use bsharp_parser::syntax::ast;
+use bsharp_parser::syntax::nodes::declarations::UsingDirective;
 use nom::Finish;
 use nom_supreme::error::{BaseErrorKind, ErrorTree, Expectation};
 use std::env;
@@ -17,7 +18,7 @@ use std::env;
 /// If `no_color` is true (or NO_COLOR is set), ANSI colors are disabled in pretty output.
 pub fn execute(
     input: PathBuf,
-    output: Option<PathBuf>,
+    _output: Option<PathBuf>,
     errors_json: bool,
     no_color: bool,
     lenient: bool,
@@ -164,21 +165,9 @@ pub fn execute(
         std::process::exit(1);
     }
 
-    // Serialize the AST to JSON
-    let json = to_string_pretty(&ast).context("Failed to serialize AST to JSON")?;
-
-    // Determine output path
-    let output_path = output.unwrap_or_else(|| {
-        let mut path = input.clone();
-        path.set_extension("json");
-        path
-    });
-
-    // Write the JSON to file
-    fs::write(&output_path, json)
-        .with_context(|| format!("Failed to write to file: {}", output_path.display()))?;
-
-    println!("JSON parse tree written to: {}", output_path.display());
+    // Produce a formatted textual tree representation and print to stdout
+    let tree = format_text_tree(&ast);
+    println!("{}", tree);
 
     Ok(())
 }
@@ -206,4 +195,56 @@ fn print_pretty_error(input: &Path, pretty_body: &str, no_color_flag: bool) {
         file,
         pretty_body.replace('^', arrow)
     );
+}
+
+fn format_text_tree(ast: &ast::CompilationUnit) -> String {
+    let mut out = String::new();
+    use std::fmt::Write as _;
+
+    writeln!(&mut out, "CompilationUnit").ok();
+    writeln!(&mut out, "  Usings ({}):", ast.using_directives.len()).ok();
+    for using in &ast.using_directives {
+        writeln!(&mut out, "    - {}", format_using_directive(using)).ok();
+    }
+
+    writeln!(
+        &mut out,
+        "  Declarations ({}):",
+        ast.declarations.len()
+    )
+    .ok();
+    for decl in &ast.declarations {
+        let label = match decl {
+            ast::TopLevelDeclaration::Namespace(ns) => format!("Namespace: {}", ns.name.name),
+            ast::TopLevelDeclaration::FileScopedNamespace(fns) => {
+                format!("File-Scoped Namespace: {}", fns.name.name)
+            }
+            ast::TopLevelDeclaration::Class(cl) => format!("Class: {}", cl.name.name),
+            ast::TopLevelDeclaration::Interface(iface) => {
+                format!("Interface: {}", iface.name.name)
+            }
+            ast::TopLevelDeclaration::Struct(st) => format!("Struct: {}", st.name.name),
+            ast::TopLevelDeclaration::Enum(en) => format!("Enum: {}", en.name.name),
+            ast::TopLevelDeclaration::Record(rec) => format!("Record: {}", rec.name.name),
+            ast::TopLevelDeclaration::Delegate(del) => format!("Delegate: {}", del.name.name),
+            ast::TopLevelDeclaration::GlobalAttribute(ga) => format!(
+                "Global Attribute: {} -> {}",
+                ga.target.name, ga.attribute.name.name
+            ),
+        };
+        writeln!(&mut out, "    - {}", label).ok();
+    }
+
+    out
+}
+
+fn format_using_directive(using: &UsingDirective) -> String {
+    match using {
+        UsingDirective::Namespace { namespace } => format!("using {};", namespace.name),
+        UsingDirective::Alias {
+            alias,
+            namespace_or_type,
+        } => format!("using {} = {};", alias.name, namespace_or_type.name),
+        UsingDirective::Static { type_name } => format!("using static {};", type_name.name),
+    }
 }

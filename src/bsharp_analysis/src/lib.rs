@@ -15,6 +15,7 @@ pub mod rules; // naming, semantic, control_flow_smells
 pub mod types; // Keep legacy types module for now // Keep metrics module (AstAnalysis, visitor, complexity)
 
 // Expose workspace module for CLI consumption (WorkspaceLoader, etc.)
+#[cfg(feature = "dev_utils")]
 mod visitors;
 pub mod workspace;
 

@@ -15,6 +15,25 @@ pub struct Cli {
     command: Commands,
 }
 
+impl From<&AnalyzeArgs> for analyze::AnalyzeOptions {
+    fn from(args: &AnalyzeArgs) -> Self {
+        analyze::AnalyzeOptions {
+            symbol: args.symbol.clone(),
+            config: args.config.clone(),
+            out: args.out.clone(),
+            follow_refs: args.follow_refs,
+            include: args.include.clone(),
+            exclude: args.exclude.clone(),
+            format: args.format.clone(),
+            enable_ruleset: args.enable_ruleset.clone(),
+            disable_ruleset: args.disable_ruleset.clone(),
+            enable_pass: args.enable_pass.clone(),
+            disable_pass: args.disable_pass.clone(),
+            severity: args.severity.clone(),
+        }
+    }
+}
+
 fn main() -> Result<()> {
     env_logger::Builder::from_env(Env::default().default_filter_or("info")).init();
     run()
@@ -116,7 +135,7 @@ pub enum Commands {
     },
 
     /// Analyze a C# file, project or solution and print analysis results
-    Analyze(AnalyzeArgs),
+    Analyze(Box<AnalyzeArgs>),
 }
 
 pub fn run() -> Result<()> {
@@ -139,20 +158,7 @@ pub fn run() -> Result<()> {
 
         Commands::Analyze(args) => analyze::execute(
             args.input.clone(),
-            analyze::AnalyzeOptions {
-                symbol: args.symbol,
-                config: args.config,
-                out: args.out,
-                follow_refs: args.follow_refs,
-                include: args.include,
-                exclude: args.exclude,
-                format: args.format,
-                enable_ruleset: args.enable_ruleset,
-                disable_ruleset: args.disable_ruleset,
-                enable_pass: args.enable_pass,
-                disable_pass: args.disable_pass,
-                severity: args.severity,
-            },
+            analyze::AnalyzeOptions::from(args.as_ref()),
         ),
     }
 }

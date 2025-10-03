@@ -441,7 +441,7 @@ pub fn render_pretty_parse_error(input: &str, err: &ErrorTree<&str>) -> String {
     let line_text = line_slice(input, line);
     let expected_text = info.expected.unwrap_or_else(|| "token".to_string());
     format!(
-        "at {}:{}: expected {}\\n{}\\n{}^",
+        "at {}:{}: expected {}\n{}\n{}^",
         line,
         col,
         expected_text,
