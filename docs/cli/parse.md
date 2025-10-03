@@ -7,7 +7,7 @@ The `parse` command parses C# source code and outputs a JSON representation of t
 ## Usage
 
 ```bash
-bsharp parse <INPUT> [--output <FILE>]
+bsharp parse <INPUT> [--output <FILE>] [--errors-json] [--no-color] [--lenient]
 ```
 
 ### Arguments
@@ -22,7 +22,16 @@ bsharp parse <INPUT> [--output <FILE>]
 **`--output, -o <FILE>`** (optional)
 - Output file path for JSON
 - Default: `<input>.json`
-- Creates parent directories if needed
+
+**`--errors-json`**
+- Print a machine-readable JSON error object to stdout on parse failure and exit non-zero
+- Disables pretty error output
+
+**`--no-color`**
+- Disable ANSI colors in pretty error output
+
+**`--lenient`**
+- Enable best-effort recovery mode (default is strict)
 
 ---
 
@@ -31,7 +40,7 @@ bsharp parse <INPUT> [--output <FILE>]
 ### Basic Parsing
 
 ```bash
-# Parse and output to default file (Program.cs.json)
+# Parse and output to default file (Program.json)
 bsharp parse Program.cs
 
 # Parse and specify output file
@@ -60,18 +69,14 @@ done
 {
   "global_attributes": [],
   "using_directives": [
-    {
-      "namespace": "System"
-    }
+    { "Namespace": { "namespace": { "name": "System" } } }
   ],
   "declarations": [
     {
       "Class": {
         "attributes": [],
         "modifiers": ["Public"],
-        "identifier": {
-          "name": "Program"
-        },
+        "name": { "name": "Program" },
         "type_parameters": null,
         "base_types": [],
         "body_declarations": [
@@ -79,16 +84,10 @@ done
             "Method": {
               "attributes": [],
               "modifiers": ["Public", "Static"],
-              "return_type": {
-                "Primitive": "Void"
-              },
-              "identifier": {
-                "name": "Main"
-              },
+              "return_type": { "Primitive": "Void" },
+              "name": { "name": "Main" },
               "parameters": [],
-              "body": {
-                "Block": []
-              }
+              "body": { "Block": [] }
             }
           }
         ]
@@ -164,13 +163,13 @@ fi
 ```bash
 # Parse and inspect AST structure
 bsharp parse MyClass.cs --output ast.json
-jq '.declarations[0].Class.identifier.name' ast.json
+jq '.declarations[0].Class.name.name' ast.json
 ```
 
-### 3. Code Generation Input
+### 3. Documentation Input
 
 ```bash
-# Parse C# and generate documentation
+# Parse C# and generate documentation using your own script
 bsharp parse MyFile.cs --output ast.json
 python generate_docs.py ast.json > docs.md
 ```
@@ -267,32 +266,19 @@ fi
 
 ## Implementation
 
-**Location:** `src/cli/commands/parse.rs`
+**Location:** `src/bsharp_cli/src/commands/parse.rs`
 
 ```rust
-pub fn execute(input: PathBuf, output: Option<PathBuf>) -> Result<()> {
-    // 1. Read source file
-    let source = fs::read_to_string(&input)?;
-    
-    // 2. Parse with BSharp parser
-    let parser = Parser::new();
-    let cu = parser.parse(&source)
-        .map_err(|e| anyhow!("Parse failed: {}", e))?;
-    
-    // 3. Serialize to JSON
-    let json = serde_json::to_string_pretty(&cu)?;
-    
-    // 4. Write output
-    let output_path = output.unwrap_or_else(|| {
-        let mut p = input.clone();
-        p.set_extension("cs.json");
-        p
-    });
-    
-    fs::write(&output_path, json)?;
-    
-    println!("Parsed successfully: {}", output_path.display());
-    Ok(())
+pub fn execute(
+    input: PathBuf,
+    output: Option<PathBuf>,
+    errors_json: bool,
+    no_color: bool,
+    lenient: bool,
+) -> Result<()> {
+    // Read file, choose strict/lenient, parse, and write <input>.json by default
+    // See the source file for detailed behavior and error formatting.
+    # Ok(())
 }
 ```
 
@@ -309,6 +295,6 @@ pub fn execute(input: PathBuf, output: Option<PathBuf>) -> Result<()> {
 
 ## References
 
-- **Implementation:** `src/cli/commands/parse.rs`
-- **Parser:** `src/parser/`
-- **AST Definitions:** `src/syntax/nodes/`
+- **Implementation:** `src/bsharp_cli/src/commands/parse.rs`
+- **Parser:** `src/bsharp_parser/src/`
+- **AST Definitions:** `src/bsharp_syntax/src/`

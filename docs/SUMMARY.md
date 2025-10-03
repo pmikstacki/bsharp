@@ -40,7 +40,7 @@
 - [Command Line Interface](./cli/overview.md)
 - [Parse Command](./cli/parse.md)
 - [Tree Visualization](./cli/tree.md)
-- [Compilation](./cli/compile.md)
+- [Compilation (Unavailable)](./cli/compile.md)
 - [Analysis Command](./cli/analyze.md)
 
 # Workspace

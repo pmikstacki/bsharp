@@ -22,7 +22,6 @@ impl Parser {
 The `Parser` provides a clean, simple interface that abstracts away the complexity of the underlying parsing implementation.
 
 ## Error System
-
 ### ErrorTree (nom-supreme)
 
 BSharp uses nom-supreme's ErrorTree for rich error diagnostics:
@@ -30,8 +29,6 @@ BSharp uses nom-supreme's ErrorTree for rich error diagnostics:
 ```rust
 pub type BResult<I, O> = IResult<I, O, ErrorTree<I>>;
 ```
-
-**Location:** Type alias defined in parser infrastructure
 
 Key features:
 - **Context Stack**: Maintains parsing contexts via `.context()` calls
@@ -43,7 +40,7 @@ Key features:
 
 Utility functions for enhanced error handling:
 
-**Location:** `src/syntax/parser_helpers.rs`
+**Location:** `src/bsharp_parser/src/helpers/`
 
 - `context()`: Adds contextual information to parser errors
 - `bws()`: Whitespace-aware wrapper with error context
@@ -53,7 +50,7 @@ Utility functions for enhanced error handling:
 
 ### Pretty Error Formatting
 
-**Location:** `src/syntax/errors.rs`
+**Location:** `src/bsharp_analysis/src/diagnostics/parse.rs`
 
 ```rust
 pub fn format_error_tree(input: &str, error: &ErrorTree<&str>) -> String;
@@ -105,12 +102,12 @@ pub enum TopLevelDeclaration {
 
 ### Keyword Module Organization
 
-**Location:** `src/parser/keywords/`
+**Location:** `src/bsharp_parser/src/keywords/`
 
 Keywords are organized by category in dedicated modules for maintainability and consistency:
 
 ```
-src/parser/keywords/
+src/bsharp_parser/src/keywords/
 ├── mod.rs                      # Keyword infrastructure
 ├── access_keywords.rs          # public, private, protected, internal
 ├── accessor_keywords.rs        # get, set, init, add, remove

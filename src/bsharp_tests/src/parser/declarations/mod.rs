@@ -1,0 +1,44 @@
+// Declare the test modules in this directory
+
+mod attribute_parser_tests;
+mod attribute_tests;
+mod base_types_parser_tests;
+mod class_declaration_tests;
+mod class_member_tests;
+mod constructor_declaration_tests;
+mod delegate_declaration_tests;
+mod destructor_declaration_tests;
+mod enum_declaration_tests;
+mod event_declaration_tests;
+mod field_declaration_tests;
+mod file_scoped_namespace_declaration_tests;
+mod global_attribute_tests;
+mod global_using_directive_tests;
+mod indexer_declaration_tests;
+mod interface_declaration_parser_tests;
+mod interface_nested_types_tests;
+mod local_variable_declaration_tests;
+mod method_declaration_parser_tests;
+mod method_declaration_tests;
+mod modifier_tests;
+mod namespace_declaration_tests;
+mod namespace_tests;
+mod nested_namespace_tests;
+mod nested_type_tests;
+mod operator_declaration_tests;
+mod parameter_modifier_tests;
+mod parameter_parser_tests;
+mod parameter_tests;
+mod property_declaration_tests;
+mod record_declaration_parser_tests;
+mod record_declaration_tests;
+mod record_tests;
+mod struct_declaration_parser_tests;
+mod struct_declaration_tests;
+mod type_declaration_helpers_tests;
+mod type_declaration_parser_tests;
+mod type_parameter_constraint_tests;
+mod type_parameter_tests;
+mod using_directive_tests;
+mod variable_declaration_tests;
+// Add other declaration test modules here as they are created

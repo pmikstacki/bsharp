@@ -57,7 +57,7 @@ BSharp is designed as a **modular, extensible C# parser and analysis toolkit** w
 pub type BResult<I, O> = IResult<I, O, ErrorTree<I>>;
 ```
 
-**Helper Functions:**
+**Helper Functions (in `src/bsharp_parser/src/helpers/`)**
 - `context()` - Adds contextual information
 - `cut()` - Commits to parse branch (prevents misleading backtracking)
 - `bws()` - Whitespace-aware wrapper with error context
@@ -65,22 +65,23 @@ pub type BResult<I, O> = IResult<I, O, ErrorTree<I>>;
 
 ### Module Organization
 
-**Decision:** Separate `parser/` (implementations) from `syntax/` (infrastructure).
+**Decision:** Separate the parser crate from the syntax (AST) crate, and keep analysis in its own crate.
 
 **Structure:**
 ```
 src/
-├── parser/           # Parser implementations
-│   ├── expressions/  # Expression parsers
-│   ├── keywords/     # Keyword parsing (modularized)
-│   ├── types/        # Type system parsers
-│   └── ...
-├── syntax/           # Parser infrastructure
-│   ├── ast.rs        # Root AST definitions
-│   ├── nodes/        # AST node definitions
-│   ├── parser_helpers.rs  # Parsing utilities
-│   ├── errors.rs     # Error formatting
-│   └── ...
+├── bsharp_parser/          # Parser implementations and public facade
+│   ├── src/
+│   │   ├── expressions/    # Expression parsers
+│   │   ├── keywords/       # Keyword parsing (modularized)
+│   │   ├── helpers/        # Parsing utilities (bws, cut, context, directives, ...)
+│   │   ├── facade.rs       # Public Parser facade
+│   │   └── ...
+├── bsharp_syntax/          # AST node definitions and shared syntax types
+│   └── src/                # (re-exported by bsharp_parser as `syntax`)
+├── bsharp_analysis/        # Analysis framework and workspace
+│   └── src/
+└── bsharp_cli/             # CLI entry and subcommands
 ```
 
 **Rationale:**
@@ -116,8 +117,7 @@ src/parser/keywords/
 
 **Implementation:**
 - `keyword()` function enforces `[A-Za-z0-9_]` word boundaries
-- Macro-based keyword parser generation for consistency
-- Centralized keyword list prevents drift
+- Parsers grouped under `src/bsharp_parser/src/keywords/`
 
 ---
 
@@ -311,39 +311,26 @@ impl WorkspaceLoader {
 
 ### External Test Organization
 
-**Decision:** All parser tests in `tests/` directory, not inline `#[cfg(test)]` modules.
+**Decision:** Externalize tests; in the current workspace they live under `src/bsharp_tests/` rather than inline `#[cfg(test)]` modules.
 
 **Structure:**
 ```
-tests/
+src/bsharp_tests/src/
 ├── parser/
 │   ├── expressions/
-│   │   ├── expression_tests.rs
-│   │   ├── lambda_expression_tests.rs
-│   │   └── ...
 │   ├── statements/
-│   │   ├── if_statement_tests.rs
-│   │   └── ...
 │   ├── declarations/
-│   │   ├── class_declaration_tests.rs
-│   │   └── ...
 │   └── types/
-│       └── type_tests.rs
-└── fixtures/
-    ├── happy_path/
-    └── complex/
+├── cli/
+└── integration/
 ```
 
 **Rationale:**
 - **Separation**: Test code separate from implementation
-- **Organization**: Clear test structure mirrors parser structure
-- **Compilation**: Tests don't bloat production binary
-- **User Preference**: Explicit design decision (documented in memories)
+- **Organization**: Clear structure mirrors crates
+- **Compilation**: Tests don't bloat production binaries
 
-**Implications:**
-- NO `#[cfg(test)] mod tests {}` in `src/parser/` files
-- All tests use `tests/parser/` structure
-- Test helpers in `src/syntax/test_helpers.rs`
+**Note:** A future migration to top-level `tests/` may be considered.
 
 ### Test Helpers
 
@@ -416,26 +403,7 @@ parallel_analysis = ["rayon"]
 
 ---
 
-## Compiler Backend
-
-### Cranelift Integration
-
-**Decision:** Use Cranelift as the code generation backend.
-
-**Implementation:**
-- `src/codegen/` - Code generation infrastructure
-- `src/compiler.rs` - Compilation orchestration
-- Cranelift dependencies in `Cargo.toml`
-
-**Rationale:**
-- **Performance**: Fast JIT and AOT compilation
-- **Portability**: Cross-platform code generation
-- **Rust Integration**: Well-integrated with Rust ecosystem
-- **Simplicity**: Simpler than LLVM for initial implementation
-
-**Status:**
-- Basic infrastructure in place
-- Full compilation pipeline under development
+<!-- Compiler backend and code generation are intentionally out of scope for now. -->
 
 ---
 
@@ -447,8 +415,7 @@ parallel_analysis = ["rayon"]
 
 **Commands:**
 - `parse` - Parse C# file to JSON
-- `tree` - Generate SVG visualization
-- `compile` - Compile C# file
+- `tree` - Generate AST visualization (Mermaid/DOT)
 - `analyze` - Run analysis and generate report
 
 **Rationale:**

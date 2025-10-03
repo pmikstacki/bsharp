@@ -1,0 +1,21 @@
+[package]
+name = "bsharp_cli"
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+anyhow = "1.0"
+clap = { version = "4.4", features = ["derive"] }
+env_logger = "0.11.8"
+log = "0.4"
+serde_json = "1.0"
+toml = "0.8"
+nom = "7"
+nom-supreme = "0.8.0"
+bsharp_analysis = { path = "../bsharp_analysis" }
+bsharp_parser = { path = "../bsharp_parser" }
+
+[dev-dependencies]
+assert_cmd = "2"

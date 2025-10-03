@@ -10,7 +10,7 @@ BSharp consists of several key components:
 - **Parser**: A robust C# parser built using the `nom` parser combinator library
 - **AST**: A complete representation of C# language constructs
 - **Analysis Framework**: Tools for analyzing code structure, dependencies, and quality
-- **CLI Tools**: Command-line utilities for parsing, visualization, and compilation
+- **CLI Tools**: Command-line utilities for parsing, visualization, and analysis
 
 ## Key Features
 
@@ -42,32 +42,30 @@ The codebase is organized into several main modules:
 
 ```
 src/
-├── parser/           # Parser implementations (expressions, statements, declarations)
-├── syntax/           # Parser infrastructure (AST nodes, helpers, errors)
-├── analysis/         # Code analysis framework
-├── workspace/        # Solution and project file loading
-├── cli/              # Command-line interface
-├── codegen/          # Code generation utilities
-└── compiler.rs       # Compilation orchestration
+├── bsharp_parser/    # Parser crate (expressions, statements, declarations, helpers)
+├── bsharp_syntax/    # AST nodes and shared syntax types (re-exported by parser)
+├── bsharp_analysis/  # Analysis framework and workspace loader
+├── bsharp_cli/       # Command-line interface
+└── bsharp_tests/     # External tests for parser/analysis/CLI
 ```
 
 ### Key Components
 
-**Parser (`src/parser/`, `src/syntax/`)**
+**Parser (`src/bsharp_parser/`, `src/bsharp_syntax/`)**
 - Modular parser using nom combinators
 - Complete C# language support
 - Rich error diagnostics with ErrorTree
 - Keyword parsing organized by category
 - AST nodes follow PascalCase naming without 'Syntax' suffix
 
-**Workspace Loading (`src/workspace/`)**
+**Workspace Loading (`src/bsharp_analysis/src/workspace/`)**
 - Solution file (.sln) parsing
 - Project file (.csproj) parsing with XML
 - Transitive ProjectReference resolution
 - Source file discovery with glob patterns
 - Deterministic project ordering
 
-**Analysis Framework (`src/analysis/`)**
+**Analysis Framework (`src/bsharp_analysis/src/`)**
 - Pipeline-based architecture with phases
 - Extensible passes and rules system
 - Metrics collection (complexity, maintainability)
@@ -75,15 +73,11 @@ src/
 - Dependency tracking
 - Code quality assessment
 
-**Code Generation (`src/codegen/`, `src/compiler.rs`)**
-- Cranelift backend integration
-- IR generation from AST
-- Native code compilation (experimental)
+<!-- Code generation/compilation is currently out of scope and intentionally omitted. -->
 
-**CLI Tools (`src/cli/`)**
+**CLI Tools (`src/bsharp_cli/`)**
 - `parse` - Parse C# to JSON
-- `tree` - Generate AST visualization
-- `compile` - Compile to native binary
+- `tree` - Generate AST visualization (Mermaid/DOT)
 - `analyze` - Comprehensive code analysis
 
 ## Getting Started
@@ -97,8 +91,8 @@ bsharp parse input.cs --output output.json
 # Generate AST visualization
 bsharp tree input.cs --output ast.svg
 
-# Compile C# code
-bsharp compile input.cs
+# Analyze a project or solution
+bsharp analyze MyProject.csproj --out report.json
 ```
 
 ## Use Cases

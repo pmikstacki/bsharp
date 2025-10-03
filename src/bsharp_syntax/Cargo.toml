@@ -1,0 +1,9 @@
+[package]
+name = "bsharp_syntax"
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+serde = { version = "1.0.219", features = ["derive"] }

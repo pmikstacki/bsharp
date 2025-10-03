@@ -1,7 +1,7 @@
 
 # Analysis Framework Overview
 
-The BSharp analysis framework provides a comprehensive suite of tools for analyzing C# code at various levels of detail. As part of the BSharp compiler project, it is built on top of the robust parser infrastructure and offers insights into code structure, quality, dependencies, and maintainability. These analysis capabilities support both the compilation process and standalone code analysis tools.
+The BSharp analysis framework provides a comprehensive suite of tools for analyzing C# code at various levels of detail. It is built on top of the BSharp parser infrastructure and offers insights into code structure, quality, dependencies, and maintainability. These capabilities support standalone analysis tools and editor/CI integrations.
 
 ## Analysis Architecture
 

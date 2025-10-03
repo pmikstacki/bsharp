@@ -1,6 +1,6 @@
 # Command Line Interface
 
-The BSharp CLI provides command-line tools for parsing, analyzing, visualizing, and compiling C# code.
+The BSharp CLI provides command-line tools for parsing, analyzing, and visualizing C# code.
 
 ---
 
@@ -57,23 +57,19 @@ bsharp parse <INPUT> [--output <FILE>]
 
 ### tree
 
-Generate SVG visualization of the Abstract Syntax Tree.
+Generate a visualization of the Abstract Syntax Tree.
 
 ```bash
-bsharp tree <INPUT> [--output <FILE>]
+bsharp tree <INPUT> [--output <FILE>] [--format mermaid|dot]
 ```
+
+Notes:
+- Default format is `mermaid`; output defaults to `<input>.mmd`.
+- For DOT/Graphviz, use `--format dot` (or `graphviz`); output defaults to `<input>.dot`.
 
 **See:** [Tree Visualization](./tree.md)
 
-### compile
-
-Compile C# source code to native binary.
-
-```bash
-bsharp compile <INPUT>
-```
-
-**See:** [Compilation](./compile.md)
+<!-- compile command intentionally omitted (experimental/disabled) -->
 
 ### analyze
 
@@ -83,7 +79,7 @@ Analyze C# code and generate comprehensive analysis report.
 bsharp analyze <INPUT> [OPTIONS]
 ```
 
-**See:** [Analysis Command](./analyze.md) (to be created)
+**See:** [Analysis Command](./analyze.md)
 
 ---
 
@@ -106,8 +102,11 @@ bsharp parse MyFile.cs --output ast.json
 ### Visualize Code Structure
 
 ```bash
-# Generate SVG diagram
-bsharp tree MyClass.cs --output diagram.svg
+# Generate Mermaid diagram (default), writes MyClass.mmd
+bsharp tree MyClass.cs
+
+# Generate Graphviz DOT diagram
+bsharp tree MyClass.cs --format dot --output diagram.dot
 ```
 
 ### Analyze Project Quality
@@ -172,13 +171,17 @@ bsharp analyze MyFile.cs --format pretty-json
 
 **Output:** Indented JSON, human-readable
 
-### SVG (Tree Command)
+### Mermaid/DOT (Tree Command)
 
 ```bash
-bsharp tree MyFile.cs --output diagram.svg
+# Mermaid (default)
+bsharp tree MyFile.cs --output diagram.mmd
+
+# Graphviz DOT
+bsharp tree MyFile.cs --format dot --output diagram.dot
 ```
 
-**Output:** Scalable Vector Graphics visualization
+**Output:** Mermaid (.mmd) or Graphviz DOT (.dot)
 
 ---
 
@@ -473,17 +476,18 @@ jq '.diagnostics | map(select(.code == "MET001"))' complexity.json
 
 ### Implementation
 
-**Location:** `src/cli/`
+**Location:** `src/bsharp_cli/`
 
 ```
-src/cli/
-├── mod.rs              # CLI entry point, clap definitions
-└── commands/
-    ├── mod.rs          # Command module exports
-    ├── parse.rs        # Parse command implementation
-    ├── tree.rs         # Tree visualization command
-    ├── compile.rs      # Compilation command
-    └── analyze.rs      # Analysis command
+src/bsharp_cli/
+├── src/
+│   ├── main.rs         # CLI entry point, clap definitions
+│   └── commands/
+│       ├── mod.rs      # Command module exports
+│       ├── parse.rs    # Parse command implementation
+│       ├── tree.rs     # AST visualization command (Mermaid/DOT)
+│       └── analyze.rs  # Analysis command
+└── Cargo.toml
 ```
 
 ### Command Pattern
@@ -529,13 +533,12 @@ pub fn execute(input: PathBuf, /* other args */) -> Result<()> {
 
 - [Parse Command](./parse.md) - Detailed parse command documentation
 - [Tree Visualization](./tree.md) - AST visualization
-- [Compilation](./compile.md) - Compilation process
 - [Analysis Pipeline](../analysis/pipeline.md) - Analysis internals
 
 ---
 
 ## References
 
-- **Implementation:** `src/cli/`
-- **Commands:** `src/cli/commands/`
+- **Implementation:** `src/bsharp_cli/`
+- **Commands:** `src/bsharp_cli/src/commands/`
 - **Clap Documentation:** https://docs.rs/clap/

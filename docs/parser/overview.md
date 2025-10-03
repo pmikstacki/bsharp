@@ -1,13 +1,13 @@
 
 # Parser Overview
 
-The BSharp parser is the core component of an alternative C# compiler implementation, responsible for transforming C# source code into a structured Abstract Syntax Tree (AST). Built using the `nom` parser combinator library, it provides a robust and extensible foundation for parsing modern C# syntax as part of a complete compiler toolchain.
+The BSharp parser transforms C# source code into a structured Abstract Syntax Tree (AST). Built using the `nom` parser combinator library, it provides a robust and extensible foundation for parsing modern C# syntax as part of the BSharp toolkit.
 
 ## Architecture
 
-As part of the BSharp compiler, the parser follows a modular architecture with clear separation of concerns. The parser serves as the frontend of the compiler pipeline, feeding structured AST data to subsequent compilation phases:
+The parser follows a modular architecture with clear separation of concerns. It serves as the frontend for tools that consume the AST (analysis, visualization, etc.):
 
-### Parser Infrastructure (`src/syntax/`)
+### Parser Infrastructure (`src/bsharp_syntax/src/`)
 
 - **`mod.rs`**: Public API and re-exports
 - **`ast.rs`**: Root AST node definitions (`CompilationUnit`, `TopLevelDeclaration`)
@@ -16,7 +16,7 @@ As part of the BSharp compiler, the parser follows a modular architecture with c
 - **`test_helpers.rs`**: Testing utilities (`expect_ok`, etc.)
 - **`nodes/`**: AST node definitions organized by category
 
-### Parser Implementations (`src/parser/`)
+### Parser Implementations (`src/bsharp_parser/src/`)
 
 The parsers are organized by language construct type:
 
@@ -26,7 +26,7 @@ The parsers are organized by language construct type:
 - **`helpers/`**: Declaration helpers and utilities
 - **`preprocessor/`**: Preprocessor directive parsing
 
-### AST Node Definitions (`src/syntax/nodes/`)
+### AST Node Definitions (`src/bsharp_syntax/src/`)
 
 Structured node definitions that mirror C# language constructs:
 
@@ -75,13 +75,11 @@ The modular design allows easy addition of new language features:
 
 ### 1. Entry Point
 
-All parsing begins with the `Parser::parse()` method:
+Parsing begins via the public facade in `src/bsharp_parser/src/facade.rs`:
 
 ```rust
-pub fn parse(&self, input: &str) -> Result<ast::CompilationUnit, String> {
-    // Delegates to the main C# parser
-    parse_csharp_source(input)
-}
+let parser = bsharp_parser::facade::Parser::new();
+let cu = parser.parse(source)?;
 ```
 
 ### 2. Compilation Unit Parsing
@@ -153,4 +151,4 @@ The parser uses a multi-layered error handling approach:
 3. **Recovery Mechanisms**: Ability to continue parsing after certain types of errors
 4. **User-Friendly Messages**: Clear, actionable error messages for developers
 
-This design makes the parser both robust for production compiler use and helpful for development and debugging. While the complete compiler backend is still under development, the parser provides a solid foundation for the full C# compilation pipeline that BSharp aims to deliver.
+This design makes the parser robust and helpful for development and debugging. Code generation/compilation is out of scope for now; the parser and analysis crates form the current focus of the toolkit.

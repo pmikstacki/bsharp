@@ -1,13 +1,13 @@
 # Tree Visualization Command
 
-The `tree` command generates an SVG visualization of the Abstract Syntax Tree (AST) from C# source code.
+The `tree` command generates a visualization of the Abstract Syntax Tree (AST) from C# source code in Mermaid or Graphviz DOT format.
 
 ---
 
 ## Usage
 
 ```bash
-bsharp tree <INPUT> [--output <FILE>]
+bsharp tree <INPUT> [--output <FILE>] [--format mermaid|dot]
 ```
 
 ### Arguments
@@ -19,8 +19,11 @@ bsharp tree <INPUT> [--output <FILE>]
 ### Options
 
 **`--output, -o <FILE>`** (optional)
-- Output SVG file path
-- Default: `<input>.svg`
+- Output file path
+- Default: `<input>.mmd` for Mermaid, `<input>.dot` for DOT
+
+**`--format <FORMAT>`** (optional)
+- One of: `mermaid` (default), `dot` (alias: `graphviz`)
 
 ---
 
@@ -29,55 +32,54 @@ bsharp tree <INPUT> [--output <FILE>]
 ### Basic Visualization
 
 ```bash
-# Generate AST visualization
-bsharp tree Program.cs
+# Generate Mermaid diagram (default)
+bsharp tree Program.cs              # writes Program.mmd
+
+# Generate Graphviz DOT diagram
+bsharp tree Program.cs --format dot # writes Program.dot
 
 # Specify output file
-bsharp tree Program.cs --output ast-diagram.svg
+bsharp tree Program.cs --format dot --output ast-diagram.dot
 ```
 
-### View in Browser
+### View/Render
 
 ```bash
-# Generate and open in browser
-bsharp tree MyClass.cs --output diagram.svg
-open diagram.svg  # macOS
-xdg-open diagram.svg  # Linux
-start diagram.svg  # Windows
+# Mermaid preview (e.g., VS Code Mermaid extension) or CLI renderer
+# Graphviz render to PNG
+dot -Tpng Program.dot -o Program.png
 ```
 
 ---
 
-## Output Format
+## Output Formats
 
-### SVG Structure
+### Mermaid
 
-The generated SVG contains:
-- **Tree layout** - Hierarchical node arrangement
-- **Node boxes** - AST node types and names
-- **Connecting lines** - Parent-child relationships
-- **Color coding** - Different colors for node types
+Outputs a simple top-level graph in Mermaid syntax (`.mmd`).
 
-### Example Output
+```text
+graph TD
+n0["CompilationUnit\\nUsings: 1\\nDecls: 1"]
+u0["Using using System;"]
+n0 --> u0
+d0["Class: Program"]
+n0 --> d0
+```
 
-```svg
-<svg width="800" height="600">
-  <!-- CompilationUnit at root -->
-  <rect x="400" y="20" width="120" height="40" fill="#e0e0e0"/>
-  <text x="460" y="45">CompilationUnit</text>
-  
-  <!-- ClassDeclaration -->
-  <line x1="460" y1="60" x2="460" y2="100"/>
-  <rect x="400" y="100" width="120" height="40" fill="#90caf9"/>
-  <text x="460" y="125">ClassDeclaration</text>
-  <text x="460" y="140" font-size="10">Program</text>
-  
-  <!-- MethodDeclaration -->
-  <line x1="460" y1="140" x2="460" y2="180"/>
-  <rect x="400" y="180" width="120" height="40" fill="#a5d6a7"/>
-  <text x="460" y="205">MethodDeclaration</text>
-  <text x="460" y="220" font-size="10">Main</text>
-</svg>
+### Graphviz DOT
+
+Outputs a simple top-level graph in DOT syntax (`.dot`).
+
+```text
+digraph AST {
+  node [shape=box, fontname="Courier New"];
+  n0 [label="CompilationUnit\\nUsings: 1\\nDecls: 1"];
+  u0 [label="Using using System;"];
+  n0 -> u0;
+  d0 [label="Class: Program"];
+  n0 -> d0;
+}
 ```
 
 ### Color Scheme
@@ -198,44 +200,13 @@ The class structure shows...
 
 ## Implementation
 
-**Location:** `src/cli/commands/tree.rs`
+**Location:** `src/bsharp_cli/src/commands/tree.rs`
 
 ```rust
-pub fn execute(input: PathBuf, output: Option<PathBuf>) -> Result<()> {
-    // 1. Parse source file
-    let source = fs::read_to_string(&input)?;
-    let parser = Parser::new();
-    let cu = parser.parse(&source)?;
-    
-    // 2. Generate SVG from AST
-    let svg = generate_svg_tree(&cu)?;
-    
-    // 3. Write output
-    let output_path = output.unwrap_or_else(|| {
-        let mut p = input.clone();
-        p.set_extension("svg");
-        p
-    });
-    
-    fs::write(&output_path, svg)?;
-    
-    println!("Generated tree: {}", output_path.display());
-    Ok(())
-}
-
-fn generate_svg_tree(cu: &CompilationUnit) -> Result<String> {
-    let mut builder = SvgBuilder::new();
-    
-    // Build tree structure
-    let root = build_tree_node(cu);
-    
-    // Calculate layout
-    let layout = calculate_layout(&root);
-    
-    // Render to SVG
-    builder.render_tree(&root, &layout);
-    
-    Ok(builder.to_string())
+pub fn execute(input: PathBuf, output: Option<PathBuf>, format: String) -> Result<()> {
+    // Parses input with lenient mode, then writes Mermaid (.mmd) or DOT (.dot)
+    // via generate_mermaid_ast(&ast) or generate_dot_ast(&ast).
+    # Ok(())
 }
 ```
 
@@ -307,6 +278,5 @@ fn generate_svg_tree(cu: &CompilationUnit) -> Result<String> {
 
 ## References
 
-- **Implementation:** `src/cli/commands/tree.rs`
-- **SVG Generation:** Uses `svg` crate
-- **Layout Algorithm:** Tree layout algorithm
+- **Implementation:** `src/bsharp_cli/src/commands/tree.rs`
+- **Formats:** Mermaid or Graphviz DOT

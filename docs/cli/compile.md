@@ -1,14 +1,21 @@
-# Compilation Command
+# Compilation Command (Unavailable)
 
-The `compile` command compiles C# source code to native binary using the Cranelift backend.
+Status: The `compile` command is currently unavailable. Code generation/compilation is out of scope for now. This page is archived for future planning.
+
+See planning docs:
+- `docs/planning/dotscope-cil-plan.md`
+- `docs/planning/dotscope-cil-tracking.md`
+
+Until the command is reintroduced, please use:
+- `bsharp parse` for AST JSON
+- `bsharp tree` for AST visualization (Mermaid/DOT)
+- `bsharp analyze` for analysis reports
 
 ---
 
 ## Usage
 
-```bash
-bsharp compile <INPUT>
-```
+Not available.
 
 ### Arguments
 
@@ -114,9 +121,7 @@ Program.cs → Program
 
 ## Implementation Status
 
-### Current State
-
-**Status:** ⚠️ **Experimental** - Basic compilation infrastructure in place
+Archived draft; compilation work is paused.
 
 **What Works:**
 - Parsing C# to AST
@@ -258,7 +263,7 @@ block0(v0: i32, v1: i32):
 
 ---
 
-## Development Roadmap
+## Development Roadmap (Archived)
 
 ### Phase 1: Foundation (Current)
 
@@ -328,7 +333,7 @@ cargo test
 
 ## Troubleshooting
 
-### Compilation Fails
+Not applicable while command is unavailable.
 
 ```bash
 $ bsharp compile MyProgram.cs
@@ -365,7 +370,6 @@ Error: Failed to link: undefined symbol
 
 - [CLI Overview](./overview.md) - General CLI usage
 - [Parse Command](./parse.md) - Parse C# to AST
-- [Architecture](../development/architecture.md) - Compiler design
 
 ---
 

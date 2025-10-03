@@ -608,6 +608,6 @@ Error: memory allocation failed
 
 ## References
 
-- **Implementation:** `src/cli/commands/analyze.rs`
-- **Pipeline:** `src/analysis/framework/pipeline.rs`
-- **Configuration:** `src/analysis/context.rs`
+- **Implementation:** `src/bsharp_cli/src/commands/analyze.rs`
+- **Pipeline:** `src/bsharp_analysis/src/framework/pipeline.rs`
+- **Configuration:** `src/bsharp_analysis/src/context.rs`
