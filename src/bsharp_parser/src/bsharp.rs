@@ -21,7 +21,7 @@ use crate::syntax::parser_helpers::{bpeek, bws, keyword};
 use crate::trivia::preprocessor_directive_parser::parse_preprocessor_directive;
 use log::trace;
 use syntax::ast::{CompilationUnit, TopLevelDeclaration};
-use syntax::nodes::declarations::TypeDeclaration;
+use syntax::nodes::declarations::{TypeDeclaration, GlobalUsingDirective};
 
 /// Parse a C# source file following Roslyn's model where a source file contains:
 /// - global attributes (assembly/module attributes)
@@ -63,8 +63,9 @@ pub fn parse_csharp_source(input: &str) -> BResult<&str, CompilationUnit> {
         );
     }
 
-    // Parse using directives next (including optional 'global using' which we normalize to UsingDirective)
+    // Parse using directives next; keep global usings separately
     let mut usings = Vec::new();
+    let mut global_usings: Vec<GlobalUsingDirective> = Vec::new();
     loop {
         // Skip whitespace/comments between directives
         let (r, _) = ws(remaining)?;
@@ -95,7 +96,7 @@ pub fn parse_csharp_source(input: &str) -> BResult<&str, CompilationUnit> {
                 // We'll emulate by constructing a small closure.
                 // Call parse_using_directive on original input (r) which still begins with 'using'.
                 let (r_after, using_dir) = parse_using_directive(r)?;
-                usings.push(using_dir);
+                global_usings.push(GlobalUsingDirective { using_directive: using_dir });
                 remaining = r_after;
                 continue;
             } else {
@@ -134,7 +135,7 @@ pub fn parse_csharp_source(input: &str) -> BResult<&str, CompilationUnit> {
                 // After a file-scoped namespace, parse using directives and skip directives before members
                 // 1) Skip any immediate preprocessor directives
                 remaining = skip_preprocessor_directives(remaining, true);
-                // 2) Collect using directives that appear after file-scoped namespace
+                // 2) Collect using directives (global and non-global) that appear after file-scoped namespace
                 loop {
                     let (r, _) = ws(remaining)?;
                     remaining = r;
@@ -149,7 +150,7 @@ pub fn parse_csharp_source(input: &str) -> BResult<&str, CompilationUnit> {
                         let (r, _) = bws(keyword("global"))(remaining)?;
                         if bpeek(keyword("using"))(r).is_ok() {
                             let (r_after, using_dir) = parse_using_directive(r)?;
-                            usings.push(using_dir);
+                            global_usings.push(GlobalUsingDirective { using_directive: using_dir });
                             remaining = r_after;
                             continue;
                         }
@@ -235,6 +236,7 @@ pub fn parse_csharp_source(input: &str) -> BResult<&str, CompilationUnit> {
     // Create the source file
     let compilation_unit = CompilationUnit {
         using_directives: usings,
+        global_using_directives: global_usings,
         declarations: members,
         file_scoped_namespace,
         top_level_statements,
@@ -316,9 +318,10 @@ pub fn parse_csharp_source_with_spans(input: &str) -> BResult<&str, (Compilation
     // Parse global attributes first
     let (remaining, global_attributes) = parse_global_attributes(remaining)?;
 
-    // Parse using directives
+    // Parse using directives (track global usings separately)
     let mut remaining = remaining;
     let mut usings = Vec::new();
+    let mut global_usings: Vec<GlobalUsingDirective> = Vec::new();
     loop {
         let (r, _) = ws(remaining)?;
         remaining = r;
@@ -338,7 +341,7 @@ pub fn parse_csharp_source_with_spans(input: &str) -> BResult<&str, (Compilation
             let (r, _) = bws(keyword("global"))(remaining)?;
             if bpeek(keyword("using"))(r).is_ok() {
                 let (r_after, using_dir) = parse_using_directive(r)?;
-                usings.push(using_dir);
+                global_usings.push(GlobalUsingDirective { using_directive: using_dir });
                 remaining = r_after;
                 continue;
             } else {
@@ -459,6 +462,7 @@ pub fn parse_csharp_source_with_spans(input: &str) -> BResult<&str, (Compilation
 
     let compilation_unit = CompilationUnit {
         using_directives: usings,
+        global_using_directives: global_usings,
         declarations: members,
         file_scoped_namespace,
         top_level_statements,

@@ -169,6 +169,7 @@ fn test_collect_from_class() {
                 initializer: None,
             }),
         ],
+        constraints: None,
     };
 
     collector.collect_from_class(&class);
@@ -220,6 +221,7 @@ fn test_collector_reset() {
         primary_constructor_parameters: None,
         base_types: Vec::new(),
         body_declarations: Vec::new(),
+        constraints: None,
     };
 
     collector.collect_from_class(&class);
@@ -349,6 +351,7 @@ fn test_metrics_accuracy_with_real_code() {
                 ))])),
             }),
         ],
+        constraints: None,
     };
 
     collector.collect_from_class(&class);
@@ -391,6 +394,7 @@ fn test_collector_with_multiple_classes() {
             constraints: Some(Vec::new()),
             body: None,
         })],
+        constraints: None,
     };
 
     // Second class
@@ -418,6 +422,7 @@ fn test_collector_with_multiple_classes() {
                 initializer: None,
             }),
         ],
+        constraints: None,
     };
     collector.collect_from_class(&class1);
     collector.collect_from_class(&class2);

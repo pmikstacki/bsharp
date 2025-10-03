@@ -31,7 +31,7 @@ fn test_parse_simple_destructor() {
     assert_eq!(declaration.name, Identifier::new("MyClass"));
     assert_eq!(declaration.modifiers, vec![]);
     assert_eq!(declaration.attributes, vec![]);
-    assert_eq!(declaration.body, "{ /* destructor body */ }");
+    assert!(matches!(declaration.body, Some(syntax::nodes::statements::statement::Statement::Block(_))));
 }
 
 #[test]
@@ -46,8 +46,7 @@ fn test_parse_destructor_with_body() {
 
     let declaration = result.unwrap();
     assert_eq!(declaration.name, Identifier::new("MyClass"));
-    // Our simplified implementation returns a placeholder for the body
-    assert_eq!(declaration.body, "{ /* destructor body */ }");
+    assert!(matches!(declaration.body, Some(syntax::nodes::statements::statement::Statement::Block(_))));
 }
 
 #[test]
@@ -63,7 +62,7 @@ fn test_parse_extern_destructor() {
     let declaration = result.unwrap();
     assert_eq!(declaration.name, Identifier::new("MyClass"));
     assert!(declaration.modifiers.contains(&Modifier::Extern));
-    assert_eq!(declaration.body, ""); // Extern destructors have no body
+    assert!(declaration.body.is_none()); // Extern destructors have no body
 }
 
 #[test]
@@ -185,7 +184,10 @@ fn test_parse_destructor_empty_body() {
 
     let declaration = result.unwrap();
     assert_eq!(declaration.name, Identifier::new("MyClass"));
-    assert_eq!(declaration.body, "{ /* destructor body */ }");
+    assert!(matches!(
+        declaration.body,
+        Some(syntax::nodes::statements::statement::Statement::Block(_))
+    ));
 }
 
 #[test]

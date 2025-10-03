@@ -2,156 +2,96 @@
 
 use syntax::nodes::identifier::Identifier;
 use syntax::trivia::preprocessor::PreprocessorDirective;
-
-// Assuming a syntax function like parse_preprocessor_directive will exist
-// use syntax::syntax::parse_preprocessor_directive;
-
-// Placeholder for the actual parsing function call
-fn parse_directive(code: &str) -> Result<PreprocessorDirective, String> {
-    // Replace with actual syntax invocation when implemented
-    Err(format!(
-        "Parser function not yet implemented for directive: {}",
-        code
-    ))
-}
+use parser::trivia::preprocessor_directive_parser::parse_preprocessor_directive;
 
 #[test]
 fn test_parse_define() {
     let code = "#define DEBUG";
-    let _expected = PreprocessorDirective::Define {
-        symbol: Identifier {
-            name: "DEBUG".to_string(),
-        },
-    };
-    // assert_eq!(parse_directive(code), Ok(_expected)); // Uncomment when syntax implemented
-    assert!(
-        parse_directive(code).is_err(),
-        "Parser should not be implemented yet"
-    );
+    let (rest, dir) = parse_preprocessor_directive(code).expect("should parse #define");
+    assert!(rest.is_empty());
+    assert!(matches!(dir, PreprocessorDirective::Define { symbol: Identifier { name } } if name == "DEBUG"));
 }
 
 #[test]
 fn test_parse_undef() {
     let code = "#undef RELEASE";
-    let _expected = PreprocessorDirective::Undef {
-        symbol: Identifier {
-            name: "RELEASE".to_string(),
-        },
-    };
-    // assert_eq!(parse_directive(code), Ok(_expected)); // Uncomment when syntax implemented
-    assert!(
-        parse_directive(code).is_err(),
-        "Parser should not be implemented yet"
-    );
+    let (_, dir) = parse_preprocessor_directive(code).expect("should parse #undef");
+    assert!(matches!(dir, PreprocessorDirective::Undef { symbol: Identifier { name } } if name == "RELEASE"));
 }
 
 #[test]
 fn test_parse_if() {
     let code = "#if SYMBOL";
-    let _expected = PreprocessorDirective::If {
-        condition: "SYMBOL".to_string(),
-    };
-    // assert_eq!(parse_directive(code), Ok(_expected)); // Uncomment when syntax implemented
-    assert!(
-        parse_directive(code).is_err(),
-        "Parser should not be implemented yet"
-    );
+    let (_, dir) = parse_preprocessor_directive(code).expect("should parse #if");
+    assert!(matches!(dir, PreprocessorDirective::If { condition } if condition == "SYMBOL"));
 }
 
 #[test]
 fn test_parse_elif() {
     let code = "#elif OTHER_SYMBOL";
-    let _expected = PreprocessorDirective::Elif {
-        condition: "OTHER_SYMBOL".to_string(),
-    };
-    // assert_eq!(parse_directive(code), Ok(_expected)); // Uncomment when syntax implemented
-    assert!(
-        parse_directive(code).is_err(),
-        "Parser should not be implemented yet"
-    );
+    let (_, dir) = parse_preprocessor_directive(code).expect("should parse #elif");
+    assert!(matches!(dir, PreprocessorDirective::Elif { condition } if condition == "OTHER_SYMBOL"));
 }
 
 #[test]
 fn test_parse_else() {
     let code = "#else";
-    let _expected = PreprocessorDirective::Else;
-    // assert_eq!(parse_directive(code), Ok(_expected)); // Uncomment when syntax implemented
-    assert!(
-        parse_directive(code).is_err(),
-        "Parser should not be implemented yet"
-    );
+    let (_, dir) = parse_preprocessor_directive(code).expect("should parse #else");
+    assert!(matches!(dir, PreprocessorDirective::Else));
 }
 
 #[test]
 fn test_parse_endif() {
     let code = "#endif";
-    let _expected = PreprocessorDirective::Endif;
-    // assert_eq!(parse_directive(code), Ok(_expected)); // Uncomment when syntax implemented
-    assert!(
-        parse_directive(code).is_err(),
-        "Parser should not be implemented yet"
-    );
+    let (_, dir) = parse_preprocessor_directive(code).expect("should parse #endif");
+    assert!(matches!(dir, PreprocessorDirective::Endif));
 }
 
 #[test]
 fn test_parse_region() {
     let code = "#region MyRegion";
-    let _expected = PreprocessorDirective::Region {
-        name: Some("MyRegion".to_string()),
-    };
-    // assert_eq!(parse_directive(code), Ok(_expected)); // Uncomment when syntax implemented
-    assert!(
-        parse_directive(code).is_err(),
-        "Parser should not be implemented yet"
-    );
+    let (_, dir) = parse_preprocessor_directive(code).expect("should parse #region");
+    assert!(matches!(dir, PreprocessorDirective::Region { name } if name == Some("MyRegion".to_string())));
 }
 
 #[test]
 fn test_parse_region_no_name() {
     let code = "#region";
-    let _expected = PreprocessorDirective::Region { name: None };
-    // assert_eq!(parse_directive(code), Ok(_expected)); // Uncomment when syntax implemented
-    assert!(
-        parse_directive(code).is_err(),
-        "Parser should not be implemented yet"
-    );
+    let (_, dir) = parse_preprocessor_directive(code).expect("should parse #region without name");
+    assert!(matches!(dir, PreprocessorDirective::Region { name } if name.is_none()));
 }
 
 #[test]
 fn test_parse_endregion() {
     let code = "#endregion";
-    let _expected = PreprocessorDirective::EndRegion;
-    // assert_eq!(parse_directive(code), Ok(_expected)); // Uncomment when syntax implemented
-    assert!(
-        parse_directive(code).is_err(),
-        "Parser should not be implemented yet"
-    );
+    let (_, dir) = parse_preprocessor_directive(code).expect("should parse #endregion");
+    assert!(matches!(dir, PreprocessorDirective::EndRegion));
 }
 
 #[test]
 fn test_parse_error() {
     let code = "#error This is an error message";
-    let _expected = PreprocessorDirective::Error {
-        message: "This is an error message".to_string(),
-    };
-    // assert_eq!(parse_directive(code), Ok(_expected)); // Uncomment when syntax implemented
-    assert!(
-        parse_directive(code).is_err(),
-        "Parser should not be implemented yet"
-    );
+    let (_, dir) = parse_preprocessor_directive(code).expect("should parse #error");
+    assert!(matches!(dir, PreprocessorDirective::Error { message } if message == "This is an error message"));
 }
 
 #[test]
 fn test_parse_warning() {
     let code = "#warning This is a warning message";
-    let _expected = PreprocessorDirective::Warning {
-        message: "This is a warning message".to_string(),
-    };
-    // assert_eq!(parse_directive(code), Ok(_expected)); // Uncomment when syntax implemented
-    assert!(
-        parse_directive(code).is_err(),
-        "Parser should not be implemented yet"
-    );
+    let (_, dir) = parse_preprocessor_directive(code).expect("should parse #warning");
+    assert!(matches!(dir, PreprocessorDirective::Warning { message } if message == "This is a warning message"));
 }
 
-// TODO: Add tests for pragma, line
+#[test]
+fn test_parse_pragma_simple() {
+    let code = "#pragma warning disable CS0168";
+    let (_, dir) = parse_preprocessor_directive(code).expect("should parse #pragma");
+    assert!(matches!(dir, PreprocessorDirective::Pragma { pragma } if pragma == "warning disable CS0168"));
+}
+
+#[test]
+fn test_parse_line_simple() {
+    let code = "#line 100";
+    let (_, dir) = parse_preprocessor_directive(code).expect("should parse #line");
+    assert!(matches!(dir, PreprocessorDirective::Line { line } if line == "100"));
+}

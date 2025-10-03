@@ -50,6 +50,7 @@ fn test_analyze_basic_types() {
                 initializer: None,
             }),
         ],
+        constraints: None,
     };
 
     let metrics = analyzer.analyze_class(&class);
@@ -153,6 +154,7 @@ fn test_analyze_generic_types() {
                 constraints: None,
             }),
         ],
+        constraints: None,
     };
 
     let metrics = analyzer.analyze_class(&generic_class);
@@ -177,6 +179,7 @@ fn test_inheritance_analysis() {
         primary_constructor_parameters: None,
         base_types: Vec::new(),
         body_declarations: Vec::new(),
+        constraints: None,
     };
 
     // Derived class
@@ -189,6 +192,7 @@ fn test_inheritance_analysis() {
         primary_constructor_parameters: None,
         base_types: vec![Type::Reference(create_test_identifier("BaseClass"))],
         body_declarations: Vec::new(),
+        constraints: None,
     };
 
     // Further derived class
@@ -201,6 +205,7 @@ fn test_inheritance_analysis() {
         primary_constructor_parameters: None,
         base_types: vec![Type::Reference(create_test_identifier("DerivedClass"))],
         body_declarations: Vec::new(),
+        constraints: None,
     };
 
     // Analyze inheritance chain
@@ -233,6 +238,7 @@ fn test_interface_analysis() {
             Type::Reference(create_test_identifier("ICloneable")),
         ],
         body_declarations: Vec::new(),
+        constraints: None,
     };
 
     let metrics = analyzer.analyze_class(&class_with_interfaces);
@@ -313,6 +319,7 @@ fn test_type_usage_analysis() {
                 constraints: None,
             }),
         ],
+        constraints: None,
     };
 
     let metrics = analyzer.analyze_class(&class_with_various_types);
@@ -360,6 +367,7 @@ fn test_type_complexity_analysis() {
             body: None,
             constraints: None,
         })],
+        constraints: None,
     };
 
     let metrics = analyzer.analyze_class(&complex_generic_class);
@@ -390,6 +398,7 @@ fn test_circular_dependency_detection() {
             name: create_test_identifier("b"),
             initializer: None,
         })],
+        constraints: None,
     };
 
     let class_b = ClassDeclaration {
@@ -406,6 +415,7 @@ fn test_circular_dependency_detection() {
             name: create_test_identifier("a"),
             initializer: None,
         })],
+        constraints: None,
     };
 
     analyzer.analyze_class(&class_a);
@@ -455,6 +465,7 @@ fn test_type_cohesion_analysis() {
                 constraints: None,
             }),
         ],
+        constraints: None,
     };
 
     let metrics = analyzer.analyze_class(&cohesive_class);
@@ -526,6 +537,7 @@ fn test_comprehensive_type_analysis() {
                 constraints: None,
             }),
         ],
+        constraints: None,
     };
 
     let metrics = analyzer.analyze_class(&comprehensive_class);

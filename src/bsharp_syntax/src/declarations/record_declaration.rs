@@ -1,5 +1,5 @@
 use crate::Identifier;
-use crate::declarations::{AttributeList, Modifier};
+use crate::declarations::{AttributeList, Modifier, TypeParameterConstraintClause};
 use crate::types::{Parameter, Type};
 use serde::{Deserialize, Serialize};
 
@@ -12,4 +12,5 @@ pub struct RecordDeclaration {
     pub parameters: Option<Vec<Parameter>>, // For positional records
     pub base_types: Vec<Type>,
     pub body_declarations: Vec<super::ClassBodyDeclaration>, // member declarations (fields, properties, etc.)
+    pub constraints: Option<Vec<TypeParameterConstraintClause>>,
 }

@@ -148,6 +148,7 @@ fn test_analyze_simple_class() {
                 initializer: None,
             }),
         ],
+        constraints: None,
     };
 
     // Create a minimal compilation unit
@@ -160,6 +161,7 @@ fn test_analyze_simple_class() {
     let compilation_unit = CompilationUnit {
         global_attributes: Vec::new(),
         using_directives: Vec::new(),
+        global_using_directives: Vec::new(),
         declarations: vec![TopLevelDeclaration::Namespace(namespace)],
         file_scoped_namespace: None,
         top_level_statements: Vec::new(),
@@ -256,6 +258,7 @@ fn test_analyze_complex_class() {
                 initializer: None,
             }),
         ],
+        constraints: None,
     };
 
     let namespace = NamespaceDeclaration {
@@ -267,6 +270,7 @@ fn test_analyze_complex_class() {
     let compilation_unit = CompilationUnit {
         global_attributes: Vec::new(),
         using_directives: Vec::new(),
+        global_using_directives: Vec::new(),
         declarations: vec![TopLevelDeclaration::Namespace(namespace)],
         file_scoped_namespace: None,
         top_level_statements: Vec::new(),
@@ -380,6 +384,7 @@ fn test_empty_compilation_unit_analysis() {
     let compilation_unit = CompilationUnit {
         global_attributes: Vec::new(),
         using_directives: Vec::new(),
+        global_using_directives: Vec::new(),
         declarations: Vec::new(),
         file_scoped_namespace: None,
         top_level_statements: Vec::new(),

@@ -17,11 +17,8 @@ pub enum UnaryOperator {
     Decrement, // --
 
     // C# Specific Unary Operators
-    Await,              // await (prefix)
     AddressOf,          // & (unsafe, prefix)
     PointerIndirection, // * (unsafe, prefix)
-    Cast,               // (Type) (prefix, might need specific Expression variant later)
     IndexFromEnd,       // ^ (prefix, e.g. ^1)
     NullForgiving,      // ! (postfix, e.g. expr!)
-                        // TODO: Add others like typeof, sizeof? Maybe separate nodes.
 }

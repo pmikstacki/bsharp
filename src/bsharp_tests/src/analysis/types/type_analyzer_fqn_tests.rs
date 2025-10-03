@@ -28,6 +28,7 @@ fn class(name: &str, bases: Vec<&str>, nested: Vec<ClassBodyDeclaration>) -> Cla
             .map(|b| Type::Reference(ident(b)))
             .collect(),
         body_declarations: nested,
+        constraints: None,
     }
 }
 
@@ -43,6 +44,7 @@ fn test_fqn_for_top_level_and_nested_types_in_namespace() {
         primary_constructor_parameters: None,
         base_types: vec![],
         body_declarations: vec![],
+        constraints: None,
     };
 
     let outer = class(
@@ -60,6 +62,7 @@ fn test_fqn_for_top_level_and_nested_types_in_namespace() {
     let cu = CompilationUnit {
         global_attributes: vec![],
         using_directives: vec![],
+        global_using_directives: vec![],
         declarations: vec![TopLevelDeclaration::Namespace(ns)],
         file_scoped_namespace: None,
         top_level_statements: vec![],

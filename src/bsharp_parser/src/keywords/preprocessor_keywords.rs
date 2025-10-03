@@ -1,2 +1,12 @@
 define_keyword_pair!(kw_pragma, peek_pragma, "pragma");
 define_keyword_pair!(kw_line, peek_line, "line");
+define_keyword_pair!(kw_define, peek_define, "define");
+define_keyword_pair!(kw_undef, peek_undef, "undef");
+define_keyword_pair!(kw_if, peek_if, "if");
+define_keyword_pair!(kw_elif, peek_elif, "elif");
+define_keyword_pair!(kw_else, peek_else, "else");
+define_keyword_pair!(kw_endif, peek_endif, "endif");
+define_keyword_pair!(kw_region, peek_region, "region");
+define_keyword_pair!(kw_endregion, peek_endregion, "endregion");
+define_keyword_pair!(kw_error, peek_error, "error");
+define_keyword_pair!(kw_warning, peek_warning, "warning");

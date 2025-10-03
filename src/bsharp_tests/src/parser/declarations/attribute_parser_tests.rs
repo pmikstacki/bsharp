@@ -44,11 +44,30 @@ fn test_attribute_with_argument() {
 
 #[test]
 fn test_attribute_with_named_arguments() {
-    // Note: This test will fail until the expression syntax fully supports
-    // named arguments/assignments. We will need to enhance the expression syntax
-    // to handle these. For now, adding as a placeholder.
     let input = "[DataMember(Name = \"firstName\")]";
-    // Implementation will need to be updated when expression syntax supports assignments
+    let (rest, lists) = parse_attribute_lists(input).expect("should parse attribute with named arg");
+    assert_eq!(rest, "");
+    assert_eq!(lists.len(), 1);
+    assert_eq!(lists[0].attributes.len(), 1);
+    let args = &lists[0].attributes[0].arguments;
+    assert_eq!(args.len(), 1);
+    match &args[0] {
+        Expression::Assignment(assign) => {
+            // target should be a variable 'Name'
+            if let Expression::Variable(id) = &*assign.target {
+                assert_eq!(id.name, "Name");
+            } else {
+                panic!("expected assignment target to be variable 'Name'");
+            }
+            // value should be string literal "firstName"
+            if let Expression::Literal(Literal::String(s)) = &*assign.value {
+                assert_eq!(s, "firstName");
+            } else {
+                panic!("expected assignment value to be string literal 'firstName'");
+            }
+        }
+        other => panic!("expected assignment expression, got {:?}", other),
+    }
 }
 
 #[test]
@@ -74,5 +93,9 @@ fn test_multiple_attributes_in_one_list() {
 #[test]
 fn test_attribute_with_multiple_arguments() {
     let input = "[DebuggerDisplay(\"Count = {Count}\", Type = \"MyType\")]";
-    // Will need to be updated when expression syntax supports string literals and assignments
+    let (rest, lists) = parse_attribute_lists(input).expect("should parse attribute with mixed args");
+    assert_eq!(rest, "");
+    assert_eq!(lists.len(), 1);
+    let args = &lists[0].attributes[0].arguments;
+    assert_eq!(args.len(), 2);
 }

@@ -155,13 +155,19 @@ impl TypeAnalyzer {
             metrics.interface_implementations = class.base_types.len().saturating_sub(1);
         }
 
-        // Analyze type parameters
+        // Analyze type parameters and constraints
         if let Some(type_params) = &class.type_parameters {
             metrics.generic_type_parameters = type_params.len();
-            for _param in type_params {
-                // param is not used
-                // Count constraints - this is simplified since we don't have access to constraints here
-                metrics.generic_constraints.push("class".to_string()); // placeholder
+        }
+
+        // Class-level where-clauses
+        if let Some(clauses) = &class.constraints {
+            for clause in clauses {
+                for c in &clause.constraints {
+                    metrics
+                        .generic_constraints
+                        .push(Self::stringify_constraint(c));
+                }
             }
         }
 
@@ -525,8 +531,32 @@ impl TypeAnalyzer {
                 if let Some(method_type_params) = &method.type_parameters {
                     metrics.generic_type_parameters += method_type_params.len();
                 }
+
+                // Method-level where-clauses
+                if let Some(clauses) = &method.constraints {
+                    for clause in clauses {
+                        for c in &clause.constraints {
+                            metrics
+                                .generic_constraints
+                                .push(Self::stringify_constraint(c));
+                        }
+                    }
+                }
             }
             _ => {} // Handle other member types as needed
+        }
+    }
+
+    fn stringify_constraint(c: &bsharp_syntax::declarations::TypeParameterConstraint) -> String {
+        use bsharp_syntax::declarations::TypeParameterConstraint as C;
+        match c {
+            C::ReferenceType => "class".to_string(),
+            C::ValueType => "struct".to_string(),
+            C::Unmanaged => "unmanaged".to_string(),
+            C::NotNull => "notnull".to_string(),
+            C::Constructor => "new()".to_string(),
+            C::SpecificType(t) => Self::extract_type_name(t),
+            C::SpecificParameter(id) => id.name.clone(),
         }
     }
 

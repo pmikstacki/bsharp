@@ -94,6 +94,7 @@ fn test_quality_report_with_multiple_classes() {
             constraints: None,
             body: None,
         })],
+        constraints: None,
     };
 
     let class2 = ClassDeclaration {
@@ -121,6 +122,7 @@ fn test_quality_report_with_multiple_classes() {
                 initializer: None,
             }),
         ],
+        constraints: None,
     };
 
     let namespace = NamespaceDeclaration {
@@ -135,6 +137,7 @@ fn test_quality_report_with_multiple_classes() {
     let compilation_unit = CompilationUnit {
         global_attributes: Vec::new(),
         using_directives: Vec::new(),
+        global_using_directives: Vec::new(),
         declarations: vec![TopLevelDeclaration::Namespace(namespace)],
         file_scoped_namespace: None,
         top_level_statements: Vec::new(),
@@ -246,6 +249,7 @@ fn test_quality_report_empty_analysis() {
     let compilation_unit = CompilationUnit {
         global_attributes: Vec::new(),
         using_directives: Vec::new(),
+        global_using_directives: Vec::new(),
         declarations: Vec::new(),
         file_scoped_namespace: None,
         top_level_statements: Vec::new(),
@@ -332,6 +336,7 @@ fn test_complex_quality_analysis_scenario() {
 
             declarations
         },
+        constraints: None,
     };
 
     let namespace = NamespaceDeclaration {
@@ -343,6 +348,7 @@ fn test_complex_quality_analysis_scenario() {
     let compilation_unit = CompilationUnit {
         global_attributes: Vec::new(),
         using_directives: Vec::new(),
+        global_using_directives: Vec::new(),
         declarations: vec![TopLevelDeclaration::Namespace(namespace)],
         file_scoped_namespace: None,
         top_level_statements: Vec::new(),

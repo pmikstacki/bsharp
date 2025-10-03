@@ -5,6 +5,7 @@ use super::field_declaration::FieldDeclaration;
 use super::indexer_declaration::IndexerDeclaration;
 use super::method_declaration::MethodDeclaration;
 use super::modifier::Modifier;
+use super::type_parameter_constraint::TypeParameterConstraintClause;
 use super::operator_declaration::OperatorDeclaration;
 use super::property_declaration::PropertyDeclaration;
 use super::{ClassDeclaration, EnumDeclaration, InterfaceDeclaration, RecordDeclaration};
@@ -38,4 +39,5 @@ pub struct StructDeclaration {
     pub primary_constructor_parameters: Option<Vec<Parameter>>,
     pub base_types: Vec<Type>,
     pub body_declarations: Vec<StructBodyDeclaration>,
+    pub constraints: Option<Vec<TypeParameterConstraintClause>>,
 }

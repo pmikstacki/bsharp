@@ -29,6 +29,7 @@ fn test_parse_simple_class() {
         base_types: vec![],
         body_declarations: vec![],
         documentation: None,
+        constraints: None,
     };
     assert_eq!(parse_class_decl_test(code), Ok(expected));
 }
@@ -54,6 +55,7 @@ fn test_parse_generic_class() {
         base_types: vec![],
         body_declarations: vec![],
         documentation: None,
+        constraints: None,
     };
     assert_eq!(parse_class_decl_test(code), Ok(expected));
 }
@@ -153,6 +155,7 @@ fn test_parse_class_with_multiple_members() {
             }),
         ],
         documentation: None,
+        constraints: None,
     };
     assert_eq!(parse_class_decl_test(code.trim()), Ok(expected));
 }
@@ -178,6 +181,7 @@ fn test_parse_class_with_field() {
             initializer: Some(Expression::Literal(Literal::Integer(42))),
         })],
         documentation: None,
+        constraints: None,
     };
     assert_eq!(parse_class_decl_test(code.trim()), Ok(expected));
 }
@@ -216,6 +220,7 @@ fn test_parse_class_with_mixed_members() {
             }),
         ],
         documentation: None,
+        constraints: None,
     };
     assert_eq!(parse_class_decl_test(code.trim()), Ok(expected));
 }
@@ -263,6 +268,7 @@ fn test_parse_class_with_modifiers() {
         base_types: vec![],
         body_declarations: vec![],
         documentation: None,
+        constraints: None,
     });
     assert_eq!(parse_class_decl_test(code_public), expected_public);
 
@@ -276,6 +282,7 @@ fn test_parse_class_with_modifiers() {
         base_types: vec![],
         body_declarations: vec![],
         documentation: None,
+        constraints: None,
     });
     assert_eq!(parse_class_decl_test(code_sealed), expected_sealed);
 
@@ -289,6 +296,7 @@ fn test_parse_class_with_modifiers() {
         base_types: vec![],
         body_declarations: vec![],
         documentation: None,
+        constraints: None,
     });
     assert_eq!(
         parse_class_decl_test(code_static_public),

@@ -15,7 +15,7 @@ use crate::syntax::nodes::declarations::{
 };
 use crate::syntax::nodes::identifier::Identifier;
 use crate::syntax::nodes::types::{Parameter, Type, TypeParameter};
-use crate::syntax::parser_helpers::{bchar, bws, context, keyword};
+use crate::syntax::parser_helpers::{bchar, bpeek, bws, context, keyword};
 
 // Import specialized parser
 use crate::parser::expressions::declarations::attribute_parser::parse_attribute_lists;
@@ -34,7 +34,9 @@ use crate::parser::expressions::declarations::property_declaration_parser::parse
 use crate::parser::expressions::declarations::type_declaration_helpers::{
     at_end_of_body, skip_to_member_boundary_top_level,
 };
-use crate::parser::expressions::declarations::type_parameter_parser::opt_parse_type_parameter_list;
+use crate::parser::expressions::declarations::type_parameter_parser::{
+    opt_parse_type_parameter_list, parse_type_parameter_constraints_clauses,
+};
 use crate::parser::helpers::directives::skip_preprocessor_directives;
 use crate::parser::identifier_parser::parse_identifier;
 use crate::parser::parse_mode;
@@ -344,7 +346,8 @@ pub fn parse_struct_declaration<'a>(input: &'a str) -> BResult<&'a str, StructDe
     // Parse the declaration header with the 'struct' keyword
     let (input, header): (&'a str, DeclarationHeader<'a>) =
         parse_declaration_header(input, "struct")?;
-
+    // Optional where-clauses (for generic structs)
+    let (input, constraints) = bws(nom::combinator::opt(parse_type_parameter_constraints_clauses))(input)?;
     // Parse the struct body
     let (input, members) = parse_class_body(input, parse_struct_member)?;
 
@@ -357,6 +360,10 @@ pub fn parse_struct_declaration<'a>(input: &'a str) -> BResult<&'a str, StructDe
         primary_constructor_parameters: header.primary_constructor_parameters,
         base_types: header.base_types,
         body_declarations: members,
+        constraints: match constraints {
+            Some(v) if v.is_empty() => None,
+            other => other,
+        },
     };
 
     Ok((input, struct_declaration))
@@ -396,44 +403,53 @@ fn parse_record_body(input: &str) -> BResult<&str, (Vec<Parameter>, Vec<ClassBod
 /// }
 /// ```
 pub fn parse_record_class_declaration(input: &str) -> BResult<&str, RecordDeclaration> {
-    // Parse attributes (can be empty)
+    // Parse attributes and modifiers
     let (input, attributes) = parse_attribute_lists(input)?;
-
-    // Parse optional modifiers (public, private, etc.) but NOT the declaration keyword itself
     let (input, modifiers) = parse_modifiers(input)?;
-
-    // Parse the declaration keyword
+    // 'record' keyword and name
     let (input, _) = ws(input)?;
     let (input, _) = keyword("record")(input)?;
-
-    // Parse the declaration name (identifier)
     let (input, _) = ws(input)?;
     let (input, identifier) = parse_identifier(input)?;
-
-    // Parse optional type parameters like <T> or <K, V>
+    // Optional type parameters
     let (input, _) = ws(input)?;
-    let (input, type_parameters_opt_opt) = opt(opt_parse_type_parameter_list)(input)?;
+    let (mut input, type_parameters_opt_opt) = opt(opt_parse_type_parameter_list)(input)?;
     let _type_parameters = type_parameters_opt_opt.and_then(|tp_opt| tp_opt);
 
-    // Now parse the record body which can be either:
-    // 1. (parameters) : base_types;
-    // 2. : base_types { members }
-    // 3. (parameters);
-    // 4. { members }
-    let (input, (parameters, base_types, members)) = parse_record_class_body(input)?;
+    // Optional positional parameters
+    let (i_after_params, params_opt) = nom::combinator::opt(bws(parse_parameter_list))(input)?;
+    input = i_after_params;
+    let parameters = params_opt.unwrap_or_default();
+
+    // Optional base types
+    let (input2, base_opt) = bws(nom::combinator::opt(parse_base_type_list))(input)?;
+    input = input2;
+    let base_types = base_opt.unwrap_or_default();
+
+    // Optional where-clauses
+    let (input3, constraints_opt) = bws(nom::combinator::opt(parse_type_parameter_constraints_clauses))(input)?;
+    input = input3;
+
+    // Decide between ';' or body '{ ... }'
+    let (input, body_members) = if bpeek(bchar(';'))(input).is_ok() {
+        let (input, _) = bws(bchar(';'))(input)?;
+        (input, Vec::<ClassBodyDeclaration>::new())
+    } else {
+        parse_class_body(input, parse_class_member)?
+    };
 
     let record_declaration = RecordDeclaration {
         attributes,
         modifiers,
         name: identifier,
         is_struct: false,
-        parameters: if parameters.is_empty() {
-            None
-        } else {
-            Some(parameters)
-        },
+        parameters: if parameters.is_empty() { None } else { Some(parameters) },
         base_types,
-        body_declarations: members,
+        body_declarations: body_members,
+        constraints: match constraints_opt {
+            Some(v) if v.is_empty() => None,
+            other => other,
+        },
     };
     Ok((input, record_declaration))
 }
@@ -490,51 +506,50 @@ fn parse_record_class_body(
 /// }
 /// ```
 pub fn parse_record_struct_declaration(input: &str) -> BResult<&str, RecordDeclaration> {
-    // First parse the 'record' keyword
+    // Attributes, modifiers, keywords
     let (input, _) = ws(input)?;
-
-    // Parse attributes
-    let (input, attributes_list) = parse_attribute_lists(input)?; // attributes_list is Vec<AttributeList>
-
-    // Parse modifiers
+    let (input, attributes) = parse_attribute_lists(input)?;
     let (input, modifiers) = parse_modifiers(input)?;
-
-    // Parse 'record struct' keywords
     let (input, _) = ws(input)?;
     let (input, _) = keyword("record")(input)?;
     let (input, _) = ws(input)?;
     let (input, _) = keyword("struct")(input)?;
-
-    // Parse name
+    // Name and type params
     let (input, _) = ws(input)?;
     let (input, identifier) = parse_identifier(input)?;
-
-    // Parse optional type parameters - but they are not used in RecordDeclaration struct
     let (input, _) = ws(input)?;
-    let (input, _type_parameters_opt_opt) = opt(opt_parse_type_parameter_list)(input)?; // Parsed but not used
-    // let _type_parameters = _type_parameters_opt_opt.and_then(|tp_opt| tp_opt); // Not used
+    let (mut input, _type_parameters_opt_opt) = opt(opt_parse_type_parameter_list)(input)?;
+    // Optional positional parameters
+    let (i_after_params, params_opt) = nom::combinator::opt(bws(parse_parameter_list))(input)?;
+    input = i_after_params;
+    let parameters = params_opt.unwrap_or_default();
+    // Optional base types
+    let (input2, base_opt) = bws(nom::combinator::opt(parse_base_type_list))(input)?;
+    input = input2;
+    let base_types = base_opt.unwrap_or_default();
+    // Optional where-clauses
+    let (input3, constraints_opt) = bws(nom::combinator::opt(parse_type_parameter_constraints_clauses))(input)?;
+    input = input3;
+    // Decide terminator/body
+    let (input, body_members) = if bpeek(bchar(';'))(input).is_ok() {
+        let (input, _) = bws(bchar(';'))(input)?;
+        (input, Vec::<ClassBodyDeclaration>::new())
+    } else {
+        parse_class_body(input, parse_class_member)?
+    };
 
-    // Parse base types
-    let (input, _) = ws(input)?;
-    let (input, base_types_opt) = opt(parse_base_type_list)(input)?;
-    let base_types = base_types_opt.unwrap_or_default(); // Use empty vec if no base types
-
-    // Parse record body
-    let (input, (parameters, members)) = parse_record_body(input)?;
-
-    // Create a record declaration
     let record_declaration = RecordDeclaration {
-        attributes: attributes_list,
+        attributes,
         modifiers,
         name: identifier,
         is_struct: true,
-        parameters: if parameters.is_empty() {
-            None
-        } else {
-            Some(parameters)
-        },
+        parameters: if parameters.is_empty() { None } else { Some(parameters) },
         base_types,
-        body_declarations: members,
+        body_declarations: body_members,
+        constraints: match constraints_opt {
+            Some(v) if v.is_empty() => None,
+            other => other,
+        },
     };
 
     Ok((input, record_declaration))
@@ -726,6 +741,8 @@ pub fn parse_interface_declaration<'a>(input: &'a str) -> BResult<&'a str, Inter
     let (input, header): (&'a str, DeclarationHeader<'a>) =
         parse_declaration_header(input, "interface")?;
 
+    // Optional where-clauses
+    let (input, constraints) = bws(nom::combinator::opt(parse_type_parameter_constraints_clauses))(input)?;
     // Parse the interface body - similar to class body but with interface members
     let (input, members) = parse_class_body(input, parse_interface_member)?;
 
@@ -737,6 +754,10 @@ pub fn parse_interface_declaration<'a>(input: &'a str) -> BResult<&'a str, Inter
         type_parameters: header.type_parameters,
         base_types: header.base_types,
         body_declarations: members,
+        constraints: match constraints {
+            Some(v) if v.is_empty() => None,
+            other => other,
+        },
     };
 
     Ok((input, interface_declaration))
@@ -747,6 +768,8 @@ pub fn parse_interface_declaration<'a>(input: &'a str) -> BResult<&'a str, Inter
 pub fn parse_class_declaration<'a>(input: &'a str) -> BResult<&'a str, ClassDeclaration> {
     let (input, header): (&'a str, DeclarationHeader<'a>) =
         parse_declaration_header(input, "class")?;
+    // Optional where-clauses (for generic classes)
+    let (input, constraints) = bws(nom::combinator::opt(parse_type_parameter_constraints_clauses))(input)?;
     let (input, members) = parse_class_body(input, parse_class_member)?;
 
     Ok((
@@ -760,6 +783,10 @@ pub fn parse_class_declaration<'a>(input: &'a str) -> BResult<&'a str, ClassDecl
             base_types: header.base_types,
             body_declarations: members,
             documentation: None,
+            constraints: match constraints {
+                Some(v) if v.is_empty() => None,
+                other => other,
+            },
         },
     ))
 }

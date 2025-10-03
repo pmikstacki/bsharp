@@ -1,5 +1,5 @@
 use crate::Identifier;
-use crate::declarations::{AttributeList, ClassBodyDeclaration, Modifier};
+use crate::declarations::{AttributeList, ClassBodyDeclaration, Modifier, TypeParameterConstraintClause};
 use crate::trivia::xml_documentation::XmlDocumentationComment;
 use crate::types::{Parameter, Type, TypeParameter};
 use serde::{Deserialize, Serialize};
@@ -15,4 +15,5 @@ pub struct ClassDeclaration {
     pub base_types: Vec<Type>,
     pub body_declarations: Vec<ClassBodyDeclaration>,
     pub documentation: Option<XmlDocumentationComment>,
+    pub constraints: Option<Vec<TypeParameterConstraintClause>>,
 }

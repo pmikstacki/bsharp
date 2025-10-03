@@ -24,6 +24,7 @@ fn class(name: &str, bases: Vec<&str>) -> ClassDeclaration {
             .map(|b| Type::Reference(ident(b)))
             .collect(),
         body_declarations: vec![],
+        constraints: None,
     }
 }
 

@@ -1,4 +1,4 @@
-use super::{InterfaceBodyDeclaration, attribute::AttributeList, modifier::Modifier};
+use super::{InterfaceBodyDeclaration, attribute::AttributeList, modifier::Modifier, TypeParameterConstraintClause};
 use crate::Identifier;
 use crate::types::{Type, TypeParameter};
 use serde::{Deserialize, Serialize};
@@ -12,4 +12,5 @@ pub struct InterfaceDeclaration {
     pub type_parameters: Option<Vec<TypeParameter>>,
     pub base_types: Vec<Type>, // Added base types for interface inheritance
     pub body_declarations: Vec<InterfaceBodyDeclaration>, // Changed from ClassBodyDeclaration
+    pub constraints: Option<Vec<TypeParameterConstraintClause>>,
 }

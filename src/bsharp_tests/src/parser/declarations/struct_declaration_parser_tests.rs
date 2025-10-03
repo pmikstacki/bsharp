@@ -15,6 +15,7 @@ fn test_simple_struct() {
         primary_constructor_parameters: None,
         base_types: vec![],
         body_declarations: vec![],
+        constraints: None,
     };
 
     match parse_struct_declaration(input) {
@@ -37,6 +38,7 @@ fn test_public_struct() {
         primary_constructor_parameters: None,
         base_types: vec![],
         body_declarations: vec![],
+        constraints: None,
     };
 
     match parse_struct_declaration(input) {
@@ -62,6 +64,7 @@ fn test_struct_with_single_generic_parameter() {
         primary_constructor_parameters: None,
         base_types: vec![],
         body_declarations: vec![],
+        constraints: None,
     };
 
     match parse_struct_declaration(input) {
@@ -93,6 +96,7 @@ fn test_public_struct_with_multiple_generic_parameters() {
         primary_constructor_parameters: None,
         base_types: vec![],
         body_declarations: vec![],
+        constraints: None,
     };
 
     match parse_struct_declaration(input) {

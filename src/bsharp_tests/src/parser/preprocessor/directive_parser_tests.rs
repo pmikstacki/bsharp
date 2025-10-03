@@ -208,10 +208,10 @@ fn test_unknown_region_directive() {
     assert!(result.is_ok());
     let (_, directive) = result.unwrap();
     match directive {
-        PreprocessorDirective::Unknown { text } => {
-            assert_eq!(text, "region My Region");
+        PreprocessorDirective::Region { name } => {
+            assert_eq!(name, Some("My Region".to_string()));
         }
-        _ => panic!("Expected Unknown directive fallback for #region"),
+        _ => panic!("Expected Region directive for #region"),
     }
 }
 
@@ -222,9 +222,9 @@ fn test_unknown_define_directive() {
     assert!(result.is_ok());
     let (_, directive) = result.unwrap();
     match directive {
-        PreprocessorDirective::Unknown { text } => {
-            assert_eq!(text, "define FOO");
+        PreprocessorDirective::Define { symbol } => {
+            assert_eq!(symbol.name, "FOO");
         }
-        _ => panic!("Expected Unknown directive fallback for #define"),
+        _ => panic!("Expected Define directive for #define"),
     }
 }

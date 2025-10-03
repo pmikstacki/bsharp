@@ -37,6 +37,7 @@ fn test_parse_positional_record() {
         }]),
         base_types: vec![],
         body_declarations: vec![],
+        constraints: None,
     };
     assert_eq!(parse_record_decl_test(code), Ok(expected));
 }

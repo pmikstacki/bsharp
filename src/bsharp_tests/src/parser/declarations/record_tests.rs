@@ -33,6 +33,7 @@ fn test_parse_record_class() {
         ), // Simplified
         base_types: vec![], // Simplified
         body_declarations: vec![], // Use correct field name
+        constraints: None,
     };
 
     // Check the flag specifically when syntax is implemented
@@ -58,6 +59,7 @@ fn test_parse_record_struct() {
         ), // Simplified
         base_types: vec![], // Simplified
         body_declarations: vec![], // Use correct field name
+        constraints: None,
     };
 
     // Check the flag specifically when syntax is implemented

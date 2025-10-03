@@ -8,6 +8,7 @@ use crate::parser::expressions::statements::block_statement_parser::parse_block_
 use crate::parser::identifier_parser::parse_identifier;
 use crate::syntax::errors::BResult;
 use crate::syntax::nodes::declarations::DestructorDeclaration;
+use crate::syntax::nodes::statements::statement::Statement;
 use crate::syntax::parser_helpers::{bchar, bws, context};
 
 /// Parse a C# destructor declaration
@@ -50,7 +51,7 @@ pub fn parse_destructor_declaration(input: &str) -> BResult<&str, DestructorDecl
                 cut(bws(bchar(')'))),
             )(input)?;
 
-            // Parse the body (either block statement or semicolon for extern)
+            // Parse the body (either block statement or semicolon)
             let (input, body) = parse_destructor_body(input)?;
 
             let destructor_declaration = DestructorDeclaration {
@@ -66,17 +67,14 @@ pub fn parse_destructor_declaration(input: &str) -> BResult<&str, DestructorDecl
 }
 
 /// Parse the destructor body (either a block statement or semicolon)
-fn parse_destructor_body(input: &str) -> BResult<&str, String> {
+fn parse_destructor_body(input: &str) -> BResult<&str, Option<Statement>> {
     context(
         "destructor body (expected block statement or semicolon for extern destructor)",
         alt((
             // Block body
-            map(
-                parse_block_statement,
-                |_| "{ /* destructor body */ }".to_string(), // Simplified for now
-            ),
+            map(parse_block_statement, |stmt| Some(stmt)),
             // Semicolon (extern)
-            map(bws(bchar(';')), |_| "".to_string()),
+            map(bws(bchar(';')), |_| None),
         )),
     )(input)
 }
