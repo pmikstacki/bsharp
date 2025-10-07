@@ -12,7 +12,7 @@ pub mod query;
 pub mod lookup;
 pub mod fqn;
 
-pub use fqn::method_fqn;
+pub use fqn::{method_fqn, class_fqn, namespace_fqn};
 pub use lookup::{find_symbols_by_name, find_symbols_with_locations};
 // Minimal re-exports for ergonomic use
 pub use passes::{AnalyzerPass, Phase};

@@ -2,6 +2,7 @@ use crate::framework::AnalysisSession;
 use crate::syntax::ast::{CompilationUnit, TopLevelDeclaration};
 use crate::syntax::nodes::declarations::{
     ClassBodyDeclaration, ClassDeclaration, NamespaceBodyDeclaration, NamespaceDeclaration,
+    StructDeclaration, InterfaceDeclaration, EnumDeclaration, RecordDeclaration, DelegateDeclaration,
 };
 use crate::syntax::nodes::expressions::expression::Expression;
 use crate::syntax::nodes::statements::statement::Statement;
@@ -11,6 +12,11 @@ pub enum NodeRef<'a> {
     CompilationUnit(&'a CompilationUnit),
     Namespace(&'a NamespaceDeclaration),
     Class(&'a ClassDeclaration),
+    Struct(&'a StructDeclaration),
+    Interface(&'a InterfaceDeclaration),
+    Enum(&'a EnumDeclaration),
+    Record(&'a RecordDeclaration),
+    Delegate(&'a DelegateDeclaration),
     Method(&'a crate::syntax::nodes::declarations::MethodDeclaration),
     Statement(&'a Statement),
     Expression(&'a Expression),

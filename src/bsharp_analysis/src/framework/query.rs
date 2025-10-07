@@ -1,8 +1,17 @@
 use crate::framework::walker::NodeRef;
 use crate::syntax::ast::{CompilationUnit, TopLevelDeclaration};
 use crate::syntax::nodes::declarations::{
-    namespace_declaration::NamespaceBodyDeclaration, ClassBodyDeclaration, ClassDeclaration,
-    MethodDeclaration, NamespaceDeclaration,
+    namespace_declaration::NamespaceBodyDeclaration,
+    ClassBodyDeclaration,
+    ClassDeclaration,
+    MethodDeclaration,
+    NamespaceDeclaration,
+    StructDeclaration,
+    StructBodyDeclaration,
+    InterfaceDeclaration,
+    EnumDeclaration,
+    RecordDeclaration,
+    DelegateDeclaration,
 };
 use crate::syntax::nodes::expressions::expression::Expression;
 use crate::syntax::nodes::statements::statement::Statement;
@@ -11,6 +20,31 @@ use crate::syntax::nodes::statements::statement::Statement;
 pub trait Children<'a> {
     type Iter: Iterator<Item = NodeRef<'a>>;
     fn children(&'a self) -> Self::Iter;
+}
+impl<'a> Extract<'a, StructDeclaration> for NodeRef<'a> {
+    fn as_ref(&self) -> Option<&'a StructDeclaration> {
+        match *self { NodeRef::Struct(x) => Some(x), _ => None }
+    }
+}
+impl<'a> Extract<'a, InterfaceDeclaration> for NodeRef<'a> {
+    fn as_ref(&self) -> Option<&'a InterfaceDeclaration> {
+        match *self { NodeRef::Interface(x) => Some(x), _ => None }
+    }
+}
+impl<'a> Extract<'a, EnumDeclaration> for NodeRef<'a> {
+    fn as_ref(&self) -> Option<&'a EnumDeclaration> {
+        match *self { NodeRef::Enum(x) => Some(x), _ => None }
+    }
+}
+impl<'a> Extract<'a, RecordDeclaration> for NodeRef<'a> {
+    fn as_ref(&self) -> Option<&'a RecordDeclaration> {
+        match *self { NodeRef::Record(x) => Some(x), _ => None }
+    }
+}
+impl<'a> Extract<'a, DelegateDeclaration> for NodeRef<'a> {
+    fn as_ref(&self) -> Option<&'a DelegateDeclaration> {
+        match *self { NodeRef::Delegate(x) => Some(x), _ => None }
+    }
 }
 
 /// Provides typed extraction from a NodeRef to a concrete AST type.
@@ -32,12 +66,12 @@ fn node_children<'a>(node: &NodeRef<'a>) -> Vec<NodeRef<'a>> {
                     match m {
                         NamespaceBodyDeclaration::Namespace(ns) => out.push(NodeRef::Namespace(ns)),
                         NamespaceBodyDeclaration::Class(c) => out.push(NodeRef::Class(c)),
-                        NamespaceBodyDeclaration::Struct(_)
-                        | NamespaceBodyDeclaration::Interface(_)
-                        | NamespaceBodyDeclaration::Enum(_)
-                        | NamespaceBodyDeclaration::Delegate(_)
-                        | NamespaceBodyDeclaration::Record(_)
-                        | NamespaceBodyDeclaration::GlobalAttribute(_) => {}
+                        NamespaceBodyDeclaration::Struct(s) => out.push(NodeRef::Struct(s)),
+                        NamespaceBodyDeclaration::Interface(i) => out.push(NodeRef::Interface(i)),
+                        NamespaceBodyDeclaration::Enum(e) => out.push(NodeRef::Enum(e)),
+                        NamespaceBodyDeclaration::Delegate(d) => out.push(NodeRef::Delegate(d)),
+                        NamespaceBodyDeclaration::Record(r) => out.push(NodeRef::Record(r)),
+                        NamespaceBodyDeclaration::GlobalAttribute(_) => {}
                     }
                 }
             }
@@ -45,13 +79,12 @@ fn node_children<'a>(node: &NodeRef<'a>) -> Vec<NodeRef<'a>> {
                 match decl {
                     TopLevelDeclaration::Namespace(ns) => out.push(NodeRef::Namespace(ns)),
                     TopLevelDeclaration::Class(c) => out.push(NodeRef::Class(c)),
-                    TopLevelDeclaration::Struct(_)
-                    | TopLevelDeclaration::Record(_)
-                    | TopLevelDeclaration::Interface(_)
-                    | TopLevelDeclaration::Enum(_)
-                    | TopLevelDeclaration::Delegate(_)
-                    | TopLevelDeclaration::GlobalAttribute(_)
-                    | TopLevelDeclaration::FileScopedNamespace(_) => {}
+                    TopLevelDeclaration::Struct(s) => out.push(NodeRef::Struct(s)),
+                    TopLevelDeclaration::Record(r) => out.push(NodeRef::Record(r)),
+                    TopLevelDeclaration::Interface(i) => out.push(NodeRef::Interface(i)),
+                    TopLevelDeclaration::Enum(e) => out.push(NodeRef::Enum(e)),
+                    TopLevelDeclaration::Delegate(d) => out.push(NodeRef::Delegate(d)),
+                    TopLevelDeclaration::GlobalAttribute(_) | TopLevelDeclaration::FileScopedNamespace(_) => {}
                 }
             }
             for s in &cu.top_level_statements { out.push(NodeRef::Statement(s)); }
@@ -63,12 +96,12 @@ fn node_children<'a>(node: &NodeRef<'a>) -> Vec<NodeRef<'a>> {
                 match m {
                     NamespaceBodyDeclaration::Namespace(inner) => out.push(NodeRef::Namespace(inner)),
                     NamespaceBodyDeclaration::Class(c) => out.push(NodeRef::Class(c)),
-                    NamespaceBodyDeclaration::Struct(_)
-                    | NamespaceBodyDeclaration::Interface(_)
-                    | NamespaceBodyDeclaration::Enum(_)
-                    | NamespaceBodyDeclaration::Delegate(_)
-                    | NamespaceBodyDeclaration::Record(_)
-                    | NamespaceBodyDeclaration::GlobalAttribute(_) => {}
+                    NamespaceBodyDeclaration::Struct(s) => out.push(NodeRef::Struct(s)),
+                    NamespaceBodyDeclaration::Interface(i) => out.push(NodeRef::Interface(i)),
+                    NamespaceBodyDeclaration::Enum(e) => out.push(NodeRef::Enum(e)),
+                    NamespaceBodyDeclaration::Delegate(d) => out.push(NodeRef::Delegate(d)),
+                    NamespaceBodyDeclaration::Record(r) => out.push(NodeRef::Record(r)),
+                    NamespaceBodyDeclaration::GlobalAttribute(_) => {}
                 }
             }
             out
@@ -96,6 +129,32 @@ fn node_children<'a>(node: &NodeRef<'a>) -> Vec<NodeRef<'a>> {
                 }
             }
             out
+        }
+        NodeRef::Struct(strukt) => {
+            let mut out: Vec<NodeRef<'a>> = Vec::new();
+            for m in &strukt.body_declarations {
+                match m {
+                    StructBodyDeclaration::Method(m) => out.push(NodeRef::Method(m)),
+                    StructBodyDeclaration::NestedClass(c) => out.push(NodeRef::Class(c)),
+                    StructBodyDeclaration::NestedStruct(s) => out.push(NodeRef::Struct(s)),
+                    StructBodyDeclaration::NestedInterface(i) => out.push(NodeRef::Interface(i)),
+                    StructBodyDeclaration::NestedEnum(e) => out.push(NodeRef::Enum(e)),
+                    StructBodyDeclaration::NestedRecord(r) => out.push(NodeRef::Record(r)),
+                    StructBodyDeclaration::Constructor(c) => { if let Some(body) = &c.body { out.push(NodeRef::Statement(body)); } }
+                    StructBodyDeclaration::Field(_)
+                    | StructBodyDeclaration::Property(_)
+                    | StructBodyDeclaration::Event(_)
+                    | StructBodyDeclaration::Indexer(_)
+                    | StructBodyDeclaration::Operator(_) => {}
+                }
+            }
+            out
+        }
+        NodeRef::Interface(_)
+        | NodeRef::Enum(_)
+        | NodeRef::Record(_)
+        | NodeRef::Delegate(_) => {
+            Vec::new()
         }
         NodeRef::Method(m) => {
             let mut out: Vec<NodeRef<'a>> = Vec::new();
