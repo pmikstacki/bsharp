@@ -1,9 +1,9 @@
 #![allow(unused_variables)]
 // Integration tests for parsing using directives (including global)
 
+use parser::expressions::declarations::using_directive_parser::parse_using_directive;
 use syntax::nodes::declarations::{GlobalUsingDirective, UsingDirective};
 use syntax::nodes::identifier::Identifier;
-use parser::expressions::declarations::using_directive_parser::parse_using_directive;
 
 // Assuming a syntax function like parse_global_using_directive will exist
 // use syntax::syntax::parse_global_using_directive;

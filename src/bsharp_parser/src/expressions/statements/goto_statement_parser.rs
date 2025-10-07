@@ -5,8 +5,8 @@ use crate::syntax::nodes::statements::goto_statement::GotoStatement;
 use crate::syntax::nodes::statements::statement::Statement;
 use crate::syntax::parser_helpers::{bchar, bws};
 
-use nom::Parser;
 use nom::combinator::cut;
+use nom::Parser;
 use nom::{combinator::map, sequence::tuple};
 use nom_supreme::ParserExt;
 

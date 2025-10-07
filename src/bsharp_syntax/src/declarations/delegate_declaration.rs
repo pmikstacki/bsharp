@@ -1,7 +1,7 @@
 // Need Parameter too
 use super::{AttributeList, Modifier, TypeParameterConstraintClause};
-use crate::Identifier;
 use crate::types::{Parameter, Type, TypeParameter};
+use crate::Identifier;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]

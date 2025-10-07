@@ -1,5 +1,5 @@
-use crate::AstNavigate;
 use crate::syntax::nodes::{expressions::expression::Expression, statements::statement::Statement};
+use crate::AstNavigate;
 
 impl AstNavigate for Statement {
     fn find_if_statements(&self) -> Vec<&Statement> {

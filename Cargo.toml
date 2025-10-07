@@ -3,7 +3,7 @@ members = [
     "src/bsharp_parser",
     "src/bsharp_analysis",
     "src/bsharp_cli", "src/bsharp_syntax","src/bsharp_tests"
-]
+, "src/bsharp_cil"]
 resolver = "2"
 
 [workspace.package]

@@ -1,7 +1,9 @@
+use crate::project::Project;
 use crate::{AnalysisConfig, AnalysisContext, DiagnosticCollection};
 use bsharp_parser::SpanTable;
 use std::any::{Any, TypeId};
 use std::collections::HashMap;
+use std::sync::Arc;
 use std::sync::RwLock;
 
 /// Type-safe, thread-safe artifact store keyed by TypeId
@@ -43,8 +45,8 @@ pub struct AnalysisSession {
     pub diagnostics: DiagnosticCollection,
     pub artifacts: ArtifactStore,
     pub config: AnalysisConfig,
-    // Project-wide handle; minimal placeholder for now
-    pub project: Option<crate::project::Project>,
+    // Project-wide handle
+    pub project: Project,
 }
 
 impl AnalysisSession {
@@ -55,7 +57,17 @@ impl AnalysisSession {
             spans,
             diagnostics: DiagnosticCollection::default(),
             artifacts: ArtifactStore::new(),
-            project: None,
+            project: Project::new(),
         }
+    }
+
+    /// Insert a typed artifact into the session store.
+    pub fn insert_artifact<T: Any + Send + Sync>(&self, value: T) {
+        self.artifacts.insert(value);
+    }
+
+    /// Retrieve a typed artifact from the session store.
+    pub fn get_artifact<T: Any + Send + Sync>(&self) -> Option<Arc<T>> {
+        self.artifacts.get::<T>()
     }
 }

@@ -3,8 +3,8 @@
 use analysis::types::TypeAnalyzer;
 use syntax::ast::{CompilationUnit, TopLevelDeclaration};
 use syntax::nodes::declarations::{
-    ClassBodyDeclaration, ClassDeclaration, NamespaceDeclaration,
-    namespace_declaration::NamespaceBodyDeclaration,
+    namespace_declaration::NamespaceBodyDeclaration, ClassBodyDeclaration, ClassDeclaration,
+    NamespaceDeclaration,
 };
 use syntax::nodes::identifier::Identifier;
 use syntax::nodes::types::Type;

@@ -2,17 +2,17 @@
 // Integration tests for local variable declaration statements
 // Moved from statement_tests.rs
 
+use nom::combinator::all_consuming;
+use nom::Finish;
 use parser::statement_parser::parse_statement;
-use syntax::nodes::declarations::LocalVariableDeclaration;
 use syntax::nodes::declarations::local_variable_declaration::VariableDeclarator;
+use syntax::nodes::declarations::LocalVariableDeclaration;
 use syntax::nodes::expressions::expression::Expression;
 use syntax::nodes::expressions::literal::Literal;
 use syntax::nodes::expressions::new_expression::NewExpression;
 use syntax::nodes::identifier::Identifier;
 use syntax::nodes::statements::statement::Statement;
 use syntax::nodes::types::{PrimitiveType, Type};
-use nom::Finish;
-use nom::combinator::all_consuming;
 
 // Helper function from statement_tests.rs
 fn assert_statement_parses(code: &str, expected: Statement) {

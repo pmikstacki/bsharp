@@ -1,7 +1,7 @@
 use std::fs;
 
-use parser::bsharp::parse_csharp_source_strict;
 use nom::Finish;
+use parser::bsharp::parse_csharp_source_strict;
 
 #[test]
 fn strict_parse_fails_on_missing_then_statement() {

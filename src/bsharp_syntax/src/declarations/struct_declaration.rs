@@ -5,12 +5,12 @@ use super::field_declaration::FieldDeclaration;
 use super::indexer_declaration::IndexerDeclaration;
 use super::method_declaration::MethodDeclaration;
 use super::modifier::Modifier;
-use super::type_parameter_constraint::TypeParameterConstraintClause;
 use super::operator_declaration::OperatorDeclaration;
 use super::property_declaration::PropertyDeclaration;
+use super::type_parameter_constraint::TypeParameterConstraintClause;
 use super::{ClassDeclaration, EnumDeclaration, InterfaceDeclaration, RecordDeclaration};
-use crate::Identifier;
 use crate::types::{Parameter, Type, TypeParameter};
+use crate::Identifier;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]

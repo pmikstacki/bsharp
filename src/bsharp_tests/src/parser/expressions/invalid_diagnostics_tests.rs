@@ -1,8 +1,8 @@
 // Invalid-input diagnostics tests to lock in pretty error formatting
 
+use nom::Err as NomErr;
 use parser::expressions::primary_expression_parser::parse_expression;
 use syntax::errors::format_error_tree;
-use nom::Err as NomErr;
 
 #[test]
 fn invalid_incomplete_ternary_pretty() {

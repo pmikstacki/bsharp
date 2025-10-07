@@ -1,4 +1,3 @@
-use crate::SourceLocation;
 use crate::syntax::nodes::{
     declarations::{
         ClassDeclaration, DelegateDeclaration, EnumDeclaration, InterfaceDeclaration,
@@ -7,6 +6,7 @@ use crate::syntax::nodes::{
     expressions::expression::Expression,
     statements::statement::Statement,
 };
+use crate::SourceLocation;
 
 /// Trait for navigating and searching through AST nodes
 pub trait AstNavigate {

@@ -1,15 +1,6 @@
-// Control Flow artifacts: per-method control flow stats and optional CFG placeholder
+use crate::artifacts::control_flow_graph::stats::MethodControlFlowStats;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-
-/// Lightweight per-method control flow statistics used by smell rules and reporting.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct MethodControlFlowStats {
-    pub complexity: usize,
-    pub max_nesting: usize,
-    pub exit_points: usize,
-    pub statement_count: usize,
-}
 
 /// Index of control flow stats for methods within a single file.
 /// Key format: fully-qualified name "Namespace.Nested.Type::Method".

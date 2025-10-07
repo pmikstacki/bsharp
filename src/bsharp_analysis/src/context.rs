@@ -19,6 +19,16 @@ pub struct AnalysisConfig {
     // Workspace filters (CLI can map flags here)
     #[serde(default)]
     pub workspace: WorkspaceConfig,
+
+    // Maintainability – code churn settings
+    #[serde(default)]
+    pub churn_enable: bool,
+    #[serde(default)]
+    pub churn_period_days: u32,
+    #[serde(default)]
+    pub churn_include_merges: bool,
+    #[serde(default)]
+    pub churn_max_commits: Option<u32>,
 }
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
@@ -56,6 +66,11 @@ impl AnalysisContext {
         ctx.config.cf_deep_nesting_threshold = 4;
         // Defaults for new fields
         ctx.config.workspace.follow_refs = true;
+        // Churn defaults
+        ctx.config.churn_enable = true;
+        ctx.config.churn_period_days = 90;
+        ctx.config.churn_include_merges = false;
+        ctx.config.churn_max_commits = Some(10_000);
         ctx
     }
 

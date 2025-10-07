@@ -1,6 +1,4 @@
 use analysis::metrics::basic::{BasicMetrics, BasicMetricsCollector};
-use syntax::ast::*;
-use syntax::Identifier;
 use syntax::nodes::declarations::*;
 use syntax::nodes::statements::statement::*;
 use syntax::nodes::statements::{
@@ -8,6 +6,7 @@ use syntax::nodes::statements::{
     SwitchSection, SwitchStatement, TryStatement, WhileStatement,
 };
 use syntax::nodes::types::{PrimitiveType, Type};
+use syntax::Identifier;
 
 fn create_test_identifier(name: &str) -> Identifier {
     Identifier {

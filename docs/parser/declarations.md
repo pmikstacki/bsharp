@@ -215,6 +215,16 @@ public class Resource
 }
 ```
 
+Note: In the AST, `DestructorDeclaration.body` is `Option<Statement>`:
+
+```rust
+// Some(Block(...)) for `{ ... }`, None for extern (i.e., `;` only)
+pub struct DestructorDeclaration {
+    pub name: Identifier,
+    pub body: Option<Statement>,
+}
+```
+
 #### Event Declarations
 ```csharp
 public event Action<string> SomethingHappened;
@@ -253,6 +263,20 @@ public void Method<T, U>()
     where U : struct, IComparable<U>
 {
     // Multiple constraint clauses
+}
+```
+
+AST mapping for constraints:
+
+```rust
+// On type declarations (class/struct/interface/record)
+pub struct ClassDeclaration {
+    pub constraints: Option<Vec<TypeParameterConstraintClause>>,
+}
+
+// On methods
+pub struct MethodDeclaration {
+    pub constraints: Option<Vec<TypeParameterConstraintClause>>,
 }
 ```
 
@@ -302,6 +326,8 @@ using static System.Math;               // Static using
 using Project = MyCompany.MyProject;    // Alias directive
 global using System.Text;              // Global using (C# 10+)
 ```
+
+Note: `global using` directives are stored at the compilation unit level in `CompilationUnit.global_using_directives`.
 
 ## Declaration Parsing Implementation
 

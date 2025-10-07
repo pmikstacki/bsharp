@@ -1,7 +1,7 @@
 #![allow(unused_variables)]
 
-use analysis::metrics::complexity::{ComplexityMetrics, HalsteadMetrics};
 use analysis::metrics::complexity::*;
+use analysis::metrics::complexity::{ComplexityMetrics, HalsteadMetrics};
 use syntax::nodes::declarations::MethodDeclaration;
 use syntax::nodes::expressions::expression::Expression;
 use syntax::nodes::expressions::literal::Literal;
@@ -390,8 +390,13 @@ fn test_essential_complexity_calculation() {
     let method = create_test_method("StructuredMethod", Some(structured_method));
     let metrics = analyzer.analyze_method(&method);
 
-    // Essential complexity should be low for well-structured code
-    assert_eq!(metrics.essential_complexity, 0); // Default value for now
+    // Essential complexity should be low and not exceed cyclomatic complexity
+    assert!(
+        metrics.essential_complexity >= 1 && metrics.essential_complexity <= metrics.cyclomatic_complexity,
+        "essential={}, cyclomatic={}",
+        metrics.essential_complexity,
+        metrics.cyclomatic_complexity
+    );
 }
 
 #[test]

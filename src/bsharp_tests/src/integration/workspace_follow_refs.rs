@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 
-use analysis::workspace::WorkspaceLoader;
 use analysis::workspace::loader::WorkspaceLoadOptions;
+use analysis::workspace::WorkspaceLoader;
 
 #[test]
 fn loader_respects_follow_refs_flag_for_csproj() {

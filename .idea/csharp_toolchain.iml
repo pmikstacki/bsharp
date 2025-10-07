@@ -5,6 +5,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/bsharp_analysis/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/bsharp_cil/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/bsharp_cli/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/bsharp_parser/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/bsharp_syntax/src" isTestSource="false" />

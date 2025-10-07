@@ -2,7 +2,6 @@ use crate::parser::expressions::primary_expression_parser::parse_expression;
 use crate::parser::identifier_parser::parse_identifier;
 use crate::parser::keywords::expression_keywords::kw_with;
 use crate::syntax::errors::BResult;
-use crate::syntax::nodes::expressions::UnaryOperator;
 use crate::syntax::nodes::expressions::expression::{Expression, WithInitializerEntry};
 use crate::syntax::nodes::expressions::indexing_expression::IndexingExpression;
 use crate::syntax::nodes::expressions::invocation_expression::{
@@ -10,6 +9,7 @@ use crate::syntax::nodes::expressions::invocation_expression::{
 };
 use crate::syntax::nodes::expressions::member_access_expression::MemberAccessExpression;
 use crate::syntax::nodes::expressions::null_conditional_expression::NullConditionalExpression;
+use crate::syntax::nodes::expressions::UnaryOperator;
 use crate::syntax::nodes::identifier::Identifier;
 use crate::syntax::parser_helpers::{bchar, bws, parse_delimited_list0};
 

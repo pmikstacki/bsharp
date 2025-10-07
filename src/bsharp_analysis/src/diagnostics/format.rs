@@ -1,5 +1,5 @@
-use crate::AnalysisContext;
 use crate::diagnostics::diagnostic::Diagnostic;
+use crate::AnalysisContext;
 
 /// Render a compact, caret-annotated diagnostic body used by CLI pretty printing.
 /// Example:

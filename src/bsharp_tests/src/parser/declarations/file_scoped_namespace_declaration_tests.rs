@@ -2,7 +2,7 @@
 
 use parser::expressions::declarations::file_scoped_namespace_parser::parse_file_scoped_namespace_declaration;
 use syntax::nodes::declarations::{
-    FileScopedNamespaceDeclaration, UsingDirective, namespace_declaration::NamespaceBodyDeclaration,
+    namespace_declaration::NamespaceBodyDeclaration, FileScopedNamespaceDeclaration, UsingDirective,
 };
 use syntax::nodes::identifier::Identifier;
 

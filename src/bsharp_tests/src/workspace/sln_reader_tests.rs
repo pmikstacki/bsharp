@@ -1,8 +1,8 @@
+use analysis::workspace::sln::SolutionReader;
 use std::fs;
 use std::io::Write;
 use std::path::{Path, PathBuf};
 use std::time::{SystemTime, UNIX_EPOCH};
-use analysis::workspace::sln::SolutionReader;
 
 fn unique_temp_dir(prefix: &str) -> PathBuf {
     let nanos = SystemTime::now()

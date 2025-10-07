@@ -219,10 +219,16 @@ impl MaintainabilityAnalyzer {
     }
 
     /// Calculate code churn (frequency of changes)
-    pub fn calculate_code_churn(&self, _file_path: &str, _time_period_days: u32) -> f64 {
-        // TODO: Implement code churn analysis using git history
-        // This would analyze commit frequency and change size
-        0.0
+    pub fn calculate_code_churn(&self, file_path: &str, time_period_days: u32) -> f64 {
+        #[cfg(feature = "git_churn")]
+        {
+            return churn_git_impl(file_path, time_period_days, false, Some(10_000)) as f64;
+        }
+        #[allow(unreachable_code)]
+        {
+            let _ = (file_path, time_period_days);
+            0.0
+        }
     }
 
     /// Estimate defect density
@@ -255,6 +261,112 @@ impl Default for MaintainabilityAnalyzer {
     fn default() -> Self {
         Self::new()
     }
+}
+
+#[cfg(feature = "git_churn")]
+fn churn_git_impl(
+    file_path: &str,
+    time_period_days: u32,
+    include_merges: bool,
+    max_commits: Option<u32>,
+) -> u32 {
+    use git2::{DiffOptions, Oid, Repository, Sort};
+    use std::path::{Path, PathBuf};
+    use std::time::{Duration, SystemTime, UNIX_EPOCH};
+
+    fn now_secs() -> i64 {
+        SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap_or(Duration::from_secs(0))
+            .as_secs() as i64
+    }
+
+    let repo = match Repository::discover(Path::new(file_path).parent().unwrap_or(Path::new("."))) {
+        Ok(r) => r,
+        Err(_) => return 0,
+    };
+
+    let head = match repo.head().and_then(|h| h.target().ok_or(git2::Error::from_str("no target"))) {
+        Ok(oid) => oid,
+        Err(_) => return 0,
+    };
+
+    let cutoff = now_secs() - (time_period_days as i64) * 24 * 60 * 60;
+
+    let repo_root: PathBuf = match repo.workdir() {
+        Some(p) => p.to_path_buf(),
+        None => PathBuf::from("."),
+    };
+    let abs = Path::new(file_path).to_path_buf();
+    let rel = abs
+        .strip_prefix(&repo_root)
+        .map(|p| p.to_path_buf())
+        .unwrap_or(abs.clone());
+
+    let mut walk = match repo.revwalk() {
+        Ok(w) => w,
+        Err(_) => return 0,
+    };
+    let _ = walk.push(head);
+    walk.set_sorting(Sort::TIME).ok();
+
+    let mut commits = 0u32;
+    let mut total_delta = 0u32;
+
+    for (i, oid_res) in walk.enumerate() {
+        if let Some(max) = max_commits {
+            if i as u32 >= max {
+                break;
+            }
+        }
+        let oid = match oid_res {
+            Ok(oid) => oid,
+            Err(_) => continue,
+        };
+        let commit = match repo.find_commit(oid) {
+            Ok(c) => c,
+            Err(_) => continue,
+        };
+        if commit.time().seconds() < cutoff {
+            break;
+        }
+        let parents: Vec<_> = commit.parents().collect();
+        if !include_merges && parents.len() > 1 {
+            continue;
+        }
+
+        let tree = match commit.tree() {
+            Ok(t) => t,
+            Err(_) => continue,
+        };
+        let parent_tree = if parents.is_empty() {
+            None
+        } else {
+            match parents[0].tree() {
+                Ok(t) => Some(t),
+                Err(_) => None,
+            }
+        };
+
+        let mut opts = DiffOptions::new();
+        let rel_str = rel.to_string_lossy();
+        opts.pathspec(rel_str.as_ref());
+        let diff = match repo.diff_tree_to_tree(parent_tree.as_ref(), Some(&tree), Some(&mut opts)) {
+            Ok(d) => d,
+            Err(_) => continue,
+        };
+        if let Ok(stats) = diff.stats() {
+            let ins = stats.insertions() as u32;
+            let dels = stats.deletions() as u32;
+            if ins + dels > 0 {
+                commits += 1;
+                total_delta += ins + dels;
+            }
+        }
+    }
+
+    // Return combined churn magnitude; callers can split as needed later
+    commits.saturating_add(total_delta)
 }
 
 /// Change impact analysis

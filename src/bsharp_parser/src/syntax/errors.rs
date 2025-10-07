@@ -1,5 +1,5 @@
+use nom::error::{convert_error, VerboseError};
 use nom::IResult;
-use nom::error::{VerboseError, convert_error};
 use nom_supreme::error::{BaseErrorKind, ErrorTree, StackContext};
 
 pub type BResult<I, O> = IResult<I, O, ErrorTree<I>>;

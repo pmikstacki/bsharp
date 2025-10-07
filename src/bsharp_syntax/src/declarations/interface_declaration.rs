@@ -1,6 +1,6 @@
-use super::{InterfaceBodyDeclaration, attribute::AttributeList, modifier::Modifier, TypeParameterConstraintClause};
-use crate::Identifier;
+use super::{attribute::AttributeList, modifier::Modifier, InterfaceBodyDeclaration, TypeParameterConstraintClause};
 use crate::types::{Type, TypeParameter};
+use crate::Identifier;
 use serde::{Deserialize, Serialize};
 // Changed Attribute to AttributeList
 

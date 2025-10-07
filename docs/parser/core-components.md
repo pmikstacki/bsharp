@@ -72,6 +72,7 @@ The root node of every parsed C# file:
 pub struct CompilationUnit {
     pub global_attributes: Vec<GlobalAttribute>,
     pub using_directives: Vec<UsingDirective>,
+    pub global_using_directives: Vec<GlobalUsingDirective>,
     pub declarations: Vec<TopLevelDeclaration>,
     pub file_scoped_namespace: Option<FileScopedNamespaceDeclaration>,
     pub top_level_statements: Vec<Statement>,

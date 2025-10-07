@@ -1,11 +1,11 @@
-use anyhow::{Context, Result, bail};
+use anyhow::{bail, Context, Result};
 use std::fs;
 use std::path::PathBuf;
 
 use bsharp_analysis::context::AnalysisContext;
+use bsharp_analysis::framework::lookup::find_symbols_with_locations;
 use bsharp_analysis::framework::pipeline::AnalyzerPipeline;
 use bsharp_analysis::framework::session::AnalysisSession;
-use bsharp_analysis::navigation::find_by_name_with_context;
 use bsharp_analysis::report::AnalysisReport;
 use bsharp_analysis::workspace::WorkspaceLoader;
 use bsharp_parser::facade::Parser;
@@ -165,20 +165,25 @@ pub fn execute(input: PathBuf, opts: AnalyzeOptions) -> Result<()> {
 
     match opts.symbol {
         Some(name) => {
-            let results = find_by_name_with_context(&cu, &name, &ctx, &spans);
+            // Build a session and run the pipeline to populate SymbolIndex, then query it.
+            let mut session = AnalysisSession::new(ctx.clone(), spans.clone());
+            AnalyzerPipeline::run_with_defaults(&cu, &mut session);
+            let results = find_symbols_with_locations(&session, &name);
             if results.is_empty() {
                 bail!("No declarations found for symbol '{}'.", name);
             }
             println!("Found {} result(s) for symbol '{}':", results.len(), name);
-            for info in results {
-                let kind = format!("{:?}", info.declaration_type);
-                if let Some(loc) = info.location {
+            for (sym, loc) in results {
+                let kind = format!("{:?}", sym.kind);
+                if let Some(loc) = loc {
                     println!(
-                        "- {} {} at {}:{} (len {})",
-                        kind, info.name, loc.line, loc.column, loc.length
+                        "- {} {} at {}:{}",
+                        kind, sym.name, loc.line, loc.column
                     );
+                } else if let Some(file) = sym.file {
+                    println!("- {} {} in {} (no precise location)", kind, sym.name, file);
                 } else {
-                    println!("- {} {} (no location)", kind, info.name);
+                    println!("- {} {} (no location)", kind, sym.name);
                 }
             }
         }

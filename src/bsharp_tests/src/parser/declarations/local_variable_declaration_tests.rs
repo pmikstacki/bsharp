@@ -1,8 +1,8 @@
 // Tests for parsing local variable declarations
 
 use parser::expressions::declarations::variable_declaration_parser::parse_local_variable_declaration;
-use syntax::nodes::declarations::LocalVariableDeclaration;
 use syntax::nodes::declarations::local_variable_declaration::VariableDeclarator;
+use syntax::nodes::declarations::LocalVariableDeclaration;
 use syntax::nodes::expressions::{Expression, Literal};
 use syntax::nodes::identifier::Identifier;
 use syntax::nodes::types::{PrimitiveType, Type};

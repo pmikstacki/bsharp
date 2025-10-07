@@ -14,6 +14,26 @@ impl AstAnalyze for Statement {
                     analysis = analysis.combine(alt.analyze());
                 }
             }
+            Statement::Checked(checked_stmt) => {
+                // No cyclomatic increment; traverse body
+                analysis = analysis.combine(checked_stmt.body.analyze());
+            }
+            Statement::Unchecked(unchecked_stmt) => {
+                // No cyclomatic increment; traverse body
+                analysis = analysis.combine(unchecked_stmt.body.analyze());
+            }
+            Statement::Lock(lock_stmt) => {
+                // No cyclomatic increment; traverse lock body
+                analysis = analysis.combine(lock_stmt.body.analyze());
+            }
+            Statement::Unsafe(unsafe_stmt) => {
+                // No cyclomatic increment; traverse unsafe body
+                analysis = analysis.combine(unsafe_stmt.body.analyze());
+            }
+            Statement::Fixed(fixed_stmt) => {
+                // No cyclomatic increment; traverse fixed body
+                analysis = analysis.combine(fixed_stmt.body.analyze());
+            }
             Statement::For(for_stmt) => {
                 analysis.total_for_loops += 1;
                 analysis.cyclomatic_complexity += 1;
@@ -113,8 +133,6 @@ impl AstAnalyze for Statement {
             Statement::Yield(_) => {
                 // Yield statements - no additional complexity but count as statements
             }
-            // TODO: Add analysis for Checked, Unchecked, Lock, Unsafe, Fixed when their structures are defined
-            _ => {}
         }
 
         analysis

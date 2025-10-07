@@ -1,5 +1,5 @@
-use parser::expressions::declarations::property_declaration_parser::parse_property_declaration;
 use parser::expressions::declarations::field_declaration_parser::parse_field_declaration;
+use parser::expressions::declarations::property_declaration_parser::parse_property_declaration;
 use syntax::nodes::declarations::{Modifier, PropertyAccessor};
 use syntax::nodes::identifier::Identifier;
 use syntax::nodes::types::{PrimitiveType, Type};

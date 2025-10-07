@@ -152,13 +152,15 @@ src/parser/keywords/
 **Structure:**
 ```rust
 pub struct ClassDeclaration {
-    pub attributes: Vec<Attribute>,
+    pub attributes: Vec<AttributeList>,
     pub modifiers: Vec<Modifier>,
-    pub identifier: Identifier,
+    pub name: Identifier,
     pub type_parameters: Option<Vec<TypeParameter>>,
+    pub primary_constructor_parameters: Option<Vec<Parameter>>,
     pub base_types: Vec<Type>,
     pub body_declarations: Vec<ClassBodyDeclaration>,  // Owned
-    pub type_parameter_constraints: Vec<TypeParameterConstraint>,
+    pub documentation: Option<XmlDocumentationComment>,
+    pub constraints: Option<Vec<TypeParameterConstraintClause>>,
 }
 ```
 

@@ -1,4 +1,4 @@
-use crate::artifacts::cfg::ControlFlowIndex;
+use crate::artifacts::control_flow_graph::index::ControlFlowIndex;
 use crate::artifacts::dependencies::{DependencyGraph, DependencySummary};
 use crate::artifacts::symbols::{SymbolId, SymbolIndex};
 use crate::framework::AnalysisSession;

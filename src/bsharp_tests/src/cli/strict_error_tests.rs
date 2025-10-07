@@ -1,13 +1,12 @@
 use std::fs;
-use std::time::{SystemTime, UNIX_EPOCH};
 use std::os::unix::process::ExitStatusExt;
 use std::process::ExitStatus;
-use assert_cmd::Command;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 use analysis::diagnostics::parse as diag_parse;
+use nom::Finish;
 use parser::bsharp::parse_csharp_source_strict;
 use parser::parse_mode;
-use nom::Finish;
 
 fn run_parse(temp_stem: &str, source: &str) -> (ExitStatus, String, String) {
     let mut path = std::env::temp_dir();

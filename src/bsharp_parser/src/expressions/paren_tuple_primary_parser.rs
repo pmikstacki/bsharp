@@ -4,7 +4,7 @@ use crate::syntax::errors::BResult;
 use crate::syntax::nodes::expressions::expression::Expression;
 use crate::syntax::nodes::expressions::tuple_expression::{TupleElement, TupleExpression};
 use crate::syntax::parser_helpers::{
-    OneOrMany, bchar, bws, context, parse_delimited_list_or_singleton,
+    bchar, bws, context, parse_delimited_list_or_singleton, OneOrMany,
 };
 
 use nom::{combinator::map, sequence::tuple};

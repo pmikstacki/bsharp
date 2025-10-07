@@ -1,15 +1,15 @@
 // Integration tests for block_statement_parser.rs
 // Content moved from src/parser/statements/block_statement_parser.rs
 
+use nom::combinator::all_consuming;
+use nom::Finish;
 use parser::expressions::statements::block_statement_parser::parse_block_statement;
+use parser::syntax::test_helpers::parse_all;
 use syntax::nodes::declarations::LocalVariableDeclaration;
 use syntax::nodes::expressions::expression::Expression;
 use syntax::nodes::expressions::literal::Literal;
 use syntax::nodes::statements::statement::Statement;
 use syntax::nodes::types::{PrimitiveType, Type};
-use nom::Finish;
-use nom::combinator::all_consuming;
-use parser::syntax::test_helpers::parse_all;
 
 #[test]
 fn test_parse_block_statement() {

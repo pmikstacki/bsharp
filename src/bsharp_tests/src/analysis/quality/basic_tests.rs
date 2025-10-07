@@ -1,11 +1,11 @@
 use analysis::quality::*;
 use syntax::ast::{CompilationUnit, TopLevelDeclaration};
 use syntax::nodes::declarations::{
-    ClassBodyDeclaration, ClassDeclaration, FieldDeclaration, MethodDeclaration,
-    PropertyDeclaration,
+    namespace_declaration::NamespaceBodyDeclaration, NamespaceDeclaration,
 };
 use syntax::nodes::declarations::{
-    NamespaceDeclaration, namespace_declaration::NamespaceBodyDeclaration,
+    ClassBodyDeclaration, ClassDeclaration, FieldDeclaration, MethodDeclaration,
+    PropertyDeclaration,
 };
 use syntax::nodes::identifier::Identifier;
 use syntax::nodes::types::{PrimitiveType, Type};

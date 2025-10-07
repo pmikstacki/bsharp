@@ -1,8 +1,8 @@
 use std::path::{Path, PathBuf};
 
+use super::common::happy_path_sln;
 use analysis::framework::pipeline::AnalyzerPipeline;
 use analysis::workspace::WorkspaceLoader;
-use super::common::happy_path_sln;
 use serde_json::Value;
 
 fn normalize_paths_in_json(v: &mut Value, root: &str) {

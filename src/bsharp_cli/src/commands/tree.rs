@@ -1,4 +1,4 @@
-use anyhow::{Context, Result, anyhow};
+use anyhow::{anyhow, Context, Result};
 use nom::Finish;
 use std::fs;
 use std::path::PathBuf;

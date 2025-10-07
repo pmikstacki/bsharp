@@ -2,5 +2,9 @@
 authors = ["Piotr Mikstacki"]
 language = "en"
 multilingual = false
-src = "src"
+src = "docs"
 title = "BSharp C# Parser Documentation"
+
+[build]
+# Emit the generated book into docs/book to keep GitHub Pages-compatible layout
+build-dir = "docs/book"

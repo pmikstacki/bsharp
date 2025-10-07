@@ -1,5 +1,5 @@
-use std::path::PathBuf;
 use analysis::workspace::WorkspaceLoader;
+use std::path::PathBuf;
 
 #[test]
 fn loads_fixture_solution_projects_and_files() {

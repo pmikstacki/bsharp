@@ -264,7 +264,7 @@ for method in methods {
     let switch_count = method.find_switch_statements().len();
     
     if if_count + loop_count + switch_count > 10 {
-        println!("Complex method: {:?}", method.identifier);
+        println!("Complex method: {:?}", method.name);
     }
 }
 ```

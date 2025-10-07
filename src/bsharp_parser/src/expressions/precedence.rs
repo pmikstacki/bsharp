@@ -1,7 +1,7 @@
 use crate::syntax::errors::BResult;
 use crate::syntax::nodes::expressions::{BinaryOperator, Expression};
-use nom::Err;
 use nom::combinator::cut;
+use nom::Err;
 use nom_supreme::error::{BaseErrorKind, ErrorTree, Expectation};
 
 /// Generic left-associative chain builder.

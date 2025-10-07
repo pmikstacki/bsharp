@@ -2,8 +2,8 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 use globwalk::GlobWalkerBuilder;
-use quick_xml::Reader as XmlReader;
 use quick_xml::events::Event;
+use quick_xml::Reader as XmlReader;
 
 use crate::workspace::error::{Result, WorkspaceError};
 use crate::workspace::model::{Language, Project, ProjectFile, ProjectFileKind};

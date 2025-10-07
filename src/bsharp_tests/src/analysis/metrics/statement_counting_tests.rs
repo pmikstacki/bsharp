@@ -3,8 +3,8 @@
 mod statement_counting_tests {
     use analysis::AstAnalyze;
     use parser::expressions::declarations::method_declaration_parser::parse_member_declaration;
-    use parser::types::type_parser::parse_type_expression;
     use parser::facade::Parser;
+    use parser::types::type_parser::parse_type_expression;
 
     #[test]
     fn test_method_body_statement_counting() {

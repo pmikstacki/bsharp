@@ -1,3 +1,8 @@
+// Structs and enums from definitions.rs
+use super::definitions::{
+    MemberCounts, TypeCohesionMetrics, TypeComplexity, TypeComplexityDetail, TypeComplexityMetrics,
+    TypeInfo, TypeKind, TypeMetrics, TypeUsage,
+};
 use bsharp_syntax::ast::{CompilationUnit, TopLevelDeclaration};
 use bsharp_syntax::declarations::{
     ClassBodyDeclaration, ClassDeclaration, DelegateDeclaration, EnumDeclaration,
@@ -6,11 +11,6 @@ use bsharp_syntax::declarations::{
 };
 use bsharp_syntax::types::{ParameterModifier, PrimitiveType, Type};
 use std::collections::HashMap;
-// Structs and enums from definitions.rs
-use super::definitions::{
-    MemberCounts, TypeCohesionMetrics, TypeComplexity, TypeComplexityDetail, TypeComplexityMetrics,
-    TypeInfo, TypeKind, TypeMetrics, TypeUsage,
-};
 
 /// Type analyzer for analyzing type usage patterns
 #[derive(Debug, Clone, Default)]

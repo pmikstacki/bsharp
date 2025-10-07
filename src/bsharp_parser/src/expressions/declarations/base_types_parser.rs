@@ -29,3 +29,4 @@ pub fn parse_base_types(input: &str) -> BResult<&str, Vec<Type>> {
 
 /// Alias for compatibility with existing code
 pub use parse_base_types as parse_base_type_list;
+

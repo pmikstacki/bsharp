@@ -1,19 +1,19 @@
 use nom::{
-    Parser,
     character::complete::char,
     combinator::{opt, verify},
     multi::{many0, many1, separated_list0, separated_list1},
     sequence::delimited,
+    Parser,
 };
 use nom_supreme::tag::complete::tag;
 
 use crate::parser::helpers::brace_tracker;
 use crate::syntax::comment_parser::parse_whitespace_or_comments;
 use crate::syntax::errors::BResult;
-use nom::Offset;
 use nom::combinator::{cut, peek};
-use nom_supreme::ParserExt;
+use nom::Offset;
 use nom_supreme::error::{ErrorTree, StackContext};
+use nom_supreme::ParserExt;
 
 /// Parse a keyword with proper word boundaries and enhanced error reporting
 pub fn keyword(kw: &'static str) -> impl Fn(&str) -> BResult<&str, &str> {

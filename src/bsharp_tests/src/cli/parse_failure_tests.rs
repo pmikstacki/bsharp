@@ -1,5 +1,5 @@
-use std::process::Command;
 use std::fs;
+use std::process::Command;
 
 use crate::utils::create_temp_dir;
 

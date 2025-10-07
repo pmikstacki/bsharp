@@ -23,13 +23,13 @@ impl AnalyzerPass for DependenciesPass {
     }
 
     fn run(&self, cu: &CompilationUnit, session: &mut AnalysisSession) {
-        let Some(symbols) = session.artifacts.get::<SymbolIndex>() else {
+        let Some(symbols) = session.get_artifact::<SymbolIndex>() else {
             // Without symbols, we cannot build a SymbolId-based dependency graph
             return;
         };
         let mut graph = DependencyGraph::new();
         analyze_compilation_unit(cu, &symbols, &mut graph);
-        session.artifacts.insert(graph);
+        session.insert_artifact(graph);
     }
 }
 

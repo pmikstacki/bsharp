@@ -6,7 +6,6 @@ pub mod context; // AnalysisContext, AnalysisConfig
 pub mod diagnostics; // Diagnostic types (kept)
 pub mod framework; // session, rules, passes, walker, registry, pipeline
 pub mod metrics;
-pub mod navigation; // Temporary: keep navigation utilities for CLI symbol queries
 pub mod passes; // indexing, control_flow, dependencies, reporting
 pub mod project; // Project model
 pub mod quality; // Keep legacy quality module for now
@@ -27,6 +26,5 @@ pub use diagnostics::diagnostic_collection::DiagnosticCollection;
 pub use diagnostics::severity::DiagnosticSeverity;
 pub use diagnostics::source_location::SourceLocation;
 pub use framework::diagnostic_builder::DiagnosticBuilder;
-pub use metrics::{AstAnalysis, AstAnalyze, MetricCollector};
-pub use navigation::{AstNavigate, FindDeclarations};
+pub use metrics::AstAnalysis;
 pub use report::AnalysisReport;

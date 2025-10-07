@@ -1,12 +1,10 @@
 // C# source file syntax - following Roslyn naming conventions
 // Nodes in Roslyn use the "Syntax" suffix (e.g., NamespaceDeclarationSyntax)
 
-use nom::Offset;
 use nom::branch::alt;
 use nom::combinator::map;
+use nom::Offset;
 
-// parser_helpers imported selectively in sub-parser; this module only needs ws
-use crate::parser::SpanTable;
 use crate::parser::expressions::declarations::file_scoped_namespace_parser::parse_file_scoped_namespace_declaration;
 use crate::parser::expressions::declarations::global_attribute_parser::parse_global_attributes;
 use crate::parser::expressions::declarations::namespace_declaration_parser::parse_namespace_declaration;
@@ -14,6 +12,8 @@ use crate::parser::expressions::declarations::type_declaration_parser::parse_typ
 use crate::parser::expressions::declarations::using_directive_parser::parse_using_directive;
 use crate::parser::expressions::statements::top_level_statement_parser::parse_top_level_statements;
 use crate::parser::helpers::directives::skip_preprocessor_directives;
+// parser_helpers imported selectively in sub-parser; this module only needs ws
+use crate::parser::SpanTable;
 use crate::syntax::comment_parser::ws;
 use crate::syntax::errors::BResult;
 use crate::syntax::parser_helpers::{bchar, with_recognized_span};
@@ -21,7 +21,7 @@ use crate::syntax::parser_helpers::{bpeek, bws, keyword};
 use crate::trivia::preprocessor_directive_parser::parse_preprocessor_directive;
 use log::trace;
 use syntax::ast::{CompilationUnit, TopLevelDeclaration};
-use syntax::nodes::declarations::{TypeDeclaration, GlobalUsingDirective};
+use syntax::nodes::declarations::{GlobalUsingDirective, TypeDeclaration};
 
 /// Parse a C# source file following Roslyn's model where a source file contains:
 /// - global attributes (assembly/module attributes)

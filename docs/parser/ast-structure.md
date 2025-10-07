@@ -13,6 +13,7 @@ Every parsed C# file results in a `CompilationUnit`, which serves as the root of
 pub struct CompilationUnit {
     pub global_attributes: Vec<GlobalAttribute>,        // [assembly: ...] attributes
     pub using_directives: Vec<UsingDirective>,          // using statements
+    pub global_using_directives: Vec<GlobalUsingDirective>, // C# 10+ global using
     pub declarations: Vec<TopLevelDeclaration>,         // namespaces, types
     pub file_scoped_namespace: Option<FileScopedNamespaceDeclaration>, // C# 10+
     pub top_level_statements: Vec<Statement>,           // C# 9+ top-level code
@@ -48,27 +49,28 @@ Each type declaration contains comprehensive information about the type:
 #### ClassDeclaration
 ```rust
 pub struct ClassDeclaration {
-    pub attributes: Vec<Attribute>,
+    pub attributes: Vec<AttributeList>,
     pub modifiers: Vec<Modifier>,
-    pub identifier: Identifier,
+    pub name: Identifier,
     pub type_parameters: Option<Vec<TypeParameter>>,
-    pub base_types: Vec<Type>,                    // base class and interfaces
+    pub primary_constructor_parameters: Option<Vec<Parameter>>, // C# 12
+    pub base_types: Vec<Type>,
     pub body_declarations: Vec<ClassBodyDeclaration>,
-    pub type_parameter_constraints: Vec<TypeParameterConstraint>,
+    pub documentation: Option<XmlDocumentationComment>,
+    pub constraints: Option<Vec<TypeParameterConstraintClause>>,
 }
 ```
 
 #### MethodDeclaration
 ```rust
 pub struct MethodDeclaration {
-    pub attributes: Vec<Attribute>,
     pub modifiers: Vec<Modifier>,
-    pub return_type: Option<Type>,               // None for constructors
-    pub identifier: Identifier,
+    pub return_type: Type,
+    pub name: Identifier,
     pub type_parameters: Option<Vec<TypeParameter>>,
     pub parameters: Vec<Parameter>,
     pub body: Option<Statement>,                 // None for abstract/interface methods
-    pub type_parameter_constraints: Vec<TypeParameterConstraint>,
+    pub constraints: Option<Vec<TypeParameterConstraintClause>>,
 }
 ```
 

@@ -1,6 +1,6 @@
-use crate::Identifier;
 use crate::declarations::{Attribute, Modifier};
 use crate::statements::statement::Statement;
+use crate::Identifier;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]

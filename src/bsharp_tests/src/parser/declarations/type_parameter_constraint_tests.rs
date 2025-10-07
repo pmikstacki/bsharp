@@ -1,7 +1,7 @@
 // Tests for parsing type parameter constraints
 
-use syntax::nodes::declarations::{TypeParameterConstraint, TypeParameterConstraintClause};
 use parser::expressions::declarations::type_parameter_parser::parse_type_parameter_where_clause;
+use syntax::nodes::declarations::TypeParameterConstraint;
 
 #[test]
 fn test_parse_where_class() {

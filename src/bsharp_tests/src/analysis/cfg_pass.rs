@@ -1,4 +1,4 @@
-use analysis::artifacts::cfg::ControlFlowIndex;
+use analysis::artifacts::control_flow_graph::index::ControlFlowIndex;
 use analysis::context::AnalysisContext;
 use analysis::framework::pipeline::AnalyzerPipeline;
 use analysis::framework::session::AnalysisSession;

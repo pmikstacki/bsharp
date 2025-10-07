@@ -1,5 +1,5 @@
-use crate::DiagnosticSeverity;
 use crate::diagnostics::diagnostic_category::DiagnosticCategory;
+use crate::DiagnosticSeverity;
 use serde::{Deserialize, Serialize};
 
 /// B# Diagnostic Error/Warning Codes

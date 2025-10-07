@@ -5,11 +5,13 @@ use crate::parser::expressions::declarations::type_declaration_parser::{
     parse_struct_declaration,
 };
 use crate::parser::expressions::declarations::using_directive_parser::parse_using_directive;
+// use nom::multi::many0; // replaced by manual loop to support directive skipping
+use crate::parser::helpers::directives::skip_preprocessor_directives;
 use crate::parser::identifier_parser::parse_qualified_name;
 use crate::syntax::comment_parser::with_ws;
 use crate::syntax::errors::BResult;
 use crate::syntax::nodes::declarations::{
-    NamespaceDeclaration, namespace_declaration::NamespaceBodyDeclaration,
+    namespace_declaration::NamespaceBodyDeclaration, NamespaceDeclaration,
 };
 use crate::syntax::nodes::identifier::Identifier;
 use crate::syntax::parser_helpers::{bchar, bpeek, bws, context, keyword};
@@ -17,8 +19,6 @@ use log::trace;
 use nom::branch::alt;
 use nom::combinator::{cut, map};
 use syntax::declarations::UsingDirective;
-// use nom::multi::many0; // replaced by manual loop to support directive skipping
-use crate::parser::helpers::directives::skip_preprocessor_directives;
 
 /// Parse a namespace member (class, struct, interface, enum, record, or nested namespace)
 fn parse_namespace_member_safe(input: &str) -> BResult<&str, NamespaceBodyDeclaration> {

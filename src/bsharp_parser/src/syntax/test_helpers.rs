@@ -1,5 +1,5 @@
 use crate::parser::helpers::brace_tracker;
-use crate::syntax::errors::{BResult, format_error_tree};
+use crate::syntax::errors::{format_error_tree, BResult};
 use nom::Err as NomErr;
 use syntax::statements::statement::Statement;
 

@@ -1,8 +1,8 @@
 // Integration tests for parsing preprocessor directives
 
+use parser::trivia::preprocessor_directive_parser::parse_preprocessor_directive;
 use syntax::nodes::identifier::Identifier;
 use syntax::trivia::preprocessor::PreprocessorDirective;
-use parser::trivia::preprocessor_directive_parser::parse_preprocessor_directive;
 
 #[test]
 fn test_parse_define() {

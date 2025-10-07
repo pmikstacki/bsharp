@@ -1,4 +1,3 @@
-use crate::Identifier;
 use crate::expressions::indexing_expression::IndexingExpression;
 use crate::expressions::{
     AnonymousMethodExpression, AnonymousObjectCreationExpression, AssignmentExpression,
@@ -10,6 +9,7 @@ use crate::expressions::{
     UncheckedExpression,
 };
 use crate::types::Type;
+use crate::Identifier;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]

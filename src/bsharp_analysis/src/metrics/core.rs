@@ -1,11 +1,5 @@
 use serde::{Deserialize, Serialize};
 
-/// Trait for analyzing AST nodes and extracting metrics
-pub trait AstAnalyze {
-    /// Get analysis statistics for this AST node
-    fn analyze(&self) -> AstAnalysis;
-}
-
 /// Statistics about an AST structure
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct AstAnalysis {
@@ -94,36 +88,5 @@ impl AstAnalysis {
         } else {
             self.cyclomatic_complexity as f64 / self.total_methods as f64
         }
-    }
-}
-
-/// Metric collector for gathering specific metrics
-pub struct MetricCollector {
-    analysis: AstAnalysis,
-}
-
-impl MetricCollector {
-    pub fn new() -> Self {
-        Self {
-            analysis: AstAnalysis::default(),
-        }
-    }
-
-    pub fn collect_from<T: AstAnalyze>(&mut self, node: &T) {
-        self.analysis = self.analysis.clone().combine(node.analyze());
-    }
-
-    pub fn get_analysis(&self) -> &AstAnalysis {
-        &self.analysis
-    }
-
-    pub fn reset(&mut self) {
-        self.analysis = AstAnalysis::default();
-    }
-}
-
-impl Default for MetricCollector {
-    fn default() -> Self {
-        Self::new()
     }
 }

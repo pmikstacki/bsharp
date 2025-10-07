@@ -1,8 +1,8 @@
-use crate::AstAnalysis;
 use crate::framework::{AnalysisSession, NodeRef, Visit};
 use crate::syntax::ast::TopLevelDeclaration;
 use crate::syntax::nodes::declarations::ClassBodyDeclaration;
 use crate::syntax::nodes::statements::statement::Statement;
+use crate::AstAnalysis;
 
 pub struct MetricsVisitor {
     analysis: AstAnalysis,

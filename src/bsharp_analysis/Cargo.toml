@@ -15,10 +15,12 @@ rayon = { version = "1.10", optional = true }
 nom-supreme = "0.8.0"
 bsharp_syntax = { package = "bsharp_syntax", path = "../bsharp_syntax" }
 bsharp_parser = { package = "bsharp_parser", path = "../bsharp_parser" }
+git2 = { version = "0.19", optional = true }
 [features]
 default = []
 parallel_analysis = ["rayon"]
 dev_utils = []
+git_churn = ["git2"]
 
 [dev-dependencies]
 insta = { version = "1.39.0", features = ["json"] }

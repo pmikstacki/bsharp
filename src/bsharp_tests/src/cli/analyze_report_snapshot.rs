@@ -2,8 +2,8 @@ use analysis::context::AnalysisContext;
 use analysis::framework::pipeline::AnalyzerPipeline;
 use analysis::framework::session::AnalysisSession;
 use analysis::report::AnalysisReport;
-use syntax::Parser;
 use serde_json::Value;
+use syntax::Parser;
 
 #[test]
 fn snapshot_small_input_analysis_report_json_shape() {

@@ -1,8 +1,8 @@
-use crate::Identifier;
 use crate::declarations::{
     ClassDeclaration, DelegateDeclaration, EnumDeclaration, GlobalAttribute, InterfaceDeclaration,
     RecordDeclaration, StructDeclaration, UsingDirective,
 };
+use crate::Identifier;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]

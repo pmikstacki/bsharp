@@ -4,9 +4,9 @@ use parser::expressions::statements::do_while_statement_parser::parse_do_while_s
 use parser::expressions::statements::expression_statement_parser::parse_expression_statement;
 use parser::expressions::statements::goto_case_statement_parser::parse_goto_case_statement;
 use parser::expressions::statements::goto_statement_parser::parse_goto_statement;
+use parser::expressions::statements::switch_statement_parser::parse_switch_statement;
 use parser::expressions::statements::throw_statement_parser::parse_throw_statement;
 use parser::expressions::statements::yield_statement_parser::parse_yield_statement;
-use parser::expressions::statements::switch_statement_parser::parse_switch_statement;
 use syntax::errors::BResult;
 
 fn assert_failure<T>(res: BResult<&str, T>) {

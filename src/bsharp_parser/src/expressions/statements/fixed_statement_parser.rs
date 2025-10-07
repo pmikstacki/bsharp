@@ -6,8 +6,8 @@ use crate::syntax::nodes::statements::fixed_statement::FixedStatement;
 use crate::syntax::nodes::statements::statement::Statement;
 use crate::syntax::parser_helpers::{bchar, bws};
 
-use nom::Parser;
 use nom::combinator::cut;
+use nom::Parser;
 use nom::{
     combinator::map,
     sequence::{delimited, tuple},

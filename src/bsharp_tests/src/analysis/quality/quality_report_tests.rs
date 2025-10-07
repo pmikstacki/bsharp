@@ -1,7 +1,7 @@
 use analysis::quality::*;
 use syntax::ast::{CompilationUnit, TopLevelDeclaration};
 use syntax::nodes::declarations::{
-    ClassBodyDeclaration, NamespaceDeclaration, namespace_declaration::NamespaceBodyDeclaration,
+    namespace_declaration::NamespaceBodyDeclaration, ClassBodyDeclaration, NamespaceDeclaration,
 };
 use syntax::nodes::declarations::{ClassDeclaration, FieldDeclaration, MethodDeclaration};
 use syntax::nodes::identifier::Identifier;

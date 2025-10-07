@@ -1,5 +1,5 @@
 use crate::ast::TopLevelDeclaration;
-use crate::declarations::{FileScopedNamespaceDeclaration, GlobalAttribute, UsingDirective, GlobalUsingDirective};
+use crate::declarations::{FileScopedNamespaceDeclaration, GlobalAttribute, GlobalUsingDirective, UsingDirective};
 use crate::statements::statement::Statement;
 use serde::{Deserialize, Serialize};
 

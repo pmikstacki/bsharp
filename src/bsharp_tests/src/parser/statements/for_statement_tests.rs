@@ -6,7 +6,7 @@ fn test_parse_for_statement_logic() {
     use syntax::nodes::expressions::expression::Expression;
 
     use syntax::nodes::declarations::LocalVariableDeclaration;
-    use syntax::nodes::statements::{ForInitializer, statement::Statement};
+    use syntax::nodes::statements::{statement::Statement, ForInitializer};
 
     use parser::expressions::statements::for_statement_parser::parse_for_statement;
 

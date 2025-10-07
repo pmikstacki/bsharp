@@ -1,9 +1,9 @@
+use analysis::workspace::csproj::CsprojReader;
+use analysis::workspace::{Language, ProjectFileKind};
 use std::fs;
 use std::io::Write;
 use std::path::{Path, PathBuf};
 use std::time::{SystemTime, UNIX_EPOCH};
-use analysis::workspace::csproj::CsprojReader;
-use analysis::workspace::{Language, ProjectFileKind};
 
 fn unique_temp_dir(prefix: &str) -> PathBuf {
     let nanos = SystemTime::now()

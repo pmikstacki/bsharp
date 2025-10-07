@@ -1,6 +1,6 @@
 use super::traits::{DeclarationInfo, DeclarationType, FindDeclarations};
-use crate::AnalysisContext;
 use crate::syntax::ast::CompilationUnit;
+use crate::AnalysisContext;
 use bsharp_parser::SpanTable;
 
 /// Find declarations by name and populate SourceLocation when spans are available.

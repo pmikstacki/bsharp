@@ -1,5 +1,5 @@
 use parser::expressions::primary_expression_parser::parse_expression;
-use syntax::nodes::expressions::{BinaryOperator, expression::Expression};
+use syntax::nodes::expressions::{expression::Expression, BinaryOperator};
 
 fn parse_ok(input: &str) -> Expression {
     let (remaining, expr) = parse_expression(input).expect("parse ok");

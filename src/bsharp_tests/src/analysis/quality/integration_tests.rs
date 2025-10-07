@@ -1,9 +1,9 @@
 // Quality analysis integration tests
 // Tests specifically focused on how quality analysis integrates with parsing and quality-specific scenarios
 
-use analysis::AstAnalyze;
 use analysis::navigation::FindDeclarations;
 use analysis::quality::*;
+use analysis::AstAnalyze;
 use parser::facade::Parser;
 use syntax::nodes::identifier::Identifier;
 

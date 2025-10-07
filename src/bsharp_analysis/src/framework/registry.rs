@@ -1,5 +1,5 @@
-use crate::AnalysisConfig;
 use crate::framework::{AnalyzerPass, RuleSet};
+use crate::AnalysisConfig;
 
 pub struct AnalyzerRegistry {
     passes: Vec<Box<dyn AnalyzerPass>>,
@@ -57,6 +57,8 @@ impl AnalyzerRegistry {
         let mut reg = Self::new();
         // Phase B: indexing
         reg.register_pass(crate::passes::indexing::IndexingPass);
+        // Phase C: metrics (generic Query-based)
+        reg.register_pass(crate::passes::metrics::MetricsPass);
         // Phase C: baseline naming rules
         reg.register_ruleset(crate::rules::naming::ruleset());
         // Phase C: baseline semantic rules (these don't depend on global artifacts yet)

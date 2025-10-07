@@ -1,5 +1,5 @@
-use std::path::PathBuf;
 use analysis::workspace::csproj::CsprojReader;
+use std::path::PathBuf;
 
 #[test]
 fn complex_csproj_include_remove_update_and_condition_and_macro_warnings() {

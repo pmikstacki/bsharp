@@ -20,6 +20,25 @@ impl AnalyzerPass for IndexingPass {
         let mut fqn = FqnMap::default();
         let file_path = session.ctx.file_path().to_string();
 
+        fn push_symbol(
+            symbols: &mut SymbolIndex,
+            names: &mut NameIndex,
+            name: &str,
+            kind: SymbolKind,
+            fqn: Option<String>,
+            file_path: &str,
+        ) {
+            symbols.insert(
+                name,
+                kind,
+                fqn,
+                Some(file_path.to_string()),
+                None,
+                None,
+            );
+            names.0.insert(name.to_string(), 1);
+        }
+
         for decl in &cu.declarations {
             match decl {
                 TopLevelDeclaration::Namespace(ns) => index_namespace(
@@ -39,79 +58,16 @@ impl AnalyzerPass for IndexingPass {
                     &mut names,
                     &mut Vec::new(),
                 ),
-                TopLevelDeclaration::Interface(i) => {
-                    let name = i.name.name.clone();
-                    symbols.insert(
-                        &name,
-                        SymbolKind::Interface,
-                        None,
-                        Some(file_path.clone()),
-                        None,
-                        None,
-                    );
-                    names.0.insert(name.clone(), 1);
-                }
-                TopLevelDeclaration::Struct(s) => {
-                    let name = s.name.name.clone();
-                    symbols.insert(
-                        &name,
-                        SymbolKind::Struct,
-                        None,
-                        Some(file_path.clone()),
-                        None,
-                        None,
-                    );
-                    names.0.insert(name.clone(), 1);
-                }
-                TopLevelDeclaration::Record(r) => {
-                    let name = r.name.name.clone();
-                    symbols.insert(
-                        &name,
-                        SymbolKind::Record,
-                        None,
-                        Some(file_path.clone()),
-                        None,
-                        None,
-                    );
-                    names.0.insert(name.clone(), 1);
-                }
-                TopLevelDeclaration::Enum(e) => {
-                    let name = e.name.name.clone();
-                    symbols.insert(
-                        &name,
-                        SymbolKind::Enum,
-                        None,
-                        Some(file_path.clone()),
-                        None,
-                        None,
-                    );
-                    names.0.insert(name.clone(), 1);
-                }
-                TopLevelDeclaration::Delegate(d) => {
-                    let name = d.name.name.clone();
-                    symbols.insert(
-                        &name,
-                        SymbolKind::Delegate,
-                        None,
-                        Some(file_path.clone()),
-                        None,
-                        None,
-                    );
-                    names.0.insert(name.clone(), 1);
-                }
+                TopLevelDeclaration::Interface(i) => push_symbol(&mut symbols, &mut names, &i.name.name, SymbolKind::Interface, None, &file_path),
+                TopLevelDeclaration::Struct(s) => push_symbol(&mut symbols, &mut names, &s.name.name, SymbolKind::Struct, None, &file_path),
+                TopLevelDeclaration::Record(r) => push_symbol(&mut symbols, &mut names, &r.name.name, SymbolKind::Record, None, &file_path),
+                TopLevelDeclaration::Enum(e) => push_symbol(&mut symbols, &mut names, &e.name.name, SymbolKind::Enum, None, &file_path),
+                TopLevelDeclaration::Delegate(d) => push_symbol(&mut symbols, &mut names, &d.name.name, SymbolKind::Delegate, None, &file_path),
                 TopLevelDeclaration::FileScopedNamespace(fs) => {
                     let name = fs.name.name.clone();
                     // File-scoped namespace acts as a root namespace path
                     let ns_path = name.clone();
-                    symbols.insert(
-                        &name,
-                        SymbolKind::Namespace,
-                        Some(ns_path.clone()),
-                        Some(file_path.clone()),
-                        None,
-                        None,
-                    );
-                    names.0.insert(name.clone(), 1);
+                    push_symbol(&mut symbols, &mut names, &name, SymbolKind::Namespace, Some(ns_path.clone()), &file_path);
                     fqn.0.entry(name.clone()).or_default().push(ns_path);
                 }
                 TopLevelDeclaration::GlobalAttribute(_) => {}
@@ -132,15 +88,7 @@ impl AnalyzerPass for IndexingPass {
                 Some(ref p) if !p.is_empty() => format!("{}.{}", p, seg),
                 _ => seg.clone(),
             };
-            symbols.insert(
-                &seg,
-                SymbolKind::Namespace,
-                Some(full_ns.clone()),
-                Some(file_path.to_string()),
-                None,
-                None,
-            );
-            names.0.insert(seg.clone(), 1);
+            push_symbol(symbols, names, &seg, SymbolKind::Namespace, Some(full_ns.clone()), file_path);
             fqn.0.entry(seg.clone()).or_default().push(full_ns.clone());
             for member in &ns.declarations {
                 match member {
@@ -164,67 +112,27 @@ impl AnalyzerPass for IndexingPass {
                     NamespaceBodyDeclaration::Struct(s) => {
                         let name = s.name.name.clone();
                         let type_fqn = format!("{}.{}", full_ns, name);
-                        symbols.insert(
-                            &name,
-                            SymbolKind::Struct,
-                            Some(type_fqn),
-                            Some(file_path.to_string()),
-                            None,
-                            None,
-                        );
-                        names.0.insert(name.clone(), 1);
+                        push_symbol(symbols, names, &name, SymbolKind::Struct, Some(type_fqn), file_path);
                     }
                     NamespaceBodyDeclaration::Interface(i) => {
                         let name = i.name.name.clone();
                         let type_fqn = format!("{}.{}", full_ns, name);
-                        symbols.insert(
-                            &name,
-                            SymbolKind::Interface,
-                            Some(type_fqn),
-                            Some(file_path.to_string()),
-                            None,
-                            None,
-                        );
-                        names.0.insert(name.clone(), 1);
+                        push_symbol(symbols, names, &name, SymbolKind::Interface, Some(type_fqn), file_path);
                     }
                     NamespaceBodyDeclaration::Enum(e) => {
                         let name = e.name.name.clone();
                         let type_fqn = format!("{}.{}", full_ns, name);
-                        symbols.insert(
-                            &name,
-                            SymbolKind::Enum,
-                            Some(type_fqn),
-                            Some(file_path.to_string()),
-                            None,
-                            None,
-                        );
-                        names.0.insert(name.clone(), 1);
+                        push_symbol(symbols, names, &name, SymbolKind::Enum, Some(type_fqn), file_path);
                     }
                     NamespaceBodyDeclaration::Delegate(d) => {
                         let name = d.name.name.clone();
                         let type_fqn = format!("{}.{}", full_ns, name);
-                        symbols.insert(
-                            &name,
-                            SymbolKind::Delegate,
-                            Some(type_fqn),
-                            Some(file_path.to_string()),
-                            None,
-                            None,
-                        );
-                        names.0.insert(name.clone(), 1);
+                        push_symbol(symbols, names, &name, SymbolKind::Delegate, Some(type_fqn), file_path);
                     }
                     NamespaceBodyDeclaration::Record(r) => {
                         let name = r.name.name.clone();
                         let type_fqn = format!("{}.{}", full_ns, name);
-                        symbols.insert(
-                            &name,
-                            SymbolKind::Record,
-                            Some(type_fqn),
-                            Some(file_path.to_string()),
-                            None,
-                            None,
-                        );
-                        names.0.insert(name.clone(), 1);
+                        push_symbol(symbols, names, &name, SymbolKind::Record, Some(type_fqn), file_path);
                     }
                     NamespaceBodyDeclaration::GlobalAttribute(_) => {}
                 }
@@ -247,29 +155,14 @@ impl AnalyzerPass for IndexingPass {
                 class_path.clone()
             };
             let name = class.name.name.clone();
-            symbols.insert(
-                &name,
-                SymbolKind::Class,
-                Some(class_fqn.clone()),
-                Some(file_path.to_string()),
-                None,
-                None,
-            );
-            names.0.insert(name.clone(), 1);
+            push_symbol(symbols, names, &name, SymbolKind::Class, Some(class_fqn.clone()), file_path);
             // Methods and nested classes
             for member in &class.body_declarations {
                 match member {
                     ClassBodyDeclaration::Method(m) => {
                         let mname = m.name.name.clone();
                         let mfqn = format!("{}::{}", class_fqn, mname);
-                        symbols.insert(
-                            &mname,
-                            SymbolKind::Method,
-                            Some(mfqn),
-                            Some(file_path.to_string()),
-                            None,
-                            None,
-                        );
+                        push_symbol(symbols, names, &mname, SymbolKind::Method, Some(mfqn), file_path);
                     }
                     ClassBodyDeclaration::NestedClass(nested) => index_class(
                         nested,
@@ -286,8 +179,8 @@ impl AnalyzerPass for IndexingPass {
         }
 
         // Store artifacts for later phases/rules
-        session.artifacts.insert(symbols);
-        session.artifacts.insert(names);
-        session.artifacts.insert(fqn);
+        session.insert_artifact(symbols);
+        session.insert_artifact(names);
+        session.insert_artifact(fqn);
     }
 }

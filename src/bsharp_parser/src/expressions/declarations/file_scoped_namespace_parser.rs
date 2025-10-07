@@ -8,8 +8,8 @@ use crate::parser::expressions::declarations::using_directive_parser::parse_usin
 use crate::parser::identifier_parser::parse_qualified_name;
 use crate::syntax::errors::BResult;
 use crate::syntax::nodes::declarations::{
-    FileScopedNamespaceDeclaration, MemberDeclaration,
-    namespace_declaration::NamespaceBodyDeclaration,
+    namespace_declaration::NamespaceBodyDeclaration, FileScopedNamespaceDeclaration,
+    MemberDeclaration,
 };
 use crate::syntax::nodes::identifier::Identifier;
 use crate::syntax::parser_helpers::{bchar, bws, context, keyword, peek_keyword};

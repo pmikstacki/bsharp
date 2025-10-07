@@ -1,18 +1,18 @@
 // Integration tests for expression_statement_parser.rs
 // Content moved from src/parser/statements/expression_statement_parser.rs
 
+use nom::combinator::all_consuming;
+use nom::Finish;
 use parser::expressions::statements::expression_statement_parser::parse_expression_statement;
 use parser::statement_parser::parse_statement;
-use syntax::nodes::expressions::BinaryOperator;
+use parser::syntax::test_helpers::parse_all;
 use syntax::nodes::expressions::assignment_expression::AssignmentExpression;
 use syntax::nodes::expressions::expression::Expression;
 use syntax::nodes::expressions::invocation_expression::InvocationExpression;
 use syntax::nodes::expressions::literal::Literal;
+use syntax::nodes::expressions::BinaryOperator;
 use syntax::nodes::identifier::Identifier;
 use syntax::nodes::statements::statement::Statement;
-use nom::Finish;
-use nom::combinator::all_consuming;
-use parser::syntax::test_helpers::parse_all;
 
 #[test]
 fn test_parse_expression_statement() {

@@ -2,7 +2,6 @@ use crate::syntax::comment_parser::ws;
 use nom::branch::alt;
 use nom::combinator::map;
 use nom::combinator::opt;
-use nom::sequence::tuple;
 use std::marker::PhantomData;
 
 use crate::syntax::errors::BResult;
@@ -369,27 +368,6 @@ pub fn parse_struct_declaration<'a>(input: &'a str) -> BResult<&'a str, StructDe
     Ok((input, struct_declaration))
 }
 
-/// Parse record body content - either parameters for positional record or members for body record
-fn parse_record_body(input: &str) -> BResult<&str, (Vec<Parameter>, Vec<ClassBodyDeclaration>)> {
-    // Parse one of two forms - positional record or body record
-    alt((
-        // First try to parse as a positional record (with parameters in parentheses)
-        map(
-            tuple((
-                // Parse parameters
-                bws(parse_parameter_list),
-                // Parse optional semicolon
-                opt(bws(bchar(';'))),
-            )),
-            |(params, _)| (params, Vec::<ClassBodyDeclaration>::new()),
-        ),
-        // Then try to parse as a body record (with members in braces)
-        map(
-            |i| parse_class_body(i, parse_class_member),
-            |members| (vec![], members),
-        ),
-    ))(input)
-}
 
 /// Parse a C# record class declaration
 ///
@@ -454,45 +432,6 @@ pub fn parse_record_class_declaration(input: &str) -> BResult<&str, RecordDeclar
     Ok((input, record_declaration))
 }
 
-/// Parse record class body which handles the unique record parser
-#[allow(clippy::type_complexity)]
-fn parse_record_class_body(
-    input: &str,
-) -> BResult<&str, (Vec<Parameter>, Vec<Type>, Vec<ClassBodyDeclaration>)> {
-    // Parse one of four forms:
-    // 1. (parameters) : base_types;
-    // 2. : base_types { members }
-    // 3. { members } (no parameters, no base types)
-    alt((
-        // Form 1: (parameters) : base_types;
-        map(
-            tuple((
-                bws(parse_parameter_list),
-                bws(opt(parse_base_type_list)),
-                opt(bws(bchar(';'))),
-            )),
-            |(params, base_types_opt, _)| {
-                (
-                    params,
-                    base_types_opt.unwrap_or_default(),
-                    Vec::<ClassBodyDeclaration>::new(),
-                )
-            },
-        ),
-        // Form 2: : base_types { members }
-        map(
-            tuple((bws(opt(parse_base_type_list)), |i| {
-                parse_class_body(i, parse_class_member)
-            })),
-            |(base_types_opt, members)| (vec![], base_types_opt.unwrap_or_default(), members),
-        ),
-        // Form 3: { members } (no parameters, no base types)
-        map(
-            |i| parse_class_body(i, parse_class_member),
-            |members| (vec![], vec![], members),
-        ),
-    ))(input)
-}
 
 /// Parse a C# record struct declaration
 ///

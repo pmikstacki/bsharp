@@ -6,11 +6,11 @@ use crate::syntax::nodes::expressions::literal::{
 };
 // This is used by parse_interpolation
 use crate::syntax::parser_helpers::{bws, context};
-use nom::error::{ErrorKind, make_error};
+use nom::error::{make_error, ErrorKind};
 use nom::{
     branch::alt,
     bytes::complete::{
-        escaped_transform, is_not, tag, tag_no_case, take_until, take_while_m_n, take_while1,
+        escaped_transform, is_not, tag, tag_no_case, take_until, take_while1, take_while_m_n,
     },
     character::complete::{char as nom_char, none_of},
     combinator::{cut, map, map_opt, map_res, opt, recognize, value},

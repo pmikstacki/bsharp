@@ -1,6 +1,5 @@
 use crate::framework::registry::AnalyzerRegistry;
 use crate::framework::{AnalysisSession, AstWalker, NodeRef, Phase, Rule, Visit};
-use crate::metrics::MetricsVisitor;
 use crate::report::CfgSummary;
 use crate::workspace::model::{ProjectFileKind, Workspace};
 use crate::{AnalysisContext, AnalysisReport, AstAnalysis, DiagnosticCollection};
@@ -89,10 +88,8 @@ impl AnalyzerPipeline {
         let mut walker = AstWalker::new();
         if !all_rules.is_empty() {
             walker = walker.with_visitor(Box::new(RulesVisitor { rules: all_rules }));
+            walker.run(cu, session);
         }
-        // Add metrics visitor
-        walker = walker.with_visitor(Box::new(MetricsVisitor::new()));
-        walker.run(cu, session);
     }
 
     fn run_semantic_rules(

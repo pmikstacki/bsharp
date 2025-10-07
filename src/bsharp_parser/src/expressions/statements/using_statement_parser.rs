@@ -1,5 +1,5 @@
-use crate::syntax::nodes::statements::UsingStatement;
 use crate::syntax::nodes::statements::statement::Statement;
+use crate::syntax::nodes::statements::UsingStatement;
 
 use nom::combinator::cut;
 use nom::combinator::opt;
