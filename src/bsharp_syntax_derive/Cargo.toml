@@ -1,0 +1,16 @@
+[package]
+name = "bsharp_syntax_derive"
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+authors.workspace = true
+
+description = "Proc-macro derive for bsharp_syntax AstNode"
+
+[lib]
+proc-macro = true
+
+[dependencies]
+syn = { version = "2.0", features = ["full", "extra-traits"] }
+quote = "1.0"
+proc-macro2 = "1.0"

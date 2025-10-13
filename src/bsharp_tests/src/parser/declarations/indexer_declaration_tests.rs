@@ -1,11 +1,11 @@
 // Tests for parsing indexer declarations
 
 use parser::expressions::declarations::indexer_declaration_parser::parse_indexer_declaration;
-use syntax::nodes::declarations::{IndexerDeclaration, Modifier};
-use syntax::nodes::identifier::Identifier;
-use syntax::nodes::statements::statement::Statement;
-use syntax::nodes::types::Type::Primitive;
-use syntax::nodes::types::{PrimitiveType, Type};
+use syntax::declarations::{IndexerDeclaration, Modifier};
+use syntax::identifier::Identifier;
+use syntax::statements::statement::Statement;
+use syntax::types::Type::Primitive;
+use syntax::types::{PrimitiveType, Type};
 
 fn parse_indexer_declaration_helper(code: &str) -> Result<IndexerDeclaration, String> {
     match parse_indexer_declaration(code) {

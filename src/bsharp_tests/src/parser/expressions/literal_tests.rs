@@ -1,7 +1,7 @@
 // Tests for parsing literals
 
 use parser::expressions::literal_parser::parse_literal;
-use syntax::nodes::expressions::literal::Literal;
+use syntax::expressions::literal::Literal;
 
 #[test]
 fn test_integer_literal() {

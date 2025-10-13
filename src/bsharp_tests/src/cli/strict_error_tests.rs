@@ -14,7 +14,12 @@ fn run_parse(temp_stem: &str, source: &str) -> (ExitStatus, String, String) {
         .duration_since(UNIX_EPOCH)
         .unwrap_or_default()
         .as_nanos();
-    path.push(format!("{}_{}_{}.cs", temp_stem, std::process::id(), timestamp));
+    path.push(format!(
+        "{}_{}_{}.cs",
+        temp_stem,
+        std::process::id(),
+        timestamp
+    ));
     fs::write(&path, source).expect("failed to write temp C# file");
 
     // Parse strictly and pretty-print on error
@@ -199,10 +204,8 @@ fn strict_missing_else_body_reports_statement() {
 
 #[test]
 fn strict_missing_identifier_in_type_header_reports_identifier() {
-    let (_status, _stdout, stderr) = run_parse(
-        "bsharp_missing_identifier",
-        r#"namespace t; class { }"#,
-    );
+    let (_status, _stdout, stderr) =
+        run_parse("bsharp_missing_identifier", r#"namespace t; class { }"#);
     assert!(
         stderr.contains("expected identifier"),
         "stderr missing 'expected identifier':\n{}",

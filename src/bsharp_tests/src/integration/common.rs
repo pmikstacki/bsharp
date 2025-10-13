@@ -10,7 +10,9 @@ pub fn repo_fixtures_root() -> PathBuf {
 }
 
 pub fn happy_path_sln() -> PathBuf {
-    repo_fixtures_root().join("happy_path").join("testSolution.sln")
+    repo_fixtures_root()
+        .join("happy_path")
+        .join("testSolution.sln")
 }
 
 pub fn happy_path_app_csproj() -> PathBuf {

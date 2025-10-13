@@ -9,8 +9,8 @@ The pipeline runs in deterministic phases (see `src/analysis/framework/pipeline.
 - **Index**
   - Runs early passes like `IndexingPass` to populate core artifacts (`SymbolIndex`, `NameIndex`, `FqnMap`).
 - **Local Rules**
-  - Single AST traversal via `AstWalker` that executes local rules and metrics collection.
-  - Metrics are collected by `MetricsVisitor` into `AstAnalysis`.
+  - Runs per-file passes such as `MetricsPass` (Query-based) to compute artifacts like `AstAnalysis`.
+  - Local rulesets run here as well; use `framework::query::Query` for AST enumeration.
 - **Global**
   - Passes that aggregate information across the file (or project) after initial indexing.
 - **Semantic**

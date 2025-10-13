@@ -1,52 +1,43 @@
-use crate::syntax::nodes::statements::statement::Statement;
 // Parser for while statements
 
+use crate::parser::keywords::iteration_keywords::kw_while;
+use crate::syntax::errors::BResult;
 use nom::combinator::cut;
 use nom::{
     combinator::map,
     sequence::{delimited, tuple},
 };
+use syntax::statements::statement::Statement;
+use syntax::statements::WhileStatement;
+use crate::syntax::comment_parser::ws;
+use nom::character::complete::char as nom_char;
+use nom::Parser;
+use nom_supreme::ParserExt;
 
-use crate::parser::keywords::iteration_keywords::kw_while;
-use crate::syntax::errors::BResult;
-use crate::syntax::nodes::statements::while_statement::WhileStatement;
-use crate::syntax::parser_helpers::{bchar, bws, context};
-
-use crate::parser::expressions::primary_expression_parser::parse_expression;
-use crate::parser::statement_parser::parse_statement_ws;
 
 // Parse a while statement
-pub fn parse_while_statement(input: &str) -> BResult<&str, Statement> {
-    context(
-        "while statement (expected 'while (condition) statement')",
-        map(
-            tuple((
-                context("while keyword (expected 'while')", kw_while()),
-                bws(delimited(
-                    context(
-                        "opening parenthesis for while condition (expected '(')",
-                        bchar('('),
-                    ),
-                    context(
-                        "while loop condition (expected boolean expression)",
-                        bws(parse_expression),
-                    ),
-                    cut(context(
-                        "closing parenthesis for while condition (expected ')')",
-                        bchar(')'),
-                    )),
-                )),
-                context(
-                    "while loop body (expected valid C# statement)",
-                    cut(bws(parse_statement_ws)),
-                ),
-            )),
-            |(_, condition, body_statement)| {
-                Statement::While(Box::new(WhileStatement {
-                    condition: Box::new(condition),
-                    body: Box::new(body_statement),
-                }))
-            },
-        ),
-    )(input)
+pub fn parse_while_statement<'a>(input: Span<'a>) -> BResult<'a, Statement> {
+    map(
+        tuple((
+            kw_while().context("while keyword"),
+            delimited(
+                delimited(ws, nom_char('('), ws),
+                (|i| crate::parser::expressions::primary_expression_parser::parse_expression(i))
+                    .context("while loop condition"),
+                cut(delimited(ws, nom_char(')'), ws))
+                    .context("closing parenthesis for while condition"),
+            ),
+            cut(delimited(ws, |i| crate::parser::statement_parser::parse_statement_ws(i), ws))
+                .context("while loop body"),
+        )),
+        |(_, condition, body_statement)| {
+            Statement::While(Box::new(WhileStatement {
+                condition: Box::new(condition),
+                body: Box::new(body_statement),
+            }))
+        },
+    )
+    .context("while statement")
+    .parse(input)
 }
+use crate::syntax::span::Span;

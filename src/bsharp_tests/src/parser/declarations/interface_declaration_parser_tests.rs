@@ -1,7 +1,7 @@
 #![cfg(test)]
 use parser::expressions::declarations::type_declaration_parser::parse_interface_declaration;
-use syntax::nodes::declarations::{InterfaceBodyDeclaration, Modifier};
-use syntax::nodes::types::Type;
+use syntax::declarations::{InterfaceBodyDeclaration, Modifier};
+use syntax::types::Type;
 
 #[test]
 fn test_simple_interface_declaration() {

@@ -19,11 +19,24 @@
 #[macro_export]
 macro_rules! define_keyword_pair {
     ($kw_fn:ident, $peek_fn:ident, $lit:literal) => {
-        pub fn $kw_fn() -> impl Fn(&str) -> $crate::syntax::errors::BResult<&str, &str> {
-            $crate::syntax::parser_helpers::keyword($lit)
+        pub fn $kw_fn<'a>() -> impl FnMut($crate::syntax::span::Span<'a>) -> $crate::syntax::errors::BResult<'a, &str> {
+            use nom::Parser as _;
+            (|i: $crate::syntax::span::Span<'a>| {
+                nom::combinator::map(
+                    nom::sequence::terminated(
+                        nom_supreme::tag::complete::tag($lit),
+                        nom::combinator::peek(nom::combinator::not(
+                            nom::character::complete::satisfy(|c: char| c.is_alphanumeric() || c == '_'),
+                        )),
+                    ),
+                    |s: $crate::syntax::span::Span<'a>| *s.fragment(),
+                )
+                .parse(i)
+            })
         }
-        pub fn $peek_fn() -> impl Fn(&str) -> $crate::syntax::errors::BResult<&str, &str> {
-            $crate::syntax::parser_helpers::peek_keyword($lit)
+        pub fn $peek_fn<'a>() -> impl FnMut($crate::syntax::span::Span<'a>) -> $crate::syntax::errors::BResult<'a, &str> {
+            use nom::Parser as _;
+            (|i: $crate::syntax::span::Span<'a>| nom::combinator::peek($kw_fn()).parse(i))
         }
     };
 }

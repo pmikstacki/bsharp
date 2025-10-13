@@ -1,8 +1,8 @@
 // Tests for parsing types
 
 use parser::types::type_parser::parse_type_expression;
-use syntax::nodes::identifier::Identifier;
-use syntax::nodes::types::{PrimitiveType, Type};
+use syntax::identifier::Identifier;
+use syntax::types::{PrimitiveType, Type};
 
 fn parse_type(code: &str) -> Result<Type, String> {
     match parse_type_expression(code) {

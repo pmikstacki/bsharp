@@ -1,7 +1,9 @@
-use crate::framework::{AnalysisSession, NodeRef, Rule, RuleSet};
+use crate::framework::{AnalysisSession, Rule, RuleSet};
 use crate::syntax::ast::TopLevelDeclaration;
-use crate::syntax::nodes::declarations::{ClassBodyDeclaration, Modifier};
-use crate::syntax::nodes::types::{PrimitiveType, Type};
+use bsharp_syntax::declarations::{ClassBodyDeclaration, Modifier};
+use bsharp_syntax::types::{PrimitiveType, Type};
+
+use crate::framework::NodeRef;
 use crate::{DiagnosticBuilder, DiagnosticCode};
 
 fn find_ctor_span(session: &AnalysisSession, class_name: &str) -> Option<(usize, usize)> {
@@ -35,10 +37,7 @@ impl Rule for CtorNoAsync {
         "Semantic"
     }
     fn visit(&self, node: &NodeRef, session: &mut AnalysisSession) {
-        let cu = match node {
-            NodeRef::CompilationUnit(cu) => cu,
-            _ => return,
-        };
+        let Some(cu) = node.of::<crate::syntax::ast::CompilationUnit>() else { return; };
         for decl in &cu.declarations {
             if let TopLevelDeclaration::Class(class) = decl {
                 for member in &class.body_declarations {
@@ -66,10 +65,7 @@ impl Rule for CtorNameMatchesClass {
         "Semantic"
     }
     fn visit(&self, node: &NodeRef, session: &mut AnalysisSession) {
-        let cu = match node {
-            NodeRef::CompilationUnit(cu) => cu,
-            _ => return,
-        };
+        let Some(cu) = node.of::<crate::syntax::ast::CompilationUnit>() else { return; };
         for decl in &cu.declarations {
             if let TopLevelDeclaration::Class(class) = decl {
                 for member in &class.body_declarations {
@@ -101,10 +97,7 @@ impl Rule for CtorNoVirtualOrAbstract {
         "Semantic"
     }
     fn visit(&self, node: &NodeRef, session: &mut AnalysisSession) {
-        let cu = match node {
-            NodeRef::CompilationUnit(cu) => cu,
-            _ => return,
-        };
+        let Some(cu) = node.of::<crate::syntax::ast::CompilationUnit>() else { return; };
         for decl in &cu.declarations {
             if let TopLevelDeclaration::Class(class) = decl {
                 for member in &class.body_declarations {
@@ -134,10 +127,7 @@ impl Rule for MethodNoAbstractBody {
         "Semantic"
     }
     fn visit(&self, node: &NodeRef, session: &mut AnalysisSession) {
-        let cu = match node {
-            NodeRef::CompilationUnit(cu) => cu,
-            _ => return,
-        };
+        let Some(cu) = node.of::<crate::syntax::ast::CompilationUnit>() else { return; };
         for decl in &cu.declarations {
             if let TopLevelDeclaration::Class(class) = decl {
                 for member in &class.body_declarations {
@@ -167,10 +157,7 @@ impl Rule for MethodNoStaticOverride {
         "Semantic"
     }
     fn visit(&self, node: &NodeRef, session: &mut AnalysisSession) {
-        let cu = match node {
-            NodeRef::CompilationUnit(cu) => cu,
-            _ => return,
-        };
+        let Some(cu) = node.of::<crate::syntax::ast::CompilationUnit>() else { return; };
         for decl in &cu.declarations {
             if let TopLevelDeclaration::Class(class) = decl {
                 for member in &class.body_declarations {
@@ -202,10 +189,7 @@ impl Rule for AsyncReturnsTask {
         "Semantic"
     }
     fn visit(&self, node: &NodeRef, session: &mut AnalysisSession) {
-        let cu = match node {
-            NodeRef::CompilationUnit(cu) => cu,
-            _ => return,
-        };
+        let Some(cu) = node.of::<crate::syntax::ast::CompilationUnit>() else { return; };
         for decl in &cu.declarations {
             if let TopLevelDeclaration::Class(class) = decl {
                 for member in &class.body_declarations {

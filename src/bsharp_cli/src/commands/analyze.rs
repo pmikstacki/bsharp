@@ -63,7 +63,9 @@ pub fn execute(input: PathBuf, opts: AnalyzeOptions) -> Result<()> {
     if is_dir || is_ws {
         let ws = WorkspaceLoader::from_path_with_options(
             &input,
-            bsharp_analysis::workspace::loader::WorkspaceLoadOptions { follow_refs: opts.follow_refs },
+            bsharp_analysis::workspace::loader::WorkspaceLoadOptions {
+                follow_refs: opts.follow_refs,
+            },
         )
         .map_err(|e| anyhow::anyhow!(e.to_string()))
         .with_context(|| format!("Failed to load workspace from {}", path_str))?;
@@ -176,10 +178,7 @@ pub fn execute(input: PathBuf, opts: AnalyzeOptions) -> Result<()> {
             for (sym, loc) in results {
                 let kind = format!("{:?}", sym.kind);
                 if let Some(loc) = loc {
-                    println!(
-                        "- {} {} at {}:{}",
-                        kind, sym.name, loc.line, loc.column
-                    );
+                    println!("- {} {} at {}:{}", kind, sym.name, loc.line, loc.column);
                 } else if let Some(file) = sym.file {
                     println!("- {} {} in {} (no precise location)", kind, sym.name, file);
                 } else {

@@ -1,5 +1,5 @@
 use parser::types::type_parser::parse_type_expression;
-use syntax::nodes::types::{PrimitiveType, Type};
+use syntax::types::{PrimitiveType, Type};
 
 fn parse_type_ok(src: &str) -> Type {
     let (rest, ty) = parse_type_expression(src).expect("parse ok");

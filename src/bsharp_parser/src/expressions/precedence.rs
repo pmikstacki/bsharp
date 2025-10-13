@@ -1,8 +1,11 @@
 use crate::syntax::errors::BResult;
-use crate::syntax::nodes::expressions::{BinaryOperator, Expression};
+use crate::syntax::span::Span;
+
 use nom::combinator::cut;
 use nom::Err;
+use nom::Parser;
 use nom_supreme::error::{BaseErrorKind, ErrorTree, Expectation};
+use syntax::expressions::{BinaryOperator, Expression};
 
 /// Generic left-associative chain builder.
 ///
@@ -13,18 +16,18 @@ use nom_supreme::error::{BaseErrorKind, ErrorTree, Expectation};
 pub fn left_chain<'a, FNext, FOp>(
     mut next: FNext,
     mut op: FOp,
-) -> impl FnMut(&'a str) -> BResult<&'a str, Expression>
+) -> impl FnMut(Span<'a>) -> BResult<'a, Expression>
 where
-    FNext: FnMut(&'a str) -> BResult<&'a str, Expression>,
-    FOp: FnMut(&'a str) -> BResult<&'a str, BinaryOperator>,
+    FNext: FnMut(Span<'a>) -> BResult<'a, Expression>,
+    FOp: FnMut(Span<'a>) -> BResult<'a, BinaryOperator>,
 {
-    move |mut input: &'a str| {
+    move |mut input: Span<'a>| {
         // parse first operand
         let (mut i, mut left) = next(input)?;
         // loop for (op next)*
         loop {
             match op(i) {
-                Ok((i_after_op, bop)) => match cut(&mut next)(i_after_op) {
+                Ok((i_after_op, bop)) => match cut(|j| next(j)).parse(i_after_op) {
                     Ok((i_after_rhs, right)) => {
                         left = Expression::Binary {
                             left: Box::new(left),

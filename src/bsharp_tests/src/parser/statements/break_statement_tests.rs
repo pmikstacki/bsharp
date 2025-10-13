@@ -3,8 +3,8 @@
 
 use parser::expressions::statements::break_statement_parser::parse_break_statement;
 use parser::syntax::test_helpers::parse_all;
-use syntax::nodes::statements::break_statement::BreakStatement;
-use syntax::nodes::statements::statement::Statement;
+use syntax::statements::break_statement::BreakStatement;
+use syntax::statements::statement::Statement;
 
 #[test]
 fn test_parse_break_statement() {

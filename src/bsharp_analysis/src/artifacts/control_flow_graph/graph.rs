@@ -1,7 +1,8 @@
 use crate::artifacts::control_flow_graph::block::{BasicBlock, BlockId};
 use crate::artifacts::control_flow_graph::edge::EdgeKind;
 use crate::artifacts::control_flow_graph::terminator::Terminator;
-use crate::syntax::nodes::statements::statement::Statement;
+
+use bsharp_syntax::statements::statement::Statement;
 // Control Flow artifacts: per-method control flow stats and Control Flow Graph (CFG)
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -64,20 +65,20 @@ impl ControlFlowGraph {
             // 1) Collapse diamonds u -> {v,w} -> j where v and w have single in from u and single out to j
             let mut removals: Vec<(BlockId, BlockId, BlockId)> = Vec::new(); // (u, v, w) to collapse into u->j
             for &u in &nodes {
-                let succ = out.get(&u).map(|v| v.clone()).unwrap_or_default();
+                let succ = out.get(&u).cloned().unwrap_or_default();
                 if succ.len() == 2 {
                     let (v, _kv) = succ[0];
                     let (w, _kw) = succ[1];
                     let v_in = inn.get(&v).map(|x| x.len()).unwrap_or(0);
                     let w_in = inn.get(&w).map(|x| x.len()).unwrap_or(0);
-                    let v_out = out.get(&v).map(|x| x.clone()).unwrap_or_default();
-                    let w_out = out.get(&w).map(|x| x.clone()).unwrap_or_default();
+                    let v_out = out.get(&v).cloned().unwrap_or_default();
+                    let w_out = out.get(&w).cloned().unwrap_or_default();
                     if v_in == 1 && w_in == 1 && v_out.len() == 1 && w_out.len() == 1 {
                         let (j1, _k1) = v_out[0];
                         let (j2, _k2) = w_out[0];
                         if j1 == j2 {
                             // Additionally ensure j's incoming includes exactly these two to avoid over-collapsing
-                            let j_in = inn.get(&j1).map(|x| x.clone()).unwrap_or_default();
+                            let j_in = inn.get(&j1).cloned().unwrap_or_default();
                             let preds: HashSet<BlockId> = j_in.iter().map(|(p, _)| *p).collect();
                             if preds.contains(&v) && preds.contains(&w) {
                                 removals.push((u, v, w));
@@ -95,7 +96,12 @@ impl ControlFlowGraph {
                         v_out[0].0
                     };
                     // Remove edges u->v, u->w, v->j, w->j
-                    edges.retain(|Edge(a, b, _)| !((*a == u && *b == v) || (*a == u && *b == w) || (*a == v && *b == j) || (*a == w && *b == j)));
+                    edges.retain(|Edge(a, b, _)| {
+                        !((*a == u && *b == v)
+                            || (*a == u && *b == w)
+                            || (*a == v && *b == j)
+                            || (*a == w && *b == j))
+                    });
                     // Remove nodes v and w
                     nodes.remove(&v);
                     nodes.remove(&w);
@@ -111,32 +117,52 @@ impl ControlFlowGraph {
             let mut collapsed_any = false;
             // Build reverse map: for each node j with in >= 2
             for &j in &nodes {
-                let preds = inn.get(&j).map(|v| v.clone()).unwrap_or_default();
-                if preds.len() < 2 { continue; }
+                let preds = inn.get(&j).cloned().unwrap_or_default();
+                if preds.len() < 2 {
+                    continue;
+                }
                 // Candidates X: each has out-degree 1 to j and in-degree 1
                 let mut x_set: Vec<BlockId> = Vec::new();
                 let mut head_opt: Option<BlockId> = None;
                 let mut ok = true;
                 for (x, _kx) in &preds {
-                    let x_out = out.get(x).map(|v| v.clone()).unwrap_or_default();
-                    let x_in = inn.get(x).map(|v| v.clone()).unwrap_or_default();
+                    let x_out = out.get(x).cloned().unwrap_or_default();
+                    let x_in = inn.get(x).cloned().unwrap_or_default();
                     if x_out.len() != 1 || x_out[0].0 != j || x_in.len() != 1 {
-                        ok = false; break;
+                        ok = false;
+                        break;
                     }
                     let head = x_in[0].0;
-                    if let Some(h) = head_opt { if h != head { ok = false; break; } } else { head_opt = Some(head); }
+                    if let Some(h) = head_opt {
+                        if h != head {
+                            ok = false;
+                            break;
+                        }
+                    } else {
+                        head_opt = Some(head);
+                    }
                     x_set.push(*x);
                 }
-                if ok { if let Some(head) = head_opt { if head != j {
-                    // Perform collapse: remove all x in X and wire head->j
-                    for x in &x_set { nodes.remove(x); }
-                    edges.retain(|Edge(a,b,_)| !(x_set.iter().any(|x| *a == *x || *b == *x)));
-                    edges.insert(Edge(head, j, EdgeKind::Normal));
-                    collapsed_any = true;
-                    break;
-                } } }
+                if ok {
+                    if let Some(head) = head_opt {
+                        if head != j {
+                            // Perform collapse: remove all x in X and wire head->j
+                            for x in &x_set {
+                                nodes.remove(x);
+                            }
+                            edges.retain(|Edge(a, b, _)| {
+                                !(x_set.iter().any(|x| *a == *x || *b == *x))
+                            });
+                            edges.insert(Edge(head, j, EdgeKind::Normal));
+                            collapsed_any = true;
+                            break;
+                        }
+                    }
+                }
             }
-            if collapsed_any { changed = true; }
+            if collapsed_any {
+                changed = true;
+            }
         }
 
         // Compute M on reduced graph
@@ -156,12 +182,19 @@ pub fn build_cfg(stmt: &Statement) -> ControlFlowGraph {
     }
     impl Builder {
         fn new() -> Self {
-            Self { cfg: ControlFlowGraph::new(), next_id: 0 }
+            Self {
+                cfg: ControlFlowGraph::new(),
+                next_id: 0,
+            }
         }
         fn bb(&mut self) -> BlockId {
             let id = BlockId(self.next_id);
             self.next_id += 1;
-            self.cfg.blocks.push(BasicBlock { id, statements: Vec::new(), terminator: Terminator::Unreachable });
+            self.cfg.blocks.push(BasicBlock {
+                id,
+                statements: Vec::new(),
+                terminator: Terminator::Unreachable,
+            });
             id
         }
         fn edge(&mut self, from: BlockId, to: BlockId, kind: EdgeKind) {
@@ -237,7 +270,9 @@ pub fn build_cfg(stmt: &Statement) -> ControlFlowGraph {
                         exits.push(x);
                     }
                     let join = self.bb();
-                    for x in exits { self.edge(x, join, EdgeKind::Normal); }
+                    for x in exits {
+                        self.edge(x, join, EdgeKind::Normal);
+                    }
                     (head, join)
                 }
                 Statement::Try(t) => {
@@ -251,12 +286,16 @@ pub fn build_cfg(stmt: &Statement) -> ControlFlowGraph {
                     let mut join = None;
                     if let Some(fin) = &t.finally_clause {
                         let (fe, fx) = self.build_stmt(&fin.block);
-                        for x in all_exits.drain(..) { self.edge(x, fe, EdgeKind::Finally); }
+                        for x in all_exits.drain(..) {
+                            self.edge(x, fe, EdgeKind::Finally);
+                        }
                         join = Some(fx);
                     }
                     let j = join.unwrap_or_else(|| {
                         let bb = self.bb();
-                        for x in all_exits { self.edge(x, bb, EdgeKind::Normal); }
+                        for x in all_exits {
+                            self.edge(x, bb, EdgeKind::Normal);
+                        }
                         bb
                     });
                     (try_entry_exit.0, j)

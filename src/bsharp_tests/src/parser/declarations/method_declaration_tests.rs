@@ -1,9 +1,9 @@
 // Tests for parsing method declarations
 
 use parser::expressions::declarations::method_declaration_parser::parse_member_declaration;
-use syntax::nodes::declarations::Modifier;
-use syntax::nodes::statements::statement::Statement;
-use syntax::nodes::types::{PrimitiveType, Type};
+use syntax::declarations::Modifier;
+use syntax::statements::statement::Statement;
+use syntax::types::{PrimitiveType, Type};
 
 #[test]
 fn test_simple_method() {

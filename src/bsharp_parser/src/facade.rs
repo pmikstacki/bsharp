@@ -13,7 +13,7 @@ impl Parser {
         Parser
     }
 
-    pub fn parse(&self, input: &str) -> Result<CompilationUnit, String> {
+    pub fn parse(&self, input: Span) -> Result<CompilationUnit, String> {
         match parse_csharp_source(input).finish() {
             Ok((remaining, compilation_unit)) => {
                 // Treat significant trailing input as a parse error to surface failures in CLI
@@ -34,7 +34,7 @@ impl Parser {
     /// Parse and also return a table of byte-span ranges for top-level declarations.
     pub fn parse_with_spans(
         &self,
-        input: &str,
+        input: Span,
     ) -> Result<(ast::CompilationUnit, SpanTable), String> {
         match parse_csharp_source_with_spans(input).finish() {
             Ok((_, result)) => Ok(result),
@@ -42,3 +42,4 @@ impl Parser {
         }
     }
 }
+use crate::syntax::span::Span;

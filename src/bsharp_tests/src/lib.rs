@@ -15,4 +15,5 @@ mod analysis; // This will load tests/analysis/mod.rs
 // Integration tests - properly structured
 mod integration;
 // Workspace readers/loader tests
+mod il;
 mod workspace;

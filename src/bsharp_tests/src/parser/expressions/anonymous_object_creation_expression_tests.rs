@@ -1,8 +1,8 @@
 // Tests for parsing anonymous object creation expressions
 
 use parser::expressions::primary_expression_parser::parse_expression;
-use syntax::nodes::expressions::literal::Literal;
-use syntax::nodes::expressions::Expression;
+use syntax::expressions::literal::Literal;
+use syntax::expressions::Expression;
 
 // Helper function for parsing anonymous object expressions
 fn parse_anon_obj_expr(code: &str) -> Result<Expression, String> {

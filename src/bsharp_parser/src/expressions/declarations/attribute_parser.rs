@@ -1,123 +1,75 @@
-use crate::expressions::primary_expression_parser::parse_expression;
-use crate::identifier_parser::{parse_identifier, parse_qualified_name};
+use crate::parser::expressions::primary_expression_parser::parse_expression;
+use crate::parser::identifier_parser::parse_qualified_name;
 use crate::syntax::comment_parser::ws;
 use crate::syntax::errors::BResult;
-use crate::syntax::parser_helpers;
-use crate::syntax::parser_helpers::{bchar, bws, context, parse_delimited_list0};
-use crate::types::type_parser::parse_type_expression;
-use nom::character::complete::char as nom_char;
+use crate::syntax::list_parser;
+use crate::parser::types::type_parser::parse_type_expression;
+use nom::character::complete::{satisfy, char as nom_char};
 use nom::{
     combinator::{map, opt},
     multi::many0,
-    sequence::{terminated, tuple},
+    sequence::{delimited, terminated},
 };
+use nom::Parser;
+use nom_supreme::ParserExt;
 use syntax::declarations::{Attribute, AttributeList};
 use syntax::expressions::Expression;
-
-/// Parses an attribute argument which can be any expression
-#[allow(dead_code)]
-fn parse_attribute_argument(input: &str) -> BResult<&str, Expression> {
-    context(
-        "attribute argument (expected valid C# expression)",
-        parse_expression,
-    )(input)
-}
-
-/// Parses a single attribute with optional arguments
-/// Example: `[Serializable]` or `[DataMember(Name = "firstName", Order = 1)]`
-#[allow(dead_code)]
-fn parse_single_attribute(input: &str) -> BResult<&str, Attribute> {
-    context(
-        "single attribute (expected identifier optionally followed by arguments in parentheses)",
-        map(
-            tuple((
-                bws(parse_identifier),
-                opt(parse_delimited_list0::<
-                    _,
-                    _,
-                    _,
-                    _,
-                    char,
-                    Expression,
-                    char,
-                    char,
-                    Expression,
-                >(
-                    bchar('('),
-                    parse_attribute_argument,
-                    bchar(','),
-                    bchar(')'),
-                    false, // trailing commas not allowed in attribute args
-                    true,  // cut on close
-                )),
-            )),
-            |(name, opt_args)| {
-                let arguments = opt_args.unwrap_or_default();
-                Attribute {
-                    name,
-                    arguments,
-                    structured: None,
-                }
-            },
-        ),
-    )(input)
-}
+use syntax::types::Type;
+use crate::syntax::list_parser::parse_delimited_list0;
+use crate::syntax::span::Span;
 
 /// Parses an attribute list enclosed in square brackets
 /// Example: `[Serializable, DataContract]`
-fn parse_attribute_group(input: &str) -> BResult<&str, AttributeList> {
-    context(
-        "attribute group (expected '[' followed by comma-separated attributes and ']')",
-        map(
-            parse_delimited_list0::<_, _, _, _, char, Attribute, char, char, Attribute>(
-                bchar('['),
-                parse_attribute,
-                bchar(','),
-                bchar(']'),
-                false, // trailing commas not allowed in attribute list
-                true,  // cut on close
-            ),
-            |attributes| AttributeList { attributes },
+fn parse_attribute_group(input: Span) -> BResult<AttributeList> {
+    map(
+        parse_delimited_list0::<_, _, _, _, char, Attribute, char, char, Attribute>(
+            |i| delimited(ws, satisfy(|c| c == '['), ws).parse(i),
+            parse_attribute,
+            |i| delimited(ws, satisfy(|c| c == ','), ws).parse(i),
+            |i| delimited(ws, satisfy(|c| c == ']'), ws).parse(i),
+            false,
+            true,
         ),
-    )(input)
+        |attributes| AttributeList { attributes },
+    )
+    .context("attribute group")
+    .parse(input)
 }
 
 /// Parses multiple attribute lists that might appear before a declaration
 /// Example: `[Serializable] [DataContract]`
-pub fn parse_attribute_lists(input: &str) -> BResult<&str, Vec<AttributeList>> {
-    context(
-        "attribute lists (expected zero or more attribute groups in square brackets)",
-        many0(terminated(parse_attribute_group, ws)),
-    )(input)
+pub fn parse_attribute_lists(input: Span) -> BResult<Vec<AttributeList>> {
+    many0(terminated(parse_attribute_group, ws))
+        .context("attribute  lists")
+        .parse(input)
 }
 
 // Parse a single attribute: MyAttribute or MyAttribute(arg1, arg2)
-pub fn parse_attribute(input: &str) -> BResult<&str, Attribute> {
-    context(
-        "attribute (expected qualified name optionally followed by arguments in parentheses)",
-        |i| {
+pub fn parse_attribute(input: Span) -> BResult<Attribute> {
+    (|i| {
             // Parse the qualified (dotted) identifier first
             let (rest0, name_parts) = parse_qualified_name(i)?;
 
             // Optional generic type argument list on the last segment
-            let (rest, type_args_opt) = opt(parser_helpers::parse_delimited_list0::<
+            let (rest, type_args_opt) = opt(list_parser::parse_delimited_list0::<
                 _,
                 _,
                 _,
                 _,
                 char,
-                crate::syntax::nodes::types::Type,
+                Type,
                 char,
                 char,
-                crate::syntax::nodes::types::Type,
+                Type,
             >(
-                nom_char('<'),
+                |i2| delimited(ws, satisfy(|c| c == '<'), ws).parse(i2),
                 parse_type_expression,
-                nom_char(','),
-                nom_char('>'),
+                |i2| delimited(ws, satisfy(|c| c == ','), ws).parse(i2),
+                |i2| delimited(ws, satisfy(|c| c == '>'), ws).parse(i2),
                 false,
                 true,
-            ))(rest0)?;
+            ))
+            .parse(rest0)?;
 
             // Optional argument list ( ... )
             let (rest_after_args, args_opt) = opt(parse_delimited_list0::<
@@ -131,13 +83,14 @@ pub fn parse_attribute(input: &str) -> BResult<&str, Attribute> {
                 char,
                 Expression,
             >(
-                bchar('('),
+                |i2| delimited(ws, satisfy(|c| c == '('), ws).parse(i2),
                 parse_expression,
-                bchar(','),
-                bchar(')'),
+                |i2| delimited(ws, satisfy(|c| c == ','), ws).parse(i2),
+                |i2| delimited(ws, satisfy(|c| c == ')'), ws).parse(i2),
                 false,
                 true,
-            ))(rest)?;
+            ))
+            .parse(rest)?;
 
             let name_str = name_parts
                 .iter()
@@ -149,47 +102,44 @@ pub fn parse_attribute(input: &str) -> BResult<&str, Attribute> {
             Ok((
                 rest_after_args,
                 Attribute {
-                    name: crate::syntax::nodes::identifier::Identifier { name: name_str },
+                    name: crate::syntax::identifier::Identifier { name: name_str },
                     arguments: args_opt.unwrap_or_default(),
-                    structured: Some(
-                        crate::syntax::nodes::declarations::attribute::AttributeName {
-                            qualifier: name_parts[..name_parts.len().saturating_sub(1)].to_vec(),
-                            name: name_parts.last().cloned().unwrap_or_else(|| {
-                                crate::syntax::nodes::identifier::Identifier {
-                                    name: String::new(),
-                                }
-                            }),
-                            type_arguments: type_args_opt.unwrap_or_default(),
-                        },
-                    ),
+                    structured: Some(crate::syntax::declarations::attribute::AttributeName {
+                        qualifier: name_parts[..name_parts.len().saturating_sub(1)].to_vec(),
+                        name: name_parts.last().cloned().unwrap_or_else(|| {
+                            crate::syntax::identifier::Identifier {
+                                name: String::new(),
+                            }
+                        }),
+                        type_arguments: type_args_opt.unwrap_or_default(),
+                    }),
                 },
             ))
-        },
-    )(input)
+        })
+        .context("attribute")
+        .parse(input)
 }
 
 // Parse a single attribute list: [Attr1, Attr2]
-pub fn parse_attribute_list(input: &str) -> BResult<&str, AttributeList> {
-    context(
-        "attribute list (expected '[' followed by comma-separated attributes and ']')",
-        map(
-            parse_delimited_list0::<_, _, _, _, char, Attribute, char, char, Attribute>(
-                bchar('['),
-                parse_attribute,
-                bchar(','),
-                bchar(']'),
-                false,
-                false, // not committed as hard as others; keep without cut here
-            ),
-            |attributes| AttributeList { attributes },
+pub fn parse_attribute_list<'a>(input: Span<'a>) -> BResult<'a, AttributeList> {
+    map(
+        parse_delimited_list0::<_, _, _, _, char, Attribute, char, char, Attribute>(
+            |i| delimited(ws, nom_char('['), ws).parse(i),
+            parse_attribute,
+            |i| delimited(ws, nom_char(','), ws).parse(i),
+            |i| delimited(ws, nom_char(']'), ws).parse(i),
+            false,
+            false,
         ),
-    )(input)
+        |attributes| AttributeList { attributes },
+    )
+    .context("attribute list")
+    .parse(input)
 }
 
 // Parse multiple attribute lists: [Attr1] [Attr2] [Attr3, Attr4]
-pub fn parse_attribute_lists_new(input: &str) -> BResult<&str, Vec<AttributeList>> {
-    context(
-        "attribute lists (expected zero or more attribute groups in square brackets)",
-        many0(bws(parse_attribute_list)),
-    )(input)
+pub fn parse_attribute_lists_new<'a>(input: Span<'a>) -> BResult<'a, Vec<AttributeList>> {
+    many0(|i| delimited(ws, parse_attribute_list, ws).parse(i))
+        .context("attribute lists")
+        .parse(input)
 }

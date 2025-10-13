@@ -1,8 +1,7 @@
 #![allow(unused_variables)]
 #![cfg(test)]
 use parser::expressions::declarations::attribute_parser::*;
-use syntax::nodes::expressions::expression::Expression;
-use syntax::nodes::expressions::literal::Literal;
+use syntax::expressions::{Expression, Literal};
 
 #[test]
 fn test_single_attribute_no_args() {
@@ -45,7 +44,8 @@ fn test_attribute_with_argument() {
 #[test]
 fn test_attribute_with_named_arguments() {
     let input = "[DataMember(Name = \"firstName\")]";
-    let (rest, lists) = parse_attribute_lists(input).expect("should parse attribute with named arg");
+    let (rest, lists) =
+        parse_attribute_lists(input).expect("should parse attribute with named arg");
     assert_eq!(rest, "");
     assert_eq!(lists.len(), 1);
     assert_eq!(lists[0].attributes.len(), 1);
@@ -93,7 +93,8 @@ fn test_multiple_attributes_in_one_list() {
 #[test]
 fn test_attribute_with_multiple_arguments() {
     let input = "[DebuggerDisplay(\"Count = {Count}\", Type = \"MyType\")]";
-    let (rest, lists) = parse_attribute_lists(input).expect("should parse attribute with mixed args");
+    let (rest, lists) =
+        parse_attribute_lists(input).expect("should parse attribute with mixed args");
     assert_eq!(rest, "");
     assert_eq!(lists.len(), 1);
     let args = &lists[0].attributes[0].arguments;

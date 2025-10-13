@@ -1,10 +1,12 @@
 use crate::framework::registry::AnalyzerRegistry;
-use crate::framework::{AnalysisSession, AstWalker, NodeRef, Phase, Rule, Visit};
+use crate::framework::visit::Visit;
+use crate::framework::{AnalysisSession, AstWalker, Phase, Rule};
 use crate::report::CfgSummary;
+use crate::syntax::ast::CompilationUnit;
 use crate::workspace::model::{ProjectFileKind, Workspace};
 use crate::{AnalysisContext, AnalysisReport, AstAnalysis, DiagnosticCollection};
 use bsharp_parser::facade::Parser;
-use bsharp_syntax::ast::CompilationUnit;
+use bsharp_parser::syntax::span::Span;
 #[cfg(feature = "parallel_analysis")]
 use rayon::prelude::*;
 
@@ -24,14 +26,16 @@ impl AnalyzerPipeline {
     ) {
         // 1) Index phase passes (no-op if none)
         Self::run_phase(Phase::Index, cu, session, registry);
-        // 2) Local rules in a single traversal
+        // 2) Local (per-file) passes that produce artifacts (e.g., metrics)
+        Self::run_phase(Phase::LocalRules, cu, session, registry);
+        // 3) Local rules in a single traversal
         Self::run_local_rules(cu, session, registry);
-        // 3) Global passes
+        // 4) Global passes
         Self::run_phase(Phase::Global, cu, session, registry);
-        // 4) Semantic passes/rules
+        // 5) Semantic passes/rules
         Self::run_semantic_rules(cu, session, registry);
         Self::run_phase(Phase::Semantic, cu, session, registry);
-        // 5) Reporting
+        // 6) Reporting
         Self::run_phase(Phase::Reporting, cu, session, registry);
     }
 
@@ -78,7 +82,7 @@ impl AnalyzerPipeline {
             rules: Vec<&'a dyn Rule>,
         }
         impl Visit for RulesVisitor<'_> {
-            fn enter(&mut self, node: &NodeRef, session: &mut AnalysisSession) {
+            fn enter(&mut self, node: &crate::framework::NodeRef, session: &mut AnalysisSession) {
                 for r in &self.rules {
                     r.visit(node, session);
                 }
@@ -116,7 +120,7 @@ impl AnalyzerPipeline {
             rules: Vec<&'a dyn Rule>,
         }
         impl Visit for RulesVisitor<'_> {
-            fn enter(&mut self, node: &NodeRef, session: &mut AnalysisSession) {
+            fn enter(&mut self, node: &crate::framework::NodeRef, session: &mut AnalysisSession) {
                 for r in &self.rules {
                     r.visit(node, session);
                 }
@@ -158,7 +162,7 @@ impl AnalyzerPipeline {
             };
 
             let parser = Parser::new();
-            let Ok((cu, spans)) = parser.parse_with_spans(&source) else {
+            let Ok((cu, spans)) = parser.parse_with_spans(Span::new(&source)) else {
                 continue;
             };
 
@@ -319,7 +323,7 @@ impl AnalyzerPipeline {
                 continue;
             };
             let parser = Parser::new();
-            let Ok((cu, spans)) = parser.parse_with_spans(&source) else {
+            let Ok((cu, spans)) = parser.parse_with_spans(Span::new(&source)) else {
                 continue;
             };
 
@@ -365,7 +369,7 @@ impl AnalyzerPipeline {
                         return None;
                     };
                     let parser = Parser::new();
-                    let Ok((cu, spans)) = parser.parse_with_spans(&source) else {
+                    let Ok((cu, spans)) = parser.parse_with_spans(Span::new(&source)) else {
                         return None;
                     };
                     let mut ctx = AnalysisContext::new(path_str, source);

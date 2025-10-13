@@ -1,8 +1,8 @@
 // Tests for parsing constructor declarations
 
 use parser::expressions::declarations::constructor_declaration_parser::parse_any_member_declaration;
-use syntax::nodes::declarations::Modifier;
-use syntax::nodes::statements::statement::Statement;
+use syntax::declarations::Modifier;
+use syntax::statements::statement::Statement;
 
 fn assert_constructor_parses(input: &str, expected_name: &str, num_params: usize) {
     match parse_any_member_declaration(input) {

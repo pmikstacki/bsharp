@@ -2,7 +2,7 @@ use crate::expressions::Expression;
 use crate::types::Type;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub enum ObjectInitializerEntry {
     Property {
         name: String,
@@ -14,7 +14,7 @@ pub enum ObjectInitializerEntry {
     },
 }
 
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct NewExpression {
     pub target_type: Option<Type>,
     pub arguments: Vec<Expression>,

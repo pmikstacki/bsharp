@@ -1,7 +1,7 @@
 // Tests for parsing empty statements
 
 use parser::expressions::statements::empty_statement_parser::parse_empty_statement;
-use syntax::nodes::statements::statement::Statement;
+use syntax::statements::statement::Statement;
 
 #[test]
 fn test_parse_empty_statement_simple() {

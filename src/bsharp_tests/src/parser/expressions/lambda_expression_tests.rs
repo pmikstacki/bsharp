@@ -2,10 +2,10 @@
 
 use parser::expressions::lambda_expression_parser::*;
 use parser::types::type_parser::parse_type_expression;
-use syntax::nodes::expressions::expression::Expression;
-use syntax::nodes::expressions::lambda_expression::{LambdaBody, LambdaParameterModifier};
-use syntax::nodes::statements::statement::Statement;
-use syntax::nodes::types::{PrimitiveType, Type};
+use syntax::expressions::expression::Expression;
+use syntax::expressions::lambda_expression::{LambdaBody, LambdaParameterModifier};
+use syntax::statements::statement::Statement;
+use syntax::types::{PrimitiveType, Type};
 
 fn parse_lambda_expr(code: &str) -> Result<Expression, String> {
     match parse_lambda_expression(code) {

@@ -1,4 +1,5 @@
 use std::cell::RefCell;
+use crate::syntax::span::Span;
 
 #[derive(Default, Clone, Copy)]
 pub struct BraceStatus {
@@ -11,28 +12,20 @@ thread_local! {
 }
 
 struct TrackerState {
-    total_len: usize,
     stack: Vec<usize>,
 }
 
 impl TrackerState {
-    fn new(input: &str) -> Self {
-        Self {
-            total_len: input.len(),
-            stack: Vec::new(),
-        }
+    fn new() -> Self {
+        Self { stack: Vec::new() }
     }
 
-    fn record_open(&mut self, input: &str) {
-        self.stack.push(self.offset_from(input));
+    fn record_open(&mut self, at: Span<'_>) {
+        self.stack.push(at.location_offset());
     }
 
     fn record_close(&mut self) {
         let _ = self.stack.pop();
-    }
-
-    fn offset_from(&self, slice: &str) -> usize {
-        self.total_len.saturating_sub(slice.len())
     }
 
     fn into_status(self) -> BraceStatus {
@@ -84,11 +77,11 @@ impl Drop for BraceTrackerGuard {
     }
 }
 
-pub fn install(input: &str) -> BraceTrackerGuard {
+pub fn install(_input: Span<'_>) -> BraceTrackerGuard {
     TRACKER.with(|cell| {
         let mut guard = cell.borrow_mut();
         debug_assert!(guard.is_none(), "brace tracker already installed");
-        *guard = Some(TrackerState::new(input));
+        *guard = Some(TrackerState::new());
     });
     LAST_STATUS.with(|cell| {
         *cell.borrow_mut() = None;
@@ -96,7 +89,7 @@ pub fn install(input: &str) -> BraceTrackerGuard {
     BraceTrackerGuard { active: true }
 }
 
-pub fn on_char(input: &str, matched: char) {
+pub fn on_char(input: Span<'_>, matched: char) {
     TRACKER.with(|cell| {
         if let Some(state) = cell.borrow_mut().as_mut() {
             match matched {

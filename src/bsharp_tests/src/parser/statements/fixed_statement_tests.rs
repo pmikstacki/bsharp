@@ -1,6 +1,6 @@
 // Tests for parsing fixed statements
 
-use syntax::nodes::statements::FixedStatement;
+use syntax::statements::FixedStatement;
 
 fn parse_fixed_statement(code: &str) -> Result<FixedStatement, String> {
     Err(format!("Parser not yet implemented: {}", code))

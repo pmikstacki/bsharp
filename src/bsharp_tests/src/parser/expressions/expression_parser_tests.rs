@@ -1,7 +1,7 @@
 use parser::expressions::primary_expression_parser::*;
-use syntax::nodes::expressions::expression::Expression;
-use syntax::nodes::expressions::literal::Literal;
-use syntax::nodes::types::Type;
+use syntax::expressions::expression::Expression;
+use syntax::expressions::literal::Literal;
+use syntax::types::Type;
 // Adjust if parse_expression is not public or in a submodule
 
 #[test]

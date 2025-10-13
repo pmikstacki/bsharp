@@ -1,10 +1,10 @@
 // Tests for parsing file-scoped namespace declarations
 
 use parser::expressions::declarations::file_scoped_namespace_parser::parse_file_scoped_namespace_declaration;
-use syntax::nodes::declarations::{
+use syntax::declarations::{
     namespace_declaration::NamespaceBodyDeclaration, FileScopedNamespaceDeclaration, UsingDirective,
 };
-use syntax::nodes::identifier::Identifier;
+use syntax::identifier::Identifier;
 
 fn parse_file_scoped_namespace_declaration_helper(
     code: &str,

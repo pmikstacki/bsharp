@@ -1,9 +1,9 @@
 // Tests for advanced type system features
 
 use parser::types::type_parser::parse_type_expression;
-use syntax::nodes::identifier::Identifier;
-use syntax::nodes::types::CallingConvention;
-use syntax::nodes::types::{PrimitiveType, Type};
+use syntax::identifier::Identifier;
+use syntax::types::CallingConvention;
+use syntax::types::{PrimitiveType, Type};
 
 // Helper function for unwrapping syntax results
 fn parse_test(code: &str) -> Result<Type, String> {

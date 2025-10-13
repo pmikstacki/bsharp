@@ -2,7 +2,7 @@
 
 use parser::bsharp::parse_csharp_source;
 use syntax::ast::TopLevelDeclaration;
-use syntax::nodes::declarations::NamespaceBodyDeclaration;
+use syntax::declarations::NamespaceBodyDeclaration;
 
 #[test]
 fn test_nested_namespace_two_levels() {

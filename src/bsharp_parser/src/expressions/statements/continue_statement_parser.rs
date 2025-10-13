@@ -1,28 +1,29 @@
-use crate::syntax::nodes::statements::statement::Statement;
 // Parser for continue statements
 
 use crate::parser::keywords::flow_control_keywords::kw_continue;
+use crate::syntax::comment_parser::ws;
 use crate::syntax::errors::BResult;
-use crate::syntax::nodes::statements::*;
-use crate::syntax::parser_helpers::{bchar, bws, context};
 
 use nom::combinator::cut;
 use nom::combinator::map;
-use nom::sequence::terminated;
+use nom::sequence::{terminated, delimited};
+use nom::character::complete::char as nom_char;
+use nom::Parser;
+use nom_supreme::ParserExt;
+use syntax::statements::statement::Statement;
+use syntax::statements::ContinueStatement;
 
 // Original parse_continue_statement function from statement_parser.rs
-pub fn parse_continue_statement(input: &str) -> BResult<&str, Statement> {
-    context(
-        "continue statement (expected 'continue' keyword followed by semicolon)",
-        map(
-            terminated(
-                context("continue keyword (expected 'continue')", kw_continue()),
-                context(
-                    "semicolon after continue statement (expected ';')",
-                    cut(bws(bchar(';'))),
-                ),
-            ),
-            |_| Statement::Continue(ContinueStatement),
+pub fn parse_continue_statement<'a>(input: Span<'a>) -> BResult<'a, Statement> {
+    map(
+        terminated(
+            kw_continue().context("continue keyword"),
+            cut(delimited(ws, nom_char(';'), ws))
+                .context("semicolon after continue statement"),
         ),
-    )(input)
+        |_| Statement::Continue(ContinueStatement),
+    )
+    .context("continue statement")
+    .parse(input)
 }
+use crate::syntax::span::Span;

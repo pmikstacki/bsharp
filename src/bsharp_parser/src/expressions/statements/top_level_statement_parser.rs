@@ -1,8 +1,10 @@
 use crate::parser::statement_parser::{parse_statement, parse_statement_ws};
 use crate::syntax::comment_parser::ws;
 use crate::syntax::errors::BResult;
-use crate::syntax::nodes::statements::statement::Statement;
-use crate::syntax::parser_helpers::context;
+use syntax::statements::statement::Statement;
+
+use nom::Parser;
+use nom_supreme::ParserExt;
 
 /// Parse top-level statements (C# 9+)
 /// Top-level statements are statements that appear at the top level of a file,
@@ -16,10 +18,8 @@ use crate::syntax::parser_helpers::context;
 /// var name = "Alice";
 /// Console.WriteLine($"Hello, {name}!");
 /// ```
-pub fn parse_top_level_statements(input: &str) -> BResult<&str, Vec<Statement>> {
-    context(
-        "top-level statements (expected zero or more valid statements at the file root)",
-        |mut current| {
+pub fn parse_top_level_statements<'a>(input: Span<'a>) -> BResult<'a, Vec<Statement>> {
+    (|mut current| {
             let mut statements = Vec::new();
             loop {
                 let (after_ws, _) = ws(current)?;
@@ -48,15 +48,17 @@ pub fn parse_top_level_statements(input: &str) -> BResult<&str, Vec<Statement>> 
                 }
             }
             Ok((current, statements))
-        },
-    )(input)
+        }
+    )
+    .context("top-level statements")
+    .parse(input)
 }
 
 /// Parse a single top-level statement
 /// This is a wrapper around parse_statement that handles top-level context
-pub fn parse_top_level_statement(input: &str) -> BResult<&str, Statement> {
-    context(
-        "top-level statement (expected a valid statement at the file root)",
-        parse_statement_ws,
-    )(input)
+pub fn parse_top_level_statement<'a>(input: Span<'a>) -> BResult<'a, Statement> {
+    parse_statement_ws
+        .context("top-level statement")
+        .parse(input)
 }
+use crate::syntax::span::Span;

@@ -3,7 +3,7 @@ use crate::statements::statement::Statement;
 use serde::{Deserialize, Serialize};
 // Use StatementSyntax from the same directory's mod.rs
 
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct IfStatement {
     pub condition: Expression,
     // An if statement's body is typically a block, but can be a single statement.

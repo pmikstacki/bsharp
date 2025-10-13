@@ -1,8 +1,8 @@
 // Tests for parsing nested type declarations
 
 use parser::expressions::declarations::type_declaration_parser::parse_class_declaration;
-use syntax::nodes::declarations::{ClassBodyDeclaration, ClassDeclaration, Modifier};
-use syntax::nodes::identifier::Identifier;
+use syntax::declarations::{ClassBodyDeclaration, ClassDeclaration, Modifier};
+use syntax::identifier::Identifier;
 
 fn parse_class_declaration_helper(code: &str) -> Result<ClassDeclaration, String> {
     match parse_class_declaration(code) {

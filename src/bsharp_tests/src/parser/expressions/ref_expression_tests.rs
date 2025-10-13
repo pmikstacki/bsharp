@@ -3,10 +3,10 @@
 use parser::expressions::primary_expression_parser::parse_expression;
 use parser::expressions::ref_expression_parser::parse_ref_expression;
 use parser::types::type_parser::parse_type_expression;
-use syntax::nodes::expressions::expression::Expression;
-use syntax::nodes::expressions::literal::Literal;
-use syntax::nodes::identifier::Identifier;
-use syntax::nodes::types::{PrimitiveType, Type};
+use syntax::expressions::expression::Expression;
+use syntax::expressions::literal::Literal;
+use syntax::identifier::Identifier;
+use syntax::types::{PrimitiveType, Type};
 
 fn parse_ref_expr_helper(code: &str) -> Result<Expression, String> {
     match parse_ref_expression(code) {

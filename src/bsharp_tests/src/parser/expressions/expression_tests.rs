@@ -1,6 +1,6 @@
 // Tests for parsing general expressions (ExpressionSyntax enum)
 
-use syntax::nodes::expressions::Expression;
+use syntax::expressions::Expression;
 
 use parser::expressions::primary_expression_parser::parse_expression as real_parse_expression;
 
@@ -22,7 +22,7 @@ fn test_binary_operator_precedence() {
 #[test]
 fn test_assignment_expression() {
     let expr = parse_expression("x = 42").unwrap();
-    use syntax::nodes::expressions::Expression;
+    use syntax::expressions::Expression;
     match expr {
         Expression::Assignment(assign) => {
             assert!(matches!(*assign.target, Expression::Variable(_)));
@@ -63,7 +63,7 @@ fn test_parse_integer_literal() {
     let expr = parse_expression(input).unwrap();
     assert_eq!(
         expr,
-        Expression::Literal(syntax::nodes::expressions::Literal::Integer(123))
+        Expression::Literal(syntax::expressions::Literal::Integer(123))
     );
 }
 
@@ -73,9 +73,7 @@ fn test_parse_identifier() {
     let expr = parse_expression(input).unwrap();
     assert_eq!(
         expr,
-        Expression::Variable(syntax::nodes::identifier::Identifier::new(
-            "myVariable"
-        ))
+        Expression::Variable(syntax::identifier::Identifier::new("myVariable"))
     );
 }
 
@@ -93,6 +91,6 @@ fn test_parse_parenthesized_expression() {
     // Parenthesized expressions just resolve to the inner expression
     assert_eq!(
         expr,
-        Expression::Literal(syntax::nodes::expressions::Literal::Integer(42))
+        Expression::Literal(syntax::expressions::Literal::Integer(42))
     );
 }

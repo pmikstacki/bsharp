@@ -1,35 +1,47 @@
 use crate::parser::expressions::primary_expression_parser::parse_expression;
 use crate::syntax::errors::BResult;
-use crate::syntax::nodes::expressions::expression::{CollectionElement, Expression};
-use crate::syntax::parser_helpers::{bchar, bseparated_list0, bws, context};
+use crate::syntax::comment_parser::ws;
 
 use nom::{
-    combinator::{cut, map},
+    combinator::map,
     sequence::preceded,
 };
+use nom::character::complete::char as nom_char;
+use nom::sequence::delimited;
+use nom::Parser;
+use syntax::expressions::expression::CollectionElement;
+use syntax::expressions::Expression;
+use crate::syntax::list_parser::parse_delimited_list0;
 
 /// Parse a collection expression: [elem1, ..spread, elem2]
 /// Elements can be regular expressions or spread elements starting with `..` followed by an expression
-pub fn parse_collection_expression(input: &str) -> BResult<&str, Expression> {
+pub fn parse_collection_expression(input: Span) -> BResult<Expression> {
     parse_collection_expression_or_brackets(input)
 }
 
 /// Actual entry point with proper bracket handling
-pub fn parse_collection_expression_or_brackets(input: &str) -> BResult<&str, Expression> {
-    context("collection expression (expected '[' elements ']')", |i| {
-        let (i, _) = bws(bchar('['))(i)?;
-        let (i, elements) = bseparated_list0(bws(bchar(',')), bws(parse_collection_element))(i)?;
-        let (i, _) = cut(bws(bchar(']')))(i)?;
-        Ok((i, Expression::Collection(elements)))
-    })(input)
+pub fn parse_collection_expression_or_brackets(input: Span) -> BResult<Expression> {
+    fn parse_elements(i: Span) -> BResult<Vec<CollectionElement>> {
+        parse_delimited_list0::<_, _, _, _, char, CollectionElement, char, char, CollectionElement>(
+            |i| delimited(ws, nom_char('['), ws).parse(i),
+            |i| delimited(ws, parse_collection_element, ws).parse(i),
+            |i| delimited(ws, nom_char(','), ws).parse(i),
+            |i| delimited(ws, nom_char(']'), ws).parse(i),
+            false,
+            true,
+        )
+        .parse(i)
+    }
+    map(parse_elements, Expression::Collection).parse(input)
 }
 
-fn parse_collection_element(input: &str) -> BResult<&str, CollectionElement> {
+fn parse_collection_element(input: Span) -> BResult<CollectionElement> {
     // Try spread element: `.. expr`
-    if let Ok((rest, _)) = bws(preceded(bchar('.'), bchar('.')))(input) {
-        let (rest, expr) = bws(parse_expression)(rest)?;
+    if let Ok((rest, _)) = delimited(ws, preceded(nom_char('.'), nom_char('.')), ws).parse(input) {
+        let (rest, expr) = delimited(ws, parse_expression, ws).parse(rest)?;
         return Ok((rest, CollectionElement::Spread(expr)));
     }
     // Otherwise a normal expression
-    map(bws(parse_expression), CollectionElement::Expr)(input)
+    map(delimited(ws, parse_expression, ws), CollectionElement::Expr).parse(input)
 }
+use crate::syntax::span::Span;

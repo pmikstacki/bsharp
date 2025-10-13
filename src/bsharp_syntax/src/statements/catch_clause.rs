@@ -4,7 +4,7 @@ use crate::statements::statement::Statement;
 use crate::types::Type;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct CatchClause {
     // Optional: Specific exception type to catch (e.g., System.Exception)
     // If None, it's a general catch block (catch { ... })

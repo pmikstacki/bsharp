@@ -1,65 +1,46 @@
 # Analysis Traversal Guide
 
-This guide explains how to traverse BSharp AST statements and expressions in analysis passes.
+This guide explains how to traverse BSharp AST statements and expressions in analysis passes using the current framework.
 
 - Source files:
-  - `src/analysis/visitors.rs`
-  - `src/analysis/passes/*`
+  - `src/bsharp_analysis/src/framework/walker.rs`
+  - `src/bsharp_analysis/src/framework/query/`
+  - `src/bsharp_analysis/src/passes/*`
 
 ## Statement traversal
 
-Use `walk_statements()` to visit every `Statement` node in depth-first order.
+Use `AstWalker` for single-pass traversal with the `Visit` trait, or the `Query` API for typed filtering.
+
+Example using `AstWalker` + `Visit` to count `if` statements:
 
 ```rust
-use bsharp::analysis::visitors::walk_statements;
-use bsharp::syntax::nodes::statements::statement::Statement;
+use bsharp_analysis::framework::{AstWalker, Visit, NodeRef};
+use bsharp_analysis::framework::AnalysisSession;
 
-fn count_returns(stmt: &Statement) -> usize {
-    let mut count = 0;
-    walk_statements(stmt, &mut |s| {
-        if matches!(s, Statement::Return(_)) { count += 1; }
-    });
-    count
+struct CountIfs { pub ifs: usize }
+impl Visit for CountIfs {
+    fn enter(&mut self, node: &NodeRef, _session: &mut AnalysisSession) {
+        if let NodeRef::Statement(s) = node {
+            if matches!(s, bsharp_analysis::syntax::statements::statement::Statement::If(_)) {
+                self.ifs += 1;
+            }
+        }
+    }
 }
 ```
-
-`walk_statements()` currently descends into:
-- If (then and else), For, ForEach, While, DoWhile
-- Using (optional body)
-- Switch (all sections' statements)
-- Try (try block, each catch block, finally block)
-- Block (all nested statements)
-
-Add additional variants as needed when the language surface expands.
 
 ## Expression traversal
 
-Use `walk_expressions()` to visit every `Expression` node in depth-first order.
+Use `Query` for typed expression searches:
 
 ```rust
-use bsharp::analysis::visitors::walk_expressions;
-use bsharp::syntax::nodes::expressions::expression::Expression;
+use bsharp_analysis::framework::Query;
+use bsharp_analysis::framework::NodeRef;
 
-fn has_await(expr: &Expression) -> bool {
-    let mut found = false;
-    walk_expressions(expr, &mut |e| {
-        if matches!(e, Expression::Await(_)) { found = true; }
-    });
-    found
-}
+let await_count = Query::from(NodeRef::CompilationUnit(&cu))
+    .of::<bsharp_analysis::syntax::expressions::await_expression::AwaitExpression>()
+    .count();
 ```
-
-`walk_expressions()` descends into common expression shapes:
-- Composite: Tuple, AnonymousObject, Collection, New (arguments, initializer)
-- Indexing / Index
-- Conditional (condition, then, else)
-- MemberAccess, NullConditional, Invocation
-- Assignment (left, right)
-- Unary/PostfixUnary, Binary
-- Lambda (expression body) and switch-like constructs (SwitchExpression)
-- Patterns in `is` and query expressions
-
-Like statement traversal, extend the walker conservatively when new expression kinds are added.
 
 ## Putting it together
 
@@ -71,7 +52,7 @@ Example (from `ControlFlowPass` pattern):
 
 ```rust
 use bsharp::analysis::artifacts::cfg::{ControlFlowIndex, MethodControlFlowStats};
-use bsharp::syntax::nodes::statements::statement::Statement;
+use bsharp::syntax::statements::statement::Statement;
 
 fn stats_for_method(body: Option<&Statement>) -> MethodControlFlowStats {
     let complexity = match body { Some(s) => 1 + decision_points(s), None => 1 };
@@ -82,7 +63,7 @@ fn stats_for_method(body: Option<&Statement>) -> MethodControlFlowStats {
 }
 ```
 
-See `src/analysis/passes/control_flow.rs` for concrete implementations of `decision_points`, `calc_max_nesting`, and exit/statement counters that leverage the structure of `Statement`.
+See `src/bsharp_analysis/src/metrics/shared.rs` for helpers like `decision_points`, `max_nesting_of`, `count_statements` and `src/bsharp_analysis/src/passes/control_flow.rs` for usage.
 
 ## Tips
 

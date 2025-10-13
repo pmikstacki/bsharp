@@ -29,6 +29,12 @@ pub struct AnalysisConfig {
     pub churn_include_merges: bool,
     #[serde(default)]
     pub churn_max_commits: Option<u32>,
+
+    // PE loading (Phase 1)
+    #[serde(default)]
+    pub pe_reference_paths: Vec<String>,
+    #[serde(default)]
+    pub pe_references: Vec<String>,
 }
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
@@ -71,6 +77,9 @@ impl AnalysisContext {
         ctx.config.churn_period_days = 90;
         ctx.config.churn_include_merges = false;
         ctx.config.churn_max_commits = Some(10_000);
+        // PE defaults
+        ctx.config.pe_reference_paths = Vec::new();
+        ctx.config.pe_references = Vec::new();
         ctx
     }
 
@@ -93,10 +102,7 @@ impl AnalysisContext {
         let length = length.min(self.source.len().saturating_sub(start));
 
         // Binary search for the line containing start
-        let line_idx = match self.line_starts.binary_search(&start) {
-            Ok(idx) => idx,
-            Err(idx) => idx.saturating_sub(1),
-        };
+        let line_idx = self.line_starts.binary_search(&start).unwrap_or_else(|idx| idx.saturating_sub(1));
         let line_start = *self.line_starts.get(line_idx).unwrap_or(&0);
         let column0 = start.saturating_sub(line_start);
 

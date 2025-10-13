@@ -1,11 +1,11 @@
 // Tests for parsing property declarations
 
 use parser::expressions::declarations::property_declaration_parser::parse_property_declaration;
-use syntax::nodes::declarations::{Modifier, PropertyAccessor, PropertyDeclaration};
-use syntax::nodes::expressions::expression::Expression;
-use syntax::nodes::identifier::Identifier;
-use syntax::nodes::statements::statement::Statement;
-use syntax::nodes::types::{PrimitiveType, Type};
+use syntax::declarations::{Modifier, PropertyAccessor, PropertyDeclaration};
+use syntax::expressions::expression::Expression;
+use syntax::identifier::Identifier;
+use syntax::statements::statement::Statement;
+use syntax::types::{PrimitiveType, Type};
 
 fn parse_property_decl_test(code: &str) -> Result<PropertyDeclaration, String> {
     match parse_property_declaration(code) {
@@ -74,7 +74,7 @@ fn test_parse_getter_with_body() {
     match &parsed.accessors[0] {
         PropertyAccessor::Get { body, .. } => assert!(matches!(
             body,
-            Some(syntax::nodes::statements::statement::Statement::Block(_))
+            Some(syntax::statements::statement::Statement::Block(_))
         )),
         _ => panic!("expected get accessor"),
     }

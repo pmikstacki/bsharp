@@ -8,14 +8,14 @@ The BSharp analysis framework provides a comprehensive suite of tools for analyz
 The analysis framework is organized into specialized modules:
 
 ```
-src/analysis/
-├── control_flow/     # Control flow analysis
-├── dependencies/     # Dependency tracking and analysis
-├── metrics/          # Code metrics collection
-├── naming/           # Naming convention analysis
-├── navigation/       # Advanced AST navigation
-├── quality/          # Code quality assessment
-└── types/           # Type system analysis
+src/bsharp_analysis/src/
+├── framework/        # pipeline, passes, registry, session, walker, query
+├── passes/           # indexing, metrics, control_flow, dependencies, reporting
+├── artifacts/        # symbols, cfg, dependencies
+├── metrics/          # AstAnalysis data + shared helpers
+├── rules/            # naming, semantic, control_flow_smells
+├── report/           # AnalysisReport assembly
+└── (no quality module)
 ```
 
 ## Analysis Capabilities
@@ -56,12 +56,10 @@ Comprehensive metrics collection across multiple dimensions:
 - Code Duplication Detection
 - Halstead Metrics
 
-### Quality Analysis
+### Rules
 
-- **Code Smells**: Detect common anti-patterns
-- **Best Practices**: Validate adherence to coding standards
-- **Performance Issues**: Identify potential performance problems
-- **Security Concerns**: Basic security-related code analysis
+- **Naming Rules**: Basic naming convention checks
+- **Control Flow Smells**: Simple flow-related smells (e.g., deep nesting warnings)
 
 ### Type Analysis
 
@@ -81,31 +79,31 @@ let parser = Parser::new();
 let compilation_unit = parser.parse(source_code)?;
 ```
 
-### 2. Analysis Selection
+### 2. Pipeline
 
-Choose specific analyzers based on requirements:
+Use the framework pipeline with registered passes. Per-file runs populate typed artifacts; a final `AnalysisReport` summarizes metrics, control flow, and dependencies.
 
 ```rust
-// Individual analyzers
-let metrics_analyzer = MetricsAnalyzer::new();
-let dependency_analyzer = DependencyAnalyzer::new();
+use bsharp_analysis::framework::pipeline::AnalyzerPipeline;
+use bsharp_analysis::framework::session::AnalysisSession;
+use bsharp_analysis::{AnalysisContext, AnalysisReport};
+use bsharp_parser::facade::Parser;
 
-// Composite analysis
-let quality_analyzer = QualityAnalyzer::new()
-    .with_metrics()
-    .with_dependencies()
-    .with_control_flow();
+let parser = Parser::new();
+let (cu, spans) = parser.parse_with_spans(source_code)?;
+let ctx = AnalysisContext::new("file.cs", source_code);
+let mut session = AnalysisSession::new(ctx, spans);
+AnalyzerPipeline::run_with_defaults(&cu, &mut session);
+let report: AnalysisReport = AnalysisReport::from_session(&session);
 ```
 
 ### 3. Analysis Execution
 
-Run analysis on the AST:
+The pipeline runs passes in phases:
 
-```rust
-let metrics = metrics_analyzer.analyze(&compilation_unit);
-let dependencies = dependency_analyzer.analyze(&compilation_unit);
-let quality_report = quality_analyzer.analyze(&compilation_unit);
-```
+- Index → Metrics (local) → Global (CFG, deps) → Semantic rules → Reporting
+
+Artifacts (e.g., `AstAnalysis`, `ControlFlowIndex`, `DependencyGraph`) are inserted into the `AnalysisSession` and consumed by reporting.
 
 ### 4. Results Processing
 
@@ -116,9 +114,9 @@ Analysis results are structured for easy consumption:
 println!("Cyclomatic Complexity: {}", metrics.cyclomatic_complexity);
 println!("Lines of Code: {}", metrics.lines_of_code);
 
-// Quality assessment
-for issue in quality_report.issues {
-    println!("Issue: {} at line {}", issue.message, issue.line_number);
+// Diagnostics
+for d in &report.diagnostics.diagnostics {
+    println!("{}: {}", d.code, d.message);
 }
 ```
 

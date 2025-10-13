@@ -1,6 +1,6 @@
 // Tests for parsing catch clauses
 
-use syntax::nodes::statements::CatchClause;
+use syntax::statements::CatchClause;
 
 fn parse_catch_clause(code: &str) -> Result<CatchClause, String> {
     Err(format!("Parser not yet implemented: {}", code))

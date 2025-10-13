@@ -23,6 +23,7 @@ pub mod unsafe_statement;
 pub mod using_statement;
 pub mod while_statement;
 pub mod yield_statement;
+pub mod block_statement;
 
 pub use break_statement::BreakStatement;
 pub use catch_clause::CatchClause;

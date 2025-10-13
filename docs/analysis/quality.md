@@ -1,12 +1,12 @@
-# Code Quality Analysis
+# Code Quality Analysis (deprecated / future plan)
 
-The code quality analysis system detects code smells, anti-patterns, and violations of best practices in C# code.
+This document describes a future-facing design for quality analysis. The legacy `quality` module and `QualityPass` were removed from the codebase in the purge. Consider this document a proposal/reference for potential future work rather than current implementation.
 
 ---
 
 ## Overview
 
-**Location:** `src/analysis/quality/`
+**Location:** (module removed)
 
 Quality analysis provides:
 - Code smell detection

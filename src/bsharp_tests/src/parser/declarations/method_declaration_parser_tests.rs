@@ -1,15 +1,11 @@
 // Tests for parsing method/constructor declarations: constructor initializers
 
 use parser::expressions::declarations::type_declaration_parser::parse_class_declaration;
-use syntax::nodes::declarations::{
-    ClassBodyDeclaration, ConstructorDeclaration, ConstructorInitializer,
-};
-use syntax::nodes::expressions::expression::Expression;
-use syntax::nodes::expressions::literal::Literal;
+use syntax::declarations::{ClassBodyDeclaration, ConstructorDeclaration, ConstructorInitializer};
+use syntax::expressions::expression::Expression;
+use syntax::expressions::literal::Literal;
 
-fn parse_class(
-    code: &str,
-) -> Result<syntax::nodes::declarations::ClassDeclaration, String> {
+fn parse_class(code: &str) -> Result<syntax::declarations::ClassDeclaration, String> {
     match parse_class_declaration(code) {
         Ok((rest, decl)) if rest.trim().is_empty() => Ok(decl),
         Ok((rest, _)) => Err(format!("Unparsed input: {}", rest)),

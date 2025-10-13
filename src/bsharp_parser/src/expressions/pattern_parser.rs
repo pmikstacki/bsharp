@@ -4,10 +4,9 @@ use crate::parser::keywords::contextual_misc_keywords::kw_var;
 use crate::parser::keywords::pattern_keywords::{kw_and, kw_not, kw_or};
 use crate::parser::types::type_parser::parse_type_expression;
 use crate::syntax::errors::BResult;
-use crate::syntax::nodes::expressions::expression::Expression;
-use crate::syntax::nodes::expressions::pattern::*;
-use crate::syntax::parser_helpers::{bws, keyword, parse_delimited_list0};
+use crate::syntax::comment_parser::ws;
 
+use nom::Parser;
 use nom::combinator::cut;
 use nom::{
     branch::alt,
@@ -16,18 +15,23 @@ use nom::{
     combinator::{map, opt},
     sequence::{delimited, preceded, tuple},
 };
+use syntax::expressions::{
+    Expression, ListPatternElement, MemberAccessExpression, Pattern, PatternDesignation,
+    PropertySubpattern, RelationalOperator,
+};
+use crate::syntax::list_parser::parse_delimited_list0;
 
 /// Parse any pattern - entry point for pattern parsing
-pub fn parse_pattern(input: &str) -> BResult<&str, Pattern> {
+pub fn parse_pattern(input: Span) -> BResult<Pattern> {
     parse_logical_or_pattern(input)
 }
 
 /// Parse logical OR patterns (pattern1 or pattern2)
-fn parse_logical_or_pattern(input: &str) -> BResult<&str, Pattern> {
+fn parse_logical_or_pattern(input: Span) -> BResult<Pattern> {
     // Use fold_many0 approach from Nom docs for left-associative parsing
     let (input, first) = parse_logical_and_pattern(input)?;
     let (input, rest) =
-        nom::multi::many0(preceded(bws(kw_or()), parse_logical_and_pattern))(input)?;
+        nom::multi::many0(preceded(nom::sequence::delimited(ws, kw_or(), ws), parse_logical_and_pattern)).parse(input)?;
 
     // Fold the results into a left-associative tree
     Ok((
@@ -39,10 +43,10 @@ fn parse_logical_or_pattern(input: &str) -> BResult<&str, Pattern> {
 }
 
 /// Parse logical AND patterns (pattern1 and pattern2)
-fn parse_logical_and_pattern(input: &str) -> BResult<&str, Pattern> {
+fn parse_logical_and_pattern(input: Span) -> BResult<Pattern> {
     // Use fold_many0 approach from Nom docs for left-associative parsing
     let (input, first) = parse_not_pattern(input)?;
-    let (input, rest) = nom::multi::many0(preceded(bws(kw_and()), parse_not_pattern))(input)?;
+    let (input, rest) = nom::multi::many0(preceded(nom::sequence::delimited(ws, kw_and(), ws), parse_not_pattern)).parse(input)?;
 
     // Fold the results into a left-associative tree
     Ok((
@@ -54,96 +58,97 @@ fn parse_logical_and_pattern(input: &str) -> BResult<&str, Pattern> {
 }
 
 /// Parse NOT patterns (not pattern)
-fn parse_not_pattern(input: &str) -> BResult<&str, Pattern> {
-    alt((
-        map(
-            preceded(kw_not(), bws(parse_relational_pattern)),
-            |pattern| Pattern::Not(Box::new(pattern)),
-        ),
-        parse_relational_pattern,
-    ))(input)
+fn parse_not_pattern(input: Span) -> BResult<Pattern> {
+    if let Ok((i2, pat)) = map(
+        preceded(kw_not(), nom::sequence::delimited(ws, parse_relational_pattern, ws)),
+        |pattern| Pattern::Not(Box::new(pattern)),
+    )
+    .parse(input)
+    {
+        return Ok((i2, pat));
+    }
+    parse_relational_pattern(input)
 }
 
 /// Parse relational patterns (> value, < value, etc.)
-fn parse_relational_pattern(input: &str) -> BResult<&str, Pattern> {
-    alt((
-        // Relational patterns: > 5, <= 10, etc.
-        map(
-            tuple((
-                alt((
-                    map(tag(">="), |_| RelationalOperator::GreaterThanOrEqual),
-                    map(tag("<="), |_| RelationalOperator::LessThanOrEqual),
-                    map(nom_char('>'), |_| RelationalOperator::GreaterThan),
-                    map(nom_char('<'), |_| RelationalOperator::LessThan),
-                    map(tag("=="), |_| RelationalOperator::Equal),
-                    map(tag("!="), |_| RelationalOperator::NotEqual),
-                )),
-                bws(parse_pattern_expression), // Use specialized pattern expression syntax
+fn parse_relational_pattern(input: Span) -> BResult<Pattern> {
+    if let Ok((i2, out)) = map(
+        tuple((
+            alt((
+                map(tag(">="), |_| RelationalOperator::GreaterThanOrEqual),
+                map(tag("<="), |_| RelationalOperator::LessThanOrEqual),
+                map(nom_char('>'), |_| RelationalOperator::GreaterThan),
+                map(nom_char('<'), |_| RelationalOperator::LessThan),
+                map(tag("=="), |_| RelationalOperator::Equal),
+                map(tag("!="), |_| RelationalOperator::NotEqual),
             )),
-            |(op, value)| Pattern::Relational { op, value },
-        ),
-        parse_primary_pattern,
-    ))(input)
+            nom::sequence::delimited(ws, parse_pattern_expression, ws), // Use specialized pattern expression syntax
+        )),
+        |(op, value)| Pattern::Relational { op, value },
+    )
+    .parse(input)
+    {
+        return Ok((i2, out));
+    }
+    parse_primary_pattern(input)
 }
 
 /// Parse simple expressions for use in patterns (NO RECURSION)
 /// This follows Nom's principle of small, specific parser
-fn parse_pattern_expression(input: &str) -> BResult<&str, Expression> {
-    alt((
-        // Literals first (most specific)
-        map(parse_literal, Expression::Literal),
-        // Identifiers (variables)
-        map(parse_identifier, Expression::Variable),
-        // Parenthesized pattern expressions
-        delimited(
-            bws(nom_char('(')),
-            parse_pattern_expression,
-            cut(bws(nom_char(')'))),
-        ),
-        // Member access: obj.member (but no further nesting)
-        map(
-            tuple((parse_identifier, preceded(nom_char('.'), parse_identifier))),
-            |(obj, member)| {
-                Expression::MemberAccess(Box::new(
-                crate::syntax::nodes::expressions::member_access_expression::MemberAccessExpression {
-                    object: Box::new(Expression::Variable(obj)),
-                    member,
-                }
-            ))
-            },
-        ),
-    ))(input)
+fn parse_pattern_expression(input: Span) -> BResult<Expression> {
+    if let Ok(r) = map(parse_literal, Expression::Literal).parse(input) { return Ok(r); }
+    if let Ok(r) = map(parse_identifier, Expression::Variable).parse(input) { return Ok(r); }
+    if let Ok(r) = delimited(
+        nom::sequence::delimited(ws, nom_char('('), ws),
+        parse_pattern_expression,
+        cut(nom::sequence::delimited(ws, nom_char(')'), ws)),
+    )
+    .parse(input)
+    { return Ok(r); }
+    map(
+        tuple((
+            parse_identifier,
+            preceded(nom::sequence::delimited(ws, nom_char('.'), ws), parse_identifier),
+        )),
+        |(obj, member)| {
+            Expression::MemberAccess(Box::new(MemberAccessExpression {
+                object: Box::new(Expression::Variable(obj)),
+                member,
+            }))
+        },
+    )
+    .parse(input)
 }
 
 /// Parse primary patterns (leaf patterns)
-fn parse_primary_pattern(input: &str) -> BResult<&str, Pattern> {
-    alt((
-        parse_discard_pattern,
-        parse_var_pattern,
-        parse_list_pattern,
-        parse_property_pattern,
-        parse_positional_pattern,
-        parse_tuple_pattern,
-        parse_type_pattern,
-        parse_parenthesized_pattern, // Add back parenthesized patterns
-        parse_constant_pattern,      // This now uses parse_pattern_expression
-    ))(input)
+fn parse_primary_pattern(input: Span) -> BResult<Pattern> {
+    if let Ok(r) = parse_discard_pattern(input) { return Ok(r); }
+    if let Ok(r) = parse_var_pattern(input) { return Ok(r); }
+    if let Ok(r) = parse_list_pattern(input) { return Ok(r); }
+    if let Ok(r) = parse_property_pattern(input) { return Ok(r); }
+    if let Ok(r) = parse_positional_pattern(input) { return Ok(r); }
+    if let Ok(r) = parse_tuple_pattern(input) { return Ok(r); }
+    if let Ok(r) = parse_type_pattern(input) { return Ok(r); }
+    if let Ok(r) = parse_parenthesized_pattern(input) { return Ok(r); }
+    parse_constant_pattern(input)
 }
 
 /// Parse discard pattern (_)
-fn parse_discard_pattern(input: &str) -> BResult<&str, Pattern> {
-    map(keyword("_"), |_| Pattern::Discard)(input)
+fn parse_discard_pattern(input: Span) -> BResult<Pattern> {
+    map(nom::sequence::delimited(ws, nom_char('_'), ws), |_| Pattern::Discard)
+        .parse(input)
 }
 
 /// Parse var pattern (var identifier)
-fn parse_var_pattern(input: &str) -> BResult<&str, Pattern> {
-    map(preceded(kw_var(), bws(parse_identifier)), Pattern::Var)(input)
+fn parse_var_pattern(input: Span) -> BResult<Pattern> {
+    map(preceded(kw_var(), nom::sequence::delimited(ws, parse_identifier, ws)), Pattern::Var)
+        .parse(input)
 }
 
 /// Parse type pattern (Type or Type designation)
-fn parse_type_pattern(input: &str) -> BResult<&str, Pattern> {
+fn parse_type_pattern(input: Span) -> BResult<Pattern> {
     let (input, target_type) = parse_type_expression(input)?;
-    let (input, designation) = opt(bws(parse_pattern_designation))(input)?;
+    let (input, designation) = opt(|i| nom::sequence::delimited(ws, parse_pattern_designation, ws).parse(i)).parse(input)?;
 
     Ok((
         input,
@@ -155,23 +160,22 @@ fn parse_type_pattern(input: &str) -> BResult<&str, Pattern> {
 }
 
 /// Parse pattern designation (variable or discard)
-fn parse_pattern_designation(input: &str) -> BResult<&str, PatternDesignation> {
-    alt((
-        map(keyword("_"), |_| PatternDesignation::Discard),
-        map(parse_identifier, PatternDesignation::Variable),
-        map(
-            delimited(
-                bws(nom_char('(')),
-                parse_pattern_designation,
-                bws(nom_char(')')),
-            ),
-            |des| PatternDesignation::Parenthesized(Box::new(des)),
+fn parse_pattern_designation(input: Span) -> BResult<PatternDesignation> {
+    if let Ok(r) = map(nom::sequence::delimited(ws, nom_char('_'), ws), |_| PatternDesignation::Discard).parse(input) { return Ok(r); }
+    if let Ok(r) = map(parse_identifier, PatternDesignation::Variable).parse(input) { return Ok(r); }
+    map(
+        delimited(
+            nom::sequence::delimited(ws, nom_char('('), ws),
+            parse_pattern_designation,
+            nom::sequence::delimited(ws, nom_char(')'), ws),
         ),
-    ))(input)
+        |des| PatternDesignation::Parenthesized(Box::new(des)),
+    )
+    .parse(input)
 }
 
 /// Parse list pattern [pattern1, pattern2, ..]
-fn parse_list_pattern(input: &str) -> BResult<&str, Pattern> {
+fn parse_list_pattern(input: Span) -> BResult<Pattern> {
     map(
         parse_delimited_list0::<_, _, _, _, char, ListPatternElement, char, char, ListPatternElement>(
             nom_char('['),
@@ -182,11 +186,12 @@ fn parse_list_pattern(input: &str) -> BResult<&str, Pattern> {
             true,
         ),
         |patterns| Pattern::List { patterns },
-    )(input)
+    )
+    .parse(input)
 }
 
 /// Parse list pattern element (pattern or slice)
-fn parse_list_pattern_element(input: &str) -> BResult<&str, ListPatternElement> {
+fn parse_list_pattern_element(input: Span) -> BResult<ListPatternElement> {
     alt((
         // Slice pattern: .. or ..pattern
         map(
@@ -195,31 +200,33 @@ fn parse_list_pattern_element(input: &str) -> BResult<&str, ListPatternElement> 
         ),
         // Regular pattern
         map(parse_pattern, ListPatternElement::Pattern),
-    ))(input)
+    ))
+    .parse(input)
 }
 
 /// Parse tuple pattern - handle carefully to avoid conflicts
-fn parse_tuple_pattern(input: &str) -> BResult<&str, Pattern> {
+fn parse_tuple_pattern(input: Span) -> BResult<Pattern> {
     // Only parse as tuple if we have multiple patterns separated by commas
     map(
         delimited(
-            bws(nom_char('(')),
+            nom::sequence::delimited(ws, nom_char('('), ws),
             tuple((
                 parse_pattern,
-                nom::multi::many1(preceded(bws(nom_char(',')), bws(parse_pattern))),
-                opt(bws(nom_char(','))), // Optional trailing comma
+                nom::multi::many1(preceded(nom::sequence::delimited(ws, nom_char(','), ws), nom::sequence::delimited(ws, parse_pattern, ws))),
+                opt(nom::sequence::delimited(ws, nom_char(','), ws)), // Optional trailing comma
             )),
-            cut(bws(nom_char(')'))),
+            cut(nom::sequence::delimited(ws, nom_char(')'), ws)),
         ),
         |(first, mut rest, _)| {
             rest.insert(0, first);
             Pattern::Tuple(rest)
         },
-    )(input)
+    )
+    .parse(input)
 }
 
 /// Parse property pattern { Property1: pattern1, Property2: pattern2 }
-fn parse_property_pattern(input: &str) -> BResult<&str, Pattern> {
+fn parse_property_pattern(input: Span) -> BResult<Pattern> {
     map(
         tuple((
             opt(parse_type_expression), // Optional type annotation
@@ -246,26 +253,28 @@ fn parse_property_pattern(input: &str) -> BResult<&str, Pattern> {
             type_name,
             subpatterns,
         },
-    )(input)
+    )
+    .parse(input)
 }
 
 /// Parse property subpattern (PropertyName: pattern)
-fn parse_property_subpattern(input: &str) -> BResult<&str, PropertySubpattern> {
+fn parse_property_subpattern(input: Span) -> BResult<PropertySubpattern> {
     map(
-        tuple((
-            bws(parse_identifier),
-            bws(nom_char(':')),
-            bws(parse_pattern),
-        )),
+        (
+            nom::sequence::delimited(ws, parse_identifier, ws),
+            nom::sequence::delimited(ws, nom_char(':'), ws),
+            nom::sequence::delimited(ws, parse_pattern, ws),
+        ),
         |(member_name, _, pattern)| PropertySubpattern {
             member_name,
             pattern,
         },
-    )(input)
+    )
+    .parse(input)
 }
 
 /// Parse positional pattern Type(pattern1, pattern2, ...)
-fn parse_positional_pattern(input: &str) -> BResult<&str, Pattern> {
+fn parse_positional_pattern(input: Span) -> BResult<Pattern> {
     map(
         tuple((
             parse_type_expression,
@@ -282,19 +291,22 @@ fn parse_positional_pattern(input: &str) -> BResult<&str, Pattern> {
             type_name: Some(type_name),
             subpatterns,
         },
-    )(input)
+    )
+    .parse(input)
 }
 
 /// Parse parenthesized pattern ((pattern))
-fn parse_parenthesized_pattern(input: &str) -> BResult<&str, Pattern> {
+fn parse_parenthesized_pattern(input: Span) -> BResult<Pattern> {
     // Only parse as parenthesized if it's a single pattern, not a tuple
     map(
-        delimited(bws(nom_char('(')), parse_pattern, cut(bws(nom_char(')')))),
+        delimited(nom::sequence::delimited(ws, nom_char('('), ws), parse_pattern, cut(nom::sequence::delimited(ws, nom_char(')'), ws))),
         |pattern| Pattern::Parenthesized(Box::new(pattern)),
-    )(input)
+    )
+    .parse(input)
 }
 
 /// Parse constant pattern (literal value) - NO RECURSION
-fn parse_constant_pattern(input: &str) -> BResult<&str, Pattern> {
-    map(parse_pattern_expression, Pattern::Constant)(input)
+fn parse_constant_pattern(input: Span) -> BResult<Pattern> {
+    map(parse_pattern_expression, Pattern::Constant).parse(input)
 }
+use crate::syntax::span::Span;

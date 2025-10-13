@@ -1,6 +1,6 @@
 // Tests for parsing unary operators
 
-use syntax::nodes::expressions::UnaryOperator;
+use syntax::expressions::UnaryOperator;
 
 fn parse_unary_operator(code: &str) -> Result<UnaryOperator, String> {
     Err(format!("Parser not yet implemented: {}", code))

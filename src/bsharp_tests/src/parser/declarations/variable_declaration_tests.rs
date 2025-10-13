@@ -2,10 +2,10 @@ use parser::expressions::declarations::variable_declaration_parser::{
     parse_local_variable_declaration, parse_variable_declarator,
 };
 use parser::syntax::test_helpers::parse_input_unwrap;
-use syntax::nodes::expressions::expression::Expression;
-use syntax::nodes::expressions::literal::Literal;
-use syntax::nodes::identifier::Identifier;
-use syntax::nodes::types::Type;
+use syntax::expressions::expression::Expression;
+use syntax::expressions::literal::Literal;
+use syntax::identifier::Identifier;
+use syntax::types::Type;
 
 #[test]
 fn test_parse_single_variable_declarator_no_initializer() {
@@ -45,7 +45,7 @@ fn test_parse_local_variable_declaration_single_declarator() {
     assert!(remaining_input.is_empty());
     assert_eq!(
         decl.declaration_type,
-        Type::Primitive(syntax::nodes::types::PrimitiveType::Int)
+        Type::Primitive(syntax::types::PrimitiveType::Int)
     );
     assert_eq!(decl.declarators.len(), 1);
     assert_eq!(
@@ -64,7 +64,7 @@ fn test_parse_local_variable_declaration_multiple_declarators() {
     assert!(remaining_input.is_empty());
     assert_eq!(
         decl.declaration_type,
-        Type::Primitive(syntax::nodes::types::PrimitiveType::String)
+        Type::Primitive(syntax::types::PrimitiveType::String)
     );
     assert_eq!(decl.declarators.len(), 2);
     assert_eq!(

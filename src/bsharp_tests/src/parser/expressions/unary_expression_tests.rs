@@ -1,8 +1,8 @@
 // Tests for prefix unary expressions
 
 use parser::expressions::primary_expression_parser::parse_expression;
-use syntax::nodes::expressions::expression::Expression;
-use syntax::nodes::expressions::UnaryOperator;
+use syntax::expressions::expression::Expression;
+use syntax::expressions::UnaryOperator;
 
 fn assert_unary(op_str: &str, expected: UnaryOperator) {
     let (rest, expr) = parse_expression(op_str).expect("parse ok");

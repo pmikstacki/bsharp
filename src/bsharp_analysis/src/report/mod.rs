@@ -19,6 +19,7 @@ pub struct AnalysisReport {
     pub metrics: Option<AstAnalysis>,
     pub cfg: Option<CfgSummary>,
     pub deps: Option<DependencySummary>,
+    // Quality report removed in purge; reserved for future use
     pub workspace_warnings: Vec<String>,
     pub workspace_errors: Vec<String>,
     #[serde(skip)]

@@ -1,20 +1,20 @@
 use crate::parser::keywords::modifier_keywords::kw_unsafe;
 use crate::parser::statement_parser::parse_statement_ws;
+use crate::syntax::comment_parser::ws;
 use crate::syntax::errors::BResult;
-use crate::syntax::nodes::statements::statement::Statement;
-use crate::syntax::nodes::statements::unsafe_statement::UnsafeStatement;
-use crate::syntax::parser_helpers::bws;
 
 use nom::Parser;
-use nom::{combinator::map, sequence::tuple};
+use nom::{combinator::map, sequence::{tuple, delimited}};
 use nom_supreme::ParserExt;
+use syntax::statements::statement::Statement;
+use syntax::statements::UnsafeStatement;
 
 /// Parse an unsafe statement: unsafe { ... }
-pub fn parse_unsafe_statement(input: &str) -> BResult<&str, Statement> {
+pub fn parse_unsafe_statement<'a>(input: Span<'a>) -> BResult<'a, Statement> {
     map(
         tuple((
             kw_unsafe().context("unsafe keyword"),
-            nom::combinator::cut(bws(parse_statement_ws)).context("unsafe body"),
+            nom::combinator::cut(delimited(ws, parse_statement_ws, ws)).context("unsafe body"),
         )),
         |(_, body)| {
             Statement::Unsafe(Box::new(UnsafeStatement {
@@ -25,3 +25,4 @@ pub fn parse_unsafe_statement(input: &str) -> BResult<&str, Statement> {
     .context("unsafe statement")
     .parse(input)
 }
+use crate::syntax::span::Span;

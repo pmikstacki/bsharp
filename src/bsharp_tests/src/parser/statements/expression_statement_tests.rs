@@ -6,13 +6,13 @@ use nom::Finish;
 use parser::expressions::statements::expression_statement_parser::parse_expression_statement;
 use parser::statement_parser::parse_statement;
 use parser::syntax::test_helpers::parse_all;
-use syntax::nodes::expressions::assignment_expression::AssignmentExpression;
-use syntax::nodes::expressions::expression::Expression;
-use syntax::nodes::expressions::invocation_expression::InvocationExpression;
-use syntax::nodes::expressions::literal::Literal;
-use syntax::nodes::expressions::BinaryOperator;
-use syntax::nodes::identifier::Identifier;
-use syntax::nodes::statements::statement::Statement;
+use syntax::expressions::assignment_expression::AssignmentExpression;
+use syntax::expressions::expression::Expression;
+use syntax::expressions::invocation_expression::InvocationExpression;
+use syntax::expressions::literal::Literal;
+use syntax::expressions::BinaryOperator;
+use syntax::identifier::Identifier;
+use syntax::statements::statement::Statement;
 
 #[test]
 fn test_parse_expression_statement() {

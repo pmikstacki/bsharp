@@ -1,7 +1,7 @@
 use crate::expressions::Expression;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub enum Literal {
     Integer(i64),
     IntegerWithSuffix(i64, IntegerSuffix),
@@ -17,20 +17,20 @@ pub enum Literal {
     RawString(String),   // Raw string literal: """text"""
 }
 
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub enum IntegerSuffix {
     U,
     L,
     UL,
 }
 
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct InterpolatedStringLiteral {
     pub parts: Vec<InterpolatedStringPart>,
     pub is_verbatim: bool, // true for $@"..." or @$(...)  (raw/verbatim indicator)
 }
 
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub enum InterpolatedStringPart {
     Text(String),
     Interpolation {

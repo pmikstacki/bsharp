@@ -1,9 +1,7 @@
 use crate::parser::identifier_parser::parse_identifier;
 use crate::parser::keywords::expression_keywords::kw_nameof;
 use crate::syntax::errors::BResult;
-use crate::syntax::nodes::expressions::expression::Expression;
-use crate::syntax::nodes::expressions::nameof_expression::NameofExpression;
-use crate::syntax::parser_helpers::{bchar, bws, context};
+use crate::syntax::comment_parser::ws;
 
 use nom::combinator::cut;
 use nom::{
@@ -11,10 +9,14 @@ use nom::{
     multi::separated_list1,
     sequence::{delimited, preceded},
 };
+use nom::character::complete::char as nom_char;
+use nom::Parser;
+use nom_supreme::ParserExt;
+use syntax::expressions::{Expression, NameofExpression};
 
 /// Parse a qualified name like "MyClass.MyMethod" or just "MyMethod"
-fn parse_qualified_name(input: &str) -> BResult<&str, Expression> {
-    map(separated_list1(bchar('.'), parse_identifier), |parts| {
+fn parse_qualified_name(input: Span) -> BResult<Expression> {
+    map(separated_list1(nom_char('.'), parse_identifier), |parts| {
         if parts.len() == 1 {
             Expression::Variable(parts.into_iter().next().unwrap())
         } else {
@@ -22,35 +24,36 @@ fn parse_qualified_name(input: &str) -> BResult<&str, Expression> {
             let mut expr = Expression::Variable(parts[0].clone());
             for part in parts.into_iter().skip(1) {
                 expr = Expression::MemberAccess(Box::new(
-                        crate::syntax::nodes::expressions::member_access_expression::MemberAccessExpression {
-                            object: Box::new(expr),
-                            member: part,
-                        }
-                    ));
+                    syntax::expressions::member_access_expression::MemberAccessExpression {
+                        object: Box::new(expr),
+                        member: part,
+                    },
+                ));
             }
             expr
         }
-    })(input)
+    })
+    .parse(input)
 }
 
 /// Parse a nameof expression: `nameof(identifier)` or `nameof(Class.Member)`
-pub fn parse_nameof_expression(input: &str) -> BResult<&str, Expression> {
-    context(
-        "nameof expression",
-        map(
-            preceded(
-                kw_nameof(),
-                delimited(
-                    bws(bchar('(')),
-                    bws(parse_qualified_name),
-                    cut(bws(bchar(')'))),
-                ),
+pub fn parse_nameof_expression<'a>(input: Span<'a>) -> BResult<'a, Expression> {
+    map(
+        preceded(
+            kw_nameof(),
+            delimited(
+                delimited(ws, nom_char('('), ws),
+                delimited(ws, parse_qualified_name, ws),
+                cut(delimited(ws, nom_char(')'), ws)),
             ),
-            |expr| {
-                Expression::Nameof(Box::new(NameofExpression {
-                    expr: Box::new(expr),
-                }))
-            },
         ),
-    )(input)
+        |expr| {
+            Expression::Nameof(Box::new(NameofExpression {
+                expr: Box::new(expr),
+            }))
+        },
+    )
+    .context("nameof expression")
+    .parse(input)
 }
+use crate::syntax::span::Span;

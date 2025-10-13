@@ -14,84 +14,78 @@ use crate::parser::identifier_parser::parse_identifier;
 use crate::parser::keywords::contextual_misc_keywords::{kw_base, kw_this};
 use crate::parser::types::type_parser::parse_type_expression;
 use crate::syntax::errors::BResult;
-use crate::syntax::nodes::expressions::expression::Expression;
-use crate::syntax::nodes::identifier::Identifier;
-use crate::syntax::parser_helpers::parse_delimited_list0;
-use crate::syntax::parser_helpers::{bws, context};
+use crate::syntax::comment_parser::ws;
+use nom_supreme::ParserExt;
 
 use crate::parser::expressions::assignment_expression_parser;
 use nom::{
     branch::alt,
     combinator::{map, peek},
+    Parser,
+    sequence::delimited,
 };
+use syntax::expressions::Expression;
+use syntax::types::Type;
+use syntax::Identifier;
+use crate::syntax::list_parser::parse_delimited_list0;
+use crate::syntax::span::Span;
+
 /// Parse any expression - the main entry point for expression parsing
-pub fn parse_expression(input: &str) -> BResult<&str, Expression> {
-    context(
-        "expression",
-        bws(assignment_expression_parser::parse_assignment_expression_or_higher),
-    )(input)
+pub fn parse_expression<'a>(input: Span<'a>) -> BResult<'a, Expression> {
+    delimited(ws, assignment_expression_parser::parse_assignment_expression_or_higher, ws)
+        .context("expression")
+        .parse(input)
 }
 
-pub fn parse_primary_expression(input: &str) -> BResult<&str, Expression> {
-    context(
-        "primary expression",
-        alt((
-            // Parenthesized or tuple must be tried very early to avoid other branches
-            // (like switch basic expression) consuming '(' with a cut
-            parse_paren_or_tuple_primary,
-            // Collection expressions starting with '[' must be before variable/member/indexing
-            parse_collection_expression_or_brackets,
-            // Generic type name primary (e.g., Result<User>) used for static member access
-            parse_generic_name_primary,
-            // LINQ Query expressions - must come before variables/identifiers
-            parse_query_expression,
-            // Switch expressions - must come before variables/identifiers
-            parse_switch_expression,
-            // Throw expressions - must come before variables/identifiers
-            parse_throw_expression,
-            // Nameof expressions - must come before variables/identifiers
-            parse_nameof_expression,
-            // Default expressions - must come before variables/identifiers
-            parse_default_expression,
-            // Literals
-            map(parse_literal, Expression::Literal),
-            // this keyword
-            map(kw_this(), |_| Expression::This),
-            // base keyword
-            map(kw_base(), |_| Expression::Base),
-            // New expressions (includes anonymous object creation)
-            parse_new_expression,
-            // Lambda expressions
-            parse_lambda_or_anonymous_method,
-            // Variables/identifiers
-            map(parse_identifier, Expression::Variable),
-            // Stackalloc expressions
-            parse_stackalloc_expression,
-        )),
-    )(input)
+pub fn parse_primary_expression<'a>(input: Span<'a>) -> BResult<'a, Expression> {
+    nom::combinator::map(alt((
+        // Parenthesized or tuple must be tried very early to avoid other branches
+        // (like switch basic expression) consuming '(' with a cut
+        parse_paren_or_tuple_primary,
+        // Collection expressions starting with '[' must be before variable/member/indexing
+        parse_collection_expression_or_brackets,
+        // Generic type name primary (e.g., Result<User>) used for static member access
+        parse_generic_name_primary,
+        // LINQ Query expressions - must come before variables/identifiers
+        parse_query_expression,
+        // Switch expressions - must come before variables/identifiers
+        parse_switch_expression,
+        // Throw expressions - must come before variables/identifiers
+        parse_throw_expression,
+        // Nameof expressions - must come before variables/identifiers
+        parse_nameof_expression,
+        // Default expressions - must come before variables/identifiers
+        parse_default_expression,
+        // Literals
+        map(parse_literal, Expression::Literal),
+        // this keyword
+        map(kw_this(), |_| Expression::This),
+        // base keyword
+        map(kw_base(), |_| Expression::Base),
+        // New expressions (includes anonymous object creation)
+        parse_new_expression,
+        // Lambda expressions
+        parse_lambda_or_anonymous_method,
+        // Variables/identifiers
+        map(parse_identifier, Expression::Variable),
+        // Stackalloc expressions
+        parse_stackalloc_expression,
+    )), |v| v)
+    .context("primary expression")
+    .parse(input)
 }
 
 /// Parse a generic type name as a primary expression for static member access.
 /// Example: `Result<User>` (treated as a name for `Result` so that `Result<User>.Success(...)` parses)
-fn parse_generic_name_primary(input: &str) -> BResult<&str, Expression> {
+fn parse_generic_name_primary(input: Span) -> BResult<Expression> {
     use nom::character::complete::char as nom_char;
     use nom::sequence::tuple;
 
     // Parse Identifier '<' type-args '>' and ensure a '.' follows (without consuming it)
     map(
         tuple((
-            bws(parse_identifier),
-            parse_delimited_list0::<
-                _,
-                _,
-                _,
-                _,
-                char,
-                crate::syntax::nodes::types::Type,
-                char,
-                char,
-                crate::syntax::nodes::types::Type,
-            >(
+            delimited(ws, parse_identifier, ws),
+            parse_delimited_list0::<_, _, _, _, char, Type, char, char, Type>(
                 nom_char('<'),
                 parse_type_expression,
                 nom_char(','),
@@ -100,8 +94,9 @@ fn parse_generic_name_primary(input: &str) -> BResult<&str, Expression> {
                 false,
             ),
             // Require a '.' next (static member access), but don't consume it
-            peek(bws(nom_char('.'))),
+            peek(delimited(ws, nom_char('.'), ws)),
         )),
         |(id, _, _)| Expression::Variable(Identifier { name: id.name }),
-    )(input)
+    )
+    .parse(input)
 }

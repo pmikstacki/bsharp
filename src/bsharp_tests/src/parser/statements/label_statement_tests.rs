@@ -1,6 +1,6 @@
 // Tests for parsing label statements
 
-use syntax::nodes::statements::LabelStatement;
+use syntax::statements::LabelStatement;
 
 fn parse_label_statement(code: &str) -> Result<LabelStatement, String> {
     Err(format!("Parser not yet implemented: {}", code))

@@ -3,9 +3,9 @@
 
 use parser::expressions::statements::foreach_statement_parser::parse_foreach_statement;
 use parser::syntax::test_helpers::parse_all;
-use syntax::nodes::expressions::expression::Expression;
-use syntax::nodes::statements::statement::Statement;
-use syntax::nodes::types::{PrimitiveType, Type};
+use syntax::expressions::expression::Expression;
+use syntax::statements::statement::Statement;
+use syntax::types::{PrimitiveType, Type};
 
 #[test]
 fn test_parse_foreach_statement() {

@@ -3,7 +3,7 @@ use crate::types::{Parameter, Type};
 use crate::Identifier;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct OperatorDeclaration {
     pub attributes: Vec<Attribute>,
     pub modifiers: Vec<Modifier>,
@@ -13,7 +13,7 @@ pub struct OperatorDeclaration {
     pub body: String, // body or signature
 }
 
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub enum OperatorKind {
     Unary(Identifier), // op symbol
     Binary(Identifier),
@@ -24,7 +24,7 @@ pub enum OperatorKind {
     // This variant uses the lifetime to satisfy the compiler
 }
 
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub enum ConversionKind {
     Implicit,
     Explicit,

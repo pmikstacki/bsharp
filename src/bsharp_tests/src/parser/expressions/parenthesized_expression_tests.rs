@@ -2,8 +2,8 @@
 
 use parser::expressions::primary_expression_parser::parse_expression;
 use parser::syntax::test_helpers::expect_ok;
-use syntax::nodes::expressions::expression::Expression;
-use syntax::nodes::expressions::literal::Literal;
+use syntax::expressions::expression::Expression;
+use syntax::expressions::literal::Literal;
 
 #[test]
 fn parenthesized_literal() {

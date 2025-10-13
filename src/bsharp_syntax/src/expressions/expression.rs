@@ -12,7 +12,7 @@ use crate::types::Type;
 use crate::Identifier;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub enum Expression {
     AnonymousObject(AnonymousObjectCreationExpression),
     Tuple(TupleExpression),
@@ -77,13 +77,13 @@ pub enum Expression {
     Collection(Vec<CollectionElement>),      // Collection expressions: [a, ..b]
 }
 
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub enum CollectionElement {
     Expr(Expression),
     Spread(Expression),
 }
 
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub enum WithInitializerEntry {
     Property {
         name: String,
@@ -95,13 +95,13 @@ pub enum WithInitializerEntry {
     },
 }
 
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct SwitchExpression {
     pub expression: Expression,
     pub arms: Vec<SwitchExpressionArm>,
 }
 
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct SwitchExpressionArm {
     pub pattern: Pattern,
     pub when_clause: Option<Expression>,

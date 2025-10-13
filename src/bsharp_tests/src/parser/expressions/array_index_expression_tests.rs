@@ -1,6 +1,6 @@
 // Tests for parsing array index expressions
 
-use syntax::nodes::expressions::ArrayIndexExpression;
+use syntax::expressions::ArrayIndexExpression;
 
 fn parse_array_index_expr(code: &str) -> Result<ArrayIndexExpression, String> {
     Err(format!("Parser not yet implemented: {}", code))

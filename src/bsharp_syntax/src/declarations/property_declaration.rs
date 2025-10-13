@@ -6,7 +6,7 @@ use crate::Identifier;
 use serde::{Deserialize, Serialize};
 
 /// Represents a getter or setter accessors for a property
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub enum PropertyAccessor {
     Get {
         modifiers: Vec<Modifier>,
@@ -26,7 +26,7 @@ pub enum PropertyAccessor {
 }
 
 /// Represents a C# property declaration
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct PropertyDeclaration {
     pub attributes: Vec<AttributeList>,
     pub modifiers: Vec<Modifier>, // Added modifiers

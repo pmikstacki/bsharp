@@ -1,9 +1,9 @@
 use parser::expressions::primary_expression_parser::parse_expression;
-use syntax::nodes::expressions::expression::Expression;
-use syntax::nodes::expressions::literal::Literal;
-use syntax::nodes::expressions::range_expression::{IndexExpression, RangeExpression};
-use syntax::nodes::expressions::UnaryOperator;
-use syntax::nodes::identifier::Identifier;
+use syntax::expressions::expression::Expression;
+use syntax::expressions::literal::Literal;
+use syntax::expressions::range_expression::{IndexExpression, RangeExpression};
+use syntax::expressions::UnaryOperator;
+use syntax::identifier::Identifier;
 
 fn check_expr(input: &str, expected_expr: Expression) {
     let (_, expr) = parse_expression(input)
@@ -79,16 +79,16 @@ fn test_range_with_complex_expressions() {
         r#"GetStart()..array.Length"#,
         Expression::Range(Box::new(RangeExpression {
             start: Some(Box::new(Expression::Invocation(Box::new(
-                syntax::nodes::expressions::invocation_expression::InvocationExpression {
+                syntax::expressions::invocation_expression::InvocationExpression {
                     callee: Box::new(Expression::Variable(Identifier::new("GetStart"))),
                     arguments: vec![],
-                }
+                },
             )))),
             end: Some(Box::new(Expression::MemberAccess(Box::new(
-                syntax::nodes::expressions::member_access_expression::MemberAccessExpression {
+                syntax::expressions::member_access_expression::MemberAccessExpression {
                     object: Box::new(Expression::Variable(Identifier::new("array"))),
                     member: Identifier::new("Length"),
-                }
+                },
             )))),
             is_inclusive: false,
         })),
@@ -151,12 +151,12 @@ fn test_index_from_end_complex_expression() {
         Expression::Index(Box::new(IndexExpression {
             value: Box::new(Expression::Binary {
                 left: Box::new(Expression::MemberAccess(Box::new(
-                    syntax::nodes::expressions::member_access_expression::MemberAccessExpression {
+                    syntax::expressions::member_access_expression::MemberAccessExpression {
                         object: Box::new(Expression::Variable(Identifier::new("arr"))),
                         member: Identifier::new("Length"),
-                    }
+                    },
                 ))),
-                op: syntax::nodes::expressions::BinaryOperator::Subtract,
+                op: syntax::expressions::BinaryOperator::Subtract,
                 right: Box::new(Expression::Literal(Literal::Integer(1))),
             }),
         })),
@@ -180,7 +180,7 @@ fn test_range_in_array_indexer() {
     check_expr(
         r#"myArray[x..y]"#,
         Expression::Indexing(Box::new(
-            syntax::nodes::expressions::indexing_expression::IndexingExpression {
+            syntax::expressions::indexing_expression::IndexingExpression {
                 target: Box::new(Expression::Variable(Identifier::new("myArray"))),
                 index: Box::new(Expression::Range(Box::new(RangeExpression {
                     start: Some(Box::new(Expression::Variable(Identifier::new("x")))),
@@ -198,7 +198,7 @@ fn test_index_in_array_indexer() {
     check_expr(
         r#"myArray[^1]"#,
         Expression::Indexing(Box::new(
-            syntax::nodes::expressions::indexing_expression::IndexingExpression {
+            syntax::expressions::indexing_expression::IndexingExpression {
                 target: Box::new(Expression::Variable(Identifier::new("myArray"))),
                 index: Box::new(Expression::Index(Box::new(IndexExpression {
                     value: Box::new(Expression::Literal(Literal::Integer(1))),
@@ -214,19 +214,17 @@ fn test_range_as_argument() {
     check_expr(
         r#"MyMethod(x..y)"#,
         Expression::Invocation(Box::new(
-            syntax::nodes::expressions::invocation_expression::InvocationExpression {
+            syntax::expressions::invocation_expression::InvocationExpression {
                 callee: Box::new(Expression::Variable(Identifier::new("MyMethod"))),
-                arguments: vec![
-                    syntax::nodes::expressions::invocation_expression::Argument {
-                        name: None,
-                        modifier: None,
-                        expr: Expression::Range(Box::new(RangeExpression {
-                            start: Some(Box::new(Expression::Variable(Identifier::new("x")))),
-                            end: Some(Box::new(Expression::Variable(Identifier::new("y")))),
-                            is_inclusive: false,
-                        })),
-                    },
-                ],
+                arguments: vec![syntax::expressions::invocation_expression::Argument {
+                    name: None,
+                    modifier: None,
+                    expr: Expression::Range(Box::new(RangeExpression {
+                        start: Some(Box::new(Expression::Variable(Identifier::new("x")))),
+                        end: Some(Box::new(Expression::Variable(Identifier::new("y")))),
+                        is_inclusive: false,
+                    })),
+                }],
             },
         )),
     );
@@ -238,17 +236,15 @@ fn test_index_as_argument() {
     check_expr(
         r#"MyMethod(^idx)"#,
         Expression::Invocation(Box::new(
-            syntax::nodes::expressions::invocation_expression::InvocationExpression {
+            syntax::expressions::invocation_expression::InvocationExpression {
                 callee: Box::new(Expression::Variable(Identifier::new("MyMethod"))),
-                arguments: vec![
-                    syntax::nodes::expressions::invocation_expression::Argument {
-                        name: None,
-                        modifier: None,
-                        expr: Expression::Index(Box::new(IndexExpression {
-                            value: Box::new(Expression::Variable(Identifier::new("idx"))),
-                        })),
-                    },
-                ],
+                arguments: vec![syntax::expressions::invocation_expression::Argument {
+                    name: None,
+                    modifier: None,
+                    expr: Expression::Index(Box::new(IndexExpression {
+                        value: Box::new(Expression::Variable(Identifier::new("idx"))),
+                    })),
+                }],
             },
         )),
     );
@@ -308,7 +304,7 @@ fn test_index_operator_not_prefix() {
         r#"x ^ y"#,
         Expression::Binary {
             left: Box::new(Expression::Variable(Identifier::new("x"))),
-            op: syntax::nodes::expressions::BinaryOperator::BitwiseXor,
+            op: syntax::expressions::BinaryOperator::BitwiseXor,
             right: Box::new(Expression::Variable(Identifier::new("y"))),
         },
     );

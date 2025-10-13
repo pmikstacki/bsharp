@@ -3,7 +3,7 @@ use crate::types::Type;
 use crate::Identifier;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub enum Pattern {
     // Basic patterns
     Declaration {
@@ -60,26 +60,26 @@ pub enum Pattern {
     Parenthesized(Box<Pattern>),
 }
 
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub enum PatternDesignation {
     Variable(Identifier),
     Discard, // _
     Parenthesized(Box<PatternDesignation>),
 }
 
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct PropertySubpattern {
     pub member_name: Identifier,
     pub pattern: Pattern,
 }
 
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub enum ListPatternElement {
     Pattern(Pattern),
     Slice(Option<Pattern>), // .. or ..pattern
 }
 
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub enum RelationalOperator {
     LessThan,           // <
     LessThanOrEqual,    // <=
@@ -90,7 +90,7 @@ pub enum RelationalOperator {
 }
 
 // For switch statements and expressions
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct PatternCase {
     pub pattern: Pattern,
     pub when_clause: Option<Expression>,
@@ -98,7 +98,7 @@ pub struct PatternCase {
 }
 
 // Switch expression specific
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct SwitchExpressionArm {
     pub pattern: Pattern,
     pub when_clause: Option<Expression>,

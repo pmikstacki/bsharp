@@ -3,7 +3,7 @@ use parser::expressions::declarations::type_declaration_parser::{
     parse_class_declaration, parse_interface_declaration, parse_record_declaration,
     parse_struct_declaration, parse_type_declaration,
 };
-use syntax::nodes::declarations::{InterfaceBodyDeclaration, TypeDeclaration};
+use syntax::declarations::{InterfaceBodyDeclaration, TypeDeclaration};
 
 #[test]
 fn test_simple_class() {

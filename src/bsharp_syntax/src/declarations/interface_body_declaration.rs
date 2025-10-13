@@ -4,7 +4,7 @@ use super::{
 use super::{EventDeclaration, IndexerDeclaration, MethodDeclaration, PropertyDeclaration};
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub enum InterfaceBodyDeclaration {
     Method(MethodDeclaration),
     Property(PropertyDeclaration),

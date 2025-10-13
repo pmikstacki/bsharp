@@ -3,10 +3,10 @@
 // Tests originally from src/parser/statements/for_statement_parser.rs
 #[test]
 fn test_parse_for_statement_logic() {
-    use syntax::nodes::expressions::expression::Expression;
+    use syntax::expressions::expression::Expression;
 
-    use syntax::nodes::declarations::LocalVariableDeclaration;
-    use syntax::nodes::statements::{statement::Statement, ForInitializer};
+    use syntax::declarations::LocalVariableDeclaration;
+    use syntax::statements::{statement::Statement, ForInitializer};
 
     use parser::expressions::statements::for_statement_parser::parse_for_statement;
 

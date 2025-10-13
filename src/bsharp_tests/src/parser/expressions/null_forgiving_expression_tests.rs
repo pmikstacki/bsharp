@@ -1,6 +1,6 @@
 // Tests for parsing null-forgiving expressions
 
-use syntax::nodes::expressions::NullForgivingExpression;
+use syntax::expressions::NullForgivingExpression;
 
 fn parse_null_forgiving_expr(code: &str) -> Result<NullForgivingExpression, String> {
     Err(format!("Parser not yet implemented: {}", code))

@@ -1,59 +1,62 @@
 use crate::parser::expressions::conditional_expression_parser;
 use crate::syntax::errors::BResult;
-use crate::syntax::nodes::expressions::{AssignmentExpression, BinaryOperator, Expression};
-use crate::syntax::parser_helpers::{bchar, bws};
+
+use crate::syntax::comment_parser::ws;
 use nom::branch::alt;
 use nom::combinator::{map, opt};
 use nom::sequence::tuple;
+use syntax::expressions::{AssignmentExpression, BinaryOperator, Expression};
+use crate::syntax::span::Span;
+use nom::character::complete::char as nom_char;
+use nom::Parser;
 
-pub(crate) fn parse_assignment_expression_or_higher(input: &str) -> BResult<&str, Expression> {
+pub(crate) fn parse_assignment_expression_or_higher(input: Span) -> BResult<Expression> {
     // Try to parse a conditional expression first
     let (input, left) =
         conditional_expression_parser::parse_conditional_expression_or_higher(input)?;
 
     // Check for assignment operators - order matters, longer operators first
-    let (input, assignment_op) = opt(bws(alt((
+    let (input, assignment_op) = opt(
+        nom::sequence::delimited(ws, alt((
         // Multi-character assignment operators first
-        map(
-            tuple((bchar('>'), bchar('>'), bchar('>'), bchar('='))),
-            |_| BinaryOperator::UnsignedRightShiftAssign,
-        ),
-        map(tuple((bchar('?'), bchar('?'), bchar('='))), |_| {
+        map(tuple((nom_char('>'), nom_char('>'), nom_char('>'), nom_char('='))), |_| BinaryOperator::UnsignedRightShiftAssign),
+        map(tuple((nom_char('?'), nom_char('?'), nom_char('='))), |_| {
             BinaryOperator::NullCoalescingAssign
         }),
-        map(tuple((bchar('<'), bchar('<'), bchar('='))), |_| {
+        map(tuple((nom_char('<'), nom_char('<'), nom_char('='))), |_| {
             BinaryOperator::LeftShiftAssign
         }),
-        map(tuple((bchar('>'), bchar('>'), bchar('='))), |_| {
+        map(tuple((nom_char('>'), nom_char('>'), nom_char('='))), |_| {
             BinaryOperator::RightShiftAssign
         }),
-        map(tuple((bchar('+'), bchar('='))), |_| {
+        map(tuple((nom_char('+'), nom_char('='))), |_| {
             BinaryOperator::AddAssign
         }),
-        map(tuple((bchar('-'), bchar('='))), |_| {
+        map(tuple((nom_char('-'), nom_char('='))), |_| {
             BinaryOperator::SubtractAssign
         }),
-        map(tuple((bchar('*'), bchar('='))), |_| {
+        map(tuple((nom_char('*'), nom_char('='))), |_| {
             BinaryOperator::MultiplyAssign
         }),
-        map(tuple((bchar('/'), bchar('='))), |_| {
+        map(tuple((nom_char('/'), nom_char('='))), |_| {
             BinaryOperator::DivideAssign
         }),
-        map(tuple((bchar('%'), bchar('='))), |_| {
+        map(tuple((nom_char('%'), nom_char('='))), |_| {
             BinaryOperator::ModuloAssign
         }),
-        map(tuple((bchar('&'), bchar('='))), |_| {
+        map(tuple((nom_char('&'), nom_char('='))), |_| {
             BinaryOperator::AndAssign
         }),
-        map(tuple((bchar('|'), bchar('='))), |_| {
+        map(tuple((nom_char('|'), nom_char('='))), |_| {
             BinaryOperator::OrAssign
         }),
-        map(tuple((bchar('^'), bchar('='))), |_| {
+        map(tuple((nom_char('^'), nom_char('='))), |_| {
             BinaryOperator::XorAssign
         }),
         // Simple assignment last
-        map(bchar('='), |_| BinaryOperator::Assign),
-    ))))(input)?;
+        map(nom_char('='), |_| BinaryOperator::Assign),
+    )), ws))
+    .parse(input)?;
 
     if let Some(op) = assignment_op {
         // Parse the right side of the assignment (right-associative)

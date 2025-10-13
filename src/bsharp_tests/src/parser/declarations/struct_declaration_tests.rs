@@ -1,6 +1,6 @@
 // Tests for parsing struct declarations
 
-use syntax::nodes::declarations::StructDeclaration;
+use syntax::declarations::StructDeclaration;
 
 fn parse_struct_declaration(code: &str) -> Result<StructDeclaration, String> {
     Err(format!("Parser not yet implemented: {}", code))

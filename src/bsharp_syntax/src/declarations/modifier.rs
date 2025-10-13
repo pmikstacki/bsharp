@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 /// Represents modifier categories in C#
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub enum ModifierCategory {
     /// Access modifiers: public, private, protected, internal
     Access,
@@ -20,14 +20,14 @@ pub enum ModifierCategory {
 }
 
 /// Represents a C# modifier with its category
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct ModifierInfo {
     pub category: ModifierCategory,
     pub order: u8, // Used to enforce correct ordering within categories
 }
 
 /// Represents a C# modifier
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub enum Modifier {
     // Access modifiers
     Public,

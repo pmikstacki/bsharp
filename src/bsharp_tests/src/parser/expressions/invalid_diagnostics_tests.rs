@@ -2,7 +2,7 @@
 
 use nom::Err as NomErr;
 use parser::expressions::primary_expression_parser::parse_expression;
-use syntax::errors::format_error_tree;
+use parser::syntax::errors::format_error_tree;
 
 #[test]
 fn invalid_incomplete_ternary_pretty() {
@@ -11,8 +11,16 @@ fn invalid_incomplete_ternary_pretty() {
         Ok((_rest, _expr)) => panic!("expected error, got Ok"),
         Err(NomErr::Error(tree)) | Err(NomErr::Failure(tree)) => {
             let msg = format_error_tree(input, &tree);
-            assert!(msg.contains("at "), "expected line/col header in diagnostics, got:\n{}", msg);
-            assert!(msg.contains("^"), "expected caret to mark column, got:\n{}", msg);
+            assert!(
+                msg.contains("at "),
+                "expected line/col header in diagnostics, got:\n{}",
+                msg
+            );
+            assert!(
+                msg.contains("^"),
+                "expected caret to mark column, got:\n{}",
+                msg
+            );
         }
         Err(NomErr::Incomplete(_)) => panic!("unexpected Incomplete"),
     }
@@ -25,8 +33,16 @@ fn invalid_dangling_null_conditional_pretty() {
         Ok((_rest, _expr)) => panic!("expected error, got Ok"),
         Err(NomErr::Error(tree)) | Err(NomErr::Failure(tree)) => {
             let msg = format_error_tree(input, &tree);
-            assert!(msg.contains("at "), "expected line/col header in diagnostics, got:\n{}", msg);
-            assert!(msg.contains("^"), "expected caret to mark column, got:\n{}", msg);
+            assert!(
+                msg.contains("at "),
+                "expected line/col header in diagnostics, got:\n{}",
+                msg
+            );
+            assert!(
+                msg.contains("^"),
+                "expected caret to mark column, got:\n{}",
+                msg
+            );
         }
         Err(NomErr::Incomplete(_)) => panic!("unexpected Incomplete"),
     }
@@ -39,8 +55,16 @@ fn invalid_missing_close_paren_in_call_pretty() {
         Ok((_rest, _expr)) => panic!("expected error, got Ok"),
         Err(NomErr::Error(tree)) | Err(NomErr::Failure(tree)) => {
             let msg = format_error_tree(input, &tree);
-            assert!(msg.contains("at "), "expected line/col header in diagnostics, got:\n{}", msg);
-            assert!(msg.contains("^"), "expected caret to mark column, got:\n{}", msg);
+            assert!(
+                msg.contains("at "),
+                "expected line/col header in diagnostics, got:\n{}",
+                msg
+            );
+            assert!(
+                msg.contains("^"),
+                "expected caret to mark column, got:\n{}",
+                msg
+            );
         }
         Err(NomErr::Incomplete(_)) => panic!("unexpected Incomplete"),
     }
@@ -53,8 +77,16 @@ fn invalid_member_trailing_dot_pretty() {
         Ok((_rest, _expr)) => panic!("expected error, got Ok"),
         Err(NomErr::Error(tree)) | Err(NomErr::Failure(tree)) => {
             let msg = format_error_tree(input, &tree);
-            assert!(msg.contains("at "), "expected line/col header in diagnostics, got:\n{}", msg);
-            assert!(msg.contains("^"), "expected caret to mark column, got:\n{}", msg);
+            assert!(
+                msg.contains("at "),
+                "expected line/col header in diagnostics, got:\n{}",
+                msg
+            );
+            assert!(
+                msg.contains("^"),
+                "expected caret to mark column, got:\n{}",
+                msg
+            );
         }
         Err(NomErr::Incomplete(_)) => panic!("unexpected Incomplete"),
     }

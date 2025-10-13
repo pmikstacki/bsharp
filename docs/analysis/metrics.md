@@ -6,7 +6,7 @@ The BSharp metrics system collects comprehensive code metrics during analysis to
 
 ## Overview
 
-**Location:** `src/analysis/metrics/`
+**Location:** `src/bsharp_analysis/src/metrics/`
 
 The metrics system provides:
 - **Basic Metrics** - Lines of code, statement counts, declaration counts
@@ -20,37 +20,15 @@ The metrics system provides:
 ### Core Components
 
 ```
-src/analysis/metrics/
-├── mod.rs                  # Module exports
-├── core.rs                 # Core traits (AstAnalyze, MetricCollector)
-├── basic.rs                # Basic metrics implementation
-├── complexity.rs           # Complexity metrics
-├── maintainability.rs      # Maintainability metrics
-├── visitor.rs              # MetricsVisitor for pipeline
-└── implementations/        # Trait implementations for AST nodes
-    ├── compilation_unit.rs
-    ├── class_declaration.rs
-    ├── method_declaration.rs
-    ├── statement.rs
-    ├── expression.rs
-    └── ...
+src/bsharp_analysis/src/metrics/
+├── core.rs     # AstAnalysis data structure (aggregated counts)
+└── shared.rs   # Helpers: decision_points, max_nesting_of, count_statements, etc.
 ```
 
-### Core Traits
+### How metrics are produced
 
-**AstAnalyze:**
-```rust
-pub trait AstAnalyze {
-    fn analyze(&self) -> AstAnalysis;
-}
-```
-
-**MetricCollector:**
-```rust
-pub trait MetricCollector {
-    fn collect_metrics(&self, analysis: &mut AstAnalysis);
-}
-```
+- `MetricsPass` runs in `Phase::LocalRules` and computes an `AstAnalysis` artifact using the Query API to enumerate declarations, plus lightweight walkers for statement counts.
+- Access `AstAnalysis` from `AnalysisSession` after running the pipeline.
 
 ---
 
@@ -88,25 +66,7 @@ pub struct AstAnalysis {
 }
 ```
 
-**Collection:**
-```rust
-impl AstAnalyze for CompilationUnit {
-    fn analyze(&self) -> AstAnalysis {
-        let mut analysis = AstAnalysis::default();
-        
-        // Count declarations
-        for decl in &self.declarations {
-            match decl {
-                TopLevelDeclaration::Class(_) => analysis.class_count += 1,
-                TopLevelDeclaration::Interface(_) => analysis.interface_count += 1,
-                // ... other types
-            }
-        }
-        
-        analysis
-    }
-}
-```
+<!-- Collection via trait impl removed; metrics are produced by MetricsPass during the pipeline. -->
 
 ### 2. Complexity Metrics
 
@@ -317,7 +277,7 @@ fn calculate_max_nesting(stmt: &Statement, current_depth: usize) -> usize {
 - **4-5:** Consider refactoring
 - **6+:** Refactor recommended
 
-### 3. Maintainability Metrics
+### Planned: Maintainability Metrics
 
 #### Maintainability Index
 
@@ -338,7 +298,8 @@ Where:
 - **65-84:** Moderate maintainability (yellow)
 - **0-64:** Difficult to maintain (red)
 
-**Implementation:**
+Note: Maintainability Index is not implemented in the current codebase. This section outlines potential future work.
+
 ```rust
 pub fn maintainability_index(
     halstead_volume: f64,
@@ -356,7 +317,7 @@ pub fn maintainability_index(
 }
 ```
 
-#### Halstead Metrics
+#### Planned: Halstead Metrics
 
 **Operators and Operands:**
 - **n1** = number of distinct operators
@@ -374,15 +335,8 @@ pub fn maintainability_index(
 - **Time to Program:** `T = E / 18` seconds
 - **Bugs Delivered:** `B = V / 3000`
 
-**Example:**
-```csharp
-int sum = a + b + c;
-```
+Note: Halstead metrics are not implemented in the current codebase.
 
-Operators: `int`, `=`, `+`, `+` (N1 = 4, n1 = 2)
-Operands: `sum`, `a`, `b`, `c` (N2 = 4, n2 = 4)
-
-**Implementation:**
 ```rust
 pub struct HalsteadMetrics {
     pub distinct_operators: usize,    // n1
@@ -431,50 +385,23 @@ impl HalsteadMetrics {
 
 ---
 
-## Metrics Collection Pipeline
+## Metrics Collection in the Pipeline
 
-### MetricsVisitor
-
-**Integration with Analysis Pipeline:**
+`MetricsPass` is registered in the analyzer registry and runs during `Phase::LocalRules`. It enumerates classes/structs/methods via `Query` and uses helpers from `metrics::shared` to compute statement counts, decision points (cyclomatic complexity), and nesting.
 
 ```rust
-pub struct MetricsVisitor {
-    metrics: AstAnalysis,
-}
+use analysis::context::AnalysisContext;
+use analysis::framework::pipeline::AnalyzerPipeline;
+use analysis::framework::session::AnalysisSession;
+use analysis::metrics::AstAnalysis;
+use parser::facade::Parser;
 
-impl Visit for MetricsVisitor {
-    fn enter(&mut self, node: &NodeRef, session: &mut AnalysisSession) {
-        match node {
-            NodeRef::ClassDeclaration(class) => {
-                self.metrics.class_count += 1;
-            }
-            NodeRef::MethodDeclaration(method) => {
-                self.metrics.method_count += 1;
-                
-                // Calculate method complexity
-                let complexity = cyclomatic_complexity(method);
-                self.metrics.total_complexity += complexity;
-                self.metrics.max_complexity = self.metrics.max_complexity.max(complexity);
-                
-                // Calculate nesting depth
-                let nesting = max_nesting_depth(method);
-                self.metrics.max_nesting_depth = self.metrics.max_nesting_depth.max(nesting);
-            }
-            // ... other node types
-            _ => {}
-        }
-    }
-}
-```
-
-**Usage in Pipeline:**
-```rust
-// In AnalyzerPipeline::run_local_rules()
-let mut walker = AstWalker::new();
-walker = walker.with_visitor(Box::new(MetricsVisitor::new()));
-walker.run(cu, session);
-
-// Metrics stored in session.artifacts.metrics
+let source = r#"public class C { public void M() { if (true) { } } }"#;
+let (cu, spans) = Parser::new().parse_with_spans(source)?;
+let mut session = AnalysisSession::new(AnalysisContext::new("file.cs", source), spans);
+AnalyzerPipeline::run_with_defaults(&cu, &mut session);
+let ast = session.artifacts.get::<AstAnalysis>().expect("AstAnalysis");
+println!("classes={}, methods={}, ifs={}", ast.total_classes, ast.total_methods, ast.total_if_statements);
 ```
 
 ---
@@ -572,19 +499,16 @@ println!("Cognitive Complexity: {}", cog);
 println!("Max Nesting Depth: {}", nesting);
 ```
 
-### Analyzing a Compilation Unit
+### Analyzing a file via the pipeline
 
 ```rust
-use bsharp::analysis::metrics::AstAnalyze;
-
-let parser = Parser::new();
-let cu = parser.parse(source_code)?;
-
-let metrics = cu.analyze();
-
-println!("Classes: {}", metrics.class_count);
-println!("Methods: {}", metrics.method_count);
-println!("Total Complexity: {}", metrics.total_complexity);
+let (cu, spans) = Parser::new().parse_with_spans(source_code)?;
+let mut session = AnalysisSession::new(AnalysisContext::new("file.cs", source_code), spans);
+AnalyzerPipeline::run_with_defaults(&cu, &mut session);
+let metrics = session.artifacts.get::<AstAnalysis>().expect("AstAnalysis");
+println!("Classes: {}", metrics.total_classes);
+println!("Methods: {}", metrics.total_methods);
+println!("Cyclomatic Complexity: {}", metrics.cyclomatic_complexity);
 ```
 
 ---

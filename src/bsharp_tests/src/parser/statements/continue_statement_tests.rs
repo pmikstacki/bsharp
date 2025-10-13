@@ -3,8 +3,8 @@
 
 use parser::expressions::statements::continue_statement_parser::parse_continue_statement;
 use parser::syntax::test_helpers::parse_all;
-use syntax::nodes::statements::continue_statement::ContinueStatement;
-use syntax::nodes::statements::statement::Statement;
+use syntax::statements::continue_statement::ContinueStatement;
+use syntax::statements::statement::Statement;
 
 #[test]
 fn test_parse_continue_statement() {

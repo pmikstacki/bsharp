@@ -141,7 +141,7 @@ When adding support for new C# language features:
 1. **Define AST Nodes**: Add node definitions in `src/syntax/nodes/`
 2. **Implement Parser**: Add parser in appropriate `src/parser/` subdirectory
 3. **Add Tests**: Include comprehensive tests in `tests/parser/` directory
-4. **Update Navigation**: Extend navigation traits if needed
+4. **Update Traversal**: Prefer the `framework::query::Query` API for AST enumeration; for statement/expression-heavy logic, use shared helpers or a focused walker.
 5. **Document**: Add documentation for the new feature
 
 Example process for adding a new expression type:

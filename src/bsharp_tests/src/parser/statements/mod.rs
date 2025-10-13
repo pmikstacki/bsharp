@@ -33,3 +33,4 @@ mod unsafe_statement_tests;
 mod using_statement_tests;
 mod while_statement_tests;
 mod yield_statement_tests;
+mod missing_delimiters_tests;

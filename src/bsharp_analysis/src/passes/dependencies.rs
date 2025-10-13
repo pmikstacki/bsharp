@@ -1,16 +1,15 @@
 use crate::artifacts::dependencies::{DependencyGraph, DependencyNodeType, DependencyType};
 use crate::artifacts::symbols::{SymbolId, SymbolIndex};
-use crate::framework::{AnalysisSession, AnalyzerPass, Phase};
-use crate::syntax::ast::{CompilationUnit, TopLevelDeclaration};
-use crate::syntax::nodes::declarations::{
-    ClassBodyDeclaration, ClassDeclaration, NamespaceBodyDeclaration, NamespaceDeclaration,
-};
-use crate::syntax::nodes::expressions::expression::Expression;
-use crate::syntax::nodes::expressions::invocation_expression::InvocationExpression;
-use crate::syntax::nodes::expressions::member_access_expression::MemberAccessExpression;
-use crate::syntax::nodes::identifier::Identifier;
-use crate::syntax::nodes::types::Type;
+use crate::framework::{AnalysisSession, AnalyzerPass, Phase, Query};
+use crate::syntax::ast::CompilationUnit;
+use bsharp_syntax::declarations::{ClassBodyDeclaration, ClassDeclaration};
+use bsharp_syntax::expressions::{Expression, InvocationExpression, MemberAccessExpression};
 use bsharp_syntax::statements::statement::Statement;
+use bsharp_syntax::statements::statement::Statement::{
+    Block, DoWhile, For, If, Switch, Try, While,
+};
+use bsharp_syntax::types::Type;
+use bsharp_syntax::Identifier;
 
 pub struct DependenciesPass;
 
@@ -28,36 +27,11 @@ impl AnalyzerPass for DependenciesPass {
             return;
         };
         let mut graph = DependencyGraph::new();
-        analyze_compilation_unit(cu, &symbols, &mut graph);
+        // Enumerate classes via Query and build dependencies
+        for class in Query::from(cu).of::<ClassDeclaration>() {
+            add_class_dependencies(class, &symbols, &mut graph);
+        }
         session.insert_artifact(graph);
-    }
-}
-
-fn analyze_compilation_unit(
-    cu: &CompilationUnit,
-    symbols: &SymbolIndex,
-    graph: &mut DependencyGraph,
-) {
-    for decl in &cu.declarations {
-        match decl {
-            TopLevelDeclaration::Namespace(ns) => analyze_namespace(ns, symbols, graph),
-            TopLevelDeclaration::Class(class) => add_class_dependencies(class, symbols, graph),
-            _ => {}
-        }
-    }
-}
-
-fn analyze_namespace(
-    ns: &NamespaceDeclaration,
-    symbols: &SymbolIndex,
-    graph: &mut DependencyGraph,
-) {
-    for member in &ns.declarations {
-        match member {
-            NamespaceBodyDeclaration::Namespace(inner) => analyze_namespace(inner, symbols, graph),
-            NamespaceBodyDeclaration::Class(class) => add_class_dependencies(class, symbols, graph),
-            _ => {}
-        }
     }
 }
 
@@ -150,9 +124,8 @@ fn type_name(ty: &Type) -> Option<String> {
 }
 
 fn collect_invocations_from_statement(stmt: &Statement, sink: &mut impl FnMut(String)) {
-    use crate::syntax::nodes::statements::statement::Statement::*;
     match stmt {
-        Expression(expr) => collect_invocations_from_expression(expr, sink),
+        Statement::Expression(expr) => collect_invocations_from_expression(expr, sink),
         If(if_stmt) => {
             collect_invocations_from_expression(&if_stmt.condition, sink);
             collect_invocations_from_statement(&if_stmt.consequence, sink);

@@ -1,11 +1,11 @@
 // Tests for parsing local variable declarations
 
 use parser::expressions::declarations::variable_declaration_parser::parse_local_variable_declaration;
-use syntax::nodes::declarations::local_variable_declaration::VariableDeclarator;
-use syntax::nodes::declarations::LocalVariableDeclaration;
-use syntax::nodes::expressions::{Expression, Literal};
-use syntax::nodes::identifier::Identifier;
-use syntax::nodes::types::{PrimitiveType, Type};
+use syntax::declarations::local_variable_declaration::VariableDeclarator;
+use syntax::declarations::LocalVariableDeclaration;
+use syntax::expressions::{Expression, Literal};
+use syntax::identifier::Identifier;
+use syntax::types::{PrimitiveType, Type};
 
 fn parse_local_var_decl_test(code: &str) -> Result<LocalVariableDeclaration, String> {
     match parse_local_variable_declaration(code) {

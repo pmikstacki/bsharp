@@ -1,13 +1,13 @@
 // Tests for parsing class declarations
 
 use parser::expressions::declarations::type_declaration_parser::parse_class_declaration;
-use syntax::nodes::declarations::{ClassBodyDeclaration, ClassDeclaration, Modifier};
-use syntax::nodes::declarations::{FieldDeclaration, MethodDeclaration};
-use syntax::nodes::expressions::expression::Expression;
-use syntax::nodes::expressions::literal::Literal;
-use syntax::nodes::identifier::Identifier;
-use syntax::nodes::statements::statement::Statement;
-use syntax::nodes::types::{PrimitiveType, Type, TypeParameter, Variance};
+use syntax::declarations::{ClassBodyDeclaration, ClassDeclaration, Modifier};
+use syntax::declarations::{FieldDeclaration, MethodDeclaration};
+use syntax::expressions::expression::Expression;
+use syntax::expressions::literal::Literal;
+use syntax::identifier::Identifier;
+use syntax::statements::statement::Statement;
+use syntax::types::{PrimitiveType, Type, TypeParameter, Variance};
 
 fn parse_class_decl_test(code: &str) -> Result<ClassDeclaration, String> {
     match parse_class_declaration(code) {

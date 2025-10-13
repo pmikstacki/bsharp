@@ -3,7 +3,7 @@
 use parser::expressions::declarations::type_declaration_helpers::{
     at_end_of_body, parse_type_declaration_header,
 };
-use syntax::nodes::declarations::Modifier;
+use syntax::declarations::Modifier;
 
 #[test]
 fn test_base_type_declaration() {

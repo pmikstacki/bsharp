@@ -1,6 +1,6 @@
 // Tests for parsing yield statements
 
-use syntax::nodes::statements::YieldStatement;
+use syntax::statements::YieldStatement;
 
 fn parse_yield_statement(code: &str) -> Result<YieldStatement, String> {
     Err(format!("Parser not yet implemented: {}", code))

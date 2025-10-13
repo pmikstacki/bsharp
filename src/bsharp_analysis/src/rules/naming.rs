@@ -1,7 +1,9 @@
-use crate::framework::{AnalysisSession, NodeRef, Rule, RuleSet};
+use crate::framework::{AnalysisSession, Rule, RuleSet};
 use crate::syntax::ast::TopLevelDeclaration;
 use crate::{DiagnosticBuilder, DiagnosticCode};
 use bsharp_syntax::declarations::ClassBodyDeclaration;
+use bsharp_syntax::declarations::Modifier::Const;
+use crate::framework::NodeRef;
 
 fn is_pascal_case(name: &str) -> bool {
     let mut chars = name.chars();
@@ -15,10 +17,14 @@ fn is_pascal_case(name: &str) -> bool {
 
 struct PropertyPascalCase;
 impl Rule for PropertyPascalCase {
-    fn id(&self) -> &'static str { "naming.property_pascal_case" }
-    fn category(&self) -> &'static str { "Naming" }
+    fn id(&self) -> &'static str {
+        "naming.property_pascal_case"
+    }
+    fn category(&self) -> &'static str {
+        "Naming"
+    }
     fn visit(&self, node: &NodeRef, session: &mut AnalysisSession) {
-        let cu = match node { NodeRef::CompilationUnit(cu) => cu, _ => return };
+        let Some(cu) = node.of::<crate::syntax::ast::CompilationUnit>() else { return; };
         for decl in &cu.declarations {
             if let TopLevelDeclaration::Class(c) = decl {
                 for m in &c.body_declarations {
@@ -38,20 +44,27 @@ impl Rule for PropertyPascalCase {
 
 struct FieldCamelOrConstUpper;
 impl Rule for FieldCamelOrConstUpper {
-    fn id(&self) -> &'static str { "naming.field_camel_or_const_upper" }
-    fn category(&self) -> &'static str { "Naming" }
+    fn id(&self) -> &'static str {
+        "naming.field_camel_or_const_upper"
+    }
+    fn category(&self) -> &'static str {
+        "Naming"
+    }
     fn visit(&self, node: &NodeRef, session: &mut AnalysisSession) {
-        let cu = match node { NodeRef::CompilationUnit(cu) => cu, _ => return };
+        let Some(cu) = node.of::<crate::syntax::ast::CompilationUnit>() else { return; };
         for decl in &cu.declarations {
             if let TopLevelDeclaration::Class(c) = decl {
                 for m in &c.body_declarations {
                     if let ClassBodyDeclaration::Field(f) = m {
                         let name = f.name.name.as_str();
-                        let is_const = f.modifiers.iter().any(|m| matches!(m, bsharp_syntax::declarations::Modifier::Const));
+                        let is_const = f.modifiers.iter().any(|m| m == &Const);
+
                         if is_const {
                             if !is_upper_case_constant(name) {
-                                let b = DiagnosticBuilder::new(DiagnosticCode::BSW02002)
-                                    .with_message(format!("Constant '{}' should be UPPER_CASE", name));
+                                let b =
+                                    DiagnosticBuilder::new(DiagnosticCode::BSW02002).with_message(
+                                        format!("Constant '{}' should be UPPER_CASE", name),
+                                    );
                                 b.emit(session);
                             }
                         } else if !is_camel_case(name) {
@@ -68,10 +81,14 @@ impl Rule for FieldCamelOrConstUpper {
 
 struct ParameterCamelCase;
 impl Rule for ParameterCamelCase {
-    fn id(&self) -> &'static str { "naming.parameter_camel_case" }
-    fn category(&self) -> &'static str { "Naming" }
+    fn id(&self) -> &'static str {
+        "naming.parameter_camel_case"
+    }
+    fn category(&self) -> &'static str {
+        "Naming"
+    }
     fn visit(&self, node: &NodeRef, session: &mut AnalysisSession) {
-        let cu = match node { NodeRef::CompilationUnit(cu) => cu, _ => return };
+        let Some(cu) = node.of::<crate::syntax::ast::CompilationUnit>() else { return; };
         for decl in &cu.declarations {
             if let TopLevelDeclaration::Class(c) = decl {
                 for m in &c.body_declarations {
@@ -81,7 +98,10 @@ impl Rule for ParameterCamelCase {
                                 let name = p.name.name.as_str();
                                 if !is_camel_case(name) {
                                     let b = DiagnosticBuilder::new(DiagnosticCode::BSW02002)
-                                        .with_message(format!("Parameter '{}' should be camelCase", name));
+                                        .with_message(format!(
+                                            "Parameter '{}' should be camelCase",
+                                            name
+                                        ));
                                     b.emit(session);
                                 }
                             }
@@ -91,7 +111,10 @@ impl Rule for ParameterCamelCase {
                                 let name = p.name.name.as_str();
                                 if !is_camel_case(name) {
                                     let b = DiagnosticBuilder::new(DiagnosticCode::BSW02002)
-                                        .with_message(format!("Parameter '{}' should be camelCase", name));
+                                        .with_message(format!(
+                                            "Parameter '{}' should be camelCase",
+                                            name
+                                        ));
                                     b.emit(session);
                                 }
                             }
@@ -114,14 +137,22 @@ fn is_camel_case(name: &str) -> bool {
 }
 
 fn is_upper_case_constant(name: &str) -> bool {
-    if name.is_empty() { return false; }
-    name.chars().all(|c| c.is_ascii_uppercase() || c.is_ascii_digit() || c == '_')
+    if name.is_empty() {
+        return false;
+    }
+    name.chars()
+        .all(|c| c.is_ascii_uppercase() || c.is_ascii_digit() || c == '_')
 }
 
-fn find_method_span(session: &AnalysisSession, class_name: &str, method_name: &str) -> Option<(usize, usize)> {
+fn find_method_span(
+    session: &AnalysisSession,
+    class_name: &str,
+    method_name: &str,
+) -> Option<(usize, usize)> {
     let simple_class = class_name.rsplit('.').next().unwrap_or(class_name);
     for (k, range) in session.spans.iter() {
-        if k.starts_with("method::") && k.ends_with(&format!("::{}::{}", simple_class, method_name)) {
+        if k.starts_with("method::") && k.ends_with(&format!("::{}::{}", simple_class, method_name))
+        {
             return Some((range.start, range.end - range.start));
         }
     }
@@ -164,10 +195,7 @@ impl Rule for ClassPascalCase {
         "Naming"
     }
     fn visit(&self, node: &NodeRef, session: &mut AnalysisSession) {
-        let cu = match node {
-            NodeRef::CompilationUnit(cu) => cu,
-            _ => return,
-        };
+        let Some(cu) = node.of::<crate::syntax::ast::CompilationUnit>() else { return; };
         for decl in &cu.declarations {
             if let TopLevelDeclaration::Class(c) = decl {
                 let name = c.name.name.as_str();
@@ -193,10 +221,7 @@ impl Rule for InterfaceIPascalCase {
         "Naming"
     }
     fn visit(&self, node: &NodeRef, session: &mut AnalysisSession) {
-        let cu = match node {
-            NodeRef::CompilationUnit(cu) => cu,
-            _ => return,
-        };
+        let Some(cu) = node.of::<crate::syntax::ast::CompilationUnit>() else { return; };
         for decl in &cu.declarations {
             if let TopLevelDeclaration::Interface(i) = decl {
                 let name = i.name.name.as_str();
@@ -225,10 +250,14 @@ pub fn ruleset() -> RuleSet {
 
 struct MethodPascalCase;
 impl Rule for MethodPascalCase {
-    fn id(&self) -> &'static str { "naming.method_pascal_case" }
-    fn category(&self) -> &'static str { "Naming" }
+    fn id(&self) -> &'static str {
+        "naming.method_pascal_case"
+    }
+    fn category(&self) -> &'static str {
+        "Naming"
+    }
     fn visit(&self, node: &NodeRef, session: &mut AnalysisSession) {
-        let cu = match node { NodeRef::CompilationUnit(cu) => cu, _ => return };
+        let Some(cu) = node.of::<crate::syntax::ast::CompilationUnit>() else { return; };
         for decl in &cu.declarations {
             if let TopLevelDeclaration::Class(c) = decl {
                 let class_name = &c.name.name;
@@ -238,7 +267,8 @@ impl Rule for MethodPascalCase {
                         if !is_pascal_case(name) {
                             let mut b = DiagnosticBuilder::new(DiagnosticCode::BSW02002)
                                 .with_message(format!("Method '{}' should be PascalCase", name));
-                            if let Some((start, len)) = find_method_span(session, class_name, name) {
+                            if let Some((start, len)) = find_method_span(session, class_name, name)
+                            {
                                 b = b.at_span(session, start, len);
                             }
                             b.emit(session);

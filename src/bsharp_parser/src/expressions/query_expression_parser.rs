@@ -11,10 +11,7 @@ use crate::parser::keywords::type_keywords::{
     kw_short, kw_string, kw_uint, kw_ulong, kw_ushort,
 };
 use crate::syntax::errors::BResult;
-use crate::syntax::nodes::expressions::expression::Expression;
-use crate::syntax::nodes::expressions::query_expression::*;
-use crate::syntax::nodes::identifier::Identifier;
-use crate::syntax::parser_helpers::{bws, keyword};
+use crate::syntax::comment_parser::ws;
 
 use nom::{
     branch::alt,
@@ -22,9 +19,17 @@ use nom::{
     multi::{many0, separated_list1},
     sequence::{preceded, tuple},
 };
+use nom::character::complete::char as nom_char;
+use nom::sequence::delimited;
+use nom::Parser;
+use syntax::expressions::{
+    Expression, FromClause, JoinClause, LetClause, OrderByOrdering, OrderingDirection, QueryClause,
+    QueryContinuation, QueryExpression, QueryOrderByClause, QuerySelectOrGroup, QueryWhereClause,
+};
+use syntax::Identifier;
 
 /// Parse primitive type identifiers for LINQ type annotations
-fn parse_primitive_type_identifier(input: &str) -> BResult<&str, Identifier> {
+fn parse_primitive_type_identifier(input: Span) -> BResult<Identifier> {
     map(
         alt((
             // Order matters! Put longer keywords first to avoid partial matches
@@ -45,11 +50,12 @@ fn parse_primitive_type_identifier(input: &str) -> BResult<&str, Identifier> {
             kw_dynamic(),
         )),
         Identifier::new,
-    )(input)
+    )
+    .parse(input)
 }
 
 /// Parse a complete LINQ query expression
-pub fn parse_query_expression(input: &str) -> BResult<&str, Expression> {
+pub fn parse_query_expression(input: Span) -> BResult<Expression> {
     map(
         tuple((
             parse_from_clause,
@@ -65,100 +71,102 @@ pub fn parse_query_expression(input: &str) -> BResult<&str, Expression> {
                 continuation,
             }))
         },
-    )(input)
+    )
+    .parse(input)
 }
 
 /// Parse the initial 'from' clause
-fn parse_from_clause(input: &str) -> BResult<&str, FromClause> {
+fn parse_from_clause(input: Span) -> BResult<FromClause> {
     map(
         tuple((
             kw_from(),
-            bws(alt((
+            delimited(ws, alt((
                 // Type annotation case: from PrimitiveType identifier in expression
                 map(
                     tuple((
                         parse_primitive_type_identifier, // Parse known type keywords
-                        bws(parse_identifier),           // Then variable identifier
+                        delimited(ws, parse_identifier, ws),           // Then variable identifier
                     )),
                     |(type_annotation, identifier)| (Some(type_annotation), identifier),
                 ),
                 // No type annotation case: from identifier in expression
                 map(parse_identifier, |identifier| (None, identifier)),
-            ))),
-            bws(kw_in()),
-            bws(parse_expression), // Collection expression
+            )), ws),
+            delimited(ws, kw_in(), ws),
+            delimited(ws, parse_expression, ws), // Collection expression
         )),
         |(_, (type_annotation, identifier), _, expression)| FromClause {
             type_annotation,
             identifier,
             expression,
         },
-    )(input)
+    )
+    .parse(input)
 }
 
 /// Parse various query clauses (from, let, where, join, orderby)
-fn parse_query_clause(input: &str) -> BResult<&str, QueryClause> {
-    alt((
-        map(parse_additional_from_clause, QueryClause::From),
-        map(parse_let_clause, QueryClause::Let),
-        map(parse_where_clause, QueryClause::Where),
-        map(parse_join_clause, QueryClause::Join),
-        map(parse_orderby_clause, QueryClause::OrderBy),
-    ))(input)
+fn parse_query_clause(input: Span) -> BResult<QueryClause> {
+    if let Ok(r) = map(parse_additional_from_clause, QueryClause::From).parse(input) { return Ok(r); }
+    if let Ok(r) = map(parse_let_clause, QueryClause::Let).parse(input) { return Ok(r); }
+    if let Ok(r) = map(parse_where_clause, QueryClause::Where).parse(input) { return Ok(r); }
+    if let Ok(r) = map(parse_join_clause, QueryClause::Join).parse(input) { return Ok(r); }
+    map(parse_orderby_clause, QueryClause::OrderBy).parse(input)
 }
 
 /// Parse additional 'from' clauses in the query body
-fn parse_additional_from_clause(input: &str) -> BResult<&str, FromClause> {
+fn parse_additional_from_clause(input: Span) -> BResult<FromClause> {
     parse_from_clause(input)
 }
 
 /// Parse 'let' clause for introducing new variables
-fn parse_let_clause(input: &str) -> BResult<&str, LetClause> {
+fn parse_let_clause(input: Span) -> BResult<LetClause> {
     map(
         tuple((
             kw_let(),
-            bws(parse_identifier),
-            bws(keyword("=")),
-            bws(parse_expression),
+            delimited(ws, parse_identifier, ws),
+            delimited(ws, nom_char('='), ws),
+            delimited(ws, parse_expression, ws),
         )),
         |(_, identifier, _, expression)| LetClause {
             identifier,
             expression,
         },
-    )(input)
+    )
+    .parse(input)
 }
 
 /// Parse 'where' clause for filtering
-fn parse_where_clause(input: &str) -> BResult<&str, QueryWhereClause> {
-    map(preceded(kw_where(), bws(parse_expression)), |condition| {
+fn parse_where_clause(input: Span) -> BResult<QueryWhereClause> {
+    map(preceded(kw_where(), delimited(ws, parse_expression, ws)), |condition| {
         QueryWhereClause { condition }
-    })(input)
+    })
+    .parse(input)
 }
 
 /// Parse 'join' clause for joining data sources
-fn parse_join_clause(input: &str) -> BResult<&str, JoinClause> {
+fn parse_join_clause(input: Span) -> BResult<JoinClause> {
     map(
         tuple((
             kw_join(),
-            bws(alt((
+            delimited(ws, alt((
                 // Type annotation case: join PrimitiveType identifier in expression
                 map(
                     tuple((
                         parse_primitive_type_identifier, // Parse known type keywords
-                        bws(parse_identifier),           // Then variable identifier
+                        delimited(ws, parse_identifier, ws),           // Then variable identifier
                     )),
                     |(type_annotation, identifier)| (Some(type_annotation), identifier),
                 ),
                 // No type annotation case: join identifier in expression
                 map(parse_identifier, |identifier| (None, identifier)),
-            ))),
-            bws(kw_in()),
-            bws(parse_expression), // Join collection
-            bws(kw_on()),
-            bws(parse_expression), // Join condition left side
-            bws(kw_equals()),
-            bws(parse_expression), // Join condition right side
-            opt(preceded(bws(kw_into()), bws(parse_identifier))), // Optional 'into' clause
+            )), ws),
+            delimited(ws, kw_in(), ws),
+            delimited(ws, parse_expression, ws), // Join collection
+            delimited(ws, kw_on(), ws),
+            delimited(ws, parse_expression, ws), // Join condition left side
+            delimited(ws, kw_equals(), ws),
+            delimited(ws, parse_expression, ws), // Join condition right side
+            opt(preceded(delimited(ws, kw_into(), ws), delimited(ws, parse_identifier, ws))), // Optional 'into' clause
         )),
         |(
             _,
@@ -180,77 +188,82 @@ fn parse_join_clause(input: &str) -> BResult<&str, JoinClause> {
                 into_identifier,
             }
         },
-    )(input)
+    )
+    .parse(input)
 }
 
 /// Parse 'orderby' clause for sorting
-fn parse_orderby_clause(input: &str) -> BResult<&str, QueryOrderByClause> {
+fn parse_orderby_clause(input: Span) -> BResult<QueryOrderByClause> {
     map(
-        preceded(
-            kw_orderby(),
-            separated_list1(bws(keyword(",")), parse_ordering),
-        ),
+        preceded(kw_orderby(), separated_list1(delimited(ws, nom_char(','), ws), parse_ordering)),
         |orderings| QueryOrderByClause { orderings },
-    )(input)
+    )
+    .parse(input)
 }
 
 /// Parse a single ordering expression
-fn parse_ordering(input: &str) -> BResult<&str, OrderByOrdering> {
+fn parse_ordering(input: Span) -> BResult<OrderByOrdering> {
     map(
         tuple((
-            bws(parse_expression),
-            opt(bws(alt((
+            delimited(ws, parse_expression, ws),
+            opt(delimited(ws, alt((
                 map(kw_ascending(), |_| OrderingDirection::Ascending),
                 map(kw_descending(), |_| OrderingDirection::Descending),
-            )))),
+            )), ws)),
         )),
         |(expression, direction)| OrderByOrdering {
             expression,
             direction,
             identifier: Identifier::new(""),
         },
-    )(input)
+    )
+    .parse(input)
 }
 
 /// Parse 'select' or 'group' clause
-fn parse_select_or_group_clause(input: &str) -> BResult<&str, QuerySelectOrGroup> {
-    alt((parse_select_clause, parse_group_clause))(input)
+fn parse_select_or_group_clause(input: Span) -> BResult<QuerySelectOrGroup> {
+    if let Ok(r) = parse_select_clause(input) { return Ok(r); }
+    parse_group_clause(input)
 }
 
 /// Parse 'select' clause
-fn parse_select_clause(input: &str) -> BResult<&str, QuerySelectOrGroup> {
+fn parse_select_clause(input: Span) -> BResult<QuerySelectOrGroup> {
     map(
-        preceded(kw_select(), bws(parse_expression)),
+        preceded(kw_select(), delimited(ws, parse_expression, ws)),
         QuerySelectOrGroup::Select,
-    )(input)
+    )
+    .parse(input)
 }
 
 /// Parse 'group' clause
-fn parse_group_clause(input: &str) -> BResult<&str, QuerySelectOrGroup> {
+fn parse_group_clause(input: Span) -> BResult<QuerySelectOrGroup> {
     map(
         tuple((
             kw_group(),
-            bws(parse_expression),
-            bws(kw_by()),
-            bws(parse_expression),
+            delimited(ws, parse_expression, ws),
+            delimited(ws, kw_by(), ws),
+            delimited(ws, parse_expression, ws),
         )),
         |(_, element, _, by)| QuerySelectOrGroup::Group { element, by },
-    )(input)
+    )
+    .parse(input)
 }
 
 /// Parse query continuation ('into' clause)
-fn parse_query_continuation(input: &str) -> BResult<&str, QueryContinuation> {
+fn parse_query_continuation(input: Span) -> BResult<QueryContinuation> {
     map(
-        tuple((
+        (
             kw_into(),
-            bws(parse_identifier),
+            delimited(ws, parse_identifier, ws),
             many0(parse_query_clause),
             parse_select_or_group_clause,
-        )),
+        ),
         |(_, identifier, body, select_or_group)| QueryContinuation {
             identifier,
             body,
             select_or_group,
         },
-    )(input)
+    )
+    .parse(input)
 }
+use crate::syntax::span::Span;

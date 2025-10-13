@@ -1,6 +1,6 @@
 use parser::expressions::declarations::parameter_parser::parse_parameter;
-use syntax::nodes::identifier::Identifier;
-use syntax::nodes::types::{Parameter, ParameterModifier, PrimitiveType, Type};
+use syntax::identifier::Identifier;
+use syntax::types::{Parameter, ParameterModifier, PrimitiveType, Type};
 
 fn parse_ok(src: &str) -> Parameter {
     let (rest, p) = parse_parameter(src).expect("parse");

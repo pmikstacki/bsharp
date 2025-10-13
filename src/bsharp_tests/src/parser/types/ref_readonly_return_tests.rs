@@ -1,5 +1,5 @@
 use parser::types::type_parser::parse_type_expression;
-use syntax::nodes::types::Type;
+use syntax::types::Type;
 
 #[test]
 fn parses_ref_readonly_return_type() {

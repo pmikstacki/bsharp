@@ -1,6 +1,6 @@
 // Tests for parsing finally clauses
 
-use syntax::nodes::statements::FinallyClause;
+use syntax::statements::FinallyClause;
 
 fn parse_finally_clause(code: &str) -> Result<FinallyClause, String> {
     Err(format!("Parser not yet implemented: {}", code))

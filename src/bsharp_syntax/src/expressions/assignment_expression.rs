@@ -1,7 +1,7 @@
 use super::{BinaryOperator, Expression};
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct AssignmentExpression {
     // Left-hand side (e.g., Variable, MemberAccess)
     // Using Expression for now, might need refinement later (e.g., LValue trait)

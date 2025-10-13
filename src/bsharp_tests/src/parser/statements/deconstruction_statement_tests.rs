@@ -1,9 +1,9 @@
 // Tests for parsing deconstruction statements
 
 use parser::expressions::statements::deconstruction_statement_parser::parse_deconstruction_statement;
-use syntax::nodes::expressions::{DeconstructionTarget, Expression};
-use syntax::nodes::statements::statement::Statement;
-use syntax::nodes::types::{PrimitiveType, Type};
+use syntax::expressions::{DeconstructionTarget, Expression};
+use syntax::statements::statement::Statement;
+use syntax::types::{PrimitiveType, Type};
 
 fn parse_deconstruction_stmt(code: &str) -> Result<Statement, String> {
     match parse_deconstruction_statement(code) {

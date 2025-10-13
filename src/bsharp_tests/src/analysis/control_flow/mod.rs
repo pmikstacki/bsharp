@@ -5,3 +5,4 @@ pub mod foreach_using_tests;
 // pub mod taint_analysis_tests; // File doesn't exist
 // pub mod dead_code_tests; // File doesn't exist
 // pub mod infinite_loop_tests; // File doesn't exist
+pub mod switch_try_do_tests;

@@ -29,8 +29,15 @@ fn cli_strict_failure_pretty_and_no_output_file() {
     ]);
 
     assert_ne!(code, 0, "strict parse should exit non-zero");
-    assert!(stderr.contains("error:"), "stderr should contain error header: {}", stderr);
-    assert!(!out_path.exists(), "no output file should be created on failure");
+    assert!(
+        stderr.contains("error:"),
+        "stderr should contain error header: {}",
+        stderr
+    );
+    assert!(
+        !out_path.exists(),
+        "no output file should be created on failure"
+    );
 }
 
 #[test]
@@ -51,9 +58,17 @@ fn cli_strict_failure_json_schema() {
     let v: serde_json::Value = serde_json::from_str(&stdout).expect("valid JSON on stdout");
     let err = v.get("error").expect("error root");
     for key in ["kind", "file", "line", "column", "message"] {
-        assert!(err.get(key).is_some(), "missing key '{}' in error JSON: {}", key, stdout);
+        assert!(
+            err.get(key).is_some(),
+            "missing key '{}' in error JSON: {}",
+            key,
+            stdout
+        );
     }
-    assert!(!out_path.exists(), "no output file should be created on failure");
+    assert!(
+        !out_path.exists(),
+        "no output file should be created on failure"
+    );
 }
 
 #[test]
@@ -69,7 +84,11 @@ fn cli_lenient_succeeds_on_failure_fixture() {
         out_path.to_str().unwrap(),
     ]);
 
-    assert_eq!(code, 0, "lenient parse should succeed for exploratory usage; stderr: {}", stderr);
+    assert_eq!(
+        code, 0,
+        "lenient parse should succeed for exploratory usage; stderr: {}",
+        stderr
+    );
     let content = fs::read_to_string(&out_path).expect("lenient output json exists");
     let v: serde_json::Value = serde_json::from_str(&content).expect("valid json file written");
     assert!(v.is_object());

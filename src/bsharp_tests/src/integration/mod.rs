@@ -10,3 +10,5 @@ pub mod workspace_analysis_snapshot;
 
 // Parser integration tests - moved from top level
 pub mod parser_integration;
+mod workspace_follow_refs;
+mod workspace_workspace_runs;

@@ -5,9 +5,15 @@ pub mod identifier;
 pub mod statements;
 pub mod types;
 pub use identifier::Identifier;
-pub mod keywords;
+// Ergonomic re-exports for dynamic traversal and queries
+pub use node::ast_node::AstNode;
+
 pub mod root;
 pub mod trivia;
+pub mod node;
+pub mod emitters;
+pub mod query;
+mod formatter;
 // Added for XML documentation
 
 // Optional: Re-export all public items from submodules for easier access
@@ -16,24 +22,8 @@ pub mod trivia;
 // pub use statements::*;
 // pub use expressions::*;
 
-// Compatibility layer for older paths: `syntax::nodes::...`
-pub mod nodes {
-    pub mod declarations {
-        pub use crate::declarations::*;
-    }
-    pub mod statements {
-        pub use crate::statements::*;
-    }
-    pub mod expressions {
-        pub use crate::expressions::*;
-    }
-    pub mod types {
-        pub use crate::types::*;
-    }
-    pub mod identifier {
-        pub use crate::identifier::*;
-    }
-}
-
-// Compatibility alias so code can use `syntax::ast::...`
+// Compatibility alias so code can use `crate::ast::...`
 pub use crate::root::ast;
+
+// Ergonomic re-exports for dynamic traversal and queries
+pub use crate::query::Query;

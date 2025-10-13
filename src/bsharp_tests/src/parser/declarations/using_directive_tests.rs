@@ -2,8 +2,8 @@
 // Integration tests for parsing using directives (including global)
 
 use parser::expressions::declarations::using_directive_parser::parse_using_directive;
-use syntax::nodes::declarations::{GlobalUsingDirective, UsingDirective};
-use syntax::nodes::identifier::Identifier;
+use syntax::declarations::{GlobalUsingDirective, UsingDirective};
+use syntax::identifier::Identifier;
 
 // Assuming a syntax function like parse_global_using_directive will exist
 // use syntax::syntax::parse_global_using_directive;
@@ -78,7 +78,9 @@ fn test_parse_using_namespace() {
     let code = "using System.Text;";
     let (rest, dir) = parse_using_directive(code).expect("should parse namespace using");
     assert!(rest.is_empty());
-    assert!(matches!(dir, UsingDirective::Namespace { namespace: Identifier { name } } if name == "System.Text"));
+    assert!(
+        matches!(dir, UsingDirective::Namespace { namespace: Identifier { name } } if name == "System.Text")
+    );
 }
 
 #[test]
@@ -86,7 +88,10 @@ fn test_parse_using_alias() {
     let code = "using TCol = System.Collections.Generic;";
     let (_, dir) = parse_using_directive(code).expect("should parse alias using");
     match dir {
-        UsingDirective::Alias { alias, namespace_or_type } => {
+        UsingDirective::Alias {
+            alias,
+            namespace_or_type,
+        } => {
             assert_eq!(alias.name, "TCol");
             assert_eq!(namespace_or_type.name, "System.Collections.Generic");
         }
@@ -98,5 +103,7 @@ fn test_parse_using_alias() {
 fn test_parse_using_static() {
     let code = "using static System.Math;";
     let (_, dir) = parse_using_directive(code).expect("should parse static using");
-    assert!(matches!(dir, UsingDirective::Static { type_name: Identifier { name } } if name == "System.Math"));
+    assert!(
+        matches!(dir, UsingDirective::Static { type_name: Identifier { name } } if name == "System.Math")
+    );
 }

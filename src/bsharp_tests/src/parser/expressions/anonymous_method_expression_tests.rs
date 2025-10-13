@@ -1,8 +1,8 @@
 // Tests for anonymous method expressions
 
 use parser::expressions::primary_expression_parser::parse_expression;
-use syntax::nodes::expressions::expression::Expression;
-use syntax::nodes::expressions::lambda_expression::LambdaBody;
+use syntax::expressions::expression::Expression;
+use syntax::expressions::lambda_expression::LambdaBody;
 
 fn parse(code: &str) -> Expression {
     let (rest, expr) = parse_expression(code).expect("parse ok");

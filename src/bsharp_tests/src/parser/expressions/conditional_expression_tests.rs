@@ -1,6 +1,6 @@
 // Tests for parsing conditional expressions
 
-use syntax::nodes::expressions::ConditionalExpression;
+use syntax::expressions::ConditionalExpression;
 
 fn parse_conditional_expr(code: &str) -> Result<ConditionalExpression, String> {
     Err(format!("Parser not yet implemented: {}", code))

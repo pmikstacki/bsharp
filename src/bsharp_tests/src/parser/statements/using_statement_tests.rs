@@ -2,8 +2,8 @@
 // Tests for parsing using statements
 
 use parser::expressions::statements::using_statement_parser::parse_using_statement;
-use syntax::nodes::expressions::expression::Expression;
-use syntax::nodes::statements::statement::Statement;
+use syntax::expressions::expression::Expression;
+use syntax::statements::statement::Statement;
 
 #[test]
 fn test_simple_using_statement() {

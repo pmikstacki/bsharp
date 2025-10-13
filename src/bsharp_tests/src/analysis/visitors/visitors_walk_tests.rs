@@ -2,12 +2,14 @@
 
 use analysis::visitors::walk_statements;
 use parser::statement_parser::parse_statement_ws;
-use syntax::nodes::statements::statement::Statement;
+use syntax::statements::statement::Statement;
 
 fn count_kind(root: &Statement, predicate: fn(&Statement) -> bool) -> usize {
     let mut count = 0;
     walk_statements(root, &mut |s| {
-        if predicate(s) { count += 1; }
+        if predicate(s) {
+            count += 1;
+        }
     });
     count
 }

@@ -1,9 +1,9 @@
 #![allow(unused_variables)]
+
+use syntax::declarations::Attribute;
+use syntax::Identifier;
+
 // Tests for parsing attribute declarations
-
-use syntax::nodes::declarations::Attribute;
-use syntax::nodes::identifier::Identifier;
-
 // Placeholder syntax function
 fn parse_attribute(code: &str) -> Result<Attribute, String> {
     Err(format!("Parser not yet implemented: {}", code))

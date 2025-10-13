@@ -7,21 +7,27 @@ use crate::parser::keywords::parameter_modifier_keywords::{
 };
 use crate::parser::types::type_parser::parse_type_expression;
 use crate::syntax::errors::BResult;
-use crate::syntax::nodes::types::{Parameter, ParameterModifier};
-use crate::syntax::parser_helpers::{bchar, bws, context, parse_delimited_list0};
+
+use crate::syntax::comment_parser::ws;
 use nom::branch::alt;
+use nom::character::complete::satisfy;
 use nom::combinator::{map, opt};
-use nom::sequence::preceded;
+use nom::sequence::{delimited, preceded};
+use nom::Parser;
+use nom_supreme::ParserExt;
+use syntax::types::{Parameter, ParameterModifier};
+use crate::syntax::list_parser::parse_delimited_list0;
 
 // Parse parameter modifiers (ref, out, in, params) and return the actual modifier
-fn parse_parameter_modifiers(input: &str) -> BResult<&str, Option<ParameterModifier>> {
+fn parse_parameter_modifiers(input: Span) -> BResult<Option<ParameterModifier>> {
     // If 'scoped' is present, only ref/in/out are valid to follow for this feature set
-    if let Ok((after_scoped, _)) = bws(kw_scoped())(input) {
+    if let Ok((after_scoped, _)) = delimited(ws, kw_scoped(), ws).parse(input) {
         let (rest, m) = alt((
             map(kw_ref(), |_| ParameterModifier::ScopedRef),
             map(kw_out(), |_| ParameterModifier::ScopedOut),
             map(kw_in(), |_| ParameterModifier::ScopedIn),
-        ))(after_scoped)?;
+        ))
+        .parse(after_scoped)?;
         return Ok((rest, Some(m)));
     }
     opt(alt((
@@ -29,27 +35,30 @@ fn parse_parameter_modifiers(input: &str) -> BResult<&str, Option<ParameterModif
         map(kw_out(), |_| ParameterModifier::Out),
         map(kw_in(), |_| ParameterModifier::In),
         map(kw_params(), |_| ParameterModifier::Params),
-    )))(input)
+    )))
+    .parse(input)
 }
 
 // Parse a single parameter
-pub fn parse_parameter(input: &str) -> BResult<&str, Parameter> {
+pub fn parse_parameter<'a>(input: Span<'a>) -> BResult<'a, Parameter> {
     // Optional attribute lists before modifiers
-    let (input, attribute_lists) = bws(parse_attribute_lists)(input)?;
+    let (input, attribute_lists) = delimited(ws, parse_attribute_lists, ws).parse(input)?;
     let attributes = convert_attributes(attribute_lists);
 
     // Optional parameter modifier
-    let (input, modifier) = bws(parse_parameter_modifiers)(input)?;
-    let (input, ty) = context(
-        "parameter type (expected valid type expression)",
-        bws(parse_type_expression),
-    )(input)?;
-    let (input, name) = context(
-        "parameter name (expected valid identifier)",
-        bws(parse_identifier),
-    )(input)?;
+    let (input, modifier) = delimited(ws, parse_parameter_modifiers, ws).parse(input)?;
+    let (input, ty) = delimited(ws, parse_type_expression, ws)
+        .context("parameter type")
+        .parse(input)?;
+    let (input, name) = delimited(ws, parse_identifier, ws)
+        .context("parameter name")
+        .parse(input)?;
     // Optional default value: = expression
-    let (input, default_value) = opt(preceded(bws(bchar('=')), bws(parse_expression)))(input)?;
+    let (input, default_value) = opt(preceded(
+        |i| delimited(ws, satisfy(|c| c == '='), ws).parse(i),
+        |i| delimited(ws, parse_expression, ws).parse(i),
+    ))
+    .parse(input)?;
 
     Ok((
         input,
@@ -64,16 +73,18 @@ pub fn parse_parameter(input: &str) -> BResult<&str, Parameter> {
 }
 
 // Parse a parameter list enclosed in parentheses
-pub fn parse_parameter_list(input: &str) -> BResult<&str, Vec<Parameter>> {
-    context(
-        "parameter list",
-        parse_delimited_list0::<_, _, _, _, char, Parameter, char, char, Parameter>(
-            bchar('('),
-            |i| context("parameter (expected type and name)", bws(parse_parameter))(i),
-            bchar(','),
-            bchar(')'),
-            false, // trailing commas not allowed in parameter list
-            true,  // cut on close
-        ),
-    )(input)
+pub fn parse_parameter_list<'a>(input: Span<'a>) -> BResult<'a, Vec<Parameter>> {
+    parse_delimited_list0::<_, _, _, _, char, Parameter, char, char, Parameter>(
+        |i| delimited(ws, satisfy(|c| c == '('), ws).parse(i),
+        |i| delimited(ws, parse_parameter, ws)
+            .context("parameter")
+            .parse(i),
+        |i| delimited(ws, satisfy(|c| c == ','), ws).parse(i),
+        |i| delimited(ws, satisfy(|c| c == ')'), ws).parse(i),
+        false,
+        true,
+    )
+    .context("parameter list")
+    .parse(input)
 }
+use crate::syntax::span::Span;

@@ -1,7 +1,7 @@
 // Tests for parsing await expressions
 
 use parser::expressions::primary_expression_parser::parse_expression;
-use syntax::nodes::expressions::expression::Expression;
+use syntax::expressions::expression::Expression;
 
 fn parse_await_expr(code: &str) -> Result<Expression, String> {
     match parse_expression(code) {

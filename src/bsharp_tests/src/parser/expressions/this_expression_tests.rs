@@ -1,7 +1,7 @@
 // Tests for `this` expression
 
 use parser::expressions::primary_expression_parser::parse_expression;
-use syntax::nodes::expressions::expression::Expression;
+use syntax::expressions::expression::Expression;
 
 #[test]
 fn this_basic() {

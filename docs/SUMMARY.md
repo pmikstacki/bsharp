@@ -20,7 +20,7 @@
 
 # Advanced Features
 
-- [AST Navigation](./parser/navigation.md)
+- [Query API](./parser/navigation.md)
 - [Comment Parsing](./parser/comments.md)
 - [Preprocessor Directives](./parser/preprocessor.md)
 
@@ -40,7 +40,6 @@
 - [Command Line Interface](./cli/overview.md)
 - [Parse Command](./cli/parse.md)
 - [Tree Visualization](./cli/tree.md)
-- [Compilation (Unavailable)](./cli/compile.md)
 - [Analysis Command](./cli/analyze.md)
 
 # Workspace

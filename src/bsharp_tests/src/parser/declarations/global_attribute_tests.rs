@@ -1,8 +1,8 @@
 // Tests for parsing global attribute declarations
 
 use parser::expressions::declarations::global_attribute_parser::parse_global_attribute;
-use syntax::nodes::declarations::{Attribute, GlobalAttribute};
-use syntax::nodes::identifier::Identifier;
+use syntax::declarations::{Attribute, GlobalAttribute};
+use syntax::identifier::Identifier;
 
 #[test]
 fn test_parse_global_attribute() {
@@ -16,15 +16,13 @@ fn test_parse_global_attribute() {
                 name: "MyAttr".to_string(),
             },
             arguments: vec![],
-            structured: Some(
-                syntax::nodes::declarations::attribute::AttributeName {
-                    qualifier: vec![],
-                    name: Identifier {
-                        name: "MyAttr".to_string(),
-                    },
-                    type_arguments: vec![],
+            structured: Some(syntax::declarations::attribute::AttributeName {
+                qualifier: vec![],
+                name: Identifier {
+                    name: "MyAttr".to_string(),
                 },
-            ),
+                type_arguments: vec![],
+            }),
         },
     };
 

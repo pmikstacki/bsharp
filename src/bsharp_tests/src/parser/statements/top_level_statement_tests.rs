@@ -4,7 +4,7 @@ use parser::expressions::statements::top_level_statement_parser::{
     parse_top_level_statement, parse_top_level_statements,
 };
 use parser::syntax::errors::format_error_tree;
-use syntax::nodes::statements::statement::Statement;
+use syntax::statements::statement::Statement;
 
 fn parse_top_level_statements_helper(code: &str) -> Result<Vec<Statement>, String> {
     match parse_top_level_statements(code) {
@@ -17,9 +17,7 @@ fn parse_top_level_statements_helper(code: &str) -> Result<Vec<Statement>, Strin
         }
         Err(e) => {
             let detail = match &e {
-                nom::Err::Error(tree) | nom::Err::Failure(tree) => {
-                    format_error_tree(code, tree)
-                }
+                nom::Err::Error(tree) | nom::Err::Failure(tree) => format_error_tree(code, tree),
                 _ => format!("{:?}", e),
             };
             Err(format!("Parse error: {:?}\n{}", e, detail))

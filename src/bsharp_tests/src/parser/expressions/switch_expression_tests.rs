@@ -1,7 +1,7 @@
 // Tests for switch expressions
 
 use parser::expressions::primary_expression_parser::parse_expression;
-use syntax::nodes::expressions::expression::{Expression, SwitchExpression};
+use syntax::expressions::expression::{Expression, SwitchExpression};
 
 #[test]
 fn basic_switch_expression() {

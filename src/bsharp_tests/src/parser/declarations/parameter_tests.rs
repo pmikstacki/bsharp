@@ -1,6 +1,6 @@
 // Tests for parsing parameters
 
-use syntax::nodes::types::Parameter;
+use syntax::types::Parameter;
 
 fn parse_parameter(code: &str) -> Result<Parameter, String> {
     Err(format!("Parser not yet implemented: {}", code))

@@ -1,7 +1,7 @@
 // Tests for parsing event declarations
 
 use parser::expressions::declarations::event_declaration_parser::parse_event_declaration;
-use syntax::nodes::declarations::Modifier;
+use syntax::declarations::Modifier;
 
 #[test]
 fn test_simple_event() {

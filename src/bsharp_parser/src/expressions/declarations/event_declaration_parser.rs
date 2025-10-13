@@ -6,105 +6,109 @@ use crate::parser::keywords::declaration_keywords::kw_event;
 use crate::parser::statement_parser::parse_statement;
 use crate::parser::types::type_parser::parse_type_expression;
 use crate::syntax::errors::BResult;
-use crate::syntax::nodes::declarations::{EventAccessor, EventAccessorList, EventDeclaration};
-use crate::syntax::parser_helpers::{bchar, bws, context};
 
+use crate::syntax::comment_parser::ws;
+
+use nom::character::complete::satisfy;
 use nom::combinator::cut;
 use nom::{
     branch::alt,
     combinator::{map, opt},
     sequence::{delimited, tuple},
 };
+use nom::Parser;
+use nom_supreme::ParserExt;
+use syntax::declarations::{EventAccessor, EventAccessorList, EventDeclaration};
 
 /// Parse an event accessor (add or remove)
-fn parse_event_accessor(input: &str) -> BResult<&str, (String, EventAccessor)> {
-    context(
-        "event accessor",
-        alt((
-            map(
-                tuple((
-                    kw_add(),
-                    alt((
-                        map(bws(bchar(';')), |_| None),
-                        map(bws(parse_statement), Some),
-                    )),
+fn parse_event_accessor(input: Span) -> BResult<(String, EventAccessor)> {
+    alt((
+        map(
+            tuple((
+                delimited(ws, kw_add(), ws),
+                alt((
+                    map(delimited(ws, satisfy(|c| c == ';'), ws), |_| None),
+                    map(delimited(ws, parse_statement, ws), Some),
                 )),
-                |(_, body)| {
-                    (
-                        "add".to_string(),
-                        EventAccessor {
-                            attributes: vec![],
-                            modifiers: vec![],
-                            body,
-                        },
-                    )
-                },
-            ),
-            map(
-                tuple((
-                    kw_remove(),
-                    alt((
-                        map(bws(bchar(';')), |_| None),
-                        map(bws(parse_statement), Some),
-                    )),
+            )),
+            |(_, body)| {
+                (
+                    "add".to_string(),
+                    EventAccessor {
+                        attributes: vec![],
+                        modifiers: vec![],
+                        body,
+                    },
+                )
+            },
+        ),
+        map(
+            tuple((
+                delimited(ws, kw_remove(), ws),
+                alt((
+                    map(delimited(ws, satisfy(|c| c == ';'), ws), |_| None),
+                    map(delimited(ws, parse_statement, ws), Some),
                 )),
-                |(_, body)| {
-                    (
-                        "remove".to_string(),
-                        EventAccessor {
-                            attributes: vec![],
-                            modifiers: vec![],
-                            body,
-                        },
-                    )
-                },
-            ),
-        )),
-    )(input)
+            )),
+            |(_, body)| {
+                (
+                    "remove".to_string(),
+                    EventAccessor {
+                        attributes: vec![],
+                        modifiers: vec![],
+                        body,
+                    },
+                )
+            },
+        ),
+    ))
+    .context("event accessor")
+    .parse(input)
 }
 
 /// Parse event accessor list: { add; remove; } or { add { ... } remove { ... } }
-fn parse_event_accessor_list(input: &str) -> BResult<&str, EventAccessorList> {
-    context(
-        "event accessor list",
-        map(
-            delimited(
-                bws(bchar('{')),
-                tuple((
-                    opt(bws(parse_event_accessor)),
-                    opt(bws(parse_event_accessor)),
-                )),
-                cut(bws(bchar('}'))),
-            ),
-            |(first, second)| {
-                let mut add_accessor = None;
-                let mut remove_accessor = None;
-
-                // Process first accessor
-                if let Some((accessor_type, accessor)) = first {
-                    if accessor_type == "add" {
-                        add_accessor = Some(accessor);
-                    } else if accessor_type == "remove" {
-                        remove_accessor = Some(accessor);
-                    }
-                }
-
-                // Process second accessor
-                if let Some((accessor_type, accessor)) = second {
-                    if accessor_type == "add" {
-                        add_accessor = Some(accessor);
-                    } else if accessor_type == "remove" {
-                        remove_accessor = Some(accessor);
-                    }
-                }
-
-                EventAccessorList {
-                    add_accessor,
-                    remove_accessor,
-                }
-            },
+fn parse_event_accessor_list(input: Span) -> BResult<EventAccessorList> {
+    map(
+        delimited(
+            delimited(ws, satisfy(|c| c == '{'), ws)
+                .context("event accessor list opening"),
+            tuple((
+                opt(delimited(ws, parse_event_accessor, ws)),
+                opt(delimited(ws, parse_event_accessor, ws)),
+            )),
+            cut(delimited(ws, satisfy(|c| c == '}'), ws))
+                .context("event accessor list closing"),
         ),
-    )(input)
+        |(first, second)| {
+            let mut add_accessor = None;
+            let mut remove_accessor = None;
+
+            // Process first accessor
+            if let Some((accessor_type, accessor)) = first {
+                if accessor_type == "add" {
+                    add_accessor = Some(accessor);
+                } else if accessor_type == "remove" {
+                    remove_accessor = Some(accessor);
+                }
+            }
+
+            // Process second accessor
+            if let Some((accessor_type, accessor)) = second {
+                if accessor_type == "add" {
+                    add_accessor = Some(accessor);
+                } else if accessor_type == "remove" {
+                    remove_accessor = Some(accessor);
+                }
+            }
+
+            EventAccessorList {
+                add_accessor,
+                remove_accessor,
+            }
+        },
+    )
+    .context("event accessor list")
+    .parse(input)
 }
 
 /// Parse an event declaration
@@ -112,36 +116,36 @@ fn parse_event_accessor_list(input: &str) -> BResult<&str, EventAccessorList> {
 /// - public event EventHandler MyEvent;
 /// - public event EventHandler MyEvent { add; remove; }
 /// - public event EventHandler MyEvent { add { ... } remove { ... } }
-pub fn parse_event_declaration(input: &str) -> BResult<&str, EventDeclaration> {
-    context(
-        "event declaration",
-        map(
-            tuple((
-                // 1. Attributes
-                parse_attribute_lists,
-                // 2. Modifiers
-                parse_modifiers,
-                // 3. 'event' keyword
-                kw_event(),
-                // 4. Event type
-                bws(parse_type_expression),
-                // 5. Event name
-                bws(parse_identifier),
-                // 6. Optional accessor list or semicolon
-                alt((
-                    map(bws(parse_event_accessor_list), Some),
-                    map(bws(bchar(';')), |_| None),
-                )),
+pub fn parse_event_declaration(input: Span) -> BResult<EventDeclaration> {
+    map(
+        tuple((
+            // 1. Attributes
+            delimited(ws, parse_attribute_lists, ws),
+            // 2. Modifiers
+            delimited(ws, parse_modifiers, ws),
+            // 3. 'event' keyword
+            delimited(ws, kw_event(), ws),
+            // 4. Event type
+            delimited(ws, parse_type_expression, ws),
+            // 5. Event name
+            delimited(ws, parse_identifier, ws),
+            // 6. Optional accessor list or semicolon
+            alt((
+                map(delimited(ws, parse_event_accessor_list, ws), Some),
+                map(delimited(ws, satisfy(|c| c == ';'), ws), |_| None),
             )),
-            |(attributes, modifiers, _event_kw, event_type, name, accessor_list)| {
-                EventDeclaration {
-                    attributes,
-                    modifiers,
-                    event_type,
-                    name,
-                    accessor_list,
-                }
-            },
-        ),
-    )(input)
+        )),
+        |(attributes, modifiers, _event_kw, event_type, name, accessor_list)| {
+            EventDeclaration {
+                attributes,
+                modifiers,
+                event_type,
+                name,
+                accessor_list,
+            }
+        },
+    )
+    .context("event declaration")
+    .parse(input)
 }
+use crate::syntax::span::Span;

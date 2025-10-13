@@ -1,5 +1,6 @@
 use crate::artifacts::control_flow_graph::index::ControlFlowIndex;
-use crate::framework::{AnalysisSession, NodeRef, Rule, RuleSet};
+use crate::framework::NodeRef;
+use crate::framework::{AnalysisSession, Rule, RuleSet};
 use crate::{DiagnosticBuilder, DiagnosticCode};
 
 fn find_method_span(
@@ -28,7 +29,7 @@ impl Rule for HighCyclomaticComplexity {
     }
     fn visit(&self, node: &NodeRef, session: &mut AnalysisSession) {
         // Only run once per file at CompilationUnit enter
-        if !matches!(node, NodeRef::CompilationUnit(_)) {
+        if node.of::<crate::syntax::ast::CompilationUnit>().is_none() {
             return;
         }
         let Some(index) = session.artifacts.get::<ControlFlowIndex>() else {
@@ -63,7 +64,7 @@ impl Rule for DeepNesting {
         "ControlFlowSmell"
     }
     fn visit(&self, node: &NodeRef, session: &mut AnalysisSession) {
-        if !matches!(node, NodeRef::CompilationUnit(_)) {
+        if node.of::<crate::syntax::ast::CompilationUnit>().is_none() {
             return;
         }
         let Some(index) = session.artifacts.get::<ControlFlowIndex>() else {
@@ -104,22 +105,35 @@ pub fn ruleset() -> RuleSet {
 
 struct LongMethodBySpan;
 impl Rule for LongMethodBySpan {
-    fn id(&self) -> &'static str { "cf.long_method_span" }
-    fn category(&self) -> &'static str { "ControlFlowSmell" }
+    fn id(&self) -> &'static str {
+        "cf.long_method_span"
+    }
+    fn category(&self) -> &'static str {
+        "ControlFlowSmell"
+    }
     fn visit(&self, node: &NodeRef, session: &mut AnalysisSession) {
-        if !matches!(node, NodeRef::CompilationUnit(_)) { return; }
-        let Some(index) = session.artifacts.get::<ControlFlowIndex>() else { return; };
+        if node.of::<crate::syntax::ast::CompilationUnit>().is_none() {
+            return;
+        }
+        let Some(index) = session.artifacts.get::<ControlFlowIndex>() else {
+            return;
+        };
         let threshold: usize = 50; // TODO: make configurable
         let src = session.ctx.source().to_string();
         for (key, _stats) in index.iter() {
-            if let (Some(class_name), Some(method_name)) = super::control_flow_smells::split_class_method(key) {
+            if let (Some(class_name), Some(method_name)) =
+                super::control_flow_smells::split_class_method(key)
+            {
                 if let Some((start, len)) = find_method_span(session, &class_name, &method_name) {
                     let end = start.saturating_add(len);
                     let slice = &src.get(start..end).unwrap_or("");
                     let line_count = slice.as_bytes().iter().filter(|&&b| b == b'\n').count() + 1;
                     if line_count > threshold {
                         let b = DiagnosticBuilder::new(DiagnosticCode::BSW01002)
-                            .with_message(format!("Method '{}' is too long ({} lines > {})", key, line_count, threshold))
+                            .with_message(format!(
+                                "Method '{}' is too long ({} lines > {})",
+                                key, line_count, threshold
+                            ))
                             .at_span(session, start, len);
                         b.emit(session);
                     }

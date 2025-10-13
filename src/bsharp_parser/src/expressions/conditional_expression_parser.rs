@@ -2,11 +2,15 @@ use crate::parser::expressions;
 use crate::parser::expressions::null_coalescing_expression_parser;
 use crate::syntax::comment_parser::ws;
 use crate::syntax::errors::BResult;
-use crate::syntax::nodes::expressions::{ConditionalExpression, Expression};
-use crate::syntax::parser_helpers::{bchar, bws, context};
-use nom::branch::alt;
 
-pub(crate) fn parse_conditional_expression_or_higher(input: &str) -> BResult<&str, Expression> {
+use nom::character::complete::char as nom_char;
+use nom::branch::alt;
+use nom::Parser;
+use nom_supreme::ParserExt;
+use syntax::expressions::{ConditionalExpression, Expression};
+use crate::syntax::span::Span;
+
+pub(crate) fn parse_conditional_expression_or_higher<'a>(input: Span<'a>) -> BResult<'a, Expression> {
     // Parse the condition (left side)
     let (input, condition) =
         null_coalescing_expression_parser::parse_null_coalescing_expression_or_higher(input)?;
@@ -19,23 +23,24 @@ pub(crate) fn parse_conditional_expression_or_higher(input: &str) -> BResult<&st
     let (after_ws, _) = ws(input)?;
 
     // Check if we have a ? that's not followed by . or [ or ?
-    if let Ok((after_q, _)) = bchar('?')(after_ws) {
-        // Use peek to check what comes next without consuming
+    if let Ok((after_q, _)) = nom_char::<Span<'a>, nom_supreme::error::ErrorTree<Span<'a>>>('?').parse(after_ws) {
         if nom::combinator::peek(nom::combinator::not(alt((
-            bchar('.'),
-            bchar('['),
-            bchar('?'),
-        ))))(after_q)
+            nom_char::<Span<'a>, nom_supreme::error::ErrorTree<Span<'a>>>('.'),
+            nom_char::<Span<'a>, nom_supreme::error::ErrorTree<Span<'a>>>('['),
+            nom_char::<Span<'a>, nom_supreme::error::ErrorTree<Span<'a>>>('?'),
+        ))))
+        .parse(after_q)
         .is_ok()
         {
             // It's a ternary operator, not null-conditional or null-coalescing
-            let (input, _) = bws(bchar('?'))(input)?;
-            let (input, true_expr) = context(
-                "conditional expression: true branch",
-                bws(expressions::parse_expression),
-            )(input)?;
-            let (input, _) = nom::combinator::cut(bws(bchar(':')))(input)?;
-            let (input, false_expr) = bws(parse_conditional_expression_or_higher)(input)?;
+            let (input, _) = nom::sequence::delimited(ws, nom_char::<Span<'a>, nom_supreme::error::ErrorTree<Span<'a>>>('?'), ws).parse(input)?;
+            let (input, true_expr) = (|i| expressions::parse_expression(i))
+                .context("conditional expression: true branch")
+                .parse(input)?;
+            let (input, _) = nom::combinator::cut(nom::sequence::delimited(ws, nom_char::<Span<'a>, nom_supreme::error::ErrorTree<Span<'a>>>(':'), ws))
+                .parse(input)?;
+            let (input, false_expr) = nom::sequence::delimited(ws, parse_conditional_expression_or_higher, ws)
+                .parse(input)?;
 
             return Ok((
                 input,

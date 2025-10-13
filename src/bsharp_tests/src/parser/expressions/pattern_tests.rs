@@ -1,6 +1,6 @@
 // Tests for parsing pattern expressions
 
-use syntax::nodes::expressions::Pattern;
+use syntax::expressions::Pattern;
 
 fn parse_pattern(code: &str) -> Result<Pattern, String> {
     Err(format!("Parser not yet implemented: {}", code))

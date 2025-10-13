@@ -1,6 +1,6 @@
 use parser::expressions::declarations::delegate_declaration_parser::parse_delegate_declaration;
-use syntax::nodes::declarations::Modifier;
-use syntax::nodes::types::{PrimitiveType, Type};
+use syntax::declarations::Modifier;
+use syntax::types::{PrimitiveType, Type};
 
 #[test]
 fn test_simple_delegate() {

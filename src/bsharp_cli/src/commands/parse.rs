@@ -5,13 +5,14 @@ use std::path::{Path, PathBuf};
 // Import the syntax from the containing crate
 use bsharp_analysis::diagnostics::parse as diag_parse;
 use bsharp_parser::bsharp::{parse_csharp_source, parse_csharp_source_strict};
+use bsharp_parser::expressions::statements::UsingDirective;
 use bsharp_parser::helpers::brace_tracker;
 use bsharp_parser::parse_mode;
 use bsharp_parser::syntax::ast;
-use bsharp_parser::syntax::nodes::declarations::UsingDirective;
 use nom::Finish;
 use nom_supreme::error::{BaseErrorKind, ErrorTree, Expectation};
 use std::env;
+
 /// Execute the parse command: parse C# file and output JSON
 /// On parse failure, pretty-print errors by default and exit non-zero.
 /// If `errors_json` is true, emit a JSON error object to stdout instead.
@@ -207,12 +208,7 @@ fn format_text_tree(ast: &ast::CompilationUnit) -> String {
         writeln!(&mut out, "    - {}", format_using_directive(using)).ok();
     }
 
-    writeln!(
-        &mut out,
-        "  Declarations ({}):",
-        ast.declarations.len()
-    )
-    .ok();
+    writeln!(&mut out, "  Declarations ({}):", ast.declarations.len()).ok();
     for decl in &ast.declarations {
         let label = match decl {
             ast::TopLevelDeclaration::Namespace(ns) => format!("Namespace: {}", ns.name.name),

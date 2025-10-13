@@ -1,7 +1,7 @@
 // Tests for parsing type parameters
 use parser::expressions::declarations::type_parameter_parser::parse_type_parameter_list;
-use syntax::nodes::identifier::Identifier;
-use syntax::nodes::types;
+use syntax::identifier::Identifier;
+use syntax::types;
 
 fn parse_test(code: &str) -> Result<Vec<types::TypeParameter>, String> {
     match parse_type_parameter_list(code) {

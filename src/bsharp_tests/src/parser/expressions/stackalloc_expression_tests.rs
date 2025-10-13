@@ -1,11 +1,11 @@
 // Tests for parsing stackalloc expressions
 
 // use nom::error::{Error, ErrorKind};
-// use syntax::nodes::types::{PrimitiveType, Type};
+// use syntax::types::{PrimitiveType, Type};
 use parser::expressions::stackalloc_expression_parser::parse_stackalloc_expression;
-use syntax::nodes::expressions::expression::Expression;
-use syntax::nodes::expressions::literal::Literal;
-use syntax::nodes::types::{PrimitiveType, Type};
+use syntax::expressions::expression::Expression;
+use syntax::expressions::literal::Literal;
+use syntax::types::{PrimitiveType, Type};
 // use parser::expressions::primary_expression_parser::parse_primary_expression;
 
 fn parse_stackalloc_expr(code: &str) -> Result<Expression, String> {
@@ -37,7 +37,10 @@ fn test_parse_stackalloc_with_size() {
     );
 
     if let Ok(Expression::StackAlloc(stackalloc)) = result {
-        assert_eq!(stackalloc.target_type, Some(Type::Primitive(PrimitiveType::Int)));
+        assert_eq!(
+            stackalloc.target_type,
+            Some(Type::Primitive(PrimitiveType::Int))
+        );
         assert!(stackalloc.count.is_some());
         assert!(stackalloc.initializer.is_none());
 
@@ -62,7 +65,10 @@ fn test_parse_stackalloc_with_variable_size() {
     );
 
     if let Ok(Expression::StackAlloc(stackalloc)) = result {
-        assert_eq!(stackalloc.target_type, Some(Type::Primitive(PrimitiveType::Byte)));
+        assert_eq!(
+            stackalloc.target_type,
+            Some(Type::Primitive(PrimitiveType::Byte))
+        );
         assert!(stackalloc.count.is_some());
         assert!(stackalloc.initializer.is_none());
 
@@ -87,7 +93,10 @@ fn test_parse_stackalloc_with_initializer() {
     );
 
     if let Ok(Expression::StackAlloc(stackalloc)) = result {
-        assert_eq!(stackalloc.target_type, Some(Type::Primitive(PrimitiveType::Int)));
+        assert_eq!(
+            stackalloc.target_type,
+            Some(Type::Primitive(PrimitiveType::Int))
+        );
         assert!(stackalloc.count.is_none());
         assert!(stackalloc.initializer.is_some());
 
@@ -140,7 +149,10 @@ fn test_parse_stackalloc_empty_initializer() {
     );
 
     if let Ok(Expression::StackAlloc(stackalloc)) = result {
-        assert_eq!(stackalloc.target_type, Some(Type::Primitive(PrimitiveType::Int)));
+        assert_eq!(
+            stackalloc.target_type,
+            Some(Type::Primitive(PrimitiveType::Int))
+        );
         assert!(stackalloc.count.is_none());
         assert!(stackalloc.initializer.is_some());
 
@@ -162,7 +174,10 @@ fn test_parse_stackalloc_with_expression_size() {
     );
 
     if let Ok(Expression::StackAlloc(stackalloc)) = result {
-        assert_eq!(stackalloc.target_type, Some(Type::Primitive(PrimitiveType::Double)));
+        assert_eq!(
+            stackalloc.target_type,
+            Some(Type::Primitive(PrimitiveType::Double))
+        );
         assert!(stackalloc.count.is_some());
         assert!(stackalloc.initializer.is_none());
 
@@ -188,7 +203,10 @@ fn test_parse_stackalloc_with_mixed_expressions() {
     );
 
     if let Ok(Expression::StackAlloc(stackalloc)) = result {
-        assert_eq!(stackalloc.target_type, Some(Type::Primitive(PrimitiveType::String)));
+        assert_eq!(
+            stackalloc.target_type,
+            Some(Type::Primitive(PrimitiveType::String))
+        );
         assert!(stackalloc.initializer.is_some());
 
         let initializer = stackalloc.initializer.unwrap();
@@ -222,7 +240,10 @@ fn test_parse_stackalloc_pointer_type() {
     );
 
     if let Ok(Expression::StackAlloc(stackalloc)) = result {
-        assert_eq!(stackalloc.target_type, Some(Type::Primitive(PrimitiveType::Char)));
+        assert_eq!(
+            stackalloc.target_type,
+            Some(Type::Primitive(PrimitiveType::Char))
+        );
         assert!(stackalloc.count.is_some());
 
         if let Some(Expression::Variable(var)) = stackalloc.count {

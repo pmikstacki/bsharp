@@ -1,5 +1,7 @@
 // Declare syntax modules for various C# declarations
 
+// Re-export key node types if needed for convenience, though often handled in src/syntax/nodes/mod.rs
+
 pub mod field_declaration_parser;
 pub mod method_declaration_parser;
 pub mod modifier_parser;
@@ -26,6 +28,3 @@ pub mod type_declaration_parser;
 
 // Common helpers modules
 pub mod type_declaration_helpers;
-
-// Re-export key node types if needed for convenience, though often handled in src/syntax/nodes/mod.rs
-// pub use crate::syntax::nodes::declarations::TypeParameterConstraintClause;

@@ -1,10 +1,10 @@
 // Tests for parsing tuple expressions
 
 use parser::expressions::primary_expression_parser::parse_expression;
-use syntax::nodes::expressions::expression::Expression;
-use syntax::nodes::expressions::literal::Literal;
-use syntax::nodes::expressions::tuple_expression::{TupleElement, TupleExpression};
-use syntax::nodes::identifier::Identifier;
+use syntax::expressions::expression::Expression;
+use syntax::expressions::literal::Literal;
+use syntax::expressions::tuple_expression::{TupleElement, TupleExpression};
+use syntax::identifier::Identifier;
 
 fn check_tuple_expr(input: &str, expected_elements: Vec<TupleElement>) {
     let (_, expr) = parse_expression(input)
@@ -134,7 +134,7 @@ fn test_tuple_with_expressions_as_elements() {
                 name: None,
                 value: Expression::Binary {
                     left: Box::new(Expression::Literal(Literal::Integer(1))),
-                    op: syntax::nodes::expressions::BinaryOperator::Add,
+                    op: syntax::expressions::BinaryOperator::Add,
                     right: Box::new(Expression::Literal(Literal::Integer(2))),
                 },
             },

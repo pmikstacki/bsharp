@@ -1,19 +1,24 @@
 // Common helpers for type declarations (struct, class, interface, record, enum)
 // This module provides shared functionality for parsing C# type declarations
 
-use log::trace;
 
 use crate::parser::expressions::declarations::attribute_parser::parse_attribute_lists;
-use crate::parser::expressions::declarations::base_types_parser::parse_base_type_list;
+use crate::parser::expressions::declarations::base_types_parser::parse_base_types;
 use crate::parser::expressions::declarations::modifier_parser::parse_modifiers_for_decl_type;
 use crate::parser::expressions::declarations::type_parameter_parser::opt_parse_type_parameter_list;
 use crate::parser::identifier_parser::parse_identifier;
 use crate::syntax::errors::BResult;
-use crate::syntax::nodes::declarations::{attribute::AttributeList, modifier::Modifier};
-use crate::syntax::nodes::identifier::Identifier;
-use crate::syntax::nodes::types::{Type, TypeParameter};
-use crate::syntax::parser_helpers::{bchar, bws, context, peek_bchar};
-use nom::combinator::cut;
+
+use crate::syntax::comment_parser::ws;
+use nom::character::complete::satisfy;
+use nom::sequence::delimited;
+use nom::bytes::complete::tag;
+use nom::combinator::{cut, peek};
+use nom::Parser;
+use nom_supreme::ParserExt;
+use syntax::declarations::{AttributeList, Modifier};
+use syntax::types::{Type, TypeParameter};
+use syntax::Identifier;
 
 /// Core structure for type declarations (class, struct, interface, record)
 /// Contains the common elements shared by all these declaration types
@@ -25,62 +30,27 @@ pub struct BaseTypeDeclaration {
     pub base_types: Vec<Type>,
 }
 
-/// Parse a type declaration header, handling attributes, modifiers, keyword, name and type parameters
-/// Returns the parsed BaseTypeDeclaration and the remaining input
-pub fn parse_type_declaration_header<'a>(
-    input: &'a str,
+/// Span-native: Parse a type declaration header, handling attributes, modifiers, keyword, name and type parameters
+pub fn parse_type_declaration_header_span<'a>(
+    input: Span<'a>,
     declaration_type: &'static str,
     keyword: &'static str,
-) -> BResult<&'a str, BaseTypeDeclaration> {
-    // Parse attributes first
-    let (input, attribute_lists) = parse_attribute_lists(input)?;
-
-    trace!("parse_type_declaration_header: input = {:?}", input);
-
-    // Try to parse using the declaration helper which handles the keyword and modifiers
-    let mut header_parser = crate::parser::declaration_helpers::parse_declaration_header(
-        |i| parse_modifiers_for_decl_type(i, declaration_type),
-        keyword,
-    );
-
-    // Parse the header with improved whitespace handling
-    let (remaining, (modifiers, _)) = match header_parser(input) {
-        Ok(result) => result,
-        Err(err) => {
-            trace!(
-                "Error parsing declaration header for {}: {:?}",
-                declaration_type, err
-            );
-            return Err(err);
-        }
-    };
-
-    // Parse the type name
-    let (remaining, name) = match context(
-        "type name (expected valid identifier)",
-        bws(parse_identifier),
-    )(remaining)
-    {
-        Ok(result) => result,
-        Err(err) => {
-            trace!(
-                "Error parsing type name for {}: {:?}",
-                declaration_type, err
-            );
-            return Err(err);
-        }
-    };
-
-    // Parse type parameters directly - avoid nested Option
-    let (remaining, type_parameters) = bws(opt_parse_type_parameter_list)(remaining)?;
-
-    // Parse optional base types (interfaces or base classes)
-    let (remaining, base_types) = parse_base_type_list(remaining)?;
+) -> BResult<'a, BaseTypeDeclaration> {
+    let (input, attributes) = parse_attribute_lists(input)?;
+    let (input, modifiers) = parse_modifiers_for_decl_type(input, declaration_type)?;
+    let (input, _) = delimited(ws, tag(keyword), ws)
+        .context("declaration keyword")
+        .parse(input)?;
+    let (input, name) = parse_identifier
+        .context("type name")
+        .parse(input)?;
+    let (input, type_parameters) = opt_parse_type_parameter_list.parse(input)?;
+    let (input, base_types) = parse_base_types.parse(input)?;
 
     Ok((
-        remaining,
+        input,
         BaseTypeDeclaration {
-            attributes: attribute_lists,
+            attributes,
             modifiers,
             name,
             type_parameters,
@@ -89,28 +59,28 @@ pub fn parse_type_declaration_header<'a>(
     ))
 }
 
+// Removed legacy &str-based wrapper. Use `parse_type_declaration_header_span`.
+
 /// Parse the opening brace of a type declaration body
-pub fn parse_open_brace(input: &str) -> BResult<&str, ()> {
-    let (input, _) = context(
-        "opening brace (expected '{' to start type body)",
-        bws(bchar('{')),
-    )(input)?;
+pub fn parse_open_brace<'a>(input: Span<'a>) -> BResult<'a, ()> {
+    let (input, _) = delimited(ws, satisfy(|c| c == '{'), ws)
+        .context("opening brace")
+        .parse(input)?;
     Ok((input, ()))
 }
 
 /// Parse the closing brace of a type declaration body
-pub fn parse_close_brace(input: &str) -> BResult<&str, ()> {
-    let (input, _) = context(
-        "closing brace (expected '}' to end type body)",
-        cut(bws(bchar('}'))),
-    )(input)?;
+pub fn parse_close_brace<'a>(input: Span<'a>) -> BResult<'a, ()> {
+    let (input, _) = cut(delimited(ws, satisfy(|c| c == '}'), ws))
+        .context("closing brace")
+        .parse(input)?;
     Ok((input, ()))
 }
 
 /// Skip whitespace and check if we've reached the end of a body (closing brace)
-pub fn at_end_of_body(input: &str) -> bool {
+pub fn at_end_of_body(input: Span) -> bool {
     // Non-consuming lookahead for '}' after whitespace/comments
-    peek_bchar('}')(input).is_ok()
+    peek(delimited(ws, satisfy(|c| c == '}'), ws)).parse(input).is_ok()
 }
 
 /// Skip malformed input within a type body until a safe, top-level recovery boundary.
@@ -139,13 +109,13 @@ pub fn at_end_of_body(input: &str) -> bool {
 ///
 /// This helper is designed to be called from type declaration bodies (classes, structs, records, interfaces)
 /// at the point where a member failed to parse, to avoid cascading errors and continue with subsequent members.
-pub fn skip_to_member_boundary_top_level(input: &str) -> &str {
+pub fn skip_to_member_boundary_top_level(input: Span) -> &str {
     use std::cmp::min;
 
     // Guardrails: discourage calling when already at a closing brace for the current body.
     // This is not a hard error in release builds, but it helps surface misuse during development.
     debug_assert!(
-        peek_bchar('}')(input).is_err(),
+        peek(delimited(ws, satisfy(|c| c == '}'), ws)).parse(input).is_err(),
         "skip_to_member_boundary_top_level called at a top-level closing brace; caller should handle '}}'"
     );
 
@@ -270,3 +240,4 @@ pub fn skip_to_member_boundary_top_level(input: &str) -> &str {
     trace!("recovery reached EOF without boundary");
     ""
 }
+use crate::syntax::span::Span;

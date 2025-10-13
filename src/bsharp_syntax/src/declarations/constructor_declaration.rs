@@ -4,7 +4,7 @@ use crate::types::Parameter;
 use crate::Identifier;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct ConstructorDeclaration {
     pub modifiers: Vec<Modifier>,
     pub name: Identifier, // Constructor name is same as class name

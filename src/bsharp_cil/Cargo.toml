@@ -1,9 +1,0 @@
-[package]
-name = "bsharp_cil"
-edition.workspace = true
-version.workspace = true
-license.workspace = true
-authors.workspace = true
-
-[dependencies]
-dotscope = "0.4.0"

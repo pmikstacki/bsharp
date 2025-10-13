@@ -8,7 +8,7 @@ use serde::{Deserialize, Serialize};
 /// Unified member declaration that handles both methods and constructors
 /// structurally without semantic distinction. The syntax creates this
 /// structure and the analyzer determines semantic meaning.
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct MemberDeclaration {
     pub modifiers: Vec<Modifier>,
     /// Return type if present. None indicates constructor parser,
@@ -25,7 +25,7 @@ pub struct MemberDeclaration {
 }
 
 /// Body types supported for member declarations
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub enum MemberBody {
     /// Block body: { statements }
     Block(Statement),

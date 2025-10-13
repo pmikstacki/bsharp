@@ -1,12 +1,10 @@
 // Tests for parsing parameters: attributes and default values
 
-use parser::expressions::declarations::parameter_parser::{
-    parse_parameter, parse_parameter_list,
-};
-use syntax::nodes::expressions::expression::Expression;
-use syntax::nodes::expressions::literal::Literal;
-use syntax::nodes::identifier::Identifier;
-use syntax::nodes::types::{Parameter, ParameterModifier, PrimitiveType, Type};
+use parser::expressions::declarations::parameter_parser::{parse_parameter, parse_parameter_list};
+use syntax::expressions::expression::Expression;
+use syntax::expressions::literal::Literal;
+use syntax::identifier::Identifier;
+use syntax::types::{Parameter, ParameterModifier, PrimitiveType, Type};
 
 fn parse_param_ok(code: &str) -> Parameter {
     match parse_parameter(code) {

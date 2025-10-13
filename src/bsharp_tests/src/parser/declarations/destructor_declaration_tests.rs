@@ -1,8 +1,8 @@
 // Tests for parsing destructor declarations
 
 use parser::expressions::declarations::destructor_declaration_parser::parse_destructor_declaration;
-use syntax::nodes::declarations::{DestructorDeclaration, Modifier};
-use syntax::nodes::identifier::Identifier;
+use syntax::declarations::{DestructorDeclaration, Modifier};
+use syntax::identifier::Identifier;
 
 fn parse_destructor_declaration_helper(code: &str) -> Result<DestructorDeclaration, String> {
     match parse_destructor_declaration(code) {
@@ -31,7 +31,10 @@ fn test_parse_simple_destructor() {
     assert_eq!(declaration.name, Identifier::new("MyClass"));
     assert_eq!(declaration.modifiers, vec![]);
     assert_eq!(declaration.attributes, vec![]);
-    assert!(matches!(declaration.body, Some(syntax::nodes::statements::statement::Statement::Block(_))));
+    assert!(matches!(
+        declaration.body,
+        Some(syntax::statements::statement::Statement::Block(_))
+    ));
 }
 
 #[test]
@@ -46,7 +49,10 @@ fn test_parse_destructor_with_body() {
 
     let declaration = result.unwrap();
     assert_eq!(declaration.name, Identifier::new("MyClass"));
-    assert!(matches!(declaration.body, Some(syntax::nodes::statements::statement::Statement::Block(_))));
+    assert!(matches!(
+        declaration.body,
+        Some(syntax::statements::statement::Statement::Block(_))
+    ));
 }
 
 #[test]
@@ -186,7 +192,7 @@ fn test_parse_destructor_empty_body() {
     assert_eq!(declaration.name, Identifier::new("MyClass"));
     assert!(matches!(
         declaration.body,
-        Some(syntax::nodes::statements::statement::Statement::Block(_))
+        Some(syntax::statements::statement::Statement::Block(_))
     ));
 }
 

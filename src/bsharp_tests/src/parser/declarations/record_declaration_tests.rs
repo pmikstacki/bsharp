@@ -1,9 +1,9 @@
 // Tests for parsing record declarations
 
 use parser::expressions::declarations::type_declaration_parser::parse_record_declaration;
-use syntax::nodes::declarations::{Modifier, RecordDeclaration};
-use syntax::nodes::identifier::Identifier;
-use syntax::nodes::types::{Parameter, PrimitiveType, Type};
+use syntax::declarations::{Modifier, RecordDeclaration};
+use syntax::identifier::Identifier;
+use syntax::types::{Parameter, PrimitiveType, Type};
 
 fn parse_record_decl_test(code: &str) -> Result<RecordDeclaration, String> {
     match parse_record_declaration(code) {

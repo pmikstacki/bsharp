@@ -1,8 +1,6 @@
 // C# source file syntax - following Roslyn naming conventions
 // Nodes in Roslyn use the "Syntax" suffix (e.g., NamespaceDeclarationSyntax)
 
-use nom::branch::alt;
-use nom::combinator::map;
 use nom::Offset;
 
 use crate::parser::expressions::declarations::file_scoped_namespace_parser::parse_file_scoped_namespace_declaration;
@@ -16,12 +14,17 @@ use crate::parser::helpers::directives::skip_preprocessor_directives;
 use crate::parser::SpanTable;
 use crate::syntax::comment_parser::ws;
 use crate::syntax::errors::BResult;
-use crate::syntax::parser_helpers::{bchar, with_recognized_span};
-use crate::syntax::parser_helpers::{bpeek, bws, keyword};
-use crate::trivia::preprocessor_directive_parser::parse_preprocessor_directive;
+use crate::syntax::span::Span;
+use nom_supreme::error::{BaseErrorKind, ErrorTree, Expectation};
+use nom_supreme::ParserExt;
+use nom::Parser;
+use nom::combinator::peek;
+use nom::sequence::delimited;
+use crate::parser::keywords::declaration_keywords::{kw_namespace, kw_using};
+use crate::parser::keywords::contextual_misc_keywords::kw_global;
 use log::trace;
 use syntax::ast::{CompilationUnit, TopLevelDeclaration};
-use syntax::nodes::declarations::{GlobalUsingDirective, TypeDeclaration};
+use syntax::declarations::{ClassBodyDeclaration, GlobalUsingDirective, TypeDeclaration};
 
 /// Parse a C# source file following Roslyn's model where a source file contains:
 /// - global attributes (assembly/module attributes)
@@ -29,22 +32,22 @@ use syntax::nodes::declarations::{GlobalUsingDirective, TypeDeclaration};
 /// - optional file-scoped namespace (C# 10+)
 /// - namespace or top-level type declarations
 /// - optional top-level statements (C# 9+)
-pub fn parse_csharp_source(input: &str) -> BResult<&str, CompilationUnit> {
+pub fn parse_csharp_source<'a>(input: Span<'a>) -> BResult<'a, CompilationUnit> {
     trace!(
         "Starting source file parsing with input length: {}",
-        input.len()
+        input.fragment().len()
     );
 
-    // Skip any leading whitespace/comments and remove any BOM or other text markers
-    let (remaining, _) = ws(input)?;
+    // Skip any leading whitespace/comments
+    let (mut remaining, _) = ws(input)?;
     // Skip initial preprocessor directives
-    let remaining = skip_preprocessor_directives(remaining, true);
+    remaining = skip_preprocessor_directives(remaining, true);
 
     if log::log_enabled!(log::Level::Trace) {
         // Trace the input start (debug-only)
-        let preview = remaining.chars().take(80).collect::<String>();
+        let preview = remaining.fragment().chars().take(80).collect::<String>();
         trace!("Parsing file starting with: {}", preview);
-        let input_lines: Vec<&str> = input.lines().collect();
+        let input_lines: Vec<&str> = input.fragment().lines().collect();
         trace!("Input has {} lines", input_lines.len());
         for (i, line) in input_lines.iter().take(5).enumerate() {
             trace!("Line {}: {}", i, line);
@@ -52,7 +55,7 @@ pub fn parse_csharp_source(input: &str) -> BResult<&str, CompilationUnit> {
     }
 
     // Skip any leading preprocessor directives (treat as trivia)
-    let remaining = skip_preprocessor_directives(remaining, true);
+    remaining = skip_preprocessor_directives(remaining, true);
 
     // Parse global attributes first (assembly and module attributes)
     let (mut remaining, global_attributes) = parse_global_attributes(remaining)?;
@@ -71,40 +74,20 @@ pub fn parse_csharp_source(input: &str) -> BResult<&str, CompilationUnit> {
         let (r, _) = ws(remaining)?;
         remaining = r;
         // Skip any preprocessor directives between using directives
-        loop {
-            if bpeek(bchar('#'))(remaining).is_ok() {
-                if let Ok((rest, _dir)) = parse_preprocessor_directive(remaining) {
-                    remaining = rest;
-                    let (r2, _) = ws(remaining)?;
-                    remaining = r2;
-                    continue;
-                }
-            }
-            break;
-        }
+        remaining = skip_preprocessor_directives(remaining, true);
         // Look for 'global using' or 'using'
-        if bpeek(keyword("global"))(remaining).is_ok() {
-            // consume 'global'
-            let (r, _) = bws(keyword("global"))(remaining)?;
-            // next must be 'using'
-            if bpeek(keyword("using"))(r).is_ok() {
-                // parse the rest of using directive by reusing parser on the remainder that starts after 'using'
-                // We need a helper that expects we've already consumed 'using', but to keep it simple,
-                // rebuild input by prefixing 'using ' back is cumbersome. Instead, call parse_using_directive starting at 'using'.
-                // So we back up to a string that starts with 'using' by ignoring the consumed token above.
-                // As a simpler approach, parse_using_directive from remaining after 'global' by expecting 'using' again.
-                // We'll emulate by constructing a small closure.
-                // Call parse_using_directive on original input (r) which still begins with 'using'.
-                let (r_after, using_dir) = parse_using_directive(r)?;
+        if peek(delimited(ws, kw_global(), ws)).parse(remaining).is_ok() {
+            let (r_after_global, _) = delimited(ws, kw_global(), ws).parse(remaining)?;
+            if peek(delimited(ws, kw_using(), ws)).parse(r_after_global).is_ok() {
+                let (r_after, using_dir) = parse_using_directive(r_after_global)?;
                 global_usings.push(GlobalUsingDirective { using_directive: using_dir });
                 remaining = r_after;
                 continue;
             } else {
-                // Not a 'using' after global; stop scanning usings
                 break;
             }
-        } else if bpeek(keyword("using"))(remaining).is_ok() {
-            let (r_after, using_dir) = bws(parse_using_directive)(remaining)?;
+        } else if peek(delimited(ws, kw_using(), ws)).parse(remaining).is_ok() {
+            let (r_after, using_dir) = parse_using_directive(remaining)?;
             usings.push(using_dir);
             remaining = r_after;
             continue;
@@ -120,7 +103,7 @@ pub fn parse_csharp_source(input: &str) -> BResult<&str, CompilationUnit> {
     let mut file_scoped_namespace = None;
 
     // Prefer lookahead-based detection rather than string peeks
-    if bpeek(keyword("namespace"))(remaining).is_ok() {
+    if peek(delimited(ws, kw_namespace(), ws)).parse(remaining).is_ok() {
         match parse_file_scoped_namespace_declaration(remaining) {
             Ok((rest, namespace)) => {
                 if log::log_enabled!(log::Level::Trace) {
@@ -139,17 +122,17 @@ pub fn parse_csharp_source(input: &str) -> BResult<&str, CompilationUnit> {
                 loop {
                     let (r, _) = ws(remaining)?;
                     remaining = r;
-                    if bpeek(keyword("using"))(remaining).is_ok() {
-                        let (r_after, using_dir) = bws(parse_using_directive)(remaining)?;
+                    if peek(delimited(ws, kw_using(), ws)).parse(remaining).is_ok() {
+                        let (r_after, using_dir) = parse_using_directive(remaining)?;
                         usings.push(using_dir);
                         remaining = r_after;
                         continue;
                     }
                     // Allow global using after file-scoped namespace as well
-                    if bpeek(keyword("global"))(remaining).is_ok() {
-                        let (r, _) = bws(keyword("global"))(remaining)?;
-                        if bpeek(keyword("using"))(r).is_ok() {
-                            let (r_after, using_dir) = parse_using_directive(r)?;
+                    if peek(delimited(ws, kw_global(), ws)).parse(remaining).is_ok() {
+                        let (r_after_global, _) = delimited(ws, kw_global(), ws).parse(remaining)?;
+                        if peek(delimited(ws, kw_using(), ws)).parse(r_after_global).is_ok() {
+                            let (r_after, using_dir) = parse_using_directive(r_after_global)?;
                             global_usings.push(GlobalUsingDirective { using_directive: using_dir });
                             remaining = r_after;
                             continue;
@@ -175,12 +158,12 @@ pub fn parse_csharp_source(input: &str) -> BResult<&str, CompilationUnit> {
     let (mut remaining, _) = ws(remaining)?;
 
     // If there's still input, try to parse top-level members or statements
-    'outer: while !remaining.trim().is_empty() {
+    'outer: while !remaining.fragment().trim().is_empty() {
         let mut progressed = false;
 
-        let before_skip = remaining.len();
+        let before_skip = remaining.fragment().len();
         remaining = skip_preprocessor_directives(remaining, true);
-        progressed |= remaining.len() != before_skip;
+        progressed |= remaining.fragment().len() != before_skip;
 
         let parsed_entry = match parse_top_level_member(remaining) {
             Ok((rest, member)) => {
@@ -191,7 +174,7 @@ pub fn parse_csharp_source(input: &str) -> BResult<&str, CompilationUnit> {
             }
             Err(member_err) => match parse_top_level_statements(remaining) {
                 Ok((rest, statements)) => {
-                    let consumed = rest.len() < remaining.len();
+                    let consumed = rest.location_offset() > remaining.location_offset();
                     if !statements.is_empty() {
                         trace!("Parsed {} top-level statements", statements.len());
                         top_level_statements.extend(statements);
@@ -222,9 +205,9 @@ pub fn parse_csharp_source(input: &str) -> BResult<&str, CompilationUnit> {
 
         if parsed_entry {
             progressed = true;
-            let before_ws = remaining.len();
+            let before_ws = remaining.location_offset();
             let (after_ws, _) = ws(remaining)?;
-            progressed |= after_ws.len() != before_ws;
+            progressed |= after_ws.location_offset() != before_ws;
             remaining = after_ws;
         }
 
@@ -269,9 +252,14 @@ pub fn parse_csharp_source(input: &str) -> BResult<&str, CompilationUnit> {
 
 /// Strict entry point: require full consumption of input or return the original ErrorTree.
 /// This is used by the CLI default path to ensure any syntax error leads to a failure.
-pub fn parse_csharp_source_strict(input: &str) -> BResult<&str, CompilationUnit> {
-    use crate::syntax::test_helpers::parse_all;
-    parse_all(parse_csharp_source, input)
+pub fn parse_csharp_source_strict<'a>(input: Span<'a>) -> BResult<'a, CompilationUnit> {
+    let (rest, unit) = parse_csharp_source(input)?;
+    if rest.fragment().trim().is_empty() {
+        Ok((rest, unit))
+    } else {
+        let err = ErrorTree::Base { location: rest, kind: BaseErrorKind::Expected(Expectation::Eof) };
+        Err(nom::Err::Error(err))
+    }
 }
 
 // parse_using_directive moved to parser/declarations/using_directive_parser.rs
@@ -288,29 +276,28 @@ fn type_decl_to_top_level(d: TypeDeclaration) -> TopLevelDeclaration {
     }
 }
 
-pub(crate) fn parse_top_level_member(input: &str) -> BResult<&str, TopLevelDeclaration> {
+pub(crate) fn parse_top_level_member<'a>(input: Span<'a>) -> BResult<'a, TopLevelDeclaration> {
     trace!(
         "Attempting to parse top-level member from: {}",
-        input.chars().take(20).collect::<String>()
+        input.fragment().chars().take(20).collect::<String>()
     );
-
-    alt((
-        // Try to parse namespace (block-scoped only, file-scoped is handled separately)
-        map(parse_namespace_declaration, TopLevelDeclaration::Namespace),
-        // Try to parse other type declarations
-        map(parse_type_declaration, type_decl_to_top_level),
-    ))(input)
+    if let Ok((rest, ns)) = parse_namespace_declaration(input) {
+        return Ok((rest, TopLevelDeclaration::Namespace(ns)));
+    }
+    let (rest, td) = parse_type_declaration(input)?;
+    Ok((rest, type_decl_to_top_level(td)))
 }
 
 /// Parse a C# source file and collect byte-span ranges for top-level declarations.
 /// Returns the CompilationUnit and a SpanTable keyed by a stable textual key.
-pub fn parse_csharp_source_with_spans(input: &str) -> BResult<&str, (CompilationUnit, SpanTable)> {
+pub fn parse_csharp_source_with_spans<'a>(input: Span<'a>) -> BResult<'a, (CompilationUnit, SpanTable)> {
     trace!(
         "Starting source file parsing (with spans) with input length: {}",
-        input.len()
+        input.fragment().len()
     );
 
     let mut span_table: SpanTable = SpanTable::new();
+    let _original = input.fragment();
 
     // Skip any leading whitespace/comments and remove any BOM or other text markers
     let (remaining, _) = ws(input)?;
@@ -326,29 +313,19 @@ pub fn parse_csharp_source_with_spans(input: &str) -> BResult<&str, (Compilation
         let (r, _) = ws(remaining)?;
         remaining = r;
         // Skip any preprocessor directives between using directives
-        loop {
-            if bpeek(bchar('#'))(remaining).is_ok() {
-                if let Ok((rest, _dir)) = parse_preprocessor_directive(remaining) {
-                    remaining = rest;
-                    let (r2, _) = ws(remaining)?;
-                    remaining = r2;
-                    continue;
-                }
-            }
-            break;
-        }
-        if bpeek(keyword("global"))(remaining).is_ok() {
-            let (r, _) = bws(keyword("global"))(remaining)?;
-            if bpeek(keyword("using"))(r).is_ok() {
-                let (r_after, using_dir) = parse_using_directive(r)?;
+        remaining = skip_preprocessor_directives(remaining, true);
+        if peek(delimited(ws, kw_global(), ws)).parse(remaining).is_ok() {
+            let (r_after_global, _) = delimited(ws, kw_global(), ws).parse(remaining)?;
+            if peek(delimited(ws, kw_using(), ws)).parse(r_after_global).is_ok() {
+                let (r_after, using_dir) = parse_using_directive(r_after_global)?;
                 global_usings.push(GlobalUsingDirective { using_directive: using_dir });
                 remaining = r_after;
                 continue;
             } else {
                 break;
             }
-        } else if bpeek(keyword("using"))(remaining).is_ok() {
-            let (r_after, using_dir) = bws(parse_using_directive)(remaining)?;
+        } else if peek(delimited(ws, kw_using(), ws)).parse(remaining).is_ok() {
+            let (r_after, using_dir) = parse_using_directive(remaining)?;
             usings.push(using_dir);
             remaining = r_after;
             continue;
@@ -359,12 +336,12 @@ pub fn parse_csharp_source_with_spans(input: &str) -> BResult<&str, (Compilation
 
     // File-scoped namespace (collect span if present)
     let mut file_scoped_namespace = None;
-    if bpeek(keyword("namespace"))(remaining).is_ok() {
-        if let Ok((rest, (ns, range))) =
-            with_recognized_span(input, parse_file_scoped_namespace_declaration)(remaining)
-        {
+    if peek(delimited(ws, kw_namespace(), ws)).parse(remaining).is_ok() {
+        if let Ok((rest, (recognized, ns))) = (|i| parse_file_scoped_namespace_declaration(i)).with_recognized().parse(remaining) {
+            let start = recognized.location_offset();
+            let end = start + recognized.fragment().len();
             let key = format!("namespace::{}", ns.name.name);
-            span_table.insert(key, range);
+            span_table.insert(key, start..end);
             file_scoped_namespace = Some(ns);
             remaining = rest;
         }
@@ -378,35 +355,27 @@ pub fn parse_csharp_source_with_spans(input: &str) -> BResult<&str, (Compilation
     'outer: while !remaining.trim().is_empty() {
         let mut progressed = false;
 
-        loop {
-            let before_ws = remaining.len();
-            let (r, _) = ws(remaining)?;
-            progressed |= r.len() != before_ws;
-            remaining = r;
+        let before_ws = remaining.location_offset();
+        let (r, _) = ws(remaining)?;
+        progressed |= r.location_offset() != before_ws;
+        remaining = r;
+        remaining = skip_preprocessor_directives(remaining, true);
 
-            if bpeek(bchar('#'))(remaining).is_ok() {
-                if let Ok((rest, _dir)) = parse_preprocessor_directive(remaining) {
-                    remaining = rest;
-                    progressed = true;
-                    continue;
-                }
-            }
-            break;
-        }
-
-        let parsed_entry = match with_recognized_span(input, parse_top_level_member)(remaining) {
-            Ok((rest, (member, recognized_range))) => {
+        let parsed_entry = match (|i| parse_top_level_member(i)).with_recognized().parse(remaining) {
+            Ok((rest, (recognized, member))) => {
                 let ns_prefix = file_scoped_namespace
                     .as_ref()
                     .map(|fs| fs.name.name.as_str());
-                let range_for_entry = recognized_range.clone();
+                let start = recognized.location_offset();
+                let end = start + recognized.fragment().len();
+                let range_for_entry = start..end;
                 if let Some(key) = build_decl_key_with_prefix(&member, ns_prefix) {
                     span_table.insert(key, range_for_entry.clone());
                 }
                 if let TopLevelDeclaration::Class(class_decl) = &member {
-                    let class_slice = &input[range_for_entry.clone()];
+                    let class_slice = &input.fragment()[range_for_entry.clone()];
                     collect_class_member_spans(
-                        input,
+                        input.fragment(),
                         class_slice,
                         ns_prefix,
                         &class_decl.name.name,
@@ -419,7 +388,7 @@ pub fn parse_csharp_source_with_spans(input: &str) -> BResult<&str, (Compilation
             }
             Err(member_err) => match parse_top_level_statements(remaining) {
                 Ok((rest, statements)) => {
-                    let consumed = rest.len() < remaining.len();
+                    let consumed = rest.location_offset() > remaining.location_offset();
                     if !statements.is_empty() {
                         top_level_statements.extend(statements);
                         remaining = rest;
@@ -449,9 +418,9 @@ pub fn parse_csharp_source_with_spans(input: &str) -> BResult<&str, (Compilation
 
         if parsed_entry {
             progressed = true;
-            let before_ws = remaining.len();
+            let before_ws = remaining.location_offset();
             let (after_ws, _) = ws(remaining)?;
-            progressed |= after_ws.len() != before_ws;
+            progressed |= after_ws.location_offset() != before_ws;
             remaining = after_ws;
         }
 
@@ -523,14 +492,13 @@ fn collect_class_member_spans(
     // Manually iterate class members
     use crate::parser::expressions::declarations::type_declaration_parser::parse_class_member_for_spans as parse_member;
     use crate::syntax::comment_parser::parse_whitespace_or_comments as ws_comments;
-    use crate::syntax::nodes::declarations::ClassBodyDeclaration as CBD;
 
     // Skip the opening '{'
     let mut cur = body_input.strip_prefix('{').unwrap_or(body_input);
     loop {
         // Consume whitespace/comments
-        if let Ok((after, _)) = ws_comments(cur) {
-            cur = after;
+        if let Ok((after, _)) = ws_comments(cur.into()) {
+            cur = after.fragment();
         }
         // Stop at closing '}'
         let ahead = cur.trim_start();
@@ -538,23 +506,23 @@ fn collect_class_member_spans(
             break;
         }
 
-        match parse_member(cur) {
+        match parse_member(cur.into()) {
             Ok((rest, member)) => {
                 let start = whole.offset(cur);
-                let end = whole.offset(rest);
+                let end = whole.offset(rest.fragment());
                 let range = start..end;
                 match &member {
-                    CBD::Method(m) => {
+                    ClassBodyDeclaration::Method(m) => {
                         let key = format!("method::{}::{}", owner_prefix, m.name.name);
                         spans.insert(key, range);
                     }
-                    CBD::Constructor(_) => {
+                    ClassBodyDeclaration::Constructor(_) => {
                         let key = format!("ctor::{}", owner_prefix);
                         spans.insert(key, range);
                     }
                     _ => {}
                 }
-                cur = rest;
+                cur = rest.fragment();
             }
             Err(_) => {
                 // Unable to parse further safely; stop

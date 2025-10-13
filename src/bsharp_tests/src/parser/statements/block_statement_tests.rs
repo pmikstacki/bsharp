@@ -5,11 +5,11 @@ use nom::combinator::all_consuming;
 use nom::Finish;
 use parser::expressions::statements::block_statement_parser::parse_block_statement;
 use parser::syntax::test_helpers::parse_all;
-use syntax::nodes::declarations::LocalVariableDeclaration;
-use syntax::nodes::expressions::expression::Expression;
-use syntax::nodes::expressions::literal::Literal;
-use syntax::nodes::statements::statement::Statement;
-use syntax::nodes::types::{PrimitiveType, Type};
+use syntax::declarations::LocalVariableDeclaration;
+use syntax::expressions::expression::Expression;
+use syntax::expressions::literal::Literal;
+use syntax::statements::statement::Statement;
+use syntax::types::{PrimitiveType, Type};
 
 #[test]
 fn test_parse_block_statement() {

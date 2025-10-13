@@ -56,3 +56,8 @@ pub use label_statement_parser::parse_label_statement;
 pub use lock_statement_parser::parse_lock_statement;
 pub use unsafe_statement_parser::parse_unsafe_statement;
 pub use yield_statement_parser::parse_yield_statement;
+// Re-export key node types if needed for convenience, though often handled in src/syntax/nodes/mod.rs
+
+pub use syntax::declarations::*;
+pub use syntax::expressions::*;
+pub use syntax::trivia::*;

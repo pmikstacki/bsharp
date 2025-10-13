@@ -1,7 +1,7 @@
 use parser::expressions::primary_expression_parser::parse_expression;
-use syntax::nodes::expressions::expression::{CollectionElement, Expression};
-use syntax::nodes::expressions::literal::Literal;
-use syntax::nodes::identifier::Identifier;
+use syntax::expressions::expression::{CollectionElement, Expression};
+use syntax::expressions::literal::Literal;
+use syntax::identifier::Identifier;
 
 fn parse_ok(input: &str) -> Expression {
     let (rest, expr) = parse_expression(input).expect("parse ok");

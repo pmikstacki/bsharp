@@ -1,8 +1,8 @@
 use parser::expressions::primary_expression_parser::parse_expression;
-use syntax::nodes::expressions::expression::Expression;
-use syntax::nodes::expressions::literal::Literal;
-use syntax::nodes::expressions::{AssignmentExpression, BinaryOperator};
-use syntax::nodes::identifier::Identifier;
+use syntax::expressions::expression::Expression;
+use syntax::expressions::literal::Literal;
+use syntax::expressions::{AssignmentExpression, BinaryOperator};
+use syntax::identifier::Identifier;
 
 #[test]
 fn test_simple_binary_expression() {

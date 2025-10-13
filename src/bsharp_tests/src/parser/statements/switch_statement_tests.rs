@@ -1,13 +1,13 @@
 // Integration tests for switch_statement_parser.rs
 // Content moved from src/parser/statements/switch_statement_parser.rs
 
-use syntax::nodes::expressions::expression::Expression;
+use syntax::expressions::expression::Expression;
 
 use parser::expressions::statements::switch_statement_parser::parse_switch_statement;
 use parser::syntax::test_helpers::parse_all;
-use syntax::nodes::identifier::Identifier;
-use syntax::nodes::statements::statement::Statement;
-use syntax::nodes::statements::switch_label::SwitchLabel;
+use syntax::identifier::Identifier;
+use syntax::statements::statement::Statement;
+use syntax::statements::switch_label::SwitchLabel;
 
 #[test]
 fn test_parse_switch_statement() {

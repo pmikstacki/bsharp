@@ -18,7 +18,10 @@ fn complex_csproj_include_remove_update_and_condition_and_macro_warnings() {
     .collect();
 
     if !csproj.exists() {
-        eprintln!("skipping complex csproj test (fixture missing): {}", csproj.display());
+        eprintln!(
+            "skipping complex csproj test (fixture missing): {}",
+            csproj.display()
+        );
         return;
     }
 

@@ -1,11 +1,9 @@
 // Tests for parsing operator declarations
 
 use parser::expressions::declarations::operator_declaration_parser::parse_operator_declaration;
-use syntax::nodes::declarations::{
-    ConversionKind, Modifier, OperatorDeclaration, OperatorKind,
-};
-use syntax::nodes::identifier::Identifier;
-use syntax::nodes::types::{PrimitiveType, Type};
+use syntax::declarations::{ConversionKind, Modifier, OperatorDeclaration, OperatorKind};
+use syntax::identifier::Identifier;
+use syntax::types::{PrimitiveType, Type};
 
 fn parse_operator_declaration_helper(code: &str) -> Result<OperatorDeclaration, String> {
     match parse_operator_declaration(code) {

@@ -1,26 +1,25 @@
 use crate::parser::expressions::deconstruction_expression_parser::parse_deconstruction_expression;
+use crate::syntax::comment_parser::ws;
 use crate::syntax::errors::BResult;
-use crate::syntax::nodes::statements::statement::Statement;
-use crate::syntax::parser_helpers::{bchar, bws, context};
-
 use nom::{combinator::map, sequence::terminated};
+use nom::character::complete::char as nom_char;
+use nom::sequence::delimited;
+use nom::Parser;
+use nom_supreme::ParserExt;
+use syntax::statements::statement::Statement;
 
 /// Parse a deconstruction statement: (var x, var y) = tuple;
-pub fn parse_deconstruction_statement(input: &str) -> BResult<&str, Statement> {
-    context(
-        "deconstruction statement (expected tuple pattern assignment like '(var x, var y) = tuple;')",
-        map(
-            terminated(
-                context(
-                    "deconstruction expression (expected tuple pattern assignment)",
-                    bws(parse_deconstruction_expression),
-                ),
-                context(
-                    "semicolon after deconstruction statement (expected ';')",
-                    bws(bchar(';')),
-                ),
-            ),
-            |deconstruction| Statement::Deconstruction(Box::new(deconstruction)),
+pub fn parse_deconstruction_statement(input: Span) -> BResult<Statement> {
+    map(
+        terminated(
+            delimited(ws, parse_deconstruction_expression, ws)
+                .context("deconstruction expression"),
+            delimited(ws, nom_char(';'), ws)
+                .context("semicolon after deconstruction statement"),
         ),
-    )(input)
+        |deconstruction| Statement::Deconstruction(Box::new(deconstruction)),
+    )
+    .context("deconstruction statement")
+    .parse(input)
 }
+use crate::syntax::span::Span;

@@ -1,11 +1,11 @@
 // Tests for parsing field declarations
 
 use parser::expressions::declarations::field_declaration_parser::parse_field_declaration;
-use syntax::nodes::declarations::FieldDeclaration;
-use syntax::nodes::expressions::expression::Expression;
-use syntax::nodes::expressions::literal::Literal;
-use syntax::nodes::identifier::Identifier;
-use syntax::nodes::types::{PrimitiveType, Type};
+use syntax::declarations::FieldDeclaration;
+use syntax::expressions::expression::Expression;
+use syntax::expressions::literal::Literal;
+use syntax::identifier::Identifier;
+use syntax::types::{PrimitiveType, Type};
 
 fn parse_field_decl_test(code: &str) -> Result<FieldDeclaration, String> {
     match parse_field_declaration(code) {

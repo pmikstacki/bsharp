@@ -5,9 +5,9 @@ use std::path::PathBuf;
 
 // Import from containing crate
 use bsharp_parser::bsharp::parse_csharp_source;
+use bsharp_parser::expressions::statements::UsingDirective;
 use bsharp_parser::parse_mode;
 use bsharp_parser::syntax::ast;
-use bsharp_parser::syntax::nodes::declarations::UsingDirective;
 use std::sync::{Mutex, OnceLock};
 
 /// Execute the tree command: generate a Mermaid (default) or Graphviz (DOT) visualization of the AST

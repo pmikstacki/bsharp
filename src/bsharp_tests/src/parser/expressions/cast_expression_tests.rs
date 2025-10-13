@@ -1,9 +1,9 @@
 // Tests for cast expressions and parens disambiguation
 
 use parser::expressions::primary_expression_parser::parse_expression;
-use syntax::nodes::expressions::expression::Expression;
-use syntax::nodes::identifier::Identifier;
-use syntax::nodes::types::{PrimitiveType, Type};
+use syntax::expressions::expression::Expression;
+use syntax::identifier::Identifier;
+use syntax::types::{PrimitiveType, Type};
 
 #[test]
 fn explicit_cast_basic() {

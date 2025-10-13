@@ -1,36 +1,20 @@
+use crate::framework::NodeRef;
+use crate::framework::visit::Visit;
 use crate::framework::AnalysisSession;
 use crate::syntax::ast::{CompilationUnit, TopLevelDeclaration};
-use crate::syntax::nodes::declarations::{
-    ClassBodyDeclaration, ClassDeclaration, NamespaceBodyDeclaration, NamespaceDeclaration,
-    StructDeclaration, InterfaceDeclaration, EnumDeclaration, RecordDeclaration, DelegateDeclaration,
+use bsharp_syntax::declarations::{
+    ClassBodyDeclaration, ClassDeclaration, MethodDeclaration, NamespaceBodyDeclaration,
+    NamespaceDeclaration,
 };
-use crate::syntax::nodes::expressions::expression::Expression;
-use crate::syntax::nodes::statements::statement::Statement;
-
-/// Thin enum over AST nodes consumed by rules. Start with root-only; expand incrementally.
-pub enum NodeRef<'a> {
-    CompilationUnit(&'a CompilationUnit),
-    Namespace(&'a NamespaceDeclaration),
-    Class(&'a ClassDeclaration),
-    Struct(&'a StructDeclaration),
-    Interface(&'a InterfaceDeclaration),
-    Enum(&'a EnumDeclaration),
-    Record(&'a RecordDeclaration),
-    Delegate(&'a DelegateDeclaration),
-    Method(&'a crate::syntax::nodes::declarations::MethodDeclaration),
-    Statement(&'a Statement),
-    Expression(&'a Expression),
-}
+use bsharp_syntax::statements::statement::Statement;
+use bsharp_syntax::statements::statement::Statement::{
+    DoWhile, For, If, Switch, Try, Using, While,
+};
 
 impl Default for AstWalker<'_> {
     fn default() -> Self {
         Self::new()
     }
-}
-
-pub trait Visit {
-    fn enter(&mut self, _node: &NodeRef, _session: &mut AnalysisSession) {}
-    fn exit(&mut self, _node: &NodeRef, _session: &mut AnalysisSession) {}
 }
 
 pub struct AstWalker<'a> {
@@ -66,7 +50,7 @@ impl<'a> AstWalker<'a> {
     }
 
     fn visit_compilation_unit(&mut self, cu: &'a CompilationUnit, session: &mut AnalysisSession) {
-        let node = NodeRef::CompilationUnit(cu);
+        let node: NodeRef = NodeRef::from(cu);
         self.notify_enter(&node, session);
 
         // File-scoped namespace
@@ -96,7 +80,7 @@ impl<'a> AstWalker<'a> {
     }
 
     fn visit_namespace(&mut self, ns: &'a NamespaceDeclaration, session: &mut AnalysisSession) {
-        let node = NodeRef::Namespace(ns);
+        let node: NodeRef = NodeRef::from(ns);
         self.notify_enter(&node, session);
         for member in &ns.declarations {
             self.visit_namespace_member(member, session);
@@ -122,7 +106,7 @@ impl<'a> AstWalker<'a> {
     }
 
     fn visit_class(&mut self, class: &'a ClassDeclaration, session: &mut AnalysisSession) {
-        let node = NodeRef::Class(class);
+        let node: NodeRef = NodeRef::from(class);
         self.notify_enter(&node, session);
         for member in &class.body_declarations {
             match member {
@@ -149,12 +133,8 @@ impl<'a> AstWalker<'a> {
         self.notify_exit(&node, session);
     }
 
-    fn visit_method(
-        &mut self,
-        m: &'a crate::syntax::nodes::declarations::MethodDeclaration,
-        session: &mut AnalysisSession,
-    ) {
-        let node = NodeRef::Method(m);
+    fn visit_method(&mut self, m: &'a MethodDeclaration, session: &mut AnalysisSession) {
+        let node: NodeRef = NodeRef::from(m);
         self.notify_enter(&node, session);
         if let Some(body) = &m.body {
             self.visit_statement(body, session);
@@ -163,8 +143,7 @@ impl<'a> AstWalker<'a> {
     }
 
     fn visit_statement(&mut self, stmt: &'a Statement, session: &mut AnalysisSession) {
-        use crate::syntax::nodes::statements::statement::Statement::*;
-        let node = NodeRef::Statement(stmt);
+        let node: NodeRef = NodeRef::from(stmt);
         self.notify_enter(&node, session);
         match stmt {
             If(s) => {
@@ -203,7 +182,7 @@ impl<'a> AstWalker<'a> {
                     self.visit_statement(body, session);
                 }
             }
-            Block(stmts) => {
+            Statement::Block(stmts) => {
                 for st in stmts {
                     self.visit_statement(st, session);
                 }

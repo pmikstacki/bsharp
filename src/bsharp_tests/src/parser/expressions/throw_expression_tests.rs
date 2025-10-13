@@ -2,8 +2,8 @@
 
 use parser::expressions::primary_expression_parser::parse_expression;
 use parser::expressions::throw_expression_parser::parse_throw_expression;
-use syntax::nodes::expressions::expression::Expression;
-use syntax::nodes::expressions::literal::Literal;
+use syntax::expressions::expression::Expression;
+use syntax::expressions::literal::Literal;
 
 fn parse_throw_expr_helper(code: &str) -> Result<Expression, String> {
     match parse_throw_expression(code) {

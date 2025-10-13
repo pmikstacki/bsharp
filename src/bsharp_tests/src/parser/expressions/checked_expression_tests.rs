@@ -1,6 +1,6 @@
 // Tests for parsing checked expressions
 
-use syntax::nodes::expressions::CheckedExpression;
+use syntax::expressions::CheckedExpression;
 
 fn parse_checked_expr(code: &str) -> Result<CheckedExpression, String> {
     Err(format!("Parser not yet implemented: {}", code))

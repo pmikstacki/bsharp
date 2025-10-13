@@ -1,4 +1,5 @@
-use crate::framework::{AnalysisSession, NodeRef};
+use crate::framework::NodeRef;
+use crate::framework::AnalysisSession;
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum RuleTarget {

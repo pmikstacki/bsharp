@@ -1,8 +1,8 @@
 use parser::expressions::declarations::field_declaration_parser::parse_field_declaration;
 use parser::expressions::declarations::property_declaration_parser::parse_property_declaration;
-use syntax::nodes::declarations::{Modifier, PropertyAccessor};
-use syntax::nodes::identifier::Identifier;
-use syntax::nodes::types::{PrimitiveType, Type};
+use syntax::declarations::{Modifier, PropertyAccessor};
+use syntax::identifier::Identifier;
+use syntax::types::{PrimitiveType, Type};
 
 #[test]
 fn required_property_modifer_is_parsed() {
@@ -14,8 +14,16 @@ fn required_property_modifer_is_parsed() {
     assert_eq!(prop.ty, Type::Primitive(PrimitiveType::String));
     assert_eq!(prop.name, Identifier::new("Name"));
     // Make sure we saw get/init
-    assert!(prop.accessors.iter().any(|a| matches!(a, PropertyAccessor::Get { .. })));
-    assert!(prop.accessors.iter().any(|a| matches!(a, PropertyAccessor::Init { .. })));
+    assert!(
+        prop.accessors
+            .iter()
+            .any(|a| matches!(a, PropertyAccessor::Get { .. }))
+    );
+    assert!(
+        prop.accessors
+            .iter()
+            .any(|a| matches!(a, PropertyAccessor::Init { .. }))
+    );
 }
 
 #[test]

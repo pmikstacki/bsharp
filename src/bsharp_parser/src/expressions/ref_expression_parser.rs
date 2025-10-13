@@ -1,10 +1,12 @@
-use nom::{combinator::map, sequence::tuple};
-
 use crate::parser::expressions::primary_expression_parser::parse_expression;
 use crate::parser::keywords::parameter_modifier_keywords::kw_ref;
 use crate::syntax::errors::BResult;
-use crate::syntax::nodes::expressions::expression::Expression;
-use crate::syntax::parser_helpers::{bws, context};
+use nom::{combinator::map, sequence::tuple};
+use syntax::expressions::Expression;
+use crate::syntax::comment_parser::ws;
+use nom::sequence::delimited;
+use nom::Parser;
+use nom_supreme::ParserExt;
 
 /// Parse a ref expression: ref expression
 ///
@@ -14,12 +16,15 @@ use crate::syntax::parser_helpers::{bws, context};
 /// ref array[index]
 /// ref GetProperty()
 /// ```
-pub fn parse_ref_expression(input: &str) -> BResult<&str, Expression> {
-    context(
-        "ref expression",
-        map(
-            tuple((bws(kw_ref()), bws(parse_expression))),
-            |(_, expr)| Expression::Ref(Box::new(expr)),
-        ),
-    )(input)
+pub fn parse_ref_expression<'a>(input: Span<'a>) -> BResult<'a, Expression> {
+    map(
+        tuple((
+            delimited(ws, kw_ref(), ws),
+            delimited(ws, parse_expression, ws),
+        )),
+        |(_, expr)| Expression::Ref(Box::new(expr)),
+    )
+    .context("ref expression")
+    .parse(input)
 }
+use crate::syntax::span::Span;

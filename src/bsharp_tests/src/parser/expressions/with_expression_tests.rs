@@ -1,6 +1,6 @@
 use parser::expressions::primary_expression_parser::parse_expression;
-use syntax::nodes::expressions::expression::{Expression, WithInitializerEntry};
-use syntax::nodes::identifier::Identifier;
+use syntax::expressions::expression::{Expression, WithInitializerEntry};
+use syntax::identifier::Identifier;
 
 fn parse_expr_ok(src: &str) -> Expression {
     let (rest, expr) = parse_expression(src).expect("parse ok");

@@ -41,4 +41,5 @@ mod type_parameter_constraint_tests;
 mod type_parameter_tests;
 mod using_directive_tests;
 mod variable_declaration_tests;
+mod attribute_generic_tests;
 // Add other declaration test modules here as they are created

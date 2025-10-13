@@ -1,5 +1,5 @@
 use parser::expressions::literal_parser::parse_literal;
-use syntax::nodes::expressions::literal::{IntegerSuffix, Literal};
+use syntax::expressions::literal::{IntegerSuffix, Literal};
 
 fn parse_ok(code: &str) -> Literal {
     let (rest, lit) = parse_literal(code).expect("parse");
@@ -41,9 +41,7 @@ fn raw_interpolated_multiline_trimming() {
             assert!(is.is_verbatim); // raw treated as verbatim true in this implementation
             assert!(is.parts.len() >= 2);
             // First part starts with "Hello "
-            if let syntax::nodes::expressions::literal::InterpolatedStringPart::Text(t0) =
-                &is.parts[0]
-            {
+            if let syntax::expressions::literal::InterpolatedStringPart::Text(t0) = &is.parts[0] {
                 assert!(t0.starts_with("Hello "));
             } else {
                 panic!("expected first part text");

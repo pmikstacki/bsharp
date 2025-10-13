@@ -1,7 +1,7 @@
 use crate::Identifier;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub enum PreprocessorDirective {
     Define { symbol: Identifier },
     Undef { symbol: Identifier },
@@ -18,4 +18,9 @@ pub enum PreprocessorDirective {
     // Fallback for directives we do not currently model specifically.
     // The text contains the rest of the line after '#'.
     Unknown { text: String },
+}
+
+#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+pub struct PositionedPreprocessorDirective {
+    pub directive: PreprocessorDirective,
 }

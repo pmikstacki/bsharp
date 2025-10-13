@@ -13,7 +13,7 @@ use crate::types::{Parameter, Type, TypeParameter};
 use crate::Identifier;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub enum StructBodyDeclaration {
     Field(FieldDeclaration),
     Method(MethodDeclaration),
@@ -30,7 +30,7 @@ pub enum StructBodyDeclaration {
     NestedRecord(RecordDeclaration),
 }
 
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct StructDeclaration {
     pub attributes: Vec<AttributeList>,
     pub modifiers: Vec<Modifier>,

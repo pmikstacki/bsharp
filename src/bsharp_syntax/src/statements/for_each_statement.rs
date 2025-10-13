@@ -4,7 +4,7 @@ use crate::types::Type;
 use crate::Identifier;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct ForEachStatement {
     // Whether this is an 'await foreach'
     pub is_await: bool,

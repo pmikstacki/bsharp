@@ -1,6 +1,6 @@
 // Tests for parsing binary operators
 
-use syntax::nodes::expressions::BinaryOperator;
+use syntax::expressions::BinaryOperator;
 
 fn parse_binary_operator(code: &str) -> Result<BinaryOperator, String> {
     Err(format!("Parser not yet implemented: {}", code))

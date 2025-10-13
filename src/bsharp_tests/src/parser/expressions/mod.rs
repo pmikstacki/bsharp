@@ -48,4 +48,6 @@ mod literal_suffix_and_raw_multiline_tests;
 mod lookahead_boundaries2_tests;
 mod target_typed_new_tests;
 mod utf8_string_tests;
-mod with_expression_tests; // New boundary tests
+mod with_expression_tests;
+mod invalid_diagnostics_tests;
+// New boundary tests

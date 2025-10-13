@@ -25,7 +25,7 @@ BSharp consists of several key components:
 
 - **Robust Error Handling**: Custom error types with context information for debugging parse failures
 
-- **AST Navigation**: Powerful navigation traits for traversing and analyzing the AST
+- **Query API**: Typed, ergonomic traversal of the AST via `framework::query::Query`
 
 - **Code Analysis**: Built-in analyzers for:
   - Control flow analysis

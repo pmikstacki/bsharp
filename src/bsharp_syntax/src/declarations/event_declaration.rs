@@ -4,7 +4,7 @@ use crate::types::Type;
 use crate::Identifier;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct EventDeclaration {
     pub attributes: Vec<AttributeList>,
     pub modifiers: Vec<Modifier>,
@@ -13,13 +13,13 @@ pub struct EventDeclaration {
     pub accessor_list: Option<EventAccessorList>, // for event { add; remove; }
 }
 
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct EventAccessorList {
     pub add_accessor: Option<EventAccessor>,
     pub remove_accessor: Option<EventAccessor>,
 }
 
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct EventAccessor {
     pub attributes: Vec<AttributeList>,
     pub modifiers: Vec<Modifier>,

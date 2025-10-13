@@ -3,8 +3,8 @@
 
 use parser::expressions::statements::throw_statement_parser::parse_throw_statement;
 use parser::syntax::test_helpers::parse_all;
-use syntax::nodes::expressions::expression::Expression;
-use syntax::nodes::statements::statement::Statement;
+use syntax::expressions::expression::Expression;
+use syntax::statements::statement::Statement;
 
 #[test]
 fn test_parse_throw_statement() {

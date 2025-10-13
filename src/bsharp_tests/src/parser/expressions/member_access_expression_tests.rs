@@ -1,6 +1,6 @@
 // Tests for parsing member access expressions
 
-use syntax::nodes::expressions::MemberAccessExpression;
+use syntax::expressions::MemberAccessExpression;
 
 fn parse_member_access_expr(code: &str) -> Result<MemberAccessExpression, String> {
     Err(format!("Parser not yet implemented: {}", code))

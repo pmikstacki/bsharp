@@ -7,7 +7,7 @@ use super::struct_declaration::StructDeclaration;
 use serde::{Deserialize, Serialize};
 
 /// Enum representing any type of top-level or nested declaration that defines a type.
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub enum TypeDeclaration {
     Class(ClassDeclaration),
     Struct(StructDeclaration),

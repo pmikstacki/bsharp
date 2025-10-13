@@ -2,19 +2,23 @@ use crate::syntax::comment_parser::ws;
 use nom::branch::alt;
 use nom::combinator::map;
 use nom::combinator::opt;
+use nom::Parser;
+use nom::character::complete::char as nom_char;
+use nom::combinator::peek;
+use nom::sequence::delimited;
 use std::marker::PhantomData;
 
 use crate::syntax::errors::BResult;
-use crate::syntax::nodes::declarations::attribute::AttributeList;
-use crate::syntax::nodes::declarations::{
+
+use syntax::declarations::{
     Attribute, ClassBodyDeclaration, ClassDeclaration, ConstructorDeclaration, EventDeclaration,
     IndexerDeclaration, InterfaceBodyDeclaration, InterfaceDeclaration, MethodDeclaration,
     Modifier, PropertyAccessor, PropertyDeclaration, RecordDeclaration, StructBodyDeclaration,
     StructDeclaration, TypeDeclaration,
 };
-use crate::syntax::nodes::identifier::Identifier;
-use crate::syntax::nodes::types::{Parameter, Type, TypeParameter};
-use crate::syntax::parser_helpers::{bchar, bpeek, bws, context, keyword};
+
+use nom::bytes::complete::tag;
+use nom_supreme::ParserExt;
 
 // Import specialized parser
 use crate::parser::expressions::declarations::attribute_parser::parse_attribute_lists;
@@ -27,12 +31,10 @@ use crate::parser::expressions::declarations::field_declaration_parser::parse_fi
 use crate::parser::expressions::declarations::indexer_declaration_parser::parse_indexer_declaration;
 use crate::parser::expressions::declarations::method_declaration_parser::parse_member_declaration;
 use crate::parser::expressions::declarations::modifier_parser::parse_modifiers;
+pub use crate::parser::expressions::declarations::modifier_parser::parse_modifiers_for_decl_type;
 use crate::parser::expressions::declarations::operator_declaration_parser::parse_operator_declaration;
 use crate::parser::expressions::declarations::parameter_parser::parse_parameter_list;
 use crate::parser::expressions::declarations::property_declaration_parser::parse_property_declaration;
-use crate::parser::expressions::declarations::type_declaration_helpers::{
-    at_end_of_body, skip_to_member_boundary_top_level,
-};
 use crate::parser::expressions::declarations::type_parameter_parser::{
     opt_parse_type_parameter_list, parse_type_parameter_constraints_clauses,
 };
@@ -40,8 +42,9 @@ use crate::parser::helpers::directives::skip_preprocessor_directives;
 use crate::parser::identifier_parser::parse_identifier;
 use crate::parser::parse_mode;
 use nom_supreme::error::{BaseErrorKind, ErrorTree, Expectation};
-
-pub use crate::parser::expressions::declarations::modifier_parser::parse_modifiers_for_decl_type;
+use syntax::declarations::AttributeList;
+use syntax::types::{Parameter, Type, TypeParameter};
+use syntax::Identifier;
 
 /// Convert Vec<AttributeList> to Vec<Attribute> by flattening
 pub fn convert_attributes(attribute_lists: Vec<AttributeList>) -> Vec<Attribute> {
@@ -51,21 +54,109 @@ pub fn convert_attributes(attribute_lists: Vec<AttributeList>) -> Vec<Attribute>
         .collect()
 }
 
+/// Span-native declaration header parser used by class/record Span parsers
+fn parse_declaration_header_span<'a>(
+    input: Span<'a>,
+    declaration_keyword: &'static str,
+) -> BResult<'a, DeclarationHeader<'a>> {
+    use nom::bytes::complete::tag;
+
+    (|i| {
+        let (i, attributes) = parse_attribute_lists.parse(i)?;
+        let (i, modifiers) = parse_modifiers.parse(i)?;
+        let (i, _) = delimited(ws, tag(declaration_keyword), ws).parse(i)?;
+        let (i, identifier) = parse_identifier.parse(i)?;
+        let (i, type_parameters_opt_opt) = opt(|j| opt_parse_type_parameter_list.parse(j)).parse(i)?;
+        let type_parameters = type_parameters_opt_opt.and_then(|x| x);
+        let (i, primary_constructor_parameters) = opt(|j| parse_parameter_list.parse(j)).parse(i)?;
+        let (i, base_types_opt) = opt(|j| parse_base_type_list.parse(j)).parse(i)?;
+        let base_types = base_types_opt.unwrap_or_default();
+        Ok((
+            i,
+            DeclarationHeader {
+                attributes,
+                modifiers,
+                identifier,
+                type_parameters,
+                primary_constructor_parameters,
+                base_types,
+                _phantom: PhantomData,
+            },
+        ))
+    })
+    .context("type declaration header (attributes, modifiers, keyword, name, optional parts)")
+    .parse(input)
+}
+
+/// Span-native struct declaration
+pub fn parse_struct_declaration_span<'a>(input: Span<'a>) -> BResult<'a, StructDeclaration> {
+    let (input, header): (Span<'a>, DeclarationHeader<'a>) =
+        parse_declaration_header_span(input, "struct")?;
+    // Optional where-clauses (for generic structs)
+    let (input, constraints) = opt(|i| delimited(ws, parse_type_parameter_constraints_clauses, ws).parse(i)).parse(input)?;
+    // Parse the struct body
+    let (input, members) = parse_class_body_span(input, parse_struct_member)?;
+
+    Ok((
+        input,
+        StructDeclaration {
+            attributes: header.attributes,
+            modifiers: header.modifiers,
+            name: header.identifier,
+            type_parameters: header.type_parameters,
+            primary_constructor_parameters: header.primary_constructor_parameters,
+            base_types: header.base_types,
+            body_declarations: members,
+            constraints: match constraints {
+                Some(v) if v.is_empty() => None,
+                other => other,
+            },
+        },
+    ))
+}
+
+/// Span-native interface declaration
+pub fn parse_interface_declaration_span<'a>(input: Span<'a>) -> BResult<'a, InterfaceDeclaration> {
+    // Header
+    let (input, header): (Span<'a>, DeclarationHeader<'a>) =
+        parse_declaration_header_span(input, "interface")?;
+    // Optional where-clauses
+    let (input, constraints) = opt(|i| delimited(ws, parse_type_parameter_constraints_clauses, ws).parse(i)).parse(input)?;
+    // Body members
+    let (input, members) = parse_class_body_span(input, parse_interface_member)?;
+
+    Ok((
+        input,
+        InterfaceDeclaration {
+            attributes: header.attributes,
+            modifiers: header.modifiers,
+            name: header.identifier,
+            type_parameters: header.type_parameters,
+            base_types: header.base_types,
+            body_declarations: members,
+            constraints: match constraints {
+                Some(v) if v.is_empty() => None,
+                other => other,
+            },
+        },
+    ))
+}
+
 /// Public wrapper to allow span-aware tools to parse a single class member.
 /// This preserves the internal member parsing order and recovery behavior.
-pub fn parse_class_member_for_spans(input: &str) -> BResult<&str, ClassBodyDeclaration> {
+pub fn parse_class_member_for_spans<'a>(input: Span<'a>) -> BResult<'a, ClassBodyDeclaration> {
     parse_class_member(input)
 }
 
 /// Public wrapper to allow span-aware tools to parse a single struct member.
 /// Mirrors `parse_struct_member` while keeping its internal visibility.
-pub fn parse_struct_member_for_spans(input: &str) -> BResult<&str, StructBodyDeclaration> {
+pub fn parse_struct_member_for_spans<'a>(input: Span<'a>) -> BResult<'a, StructBodyDeclaration> {
     parse_struct_member(input)
 }
 
 /// Public wrapper to allow span-aware tools to parse a single interface member.
 /// Mirrors `parse_interface_member` while keeping its internal visibility.
-pub fn parse_interface_member_for_spans(input: &str) -> BResult<&str, InterfaceBodyDeclaration> {
+pub fn parse_interface_member_for_spans<'a>(input: Span<'a>) -> BResult<'a, InterfaceBodyDeclaration> {
     parse_interface_member(input)
 }
 
@@ -81,143 +172,65 @@ pub struct DeclarationHeader<'a> {
 }
 
 /// Parse the common parts of a declaration header (attributes, modifiers, identifier, type params, base types)
-pub fn parse_declaration_header<'a>(
-    input: &'a str,
-    declaration_keyword: &'static str,
-) -> BResult<&'a str, DeclarationHeader<'a>> {
-    context(
-        "type declaration header (expected attributes, modifiers, keyword, name, and optional type parameters)",
-        |input| {
-            // Parse attributes (can be empty)
-            let (input, attributes) = bws(parse_attribute_lists)(input)?;
-
-            // Parse optional modifiers (public, private, etc.) but NOT the declaration keyword itself
-            let (input, modifiers) = bws(parse_modifiers)(input)?;
-
-            // Parse the declaration keyword with word boundary
-            let (input, _) = bws(keyword(declaration_keyword))(input)?;
-
-            // Parse the declaration name (identifier). On failure, promote to a committed, clear expectation.
-            let (input, identifier) = match bws(parse_identifier)(input) {
-                Ok(ok) => ok,
-                Err(_) => {
-                    return Err(nom::Err::Failure(ErrorTree::Base {
-                        location: input,
-                        kind: BaseErrorKind::Expected(Expectation::Tag("identifier")),
-                    }));
-                }
-            };
-
-            // Parse optional type parameters like <T> or <K, V>
-            let (input, type_parameters_opt_opt) = bws(opt(opt_parse_type_parameter_list))(input)?;
-            let type_parameters = type_parameters_opt_opt.and_then(|tp_opt| tp_opt);
-
-            // Parse optional primary constructor parameter list: ( ... )
-            let (input, primary_constructor_parameters) = bws(opt(parse_parameter_list))(input)?;
-
-            let (input, base_types_opt) = bws(opt(parse_base_type_list))(input)?;
-            let base_types = base_types_opt.unwrap_or_default(); // Use empty vec if no base types
-
-            Ok((
-                input,
-                DeclarationHeader {
-                    attributes,
-                    modifiers,
-                    identifier,
-                    type_parameters,
-                    primary_constructor_parameters,
-                    base_types,
-                    _phantom: PhantomData,
-                },
-            ))
-        },
-    )(input)
-}
+/// Removed legacy &str-based helper
 
 /// Parse a type declaration (class, struct, interface, record, enum)
-pub fn parse_type_declaration(input: &str) -> BResult<&str, TypeDeclaration> {
+pub fn parse_type_declaration<'a>(input: Span<'a>) -> BResult<'a, TypeDeclaration> {
     alt((
         map(parse_class_declaration, TypeDeclaration::Class),
-        map(parse_struct_declaration, TypeDeclaration::Struct),
-        map(parse_interface_declaration, TypeDeclaration::Interface),
+        map(parse_struct_declaration_span, TypeDeclaration::Struct),
+        map(parse_interface_declaration_span, TypeDeclaration::Interface),
         map(parse_record_declaration, TypeDeclaration::Record),
         map(parse_enum_declaration, TypeDeclaration::Enum),
         map(parse_delegate_declaration, TypeDeclaration::Delegate),
-    ))(input)
+    ))
+    .parse(input)
 }
-/// Generic function to parse the body of a class-like declaration
-/// This includes parsing members between braces
-pub fn parse_class_body<F, M>(input: &str, member_parser: F) -> BResult<&str, Vec<M>>
+
+/// Span-native class/struct body parser used by new Span-based declaration parsers
+pub fn parse_class_body_span<'a, F, M>(input: Span<'a>, mut member_parser: F) -> BResult<'a, Vec<M>>
 where
-    F: Fn(&str) -> BResult<&str, M>,
+    F: FnMut(Span<'a>) -> BResult<'a, M>,
 {
-    // Use bdelimited with cut on the closing brace to commit once '{' is seen
-    context("class or struct body", |input| {
-        crate::syntax::parser_helpers::bdelimited(
-            bws(bchar('{')),
-            |mut cur: &str| {
-                let mut members: Vec<M> = Vec::new();
-                loop {
-                    // Skip whitespace and comments
-                    let (after_ws, _) =
-                        crate::syntax::comment_parser::parse_whitespace_or_comments(cur)?;
-                    cur = after_ws;
-
-                    // Skip any preprocessor directives inside the type body
-                    cur = skip_preprocessor_directives(cur, false);
-
-                    // If we reached EOF inside a type body without a closing '}', emit a clear unmatched-brace error
-                    if cur.is_empty() {
-                        return Err(nom::Err::Failure(ErrorTree::Base {
-                            location: cur,
-                            kind: BaseErrorKind::Expected(Expectation::Char('}')),
-                        }));
-                    }
-
-                    if at_end_of_body(cur) {
-                        break;
-                    }
-
-                    // Parse a single member; on failure, recover to the next safe boundary.
-                    // Recovery uses `skip_to_member_boundary_top_level` which:
-                    // - consumes a top-level ';' and returns the slice after it, or
-                    // - stops before a top-level '}' (not consumed), or
-                    // - returns "" on EOF
-                    match member_parser(cur) {
-                        Ok((rest, member)) => {
-                            members.push(member);
-                            cur = rest;
-                        }
-                        Err(e) => {
-                            if parse_mode::is_strict() {
-                                // In strict mode, if we're effectively at EOF in a body, prefer an unmatched '}' error
-                                if cur.is_empty() {
-                                    return Err(nom::Err::Failure(ErrorTree::Base {
-                                        location: cur,
-                                        kind: BaseErrorKind::Expected(Expectation::Char('}')),
-                                    }));
-                                }
-                                return Err(e);
-                            } else {
-                                let next = skip_to_member_boundary_top_level(cur);
-                                if next.is_empty() || next == cur {
-                                    // Cannot recover further; stop to avoid infinite loop
-                                    break;
-                                }
-                                cur = next;
-                            }
-                        }
-                    }
+    let (mut cur, _) = delimited(ws, nom_char('{'), ws).parse(input)?;
+    let mut members: Vec<M> = Vec::new();
+    loop {
+        // Skip trivia and preprocessor directives inside body
+        let (after_ws, _) = ws(cur)?;
+        cur = after_ws;
+        cur = skip_preprocessor_directives(cur, true);
+        // Stop at closing '}'
+        if peek(delimited(ws, nom_char('}'), ws)).parse(cur).is_ok() {
+            break;
+        }
+        // If input exhausted unexpectedly
+        if cur.fragment().is_empty() {
+            return Err(nom::Err::Failure(ErrorTree::Base {
+                location: cur,
+                kind: BaseErrorKind::Expected(Expectation::Char('}')),
+            }));
+        }
+        match member_parser(cur) {
+            Ok((rest, member)) => {
+                members.push(member);
+                cur = rest;
+            }
+            Err(e) => {
+                if parse_mode::is_strict() {
+                    return Err(e);
+                } else {
+                    // In lenient mode, stop to avoid infinite loops on unknown members
+                    break;
                 }
-                Ok((cur, members))
-            },
-            nom::combinator::cut(bws(bchar('}'))),
-        )(input)
-    })(input)
+            }
+        }
+    }
+    let (rest, _) = nom::combinator::cut(delimited(ws, nom_char('}'), ws)).parse(cur)?;
+    Ok((rest, members))
 }
 
 /// Helper function for parsing class members (fields, methods, properties, constructors, events, indexers, operators, destructors, nested types)
-fn parse_class_member(input: &str) -> BResult<&str, ClassBodyDeclaration> {
+fn parse_class_member(input: Span) -> BResult<ClassBodyDeclaration> {
     use crate::parser::expressions::declarations::method_declaration_parser::parse_member_declaration;
 
     alt((
@@ -225,9 +238,9 @@ fn parse_class_member(input: &str) -> BResult<&str, ClassBodyDeclaration> {
         // This prevents "record" from being parsed as a return type in parse_member_declaration
         map(parse_record_declaration, ClassBodyDeclaration::NestedRecord),
         map(parse_class_declaration, ClassBodyDeclaration::NestedClass),
-        map(parse_struct_declaration, ClassBodyDeclaration::NestedStruct),
+        map(parse_struct_declaration_span, ClassBodyDeclaration::NestedStruct),
         map(
-            parse_interface_declaration,
+            parse_interface_declaration_span,
             ClassBodyDeclaration::NestedInterface,
         ),
         // Try destructor declaration (keyword-driven with ~)
@@ -274,11 +287,12 @@ fn parse_class_member(input: &str) -> BResult<&str, ClassBodyDeclaration> {
         map(parse_enum_declaration, ClassBodyDeclaration::NestedEnum),
         // Fields should be last since they have the most generic parser
         map(parse_field_declaration, ClassBodyDeclaration::Field),
-    ))(input)
+    ))
+    .parse(input)
 }
 
 /// Parse a member for a struct
-fn parse_struct_member(input: &str) -> BResult<&str, StructBodyDeclaration> {
+fn parse_struct_member(input: Span) -> BResult<StructBodyDeclaration> {
     use crate::parser::expressions::declarations::method_declaration_parser::parse_member_declaration;
 
     // Try parsing different member types in priority order
@@ -290,11 +304,11 @@ fn parse_struct_member(input: &str) -> BResult<&str, StructBodyDeclaration> {
         ),
         map(parse_class_declaration, StructBodyDeclaration::NestedClass),
         map(
-            parse_struct_declaration,
+            parse_struct_declaration_span,
             StructBodyDeclaration::NestedStruct,
         ),
         map(
-            parse_interface_declaration,
+            parse_interface_declaration_span,
             StructBodyDeclaration::NestedInterface,
         ),
         // Unified member syntax for methods/constructors before property
@@ -328,46 +342,9 @@ fn parse_struct_member(input: &str) -> BResult<&str, StructBodyDeclaration> {
         map(parse_operator_declaration, StructBodyDeclaration::Operator),
         // Fields last (most generic)
         map(parse_field_declaration, StructBodyDeclaration::Field),
-    ))(input)
+    ))
+    .parse(input)
 }
-
-/// Parse a C# struct declaration
-///
-/// Example in C#:
-/// ```csharp
-/// public struct Point {
-///    private int x;
-///    private int y;
-///    public void Method() { }
-/// }
-/// ```
-pub fn parse_struct_declaration<'a>(input: &'a str) -> BResult<&'a str, StructDeclaration> {
-    // Parse the declaration header with the 'struct' keyword
-    let (input, header): (&'a str, DeclarationHeader<'a>) =
-        parse_declaration_header(input, "struct")?;
-    // Optional where-clauses (for generic structs)
-    let (input, constraints) = bws(nom::combinator::opt(parse_type_parameter_constraints_clauses))(input)?;
-    // Parse the struct body
-    let (input, members) = parse_class_body(input, parse_struct_member)?;
-
-    // Create a struct declaration
-    let struct_declaration = StructDeclaration {
-        attributes: header.attributes,
-        modifiers: header.modifiers,
-        name: header.identifier,
-        type_parameters: header.type_parameters,
-        primary_constructor_parameters: header.primary_constructor_parameters,
-        base_types: header.base_types,
-        body_declarations: members,
-        constraints: match constraints {
-            Some(v) if v.is_empty() => None,
-            other => other,
-        },
-    };
-
-    Ok((input, struct_declaration))
-}
-
 
 /// Parse a C# record class declaration
 ///
@@ -380,40 +357,33 @@ pub fn parse_struct_declaration<'a>(input: &'a str) -> BResult<&'a str, StructDe
 ///    public string LastName { get; init; }
 /// }
 /// ```
-pub fn parse_record_class_declaration(input: &str) -> BResult<&str, RecordDeclaration> {
-    // Parse attributes and modifiers
-    let (input, attributes) = parse_attribute_lists(input)?;
-    let (input, modifiers) = parse_modifiers(input)?;
-    // 'record' keyword and name
-    let (input, _) = ws(input)?;
-    let (input, _) = keyword("record")(input)?;
-    let (input, _) = ws(input)?;
-    let (input, identifier) = parse_identifier(input)?;
+pub fn parse_record_class_declaration<'a>(input: Span<'a>) -> BResult<'a, RecordDeclaration> {
+    // attributes, modifiers
+    let (input, attributes) = parse_attribute_lists.parse(input)?;
+    let (input, modifiers) = parse_modifiers.parse(input)?;
+    // 'record' keyword and identifier
+    let (input, _) = delimited(ws, tag("record"), ws).parse(input)?;
+    let (input, identifier) = parse_identifier.parse(input)?;
     // Optional type parameters
-    let (input, _) = ws(input)?;
-    let (mut input, type_parameters_opt_opt) = opt(opt_parse_type_parameter_list)(input)?;
+    let (mut input, type_parameters_opt_opt) = opt(|i| opt_parse_type_parameter_list.parse(i)).parse(input)?;
     let _type_parameters = type_parameters_opt_opt.and_then(|tp_opt| tp_opt);
-
     // Optional positional parameters
-    let (i_after_params, params_opt) = nom::combinator::opt(bws(parse_parameter_list))(input)?;
+    let (i_after_params, params_opt) = opt(|i| delimited(ws, parse_parameter_list, ws).parse(i)).parse(input)?;
     input = i_after_params;
     let parameters = params_opt.unwrap_or_default();
-
     // Optional base types
-    let (input2, base_opt) = bws(nom::combinator::opt(parse_base_type_list))(input)?;
+    let (input2, base_opt) = opt(|i| delimited(ws, parse_base_type_list, ws).parse(i)).parse(input)?;
     input = input2;
     let base_types = base_opt.unwrap_or_default();
-
     // Optional where-clauses
-    let (input3, constraints_opt) = bws(nom::combinator::opt(parse_type_parameter_constraints_clauses))(input)?;
+    let (input3, constraints_opt) = opt(|i| delimited(ws, parse_type_parameter_constraints_clauses, ws).parse(i)).parse(input)?;
     input = input3;
-
-    // Decide between ';' or body '{ ... }'
-    let (input, body_members) = if bpeek(bchar(';'))(input).is_ok() {
-        let (input, _) = bws(bchar(';'))(input)?;
+    // Decide between ';' or body
+    let (input, body_members) = if peek(delimited(ws, nom_char(';'), ws)).parse(input).is_ok() {
+        let (input, _) = delimited(ws, nom_char(';'), ws).parse(input)?;
         (input, Vec::<ClassBodyDeclaration>::new())
     } else {
-        parse_class_body(input, parse_class_member)?
+        parse_class_body_span(input, parse_class_member)?
     };
 
     let record_declaration = RecordDeclaration {
@@ -424,14 +394,10 @@ pub fn parse_record_class_declaration(input: &str) -> BResult<&str, RecordDeclar
         parameters: if parameters.is_empty() { None } else { Some(parameters) },
         base_types,
         body_declarations: body_members,
-        constraints: match constraints_opt {
-            Some(v) if v.is_empty() => None,
-            other => other,
-        },
+        constraints: match constraints_opt { Some(v) if v.is_empty() => None, other => other },
     };
     Ok((input, record_declaration))
 }
-
 
 /// Parse a C# record struct declaration
 ///
@@ -444,37 +410,32 @@ pub fn parse_record_class_declaration(input: &str) -> BResult<&str, RecordDeclar
 ///    public int Y { get; init; }
 /// }
 /// ```
-pub fn parse_record_struct_declaration(input: &str) -> BResult<&str, RecordDeclaration> {
-    // Attributes, modifiers, keywords
-    let (input, _) = ws(input)?;
-    let (input, attributes) = parse_attribute_lists(input)?;
-    let (input, modifiers) = parse_modifiers(input)?;
-    let (input, _) = ws(input)?;
-    let (input, _) = keyword("record")(input)?;
-    let (input, _) = ws(input)?;
-    let (input, _) = keyword("struct")(input)?;
-    // Name and type params
-    let (input, _) = ws(input)?;
-    let (input, identifier) = parse_identifier(input)?;
-    let (input, _) = ws(input)?;
-    let (mut input, _type_parameters_opt_opt) = opt(opt_parse_type_parameter_list)(input)?;
+pub fn parse_record_struct_declaration<'a>(input: Span<'a>) -> BResult<'a, RecordDeclaration> {
+    // attributes, modifiers, keywords
+    let (input, attributes) = parse_attribute_lists.parse(input)?;
+    let (input, modifiers) = parse_modifiers.parse(input)?;
+    let (input, _) = delimited(ws, tag("record"), ws).parse(input)?;
+    let (input, _) = delimited(ws, tag("struct"), ws).parse(input)?;
+    // name and optional type params
+    let (input, identifier) = parse_identifier.parse(input)?;
+    let (mut input, _type_parameters_opt_opt) = opt(|i| opt_parse_type_parameter_list.parse(i)).parse(input)?;
     // Optional positional parameters
-    let (i_after_params, params_opt) = nom::combinator::opt(bws(parse_parameter_list))(input)?;
+    let (i_after_params, params_opt) = opt(|i| delimited(ws, parse_parameter_list, ws).parse(i)).parse(input)?;
     input = i_after_params;
     let parameters = params_opt.unwrap_or_default();
     // Optional base types
-    let (input2, base_opt) = bws(nom::combinator::opt(parse_base_type_list))(input)?;
+    let (input2, base_opt) = opt(|i| delimited(ws, parse_base_type_list, ws).parse(i)).parse(input)?;
     input = input2;
     let base_types = base_opt.unwrap_or_default();
     // Optional where-clauses
-    let (input3, constraints_opt) = bws(nom::combinator::opt(parse_type_parameter_constraints_clauses))(input)?;
+    let (input3, constraints_opt) = opt(|i| delimited(ws, parse_type_parameter_constraints_clauses, ws).parse(i)).parse(input)?;
     input = input3;
     // Decide terminator/body
-    let (input, body_members) = if bpeek(bchar(';'))(input).is_ok() {
-        let (input, _) = bws(bchar(';'))(input)?;
+    let (input, body_members) = if peek(delimited(ws, nom_char(';'), ws)).parse(input).is_ok() {
+        let (input, _) = delimited(ws, nom_char(';'), ws).parse(input)?;
         (input, Vec::<ClassBodyDeclaration>::new())
     } else {
-        parse_class_body(input, parse_class_member)?
+        parse_class_body_span(input, parse_class_member)?
     };
 
     let record_declaration = RecordDeclaration {
@@ -485,10 +446,7 @@ pub fn parse_record_struct_declaration(input: &str) -> BResult<&str, RecordDecla
         parameters: if parameters.is_empty() { None } else { Some(parameters) },
         base_types,
         body_declarations: body_members,
-        constraints: match constraints_opt {
-            Some(v) if v.is_empty() => None,
-            other => other,
-        },
+        constraints: match constraints_opt { Some(v) if v.is_empty() => None, other => other },
     };
 
     Ok((input, record_declaration))
@@ -496,7 +454,7 @@ pub fn parse_record_struct_declaration(input: &str) -> BResult<&str, RecordDecla
 
 /// Parse a C# record declaration (either record class or record struct)
 /// This function tries both forms and returns the first one that matches
-pub fn parse_record_declaration(input: &str) -> BResult<&str, RecordDeclaration> {
+pub fn parse_record_declaration<'a>(input: Span<'a>) -> BResult<'a, RecordDeclaration> {
     // Try parsing as record struct first (more specific)
     if let Ok(result) = parse_record_struct_declaration(input) {
         return Ok(result);
@@ -507,7 +465,7 @@ pub fn parse_record_declaration(input: &str) -> BResult<&str, RecordDeclaration>
 }
 
 /// Parse an interface property declaration
-fn parse_interface_property(input: &str) -> BResult<&str, PropertyDeclaration> {
+fn parse_interface_property(input: Span) -> BResult<PropertyDeclaration> {
     // Import PropertyDeclaration syntax if it exists
     use crate::parser::expressions::declarations::property_declaration_parser::parse_property_declaration;
 
@@ -549,7 +507,7 @@ fn parse_interface_property(input: &str) -> BResult<&str, PropertyDeclaration> {
 }
 
 /// Parse an interface event declaration
-pub fn parse_interface_event(input: &str) -> BResult<&str, EventDeclaration> {
+pub fn parse_interface_event<'a>(input: Span<'a>) -> BResult<'a, EventDeclaration> {
     let (input, event_decl) = parse_event_declaration(input)?;
 
     // Interface events are typically field-like and must not have accessor bodies.
@@ -569,7 +527,7 @@ pub fn parse_interface_event(input: &str) -> BResult<&str, EventDeclaration> {
 }
 
 /// Parse an interface indexer declaration
-pub fn parse_interface_indexer(input: &str) -> BResult<&str, IndexerDeclaration> {
+pub fn parse_interface_indexer<'a>(input: Span<'a>) -> BResult<'a, IndexerDeclaration> {
     let (input, indexer_decl) = parse_indexer_declaration(input)?;
 
     // Interface indexer accessors may be present, but cannot have bodies.
@@ -603,24 +561,22 @@ pub fn parse_interface_indexer(input: &str) -> BResult<&str, IndexerDeclaration>
 
 /// Parse an interface member
 /// Note: C# 8.0+ allows nested types in interfaces
-fn parse_interface_member(input: &str) -> BResult<&str, InterfaceBodyDeclaration> {
+fn parse_interface_member(input: Span) -> BResult<InterfaceBodyDeclaration> {
     // Try parsing different types of interface members
     // Since alt() from nom uses the first syntax that succeeds,
     // the order matters here - put more specific patterns first
-    context(
-        "interface member",
-        alt((
+    alt((
             // Nested types (C# 8.0+)
             map(
                 parse_class_declaration,
                 InterfaceBodyDeclaration::NestedClass,
             ),
             map(
-                parse_struct_declaration,
+                parse_struct_declaration_span,
                 InterfaceBodyDeclaration::NestedStruct,
             ),
             map(
-                parse_interface_declaration,
+                parse_interface_declaration_span,
                 InterfaceBodyDeclaration::NestedInterface,
             ),
             map(parse_enum_declaration, InterfaceBodyDeclaration::NestedEnum),
@@ -670,46 +626,21 @@ fn parse_interface_member(input: &str) -> BResult<&str, InterfaceBodyDeclaration
             map(parse_interface_event, InterfaceBodyDeclaration::Event),
             // Try parsing indexers
             map(parse_interface_indexer, InterfaceBodyDeclaration::Indexer),
-        )),
-    )(input)
+        ))
+        .context("interface member")
+        .parse(input)
 }
 
-/// Parse an interface declaration
-pub fn parse_interface_declaration<'a>(input: &'a str) -> BResult<&'a str, InterfaceDeclaration> {
-    // Parse the declaration header with the 'interface' keyword
-    let (input, header): (&'a str, DeclarationHeader<'a>) =
-        parse_declaration_header(input, "interface")?;
-
-    // Optional where-clauses
-    let (input, constraints) = bws(nom::combinator::opt(parse_type_parameter_constraints_clauses))(input)?;
-    // Parse the interface body - similar to class body but with interface members
-    let (input, members) = parse_class_body(input, parse_interface_member)?;
-
-    // Create the InterfaceDeclaration with the correct field names and flatten attributes
-    let interface_declaration = InterfaceDeclaration {
-        attributes: header.attributes,
-        modifiers: header.modifiers,
-        name: header.identifier,
-        type_parameters: header.type_parameters,
-        base_types: header.base_types,
-        body_declarations: members,
-        constraints: match constraints {
-            Some(v) if v.is_empty() => None,
-            other => other,
-        },
-    };
-
-    Ok((input, interface_declaration))
-}
+// Removed legacy &str interface wrapper; use `parse_interface_declaration_span`.
 
 /// Parse a C# class declaration
 /// This function will be the new implementation, using helpers.
-pub fn parse_class_declaration<'a>(input: &'a str) -> BResult<&'a str, ClassDeclaration> {
-    let (input, header): (&'a str, DeclarationHeader<'a>) =
-        parse_declaration_header(input, "class")?;
+pub fn parse_class_declaration<'a>(input: Span<'a>) -> BResult<'a , ClassDeclaration> {
+    let (input, header): (Span<'a>, DeclarationHeader<'a>) =
+        parse_declaration_header_span(input, "class")?;
     // Optional where-clauses (for generic classes)
-    let (input, constraints) = bws(nom::combinator::opt(parse_type_parameter_constraints_clauses))(input)?;
-    let (input, members) = parse_class_body(input, parse_class_member)?;
+    let (input, constraints) = opt(|i| delimited(ws, parse_type_parameter_constraints_clauses, ws).parse(i)).parse(input)?;
+    let (input, members) = parse_class_body_span(input, parse_class_member)?;
 
     Ok((
         input,
@@ -729,3 +660,4 @@ pub fn parse_class_declaration<'a>(input: &'a str) -> BResult<&'a str, ClassDecl
         },
     ))
 }
+use crate::syntax::span::Span;

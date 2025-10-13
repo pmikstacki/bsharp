@@ -1,6 +1,6 @@
 use parser::expressions::literal_parser::parse_literal;
-use syntax::nodes::expressions::expression::Expression;
-use syntax::nodes::expressions::literal::{InterpolatedStringPart, Literal};
+use syntax::expressions::expression::Expression;
+use syntax::expressions::literal::{InterpolatedStringPart, Literal};
 
 fn parse_interpolated_string_test(code: &str) -> Result<Literal, String> {
     match parse_literal(code) {

@@ -1,8 +1,8 @@
 #![cfg(test)]
 use parser::expressions::declarations::type_declaration_parser::parse_record_declaration;
-use syntax::nodes::declarations::Modifier;
-use syntax::nodes::identifier::Identifier;
-use syntax::nodes::types::Type;
+use syntax::declarations::Modifier;
+use syntax::identifier::Identifier;
+use syntax::types::Type;
 
 // Local test helper to avoid import issues
 #[allow(dead_code)]

@@ -3,7 +3,7 @@ use super::{CallingConvention, PrimitiveType};
 use crate::Identifier;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub enum Type {
     Primitive(PrimitiveType),
     Reference(Identifier),

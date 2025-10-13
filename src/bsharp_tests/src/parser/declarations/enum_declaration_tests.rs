@@ -2,10 +2,10 @@
 
 use parser::expressions::declarations::enum_declaration_parser::parse_enum_declaration;
 use parser::syntax::errors;
-use syntax::nodes::declarations::Modifier;
-use syntax::nodes::expressions::expression::Expression;
-use syntax::nodes::expressions::literal::Literal;
-use syntax::nodes::types::{PrimitiveType, Type};
+use syntax::declarations::Modifier;
+use syntax::expressions::expression::Expression;
+use syntax::expressions::literal::Literal;
+use syntax::types::{PrimitiveType, Type};
 
 // Local test helper to avoid import issues
 fn parse_full_input<'a, O, F>(input: &'a str, parser: F) -> Result<(&'a str, O), String>

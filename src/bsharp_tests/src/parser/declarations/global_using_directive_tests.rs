@@ -1,6 +1,6 @@
 // Tests for parsing global using directives
 
-use syntax::nodes::declarations::GlobalUsingDirective;
+use syntax::declarations::GlobalUsingDirective;
 
 fn parse_global_using_directive(code: &str) -> Result<GlobalUsingDirective, String> {
     Err(format!("Parser not yet implemented: {}", code))

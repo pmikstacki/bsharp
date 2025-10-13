@@ -4,10 +4,10 @@ use parser::expressions::statements::try_catch_finally_parser::{
 };
 use parser::syntax::test_helpers::parse_all;
 use parser::syntax::test_helpers::parse_input_unwrap;
-use syntax::nodes::identifier::Identifier;
-use syntax::nodes::statements::statement::Statement;
-use syntax::nodes::statements::FinallyClause;
-use syntax::nodes::types::Type;
+use syntax::identifier::Identifier;
+use syntax::statements::statement::Statement;
+use syntax::statements::FinallyClause;
+use syntax::types::Type;
 
 #[test]
 fn test_parse_specific_catch_clause() {

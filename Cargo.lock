@@ -198,24 +198,18 @@ dependencies = [
 name = "bsharp_analysis"
 version = "0.1.0"
 dependencies = [
+ "bsharp_il",
  "bsharp_parser",
  "bsharp_syntax",
  "git2",
  "globwalk",
  "insta",
- "nom-supreme",
+ "nom-supreme 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "quick-xml",
  "rayon",
  "serde",
  "solp",
  "thiserror 2.0.17",
-]
-
-[[package]]
-name = "bsharp_cil"
-version = "0.1.0"
-dependencies = [
- "dotscope",
 ]
 
 [[package]]
@@ -230,9 +224,17 @@ dependencies = [
  "env_logger",
  "log",
  "nom 7.1.3",
- "nom-supreme",
+ "nom-supreme 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde_json",
  "toml",
+]
+
+[[package]]
+name = "bsharp_il"
+version = "0.1.0"
+dependencies = [
+ "dotscope",
+ "thiserror 2.0.17",
 ]
 
 [[package]]
@@ -241,8 +243,9 @@ version = "0.1.0"
 dependencies = [
  "bsharp_syntax",
  "log",
- "nom 7.1.3",
- "nom-supreme",
+ "nom 8.0.0",
+ "nom-supreme 0.8.0",
+ "nom_locate",
  "phf",
  "serde",
 ]
@@ -251,7 +254,17 @@ dependencies = [
 name = "bsharp_syntax"
 version = "0.1.0"
 dependencies = [
+ "bsharp_syntax_derive",
  "serde",
+]
+
+[[package]]
+name = "bsharp_syntax_derive"
+version = "0.1.0"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
 ]
 
 [[package]]
@@ -261,12 +274,13 @@ dependencies = [
  "anyhow",
  "assert_cmd",
  "bsharp_analysis",
+ "bsharp_il",
  "bsharp_parser",
  "bsharp_syntax",
  "insta",
  "log",
  "nom 7.1.3",
- "nom-supreme",
+ "nom-supreme 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "phf",
  "serde",
  "serde_json",
@@ -282,6 +296,12 @@ dependencies = [
  "regex-automata",
  "serde",
 ]
+
+[[package]]
+name = "bytecount"
+version = "0.6.9"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "175812e0be2bccb6abe50bb8d566126198344f707e304f45c648fd8f2cc0365e"
 
 [[package]]
 name = "cc"
@@ -358,6 +378,12 @@ dependencies = [
  "once_cell",
  "windows-sys 0.59.0",
 ]
+
+[[package]]
+name = "cool_asserts"
+version = "1.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fea70c9cbd7d29920c31f511d12313838ba4678c7d7cac08e5cc42471ecec443"
 
 [[package]]
 name = "cpufeatures"
@@ -1150,6 +1176,28 @@ dependencies = [
 ]
 
 [[package]]
+name = "nom-language"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2de2bc5b451bfedaef92c90b8939a8fff5770bdcc1fafd6239d086aab8fa6b29"
+dependencies = [
+ "nom 8.0.0",
+]
+
+[[package]]
+name = "nom-supreme"
+version = "0.8.0"
+dependencies = [
+ "brownstone",
+ "cool_asserts",
+ "indent_write",
+ "joinery",
+ "memchr",
+ "nom 8.0.0",
+ "nom-language",
+]
+
+[[package]]
 name = "nom-supreme"
 version = "0.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1160,6 +1208,17 @@ dependencies = [
  "joinery",
  "memchr",
  "nom 7.1.3",
+]
+
+[[package]]
+name = "nom_locate"
+version = "5.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0b577e2d69827c4740cba2b52efaad1c4cc7c73042860b199710b3575c68438d"
+dependencies = [
+ "bytecount",
+ "memchr",
+ "nom 8.0.0",
 ]
 
 [[package]]

@@ -3,9 +3,9 @@
 
 use parser::expressions::statements::return_statement_parser::parse_return_statement;
 use parser::syntax::test_helpers::parse_all;
-use syntax::nodes::expressions::expression::Expression;
-use syntax::nodes::expressions::literal::Literal;
-use syntax::nodes::statements::statement::Statement;
+use syntax::expressions::expression::Expression;
+use syntax::expressions::literal::Literal;
+use syntax::statements::statement::Statement;
 
 #[test]
 fn test_parse_return_statement() {

@@ -57,6 +57,8 @@ impl AnalyzerRegistry {
         let mut reg = Self::new();
         // Phase B: indexing
         reg.register_pass(crate::passes::indexing::IndexingPass);
+        // Phase B: PE loader (external IL)
+        reg.register_pass(crate::passes::pe_loader::PeLoaderPass);
         // Phase C: metrics (generic Query-based)
         reg.register_pass(crate::passes::metrics::MetricsPass);
         // Phase C: baseline naming rules

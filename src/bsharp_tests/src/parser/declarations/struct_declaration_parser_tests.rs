@@ -1,8 +1,8 @@
 #![cfg(test)]
 use parser::expressions::declarations::type_declaration_parser::parse_struct_declaration;
-use syntax::nodes::declarations::{Modifier, StructBodyDeclaration, StructDeclaration};
-use syntax::nodes::identifier::Identifier;
-use syntax::nodes::types::{PrimitiveType, Type, TypeParameter, Variance};
+use syntax::declarations::{Modifier, StructBodyDeclaration, StructDeclaration};
+use syntax::identifier::Identifier;
+use syntax::types::{PrimitiveType, Type, TypeParameter, Variance};
 
 #[test]
 fn test_simple_struct() {

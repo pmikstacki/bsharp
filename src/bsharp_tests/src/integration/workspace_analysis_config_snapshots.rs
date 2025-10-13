@@ -74,7 +74,13 @@ fn snapshot_workspace_analysis_exclude_dependency_project() {
     }
     let ws = match WorkspaceLoader::from_path(&sln) {
         Ok(ws) => ws,
-        Err(e) => { eprintln!("skipping workspace_analysis_config_snapshots exclude_dependency (fixture load failed): {:?}", e); return; }
+        Err(e) => {
+            eprintln!(
+                "skipping workspace_analysis_config_snapshots exclude_dependency (fixture load failed): {:?}",
+                e
+            );
+            return;
+        }
     };
 
     let mut cfg = AnalysisConfig::default();

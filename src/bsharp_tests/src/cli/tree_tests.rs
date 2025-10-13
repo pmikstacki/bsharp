@@ -2,9 +2,9 @@ use anyhow::Result;
 use std::fs;
 use std::io::Read;
 
-// Directly import the tree function to avoid module resolution issues
-use super::tree_execute;
 use super::utils::{clean_temp_files, create_temp_dir, get_all_test_files};
+// Directly import the tree function to avoid module resolution issues
+use crate::cli::helpers::tree_execute;
 
 #[test]
 fn test_tree_command_creates_valid_mermaid() -> Result<()> {

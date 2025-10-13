@@ -1,10 +1,10 @@
 // Tests for parsing new expressions
 
 use parser::expressions::primary_expression_parser::parse_expression;
-use syntax::nodes::expressions::expression::Expression;
-use syntax::nodes::expressions::literal::Literal;
-use syntax::nodes::expressions::new_expression::ObjectInitializerEntry;
-use syntax::nodes::types::{PrimitiveType, Type};
+use syntax::expressions::expression::Expression;
+use syntax::expressions::literal::Literal;
+use syntax::expressions::new_expression::ObjectInitializerEntry;
+use syntax::types::{PrimitiveType, Type};
 
 fn parse_new_expr(code: &str) -> Result<Expression, String> {
     match parse_expression(code) {
@@ -249,9 +249,9 @@ fn test_parse_new_complex_nested_initializer() {
 #[test]
 fn test_parse_new_with_indexer_object_initializer() {
     use parser::expressions::primary_expression_parser::parse_expression;
-    use syntax::nodes::expressions::expression::Expression;
-    use syntax::nodes::expressions::literal::Literal;
-    use syntax::nodes::expressions::new_expression::ObjectInitializerEntry;
+    use syntax::expressions::expression::Expression;
+    use syntax::expressions::literal::Literal;
+    use syntax::expressions::new_expression::ObjectInitializerEntry;
 
     let code = "new Dictionary<int, string> { [1] = \"a\", [2] = \"b\" }";
     let (rest, expr) = parse_expression(code).expect("parse ok");

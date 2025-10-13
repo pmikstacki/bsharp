@@ -1,11 +1,9 @@
 // Tests for parsing deconstruction expressions
 
 use parser::expressions::deconstruction_expression_parser::parse_deconstruction_expression;
-use syntax::nodes::expressions::{
-    DeconstructionExpression, DeconstructionTarget, Expression,
-};
-use syntax::nodes::identifier::Identifier;
-use syntax::nodes::types::{PrimitiveType, Type};
+use syntax::expressions::{DeconstructionExpression, DeconstructionTarget, Expression};
+use syntax::identifier::Identifier;
+use syntax::types::{PrimitiveType, Type};
 
 fn parse_deconstruction_expr(code: &str) -> Result<DeconstructionExpression, String> {
     match parse_deconstruction_expression(code) {
@@ -53,7 +51,7 @@ fn test_parse_typed_deconstruction() {
             },
         ],
         value: Box::new(Expression::Invocation(Box::new(
-            syntax::nodes::expressions::InvocationExpression {
+            syntax::expressions::InvocationExpression {
                 callee: Box::new(Expression::Variable(Identifier::new("GetTuple"))),
                 arguments: vec![],
             },

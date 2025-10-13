@@ -1,8 +1,8 @@
 // Tests for parsing primary expressions (variable references, literals, parenthesized expressions)
 use parser::expressions::parse_primary_expression;
-use syntax::nodes::expressions::Expression;
-use syntax::nodes::expressions::Literal;
-use syntax::nodes::identifier::Identifier;
+use syntax::expressions::Expression;
+use syntax::expressions::Literal;
+use syntax::identifier::Identifier;
 
 #[test]
 fn test_parse_variable_reference() {

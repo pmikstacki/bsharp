@@ -2,8 +2,8 @@ use parser::expressions::pattern_parser::parse_pattern;
 use parser::expressions::switch_expression_parser::{
     parse_is_pattern_expression, parse_switch_expression,
 };
-use syntax::nodes::expressions::expression::Expression;
-use syntax::nodes::expressions::pattern::*;
+use syntax::expressions::expression::Expression;
+use syntax::expressions::pattern::*;
 
 fn parse_pattern_test(code: &str) -> Result<Pattern, String> {
     match parse_pattern(code) {

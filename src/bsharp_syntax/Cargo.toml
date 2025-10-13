@@ -7,3 +7,4 @@ authors.workspace = true
 
 [dependencies]
 serde = { version = "1.0.219", features = ["derive"] }
+bsharp_syntax_derive = { path = "../bsharp_syntax_derive" }

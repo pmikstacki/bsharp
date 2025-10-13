@@ -1,4 +1,4 @@
-use crate::syntax::nodes::statements::statement::Statement;
+use crate::syntax::statements::statement::Statement;
 
 pub fn decision_points(stmt: &Statement) -> usize {
     match stmt {

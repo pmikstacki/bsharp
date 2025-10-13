@@ -2,7 +2,7 @@
 
 use parser::expressions::nameof_expression_parser::parse_nameof_expression;
 use parser::expressions::primary_expression_parser::parse_expression;
-use syntax::nodes::expressions::expression::Expression;
+use syntax::expressions::expression::Expression;
 
 fn parse_nameof_expr_helper(code: &str) -> Result<Expression, String> {
     match parse_nameof_expression(code) {

@@ -2,40 +2,10 @@
 //!
 //! Provide small parser functions per keyword where context decides meaning.
 
-use crate::syntax::errors::BResult;
-use crate::syntax::parser_helpers::{keyword, peek_keyword};
+use crate::define_keyword_pair;
 
-pub fn kw_this() -> impl Fn(&str) -> BResult<&str, &str> {
-    keyword("this")
-}
-pub fn peek_this() -> impl Fn(&str) -> BResult<&str, &str> {
-    peek_keyword("this")
-}
-
-pub fn kw_base() -> impl Fn(&str) -> BResult<&str, &str> {
-    keyword("base")
-}
-pub fn peek_base() -> impl Fn(&str) -> BResult<&str, &str> {
-    peek_keyword("base")
-}
-
-pub fn kw_global() -> impl Fn(&str) -> BResult<&str, &str> {
-    keyword("global")
-}
-pub fn peek_global() -> impl Fn(&str) -> BResult<&str, &str> {
-    peek_keyword("global")
-}
-
-pub fn kw_var() -> impl Fn(&str) -> BResult<&str, &str> {
-    keyword("var")
-}
-pub fn peek_var() -> impl Fn(&str) -> BResult<&str, &str> {
-    peek_keyword("var")
-}
-
-pub fn kw_dynamic() -> impl Fn(&str) -> BResult<&str, &str> {
-    keyword("dynamic")
-}
-pub fn peek_dynamic() -> impl Fn(&str) -> BResult<&str, &str> {
-    peek_keyword("dynamic")
-}
+define_keyword_pair!(kw_this,    peek_this,    "this");
+define_keyword_pair!(kw_base,    peek_base,    "base");
+define_keyword_pair!(kw_global,  peek_global,  "global");
+define_keyword_pair!(kw_var,     peek_var,     "var");
+define_keyword_pair!(kw_dynamic, peek_dynamic, "dynamic");

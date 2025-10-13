@@ -1,6 +1,6 @@
 // Tests for parsing switch labels
 
-use syntax::nodes::statements::SwitchLabel;
+use syntax::statements::SwitchLabel;
 
 fn parse_switch_label(code: &str) -> Result<SwitchLabel, String> {
     Err(format!("Parser not yet implemented: {}", code))

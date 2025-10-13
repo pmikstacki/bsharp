@@ -1,6 +1,6 @@
 // Tests for parsing goto statements
 
-use syntax::nodes::statements::GotoStatement;
+use syntax::statements::GotoStatement;
 
 fn parse_goto_statement(code: &str) -> Result<GotoStatement, String> {
     Err(format!("Parser not yet implemented: {}", code))

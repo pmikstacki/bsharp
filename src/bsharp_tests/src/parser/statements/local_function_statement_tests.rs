@@ -1,9 +1,9 @@
 // Tests for parsing local function statements
 
 use parser::expressions::statements::local_function_statement_parser::parse_local_function_statement;
-use syntax::nodes::declarations::Modifier;
-use syntax::nodes::statements::statement::Statement;
-use syntax::nodes::types::{PrimitiveType, Type, Variance};
+use syntax::declarations::Modifier;
+use syntax::statements::statement::Statement;
+use syntax::types::{PrimitiveType, Type, Variance};
 
 fn parse_local_function_stmt(code: &str) -> Result<Statement, String> {
     match parse_local_function_statement(code) {

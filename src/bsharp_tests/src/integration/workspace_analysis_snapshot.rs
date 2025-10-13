@@ -40,7 +40,13 @@ fn snapshot_workspace_analysis_report_for_fixture_solution() {
     }
     let ws = match WorkspaceLoader::from_path(&sln) {
         Ok(ws) => ws,
-        Err(e) => { eprintln!("skipping workspace_analysis_snapshot (fixture load failed): {:?}", e); return; }
+        Err(e) => {
+            eprintln!(
+                "skipping workspace_analysis_snapshot (fixture load failed): {:?}",
+                e
+            );
+            return;
+        }
     };
 
     // Act

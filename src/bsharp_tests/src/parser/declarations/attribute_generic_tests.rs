@@ -24,5 +24,8 @@ fn parses_nested_generic_attribute() {
     let src = "[A.B.C<Dictionary<string, List<int>>>]";
     let (rest, lists) = parse_attribute_lists(src).expect("parse");
     assert!(rest.trim().is_empty());
-    assert_eq!(lists[0].attributes[0].name.name, "A.B.C<Dictionary<string, List<int>>>");
+    assert_eq!(
+        lists[0].attributes[0].name.name,
+        "A.B.C<Dictionary<string, List<int>>>"
+    );
 }

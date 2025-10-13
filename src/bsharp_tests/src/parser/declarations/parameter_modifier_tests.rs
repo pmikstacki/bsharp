@@ -1,8 +1,8 @@
 // Tests for parameter modifiers with full semantics
 
 use parser::expressions::declarations::parameter_parser::parse_parameter;
-use syntax::nodes::identifier::Identifier;
-use syntax::nodes::types::{Parameter, ParameterModifier, PrimitiveType, Type};
+use syntax::identifier::Identifier;
+use syntax::types::{Parameter, ParameterModifier, PrimitiveType, Type};
 
 fn parse_parameter_test(code: &str) -> Result<Parameter, String> {
     match parse_parameter(code) {
@@ -117,7 +117,7 @@ fn test_parameter_modifier_semantics() {
 
 #[test]
 fn test_parameter_modifier_from_modifier() {
-    use syntax::nodes::declarations::Modifier;
+    use syntax::declarations::Modifier;
 
     assert_eq!(
         ParameterModifier::from_modifier(&Modifier::Ref),

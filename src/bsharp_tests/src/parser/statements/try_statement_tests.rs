@@ -1,6 +1,6 @@
 // Tests for parsing try statements
 
-use syntax::nodes::statements::TryStatement;
+use syntax::statements::TryStatement;
 
 fn parse_try_statement(code: &str) -> Result<TryStatement, String> {
     Err(format!("Parser not yet implemented: {}", code))

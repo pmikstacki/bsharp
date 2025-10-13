@@ -1,8 +1,8 @@
 #![allow(unused_variables)]
 // Integration tests for parsing namespace declarations (block-scoped and file-scoped)
 
-use syntax::nodes::declarations::{FileScopedNamespaceDeclaration, NamespaceDeclaration};
-use syntax::nodes::identifier::Identifier;
+use syntax::declarations::{FileScopedNamespaceDeclaration, NamespaceDeclaration};
+use syntax::identifier::Identifier;
 
 // Assuming syntax functions like parse_file_scoped_namespace and parse_namespace_declaration exist
 // use syntax::syntax::{parse_file_scoped_namespace, parse_namespace_declaration};

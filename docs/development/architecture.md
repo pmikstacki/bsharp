@@ -248,20 +248,21 @@ pub struct AstWalker {
 - **Performance**: Single pass for multiple analyses
 - **Extensibility**: Easy to add new visitors
 
-### Navigation Traits
+### Query API
 
-**Decision:** Provide `AstNavigate` and `FindDeclarations` traits for AST search.
+**Decision:** Use a typed Query API over a minimal `NodeRef` to traverse the AST.
 
 **Implementation:**
-- `AstNavigate` - Find statements (if, for, while, switch, try, using)
-- `FindDeclarations` - Find declarations (classes, methods, interfaces, etc.)
-- Implemented for `CompilationUnit` and major AST nodes
+- `NodeRef` enumerates coarse node categories (compilation unit, namespaces, declarations, methods, statements, expressions), and now includes top-level items like file-scoped namespaces, using directives, global using directives, and global attributes.
+- `Children` provides child enumeration for `NodeRef`.
+- `Extract<T>` enables `Query::of<T>()` to yield typed nodes without extending `NodeRef` for every concrete type.
+- Macro helpers `impl_extract_expr!` and `impl_extract_stmt!` simplify adding `Extract` impls for expression/statement variants.
 
 **Rationale:**
-- **Convenience**: High-level search API
-- **Reusability**: Common patterns extracted
-- **Type Safety**: Returns strongly-typed results
-- **CLI Integration**: Used by analyze command for symbol search
+- **Composability**: Typed filters via `Query::filter_typed`.
+- **Maintainability**: Avoids wide trait surfaces and duplicated traversal.
+- **Performance**: Focused walkers remain available for hot paths.
+- **Determinism**: Traversal order and artifact hashing remain stable.
 
 ---
 

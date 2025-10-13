@@ -1,5 +1,3 @@
-use nom::{branch::alt, combinator::map};
-
 use crate::parser::expressions::declarations::attribute_parser::parse_attribute_lists;
 use crate::parser::expressions::declarations::modifier_parser::parse_modifiers;
 use crate::parser::expressions::declarations::parameter_parser::parse_parameter_list;
@@ -9,11 +7,18 @@ use crate::parser::keywords::declaration_keywords::{kw_explicit, kw_implicit, kw
 use crate::parser::keywords::literal_keywords::{kw_false, kw_true};
 use crate::parser::types::type_parser::parse_type_expression;
 use crate::syntax::errors::BResult;
-use crate::syntax::nodes::declarations::{
+use nom::{branch::alt, combinator::map};
+use syntax::declarations::{
     Attribute, ConversionKind, Modifier, OperatorDeclaration, OperatorKind,
 };
-use crate::syntax::nodes::identifier::Identifier;
-use crate::syntax::parser_helpers::{bchar, bws, context, keyword};
+use syntax::Identifier;
+
+use crate::syntax::comment_parser::ws;
+use nom::character::complete::satisfy;
+use nom::sequence::delimited;
+use nom::Parser;
+use nom_supreme::ParserExt;
+use nom_supreme::tag::complete::tag;
 
 /// Parse a C# operator declaration
 ///
@@ -24,92 +29,86 @@ use crate::syntax::parser_helpers::{bchar, bws, context, keyword};
 /// public static implicit operator string(MyType value) { ... }
 /// public static MyType operator -(MyType value) { ... }  // unary
 /// ```
-pub fn parse_operator_declaration(input: &str) -> BResult<&str, OperatorDeclaration> {
-    context(
-        "operator declaration (expected optional attributes, modifiers, return type, 'operator' keyword, symbol, parameters, and body)",
-        |input| {
-            // Parse attributes
-            let (input, attribute_lists) = parse_attribute_lists(input)?;
-            let attributes = convert_attributes(attribute_lists);
+pub fn parse_operator_declaration<'a>(input: Span<'a>) -> BResult<'a, OperatorDeclaration> {
+    // Parse attributes
+    let (input, attribute_lists) = parse_attribute_lists(input)?;
+    let attributes = convert_attributes(attribute_lists);
 
-            // Parse modifiers (typically public static)
-            let (input, modifiers) = parse_modifiers(input)?;
+    // Parse modifiers (typically public static)
+    let (input, modifiers) = parse_modifiers(input)?;
 
-            // Check if this is a conversion operator (implicit/explicit operator)
-            // If so, we parse differently
-            if let Ok((_, _)) = kw_implicit()(input) {
-                parse_conversion_operator(input, attributes, modifiers, ConversionKind::Implicit)
-            } else if let Ok((_, _)) = kw_explicit()(input) {
-                parse_conversion_operator(input, attributes, modifiers, ConversionKind::Explicit)
-            } else {
-                // Regular operator with return type
-                let (input, return_type) = context(
-                    "operator return type (expected valid C# type)",
-                    bws(parse_type_expression),
-                )(input)?;
+    // Check if this is a conversion operator (implicit/explicit operator)
+    // If so, we parse differently
+    if let Ok((_, _)) = delimited(ws, kw_implicit(), ws).parse(input) {
+        return parse_conversion_operator(input, attributes, modifiers, ConversionKind::Implicit);
+    } else if let Ok((_, _)) = delimited(ws, kw_explicit(), ws).parse(input) {
+        return parse_conversion_operator(input, attributes, modifiers, ConversionKind::Explicit);
+    }
 
-                // Parse the "operator" keyword
-                let (input, _) =
-                    context("operator keyword (expected 'operator')", bws(kw_operator()))(input)?;
+    // Regular operator with return type
+    let (input, return_type) = delimited(ws, parse_type_expression, ws)
+        .context("operator return type")
+        .parse(input)?;
 
-                // Parse the operator symbol
-                let (input, operator_symbol) = parse_operator_symbol(input)?;
+    // Parse the "operator" keyword
+    let (input, _) = delimited(ws, kw_operator(), ws)
+        .context("operator keyword")
+        .parse(input)?;
 
-                // Parse parameters
-                let (input, parameters) = context(
-                    "operator parameter list (expected '(' followed by parameters and ')')",
-                    bws(parse_parameter_list),
-                )(input)?;
+    // Parse the operator symbol
+    let (input, operator_symbol) = parse_operator_symbol(input)?;
 
-                // Parse body
-                let (input, body) = parse_operator_body(input)?;
+    // Parse parameters
+    let (input, parameters) = delimited(ws, parse_parameter_list, ws)
+        .context("operator parameter list")
+        .parse(input)?;
 
-                let operator_declaration = OperatorDeclaration {
-                    attributes,
-                    modifiers,
-                    return_type,
-                    operator: OperatorKind::Binary(operator_symbol),
-                    parameters,
-                    body,
-                };
+    // Parse body
+    let (input, body) = parse_operator_body(input)?;
 
-                Ok((input, operator_declaration))
-            }
-        },
-    )(input)
+    let operator_declaration = OperatorDeclaration {
+        attributes,
+        modifiers,
+        return_type,
+        operator: OperatorKind::Binary(operator_symbol),
+        parameters,
+        body,
+    };
+
+    Ok((input, operator_declaration))
 }
 
 /// Parse a conversion operator (implicit/explicit)
 fn parse_conversion_operator(
-    input: &str,
+    input: Span,
     attributes: Vec<Attribute>,
     modifiers: Vec<Modifier>,
     kind: ConversionKind,
-) -> BResult<&str, OperatorDeclaration> {
+) -> BResult<OperatorDeclaration> {
     // Skip the implicit/explicit keyword
     let (input, _) = match kind {
-        ConversionKind::Implicit => {
-            context("implicit keyword (expected 'implicit')", bws(kw_implicit()))(input)?
-        }
-        ConversionKind::Explicit => {
-            context("explicit keyword (expected 'explicit')", bws(kw_explicit()))(input)?
-        }
+        ConversionKind::Implicit => delimited(ws, kw_implicit(), ws)
+            .context("implicit keyword")
+            .parse(input)?,
+        ConversionKind::Explicit => delimited(ws, kw_explicit(), ws)
+            .context("explicit keyword")
+            .parse(input)?,
     };
 
     // Parse the "operator" keyword
-    let (input, _) = context("operator keyword (expected 'operator')", bws(kw_operator()))(input)?;
+    let (input, _) = delimited(ws, kw_operator(), ws)
+        .context("operator keyword")
+        .parse(input)?;
 
     // Parse the target type
-    let (input, target_type) = context(
-        "conversion target type (expected valid C# type)",
-        bws(parse_type_expression),
-    )(input)?;
+    let (input, target_type) = delimited(ws, parse_type_expression, ws)
+        .context("conversion target type")
+        .parse(input)?;
 
     // Parse parameters
-    let (input, parameters) = context(
-        "conversion operator parameter list (expected '(' followed by parameters and ')')",
-        bws(parse_parameter_list),
-    )(input)?;
+    let (input, parameters) = delimited(ws, parse_parameter_list, ws)
+        .context("conversion operator parameter list")
+        .parse(input)?;
 
     // Parse body
     let (input, body) = parse_operator_body(input)?;
@@ -127,46 +126,45 @@ fn parse_conversion_operator(
 }
 
 /// Parse operator symbols (+, -, *, /, etc.)
-fn parse_operator_symbol(input: &str) -> BResult<&str, Identifier> {
-    context(
-        "operator symbol (expected valid C# operator like +, -, *, ++, ==, etc.)",
-        alt((
-            // Multi-character operators first (to avoid prefix conflicts)
-            map(keyword("++"), |_| Identifier::new("++")),
-            map(keyword("--"), |_| Identifier::new("--")),
-            map(keyword("=="), |_| Identifier::new("==")),
-            map(keyword("!="), |_| Identifier::new("!=")),
-            map(keyword(">="), |_| Identifier::new(">=")),
-            map(keyword("<="), |_| Identifier::new("<=")),
-            // Keywords (these should also come before single characters)
-            map(kw_true(), |_| Identifier::new("true")),
-            map(kw_false(), |_| Identifier::new("false")),
-            // Single character operators
-            map(keyword("+"), |_| Identifier::new("+")),
-            map(keyword("-"), |_| Identifier::new("-")),
-            map(keyword("*"), |_| Identifier::new("*")),
-            map(keyword("/"), |_| Identifier::new("/")),
-            map(keyword("%"), |_| Identifier::new("%")),
-            map(keyword(">"), |_| Identifier::new(">")),
-            map(keyword("<"), |_| Identifier::new("<")),
-            map(keyword("!"), |_| Identifier::new("!")),
-            map(keyword("~"), |_| Identifier::new("~")),
-        )),
-    )(input)
+fn parse_operator_symbol(input: Span) -> BResult<Identifier> {
+    alt((
+        // Multi-character operators first (to avoid prefix conflicts)
+        map(delimited(ws, tag("++"), ws), |_| Identifier::new("++")),
+        map(delimited(ws, tag("--"), ws), |_| Identifier::new("--")),
+        map(delimited(ws, tag("=="), ws), |_| Identifier::new("==")),
+        map(delimited(ws, tag("!="), ws), |_| Identifier::new("!=")),
+        map(delimited(ws, tag(">="), ws), |_| Identifier::new(">=")),
+        map(delimited(ws, tag("<="), ws), |_| Identifier::new("<=")),
+        // Keywords (these should also come before single characters)
+        map(delimited(ws, kw_true(), ws), |_| Identifier::new("true")),
+        map(delimited(ws, kw_false(), ws), |_| Identifier::new("false")),
+        // Single character operators
+        map(delimited(ws, tag("+"), ws), |_| Identifier::new("+")),
+        map(delimited(ws, tag("-"), ws), |_| Identifier::new("-")),
+        map(delimited(ws, tag("*"), ws), |_| Identifier::new("*")),
+        map(delimited(ws, tag("/"), ws), |_| Identifier::new("/")),
+        map(delimited(ws, tag("%"), ws), |_| Identifier::new("%")),
+        map(delimited(ws, tag(">"), ws), |_| Identifier::new(">")),
+        map(delimited(ws, tag("<"), ws), |_| Identifier::new("<")),
+        map(delimited(ws, tag("!"), ws), |_| Identifier::new("!")),
+        map(delimited(ws, tag("~"), ws), |_| Identifier::new("~")),
+    ))
+    .context("operator symbol")
+    .parse(input)
 }
 
 /// Parse the operator body (either a block statement or semicolon)
-fn parse_operator_body(input: &str) -> BResult<&str, String> {
-    context(
-        "operator body (expected block statement or semicolon for abstract/extern operator)",
-        alt((
-            // Block body
-            map(
-                parse_block_statement,
-                |_| "{ /* body */ }".to_string(), // Simplified for now
-            ),
-            // Semicolon (abstract/extern)
-            map(bws(bchar(';')), |_| "".to_string()),
-        )),
-    )(input)
+fn parse_operator_body(input: Span) -> BResult<String> {
+    alt((
+        // Block body
+        map(
+            delimited(ws, parse_block_statement, ws),
+            |_| "{ /* body */ }".to_string(),
+        ),
+        // Semicolon (abstract/extern)
+        map(delimited(ws, satisfy(|c| c == ';'), ws), |_| "".to_string()),
+    ))
+    .context("operator body")
+    .parse(input)
 }
+use crate::syntax::span::Span;

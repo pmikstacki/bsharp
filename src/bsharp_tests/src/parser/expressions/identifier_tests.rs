@@ -1,6 +1,6 @@
 // Tests for parsing identifiers and qualified names
 use parser::identifier_parser::{parse_identifier, parse_qualified_name};
-use syntax::nodes::identifier::Identifier;
+use syntax::identifier::Identifier;
 
 #[test]
 fn test_parse_identifier_simple() {

@@ -5,14 +5,14 @@
 use nom::combinator::all_consuming;
 use nom::Finish;
 use parser::statement_parser::parse_statement;
-use syntax::nodes::declarations::local_variable_declaration::VariableDeclarator;
-use syntax::nodes::declarations::LocalVariableDeclaration;
-use syntax::nodes::expressions::expression::Expression;
-use syntax::nodes::expressions::literal::Literal;
-use syntax::nodes::expressions::new_expression::NewExpression;
-use syntax::nodes::identifier::Identifier;
-use syntax::nodes::statements::statement::Statement;
-use syntax::nodes::types::{PrimitiveType, Type};
+use syntax::declarations::local_variable_declaration::VariableDeclarator;
+use syntax::declarations::LocalVariableDeclaration;
+use syntax::expressions::expression::Expression;
+use syntax::expressions::literal::Literal;
+use syntax::expressions::new_expression::NewExpression;
+use syntax::identifier::Identifier;
+use syntax::statements::statement::Statement;
+use syntax::types::{PrimitiveType, Type};
 
 // Helper function from statement_tests.rs
 fn assert_statement_parses(code: &str, expected: Statement) {

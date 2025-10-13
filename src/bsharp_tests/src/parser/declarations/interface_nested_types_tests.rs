@@ -1,7 +1,7 @@
 #![cfg(test)]
 
 use parser::expressions::declarations::type_declaration_parser::parse_interface_declaration;
-use syntax::nodes::declarations::InterfaceBodyDeclaration;
+use syntax::declarations::InterfaceBodyDeclaration;
 
 // C# 8.0+ allows nested types in interfaces
 // These tests verify that the parser correctly handles nested types

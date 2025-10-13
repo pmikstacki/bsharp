@@ -5,7 +5,7 @@ use crate::expressions::Expression;
 use crate::Identifier;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct Parameter {
     pub attributes: Vec<Attribute>,
     pub modifier: Option<ParameterModifier>,
@@ -14,7 +14,7 @@ pub struct Parameter {
     pub default_value: Option<Expression>,
 }
 
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub enum ParameterModifier {
     Ref,
     Out,

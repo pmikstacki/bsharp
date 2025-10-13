@@ -1,8 +1,8 @@
 // Tests for parsing query expressions
 
 use parser::expressions::query_expression_parser::parse_query_expression;
-use syntax::nodes::expressions::expression::Expression;
-use syntax::nodes::expressions::query_expression::*;
+use syntax::expressions::expression::Expression;
+use syntax::expressions::query_expression::*;
 
 fn parse_query_test(code: &str) -> Result<Expression, String> {
     match parse_query_expression(code) {

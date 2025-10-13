@@ -5,11 +5,14 @@
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/bsharp_analysis/src" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/bsharp_cil/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/bsharp_cli/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/bsharp_il/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/bsharp_parser/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/bsharp_syntax/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/bsharp_tests/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/dependencies/nom_supreme/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/bsharp_emitter/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/bsharp_syntax_derive/src" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />

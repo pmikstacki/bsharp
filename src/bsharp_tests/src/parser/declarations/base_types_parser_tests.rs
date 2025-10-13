@@ -1,6 +1,6 @@
 #![cfg(test)]
 use parser::expressions::declarations::base_types_parser::*;
-use syntax::nodes::types::Type;
+use syntax::types::Type;
 
 #[test]
 fn test_no_base_types() {

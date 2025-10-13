@@ -1,6 +1,6 @@
 // Tests for parsing switch sections
 
-use syntax::nodes::statements::SwitchSection;
+use syntax::statements::SwitchSection;
 
 fn parse_switch_section(code: &str) -> Result<SwitchSection, String> {
     Err(format!("Parser not yet implemented: {}", code))

@@ -331,17 +331,17 @@ pub fn render_pretty_parse_error(input: &str, err: &ErrorTree<&str>) -> String {
         } else {
             false
         };
-        if after_paren || after_else {
+        return if after_paren || after_else {
             let (line, col) = line_col(input, info.offset);
             let line_text = line_slice(input, line);
-            return format!(
+            format!(
                 "at {}:{}: expected {}\n{}\n{}^",
                 line,
                 col,
                 "statement",
                 line_text,
                 " ".repeat(col.saturating_sub(1))
-            );
+            )
         } else {
             // Decide between synthesizing ';' vs reporting '}'
             let prev_ch = last_non_ws;
@@ -354,7 +354,37 @@ pub fn render_pretty_parse_error(input: &str, err: &ErrorTree<&str>) -> String {
                         || c == b'"'
                         || c == b'\''
             );
-            if looks_like_expr_end {
+            if !looks_like_expr_end {
+                let (line, col) = line_col(input, info.offset);
+                let line_text = line_slice(input, line);
+                if line_text.contains("if (") || line_text.contains("else") {
+                    return format!(
+                        "at {}:{}: expected {}\n{}\n{}^",
+                        line,
+                        col,
+                        "statement",
+                        line_text,
+                        " ".repeat(col.saturating_sub(1))
+                    );
+                }
+                // If the part of the line before the brace clearly contains an assignment, prefer ';'
+                if line_text.contains("=") {
+                    return format!(
+                        "at {}:{}: expected ';'\n{}\n{}^",
+                        line,
+                        col,
+                        line_text,
+                        " ".repeat(col.saturating_sub(1))
+                    );
+                }
+                format!(
+                    "at {}:{}: expected '}}'\n{}\n{}^",
+                    line,
+                    col,
+                    line_text,
+                    " ".repeat(col.saturating_sub(1))
+                )
+            } else {
                 let mut k = info.offset.saturating_sub(1);
                 while k > 0 && matches!(bytes[k], b' ' | b'\t' | b'\r' | b'\n') {
                     k = k.saturating_sub(1);
@@ -385,43 +415,13 @@ pub fn render_pretty_parse_error(input: &str, err: &ErrorTree<&str>) -> String {
                         " ".repeat(col.saturating_sub(1))
                     );
                 }
-                return format!(
+                format!(
                     "at {}:{}: expected ';'\n{}\n{}^",
                     line,
                     col,
                     line_text,
                     " ".repeat(col.saturating_sub(1))
-                );
-            } else {
-                let (line, col) = line_col(input, info.offset);
-                let line_text = line_slice(input, line);
-                if line_text.contains("if (") || line_text.contains("else") {
-                    return format!(
-                        "at {}:{}: expected {}\n{}\n{}^",
-                        line,
-                        col,
-                        "statement",
-                        line_text,
-                        " ".repeat(col.saturating_sub(1))
-                    );
-                }
-                // If the part of the line before the brace clearly contains an assignment, prefer ';'
-                if line_text.contains("=") {
-                    return format!(
-                        "at {}:{}: expected ';'\n{}\n{}^",
-                        line,
-                        col,
-                        line_text,
-                        " ".repeat(col.saturating_sub(1))
-                    );
-                }
-                return format!(
-                    "at {}:{}: expected '}}'\n{}\n{}^",
-                    line,
-                    col,
-                    line_text,
-                    " ".repeat(col.saturating_sub(1))
-                );
+                )
             }
         }
     }

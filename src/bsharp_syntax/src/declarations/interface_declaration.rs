@@ -1,10 +1,13 @@
-use super::{attribute::AttributeList, modifier::Modifier, InterfaceBodyDeclaration, TypeParameterConstraintClause};
+use super::{
+    attribute::AttributeList, modifier::Modifier, InterfaceBodyDeclaration,
+    TypeParameterConstraintClause,
+};
 use crate::types::{Type, TypeParameter};
 use crate::Identifier;
 use serde::{Deserialize, Serialize};
 // Changed Attribute to AttributeList
 
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct InterfaceDeclaration {
     pub attributes: Vec<AttributeList>,
     pub modifiers: Vec<Modifier>,

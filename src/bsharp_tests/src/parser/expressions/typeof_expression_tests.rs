@@ -2,8 +2,8 @@
 
 use parser::expressions::primary_expression_parser::parse_expression;
 use parser::expressions::typeof_expression_parser::parse_typeof_expression;
-use syntax::nodes::expressions::expression::Expression;
-use syntax::nodes::types::{PrimitiveType, Type};
+use syntax::expressions::expression::Expression;
+use syntax::types::{PrimitiveType, Type};
 
 fn parse_typeof_expr_helper(code: &str) -> Result<Expression, String> {
     match parse_typeof_expression(code) {

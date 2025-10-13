@@ -1,8 +1,8 @@
 #![allow(unused_variables)]
 // Integration tests for parsing record declarations (class and struct)
 
-use syntax::nodes::declarations::{Modifier, RecordDeclaration};
-use syntax::nodes::identifier::Identifier;
+use syntax::declarations::{Modifier, RecordDeclaration};
+use syntax::identifier::Identifier;
 // Parameter is in types module
 
 // Assuming a syntax function like parse_record_declaration exists

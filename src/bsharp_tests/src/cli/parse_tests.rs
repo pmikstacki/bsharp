@@ -3,9 +3,9 @@ use serde_json::Value;
 use std::fs;
 use std::io::Read;
 
-// Directly import the parse function to avoid module resolution issues
-use super::parse_execute;
 use super::utils::{clean_temp_files, create_temp_dir, get_all_test_files};
+// Directly import the parse function to avoid module resolution issues
+use crate::cli::helpers::parse_execute;
 
 #[test]
 fn test_parse_command_creates_valid_json() -> Result<()> {

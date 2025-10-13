@@ -1,6 +1,6 @@
 // Tests for parsing class members
 
-use syntax::nodes::declarations::ClassBodyDeclaration;
+use syntax::declarations::ClassBodyDeclaration;
 
 fn parse_class_member(code: &str) -> Result<ClassBodyDeclaration, String> {
     Err(format!("Parser not yet implemented: {}", code))

@@ -5,7 +5,7 @@ use crate::declarations::{
 use crate::Identifier;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct NamespaceDeclaration {
     pub name: Identifier,
     // TODO: Add support for nested namespaces later
@@ -15,7 +15,7 @@ pub struct NamespaceDeclaration {
 }
 
 // Define what can be a member of a namespace
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub enum NamespaceBodyDeclaration {
     Namespace(NamespaceDeclaration),
     Class(ClassDeclaration),

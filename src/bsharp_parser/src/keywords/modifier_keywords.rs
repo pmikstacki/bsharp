@@ -17,3 +17,4 @@ define_keyword_pair!(kw_partial, peek_partial, "partial");
 define_keyword_pair!(kw_new, peek_new, "new");
 define_keyword_pair!(kw_async, peek_async, "async");
 define_keyword_pair!(kw_required, peek_required, "required");
+define_keyword_pair!(kw_const, peek_const, "const");

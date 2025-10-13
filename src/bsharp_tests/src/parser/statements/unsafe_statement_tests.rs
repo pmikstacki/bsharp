@@ -1,6 +1,6 @@
 // Tests for parsing unsafe statements
 
-use syntax::nodes::statements::UnsafeStatement;
+use syntax::statements::UnsafeStatement;
 
 fn parse_unsafe_statement(code: &str) -> Result<UnsafeStatement, String> {
     Err(format!("Parser not yet implemented: {}", code))

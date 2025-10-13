@@ -1,7 +1,7 @@
 use parser::expressions::declarations::modifier_parser::{
     parse_modifiers, parse_modifiers_for_decl_type,
 };
-use syntax::nodes::declarations::Modifier;
+use syntax::declarations::Modifier;
 
 #[test]
 fn test_parse_single_modifier() {

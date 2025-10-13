@@ -1,6 +1,6 @@
 // Tests for parsing foreach statements
 
-use syntax::nodes::statements::ForEachStatement;
+use syntax::statements::ForEachStatement;
 
 fn parse_for_each_statement(code: &str) -> Result<ForEachStatement, String> {
     Err(format!("Parser not yet implemented: {}", code))
