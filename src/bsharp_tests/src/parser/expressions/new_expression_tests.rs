@@ -7,12 +7,12 @@ use syntax::expressions::new_expression::ObjectInitializerEntry;
 use syntax::types::{PrimitiveType, Type};
 
 fn parse_new_expr(code: &str) -> Result<Expression, String> {
-    match parse_expression(code) {
+    match parse_expression(code.into()) {
         Ok((remaining, expr)) => {
-            if remaining.trim().is_empty() {
+            if remaining.fragment().trim().is_empty() {
                 Ok(expr)
             } else {
-                Err(format!("Unparsed input: {}", remaining))
+                Err(format!("Unparsed input: {}", remaining.fragment()))
             }
         }
         Err(e) => Err(format!("Parse error: {:?}", e)),
@@ -22,7 +22,7 @@ fn parse_new_expr(code: &str) -> Result<Expression, String> {
 #[test]
 fn test_typed_new_mixed_object_and_collection_initializer_should_error() {
     // Mixed initializer elements like property + value are invalid
-    let res = parse_expression("new List<int> { P = 1, 2 }");
+    let res = parse_expression("new List<int> { P = 1, 2 }".into());
     assert!(
         res.is_err(),
         "expected parse error for mixed object/collection initializer, got: {:?}",
@@ -33,7 +33,7 @@ fn test_typed_new_mixed_object_and_collection_initializer_should_error() {
 #[test]
 fn test_parse_simple_new_expr() {
     let code = "new Exception()";
-    let result = parse_new_expr(code);
+    let result = parse_new_expr(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse simple new expression: {:?}",
@@ -43,7 +43,7 @@ fn test_parse_simple_new_expr() {
     if let Ok(Expression::New(new_expr)) = result {
         assert!(matches!(new_expr.target_type, Some(Type::Reference(_))));
         if let Some(Type::Reference(id)) = &new_expr.target_type {
-            assert_eq!(id.name, "Exception");
+            assert_eq!(id.to_string(), "Exception");
         }
         assert_eq!(new_expr.arguments.len(), 0);
         assert!(new_expr.object_initializer.is_none());
@@ -56,7 +56,7 @@ fn test_parse_simple_new_expr() {
 #[test]
 fn test_parse_new_with_arguments() {
     let code = "new Exception(\"Error message\")";
-    let result = parse_new_expr(code);
+    let result = parse_new_expr(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse new with arguments: {:?}",
@@ -80,7 +80,7 @@ fn test_parse_new_with_arguments() {
 #[test]
 fn test_parse_new_with_object_initializer() {
     let code = "new Person { Name = \"John\", Age = 30 }";
-    let result = parse_new_expr(code);
+    let result = parse_new_expr(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse new with object initializer: {:?}",
@@ -118,7 +118,7 @@ fn test_parse_new_with_object_initializer() {
 #[test]
 fn test_parse_new_with_collection_initializer() {
     let code = "new List<int> { 1, 2, 3, 4, 5 }";
-    let result = parse_new_expr(code);
+    let result = parse_new_expr(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse new with collection initializer: {:?}",
@@ -147,7 +147,7 @@ fn test_parse_new_with_collection_initializer() {
 #[test]
 fn test_parse_new_with_args_and_object_initializer() {
     let code = "new Person(\"firstName\") { LastName = \"Doe\", Age = 25 }";
-    let result = parse_new_expr(code);
+    let result = parse_new_expr(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse new with args and object initializer: {:?}",
@@ -169,7 +169,7 @@ fn test_parse_new_with_args_and_object_initializer() {
 #[test]
 fn test_parse_new_empty_object_initializer() {
     let code = "new Person { }";
-    let result = parse_new_expr(code);
+    let result = parse_new_expr(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse new with empty object initializer: {:?}",
@@ -190,7 +190,7 @@ fn test_parse_new_empty_object_initializer() {
 #[test]
 fn test_parse_new_empty_collection_initializer() {
     let code = "new List<string> { }";
-    let result = parse_new_expr(code);
+    let result = parse_new_expr(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse new with empty collection initializer: {:?}",
@@ -211,7 +211,7 @@ fn test_parse_new_empty_collection_initializer() {
 #[test]
 fn test_parse_new_primitive_type() {
     let code = "new int()";
-    let result = parse_new_expr(code);
+    let result = parse_new_expr(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse new primitive type: {:?}",
@@ -232,7 +232,7 @@ fn test_parse_new_primitive_type() {
 #[test]
 fn test_parse_new_complex_nested_initializer() {
     let code = "new Dictionary<string, List<int>> { [\"numbers\"] = new List<int> { 1, 2, 3 } }";
-    let result = parse_new_expr(code);
+    let result = parse_new_expr(code.into());
     // This is a complex case that might not fully parse yet, but we should at least
     // be able to parse the outer structure
     if result.is_ok() {
@@ -254,8 +254,8 @@ fn test_parse_new_with_indexer_object_initializer() {
     use syntax::expressions::new_expression::ObjectInitializerEntry;
 
     let code = "new Dictionary<int, string> { [1] = \"a\", [2] = \"b\" }";
-    let (rest, expr) = parse_expression(code).expect("parse ok");
-    assert!(rest.trim().is_empty(), "unparsed: {}", rest);
+    let (rest, expr) = parse_expression(code.into()).expect("parse ok");
+    assert!(rest.fragment().trim().is_empty(), "unparsed: {}", rest.fragment());
 
     match expr {
         Expression::New(new_expr_box) => {

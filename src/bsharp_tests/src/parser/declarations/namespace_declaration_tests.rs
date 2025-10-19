@@ -1,42 +1,35 @@
 // Tests for parsing namespace declarations
 
+use parser::Parsable;
 use parser::expressions::declarations::namespace_declaration_parser::parse_namespace_declaration;
 use parser::syntax::errors::BResult;
+use syntax::declarations::NamespaceDeclaration;
 
 // Local test helper to avoid import issues
-fn parse_full_input<'a, O, F>(input: &'a str, parser: F) -> Result<(&'a str, O), String>
-where
-    F: FnOnce(&'a str) -> BResult<&'a str, O>,
-{
-    match parser(input) {
-        Ok((remaining, result)) => Ok((remaining, result)),
-        Err(err) => Err(format!("Parse error: {:?}", err)),
-    }
-}
 
 #[test]
 fn test_simple_namespace_declaration() {
     let input = "namespace MyNamespace { }";
-    let result = parse_full_input(input, parse_namespace_declaration);
+    let result = NamespaceDeclaration::parse(input.into());
     assert!(result.is_ok());
     let (_remaining, decl) = result.unwrap();
-    assert_eq!(decl.name.name, "MyNamespace");
+    assert_eq!(decl.name.to_string(), "MyNamespace");
 }
 
 #[test]
 fn test_qualified_namespace_declaration() {
     let input = "namespace System.Collections { }";
-    let result = parse_full_input(input, parse_namespace_declaration);
+    let result = NamespaceDeclaration::parse(input.into());
     assert!(result.is_ok());
     let (_remaining, decl) = result.unwrap();
-    assert_eq!(decl.name.name, "System.Collections");
+    assert_eq!(decl.name.to_string(), "System.Collections");
 }
 
 #[test]
 fn test_parse_namespace() {
     let code = "namespace MyNs { }";
-    let result = parse_full_input(code, parse_namespace_declaration);
+    let result = NamespaceDeclaration::parse(code.into());
     assert!(result.is_ok(), "Expected successful parsing of namespace");
     let (_remaining, decl) = result.unwrap();
-    assert_eq!(decl.name.name, "MyNs");
+    assert_eq!(decl.name.to_string(), "MyNs");
 }

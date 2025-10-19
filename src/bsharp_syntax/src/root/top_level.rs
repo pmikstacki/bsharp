@@ -4,10 +4,11 @@ use crate::declarations::{
     StructDeclaration,
 };
 use serde::{Deserialize, Serialize};
+use bsharp_syntax_derive::AstNode;
 
 // Ensure TopLevelDeclaration also derives PartialEq for CompilationUnit's derive to work.
 // It should also have other common derives for AST nodes.
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[derive(AstNode, Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum TopLevelDeclaration {
     Namespace(NamespaceDeclaration),
     FileScopedNamespace(FileScopedNamespaceDeclaration), // C# 10+ file-scoped namespace

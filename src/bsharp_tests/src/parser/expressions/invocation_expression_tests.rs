@@ -7,8 +7,8 @@ use syntax::expressions::invocation_expression::ArgumentModifier;
 fn parse_invocation_ok(
     code: &str,
 ) -> syntax::expressions::invocation_expression::InvocationExpression {
-    let (rest, expr) = parse_expression(code).expect("parse expression");
-    assert!(rest.trim().is_empty(), "Unparsed rest: '{}'", rest);
+    let (rest, expr) = parse_expression(code.into()).expect("parse expression");
+    assert!(rest.fragment().trim().is_empty(), "Unparsed rest: '{}'", rest.fragment());
     match expr {
         Expression::Invocation(inv) => *inv,
         other => panic!("Expected Invocation, got: {:?}", other),
@@ -37,8 +37,8 @@ fn invocation_with_modifiers() {
 fn invocation_with_named_arguments_and_calls() {
     let inv = parse_invocation_ok("foo(p: 1, q: bar())");
     assert_eq!(inv.arguments.len(), 2);
-    assert!(inv.arguments[0].name.as_ref().map(|n| n.name.as_str()) == Some("p"));
-    assert!(inv.arguments[1].name.as_ref().map(|n| n.name.as_str()) == Some("q"));
+    assert_eq!(inv.arguments[0].name.as_ref().map(|n| n.to_string()).as_deref(), Some("p"));
+    assert_eq!(inv.arguments[1].name.as_ref().map(|n| n.to_string()).as_deref(), Some("q"));
     // Ensure second argument is an invocation expression
     if let Expression::Invocation(_) = inv.arguments[1].expr { /* ok */
     } else {

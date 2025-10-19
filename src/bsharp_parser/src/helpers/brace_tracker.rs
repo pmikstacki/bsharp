@@ -1,5 +1,5 @@
-use std::cell::RefCell;
 use crate::syntax::span::Span;
+use std::cell::RefCell;
 
 #[derive(Default, Clone, Copy)]
 pub struct BraceStatus {
@@ -93,7 +93,7 @@ pub fn on_char(input: Span<'_>, matched: char) {
     TRACKER.with(|cell| {
         if let Some(state) = cell.borrow_mut().as_mut() {
             match matched {
-                '{' => state.record_open(input),
+                '{' => state.record_open(input.into()),
                 '}' => state.record_close(),
                 _ => {}
             }

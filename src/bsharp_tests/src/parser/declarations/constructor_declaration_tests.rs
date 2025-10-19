@@ -5,10 +5,10 @@ use syntax::declarations::Modifier;
 use syntax::statements::statement::Statement;
 
 fn assert_constructor_parses(input: &str, expected_name: &str, num_params: usize) {
-    match parse_any_member_declaration(input) {
+    match parse_any_member_declaration(input.into()) {
         Ok((remaining, member_decl)) => {
             assert_eq!(remaining.trim(), "");
-            assert_eq!(member_decl.name.name, expected_name);
+            assert_eq!(member_decl.name.to_string(), expected_name);
             assert_eq!(member_decl.parameters.len(), num_params);
             assert!(member_decl.has_constructor_syntax()); // No return type
             // Further checks for body, modifiers etc. can be added
@@ -30,10 +30,10 @@ fn test_constructor_with_parameters() {
 #[test]
 fn test_constructor_with_public_modifier() {
     let input = "public MyClass() {}";
-    match parse_any_member_declaration(input) {
+    match parse_any_member_declaration(input.into()) {
         Ok((remaining, member_decl)) => {
             assert_eq!(remaining.trim(), "");
-            assert_eq!(member_decl.name.name, "MyClass");
+            assert_eq!(member_decl.name.to_string(), "MyClass");
             assert_eq!(member_decl.parameters.len(), 0);
             assert!(member_decl.has_constructor_syntax());
             assert!(member_decl.modifiers.contains(&Modifier::Public));
@@ -45,7 +45,7 @@ fn test_constructor_with_public_modifier() {
 #[test]
 fn test_constructor_with_body() {
     let input = "MyClass() { int x = 0; }";
-    match parse_any_member_declaration(input) {
+    match parse_any_member_declaration(input.into()) {
         Ok((remaining, member_decl)) => {
             assert_eq!(remaining.trim(), "");
             assert!(member_decl.body.is_some());
@@ -71,10 +71,10 @@ fn test_constructor_with_body() {
 fn test_async_constructor_syntax_accepted() {
     // Parser should now accept this syntactically - analyzer will handle semantic validation
     let input = "async MyClass() { }";
-    match parse_any_member_declaration(input) {
+    match parse_any_member_declaration(input.into()) {
         Ok((remaining, member_decl)) => {
             assert_eq!(remaining.trim(), "");
-            assert_eq!(member_decl.name.name, "MyClass");
+            assert_eq!(member_decl.name.to_string(), "MyClass");
             assert!(member_decl.has_constructor_syntax());
             assert!(member_decl.modifiers.contains(&Modifier::Async));
         }

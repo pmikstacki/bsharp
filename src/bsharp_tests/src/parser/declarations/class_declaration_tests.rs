@@ -10,7 +10,7 @@ use syntax::statements::statement::Statement;
 use syntax::types::{PrimitiveType, Type, TypeParameter, Variance};
 
 fn parse_class_decl_test(code: &str) -> Result<ClassDeclaration, String> {
-    match parse_class_declaration(code) {
+    match parse_class_declaration(code.into()) {
         Ok((rest, decl)) if rest.trim().is_empty() => Ok(decl),
         Ok((rest, _)) => Err(format!("Unparsed input: {}", rest)),
         Err(e) => Err(format!("Parse error: {:?}", e)),
@@ -31,7 +31,7 @@ fn test_parse_simple_class() {
         documentation: None,
         constraints: None,
     };
-    assert_eq!(parse_class_decl_test(code), Ok(expected));
+    assert_eq!(parse_class_decl_test(code.into()), Ok(expected));
 }
 
 #[test]
@@ -57,7 +57,7 @@ fn test_parse_generic_class() {
         documentation: None,
         constraints: None,
     };
-    assert_eq!(parse_class_decl_test(code), Ok(expected));
+    assert_eq!(parse_class_decl_test(code.into()), Ok(expected));
 }
 
 #[test]
@@ -71,7 +71,7 @@ fn test_parse_class_with_method() {
     "#;
 
     // Try parsing the class declaration directly rather than using the helper
-    match parse_class_declaration(code.trim()) {
+    match parse_class_declaration(code.trim().into()) {
         Ok((rest, class_decl)) => {
             // Check that we parsed the entire input
             assert!(
@@ -81,7 +81,7 @@ fn test_parse_class_with_method() {
             );
 
             // Verify the class name
-            assert_eq!(class_decl.name.name, "Calculator");
+            assert_eq!(class_decl.name.to_string(), "Calculator");
 
             // Verify that there's exactly one member
             assert_eq!(
@@ -93,7 +93,7 @@ fn test_parse_class_with_method() {
             // Check that the member is a method
             if let ClassBodyDeclaration::Method(method) = &class_decl.body_declarations[0] {
                 // Check method name
-                assert_eq!(method.name.name, "Add");
+                assert_eq!(method.name.to_string(), "Add");
 
                 // Check return type is void
                 if let Type::Primitive(prim) = &method.return_type {
@@ -104,8 +104,8 @@ fn test_parse_class_with_method() {
 
                 // Check parameters
                 assert_eq!(method.parameters.len(), 2, "Expected 2 parameters");
-                assert_eq!(method.parameters[0].name.name, "a");
-                assert_eq!(method.parameters[1].name.name, "b");
+                assert_eq!(method.parameters[0].name.to_string(), "a");
+                assert_eq!(method.parameters[1].name.to_string(), "b");
 
                 // Check body
                 assert_eq!(method.body, Some(Statement::Block(vec![])));
@@ -234,10 +234,10 @@ fn test_parse_class_with_method_with_body() {
     "#;
     match parse_class_decl_test(code.trim()) {
         Ok(class_decl) => {
-            assert_eq!(class_decl.name.name, "Greeter");
+            assert_eq!(class_decl.name.to_string(), "Greeter");
             assert_eq!(class_decl.body_declarations.len(), 1);
             if let ClassBodyDeclaration::Method(method) = &class_decl.body_declarations[0] {
-                assert_eq!(method.name.name, "SayHello");
+                assert_eq!(method.name.to_string(), "SayHello");
                 assert!(method.body.is_some(), "Method body should exist");
                 if let Some(Statement::Block(stmts)) = &method.body {
                     assert_eq!(

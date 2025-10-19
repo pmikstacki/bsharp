@@ -10,6 +10,6 @@ fn parse_global_using_directive(code: &str) -> Result<GlobalUsingDirective, Stri
 fn test_parse_global_using() {
     let code = "global using System;";
     // let expected = ...;
-    // assert_eq!(parse_global_using_directive(code), Ok(expected));
-    assert!(parse_global_using_directive(code).is_err());
+    // assert_eq!(parse_global_using_directive(code.into()), Ok(expected));
+    assert!(parse_global_using_directive(code.into()).is_err());
 }

@@ -11,6 +11,8 @@ pub mod syntax;
 pub mod traits;
 pub mod trivia;
 pub mod types;
+pub mod tokens;
+
 
 use std::collections::HashMap;
 

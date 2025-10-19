@@ -6,13 +6,16 @@ use crate::parser::types::type_parser::parse_type_expression;
 use crate::syntax::errors::BResult;
 
 use crate::syntax::comment_parser::ws;
+use crate::syntax::span::Span;
 use nom::branch::alt;
-use nom::combinator::{map, recognize, not};
-use nom::sequence::{pair, preceded, tuple};
 use nom::character::complete::char as nom_char;
+use nom::combinator::{map, not, recognize};
+use nom::sequence::{pair, preceded};
 use nom::Parser;
 use syntax::expressions::{BinaryOperator, Expression};
-use crate::syntax::span::Span;
+use crate::tokens::assignment::tok_assign;
+use crate::tokens::nullish::tok_not;
+use crate::tokens::relational::{tok_gt, tok_lt};
 
 pub(crate) fn parse_logical_or_expression_or_higher(input: Span) -> BResult<Expression> {
     left_chain(parse_logical_and_expression_or_higher, |i| {
@@ -20,8 +23,8 @@ pub(crate) fn parse_logical_or_expression_or_higher(input: Span) -> BResult<Expr
             nom::sequence::delimited(ws, recognize(pair(nom_char('|'), nom_char('|'))), ws),
             |_| BinaryOperator::LogicalOr,
         )
-        .parse(i)
-    })(input)
+            .parse(i)
+    })(input.into())
 }
 
 fn parse_logical_and_expression_or_higher(input: Span) -> BResult<Expression> {
@@ -30,8 +33,8 @@ fn parse_logical_and_expression_or_higher(input: Span) -> BResult<Expression> {
             nom::sequence::delimited(ws, recognize(pair(nom_char('&'), nom_char('&'))), ws),
             |_| BinaryOperator::LogicalAnd,
         )
-        .parse(i)
-    })(input)
+            .parse(i)
+    })(input.into())
 }
 
 fn parse_bitwise_or_expression_or_higher(input: Span) -> BResult<Expression> {
@@ -39,23 +42,23 @@ fn parse_bitwise_or_expression_or_higher(input: Span) -> BResult<Expression> {
         map(
             nom::sequence::delimited(
                 ws,
-                tuple((nom_char('|'), not(alt((nom_char('='), nom_char('|')))))),
+                (nom_char('|'), not(alt((tok_assign(), nom_char('|'))))),
                 ws,
             ),
             |_| BinaryOperator::BitwiseOr,
         )
-        .parse(i)
-    })(input)
+            .parse(i)
+    })(input.into())
 }
 
 fn parse_bitwise_xor_expression_or_higher(input: Span) -> BResult<Expression> {
     left_chain(parse_bitwise_and_expression_or_higher, |i| {
         map(
-            nom::sequence::delimited(ws, tuple((nom_char('^'), not(nom_char('=')))), ws),
+            nom::sequence::delimited(ws, (nom_char('^'), not(tok_assign())), ws),
             |_| BinaryOperator::BitwiseXor,
         )
-        .parse(i)
-    })(input)
+            .parse(i)
+    })(input.into())
 }
 
 fn parse_bitwise_and_expression_or_higher(input: Span) -> BResult<Expression> {
@@ -63,13 +66,13 @@ fn parse_bitwise_and_expression_or_higher(input: Span) -> BResult<Expression> {
         map(
             nom::sequence::delimited(
                 ws,
-                tuple((nom_char('&'), not(alt((nom_char('='), nom_char('&')))))),
+                (nom_char('&'), not(alt((tok_assign(), nom_char('&'))))),
                 ws,
             ),
             |_| BinaryOperator::BitwiseAnd,
         )
-        .parse(i)
-    })(input)
+            .parse(i)
+    })(input.into())
 }
 
 fn parse_equality_expression_or_higher(input: Span) -> BResult<Expression> {
@@ -77,24 +80,24 @@ fn parse_equality_expression_or_higher(input: Span) -> BResult<Expression> {
         nom::sequence::delimited(
             ws,
             alt((
-                map(recognize(pair(nom_char('='), nom_char('='))), |_| BinaryOperator::Equal),
-                map(recognize(pair(nom_char('!'), nom_char('='))), |_| BinaryOperator::NotEqual),
+                map(recognize(pair(tok_assign(), tok_assign())), |_| BinaryOperator::Equal),
+                map(recognize(pair(tok_not(), tok_assign())), |_| BinaryOperator::NotEqual),
             )),
             ws,
         )
-        .parse(i)
-    })(input)
+            .parse(i)
+    })(input.into())
 }
 
 fn parse_relational_expression_or_higher(input: Span) -> BResult<Expression> {
     left_chain(parse_shift_expression_or_higher, |i| {
         // Guard: if the next tokens begin a shift or shift-assign sequence, do not match relational here
         let guard = not(alt((
-            recognize(tuple((nom_char('<'), nom_char('<'), nom_char('=')))), // <<=
-            recognize(tuple((nom_char('>'), nom_char('>'), nom_char('=')))), // >>=
-            recognize(tuple((nom_char('>'), nom_char('>'), nom_char('>')))), // >>>
-            recognize(tuple((nom_char('<'), nom_char('<')))),                // <<
-            recognize(tuple((nom_char('>'), nom_char('>')))),                // >>
+            recognize((tok_lt(), tok_lt(), tok_assign())), // <<=
+            recognize((tok_gt(), tok_gt(), tok_assign())), // >>=
+            recognize((tok_gt(), tok_gt(), tok_gt())), // >>>
+            recognize((tok_lt(), tok_lt())),                // <<
+            recognize((tok_gt(), tok_gt())),                // >>
         )));
 
         nom::sequence::delimited(
@@ -103,30 +106,30 @@ fn parse_relational_expression_or_higher(input: Span) -> BResult<Expression> {
                 preceded(
                     guard,
                     alt((
-                        map(recognize(pair(nom_char('<'), nom_char('='))), |_| BinaryOperator::LessEqual),
-                        map(recognize(pair(nom_char('>'), nom_char('='))), |_| BinaryOperator::GreaterEqual),
+                        map(recognize(pair(tok_lt(), tok_assign())), |_| BinaryOperator::LessEqual),
+                        map(recognize(pair(tok_gt(), tok_assign())), |_| BinaryOperator::GreaterEqual),
                         // Single '<'
-                        map(tuple((nom_char('<'), not(alt((nom_char('<'), nom_char('=')))))), |_| BinaryOperator::LessThan),
+                        map((tok_lt(), not(alt((tok_lt(), tok_assign())))), |_| BinaryOperator::LessThan),
                         // Single '>'
-                        map(tuple((nom_char('>'), not(alt((nom_char('>'), nom_char('=')))))), |_| BinaryOperator::GreaterThan),
+                        map((tok_gt(), not(alt((tok_gt(), tok_assign())))), |_| BinaryOperator::GreaterThan),
                     )),
                 ),
                 |op| op,
             ),
             ws,
         )
-        .parse(i)
-    })(input)
+            .parse(i)
+    })(input.into())
 }
 
 /// Relational and type-testing stage: handles is-pattern and as-operator at same precedence as relational
 fn parse_type_test_expression_or_higher(input: Span) -> BResult<Expression> {
     // Start with relational expression
-    let (mut input, mut left) = parse_relational_expression_or_higher(input)?;
+    let (mut input, mut left) = parse_relational_expression_or_higher(input.into())?;
 
     loop {
         // Try 'is' pattern first
-        if let Ok((after_is, _)) = nom::sequence::delimited(ws, kw_is(), ws).parse(input) {
+        if let Ok((after_is, _)) = nom::sequence::delimited(ws, kw_is(), ws).parse(input.into()) {
             let (after_pat, pat) = nom::sequence::delimited(ws, parse_pattern, ws).parse(after_is)?;
             left = Expression::IsPattern {
                 expression: Box::new(left),
@@ -137,7 +140,7 @@ fn parse_type_test_expression_or_higher(input: Span) -> BResult<Expression> {
         }
 
         // Try 'as' type cast-like operator
-        if let Ok((after_as, _)) = nom::sequence::delimited(ws, kw_as(), ws).parse(input) {
+        if let Ok((after_as, _)) = nom::sequence::delimited(ws, kw_as(), ws).parse(input.into()) {
             let (after_ty, ty) = nom::sequence::delimited(ws, parse_type_expression, ws).parse(after_as)?;
             left = Expression::As {
                 expression: Box::new(left),
@@ -158,41 +161,36 @@ fn parse_shift_expression_or_higher(input: Span) -> BResult<Expression> {
         nom::sequence::delimited(ws, alt((
             // >>> unsigned right shift (ensure not followed by '=')
             map(
-                tuple((
-                    nom_char('>'),
-                    nom_char('>'),
-                    nom_char('>'),
-                    not(nom_char('=')),
-                )),
+                (tok_gt(), tok_gt(), tok_gt(), not(tok_assign())),
                 |_| BinaryOperator::UnsignedRightShift,
             ),
             map(
-                tuple((nom_char('<'), nom_char('<'), not(nom_char('=')))),
+                (tok_lt(), tok_lt(), not(tok_assign())),
                 |_| BinaryOperator::LeftShift,
             ),
             map(
-                tuple((nom_char('>'), nom_char('>'), not(nom_char('=')))),
+                (tok_gt(), tok_gt(), not(tok_assign())),
                 |_| BinaryOperator::RightShift,
             ),
         )), ws)
-        .parse(i)
-    })(input)
+            .parse(i)
+    })(input.into())
 }
 
 fn parse_additive_expression_or_higher(input: Span) -> BResult<Expression> {
     left_chain(parse_multiplicative_expression_or_higher, |i| {
         nom::sequence::delimited(ws, alt((
             map(
-                tuple((nom_char('+'), not(nom_char('=')))),
+                (nom_char('+'), not(tok_assign())),
                 |_| BinaryOperator::Add,
             ),
             map(
-                tuple((nom_char('-'), not(nom_char('=')))),
+                (nom_char('-'), not(tok_assign())),
                 |_| BinaryOperator::Subtract,
             ),
         )), ws)
-        .parse(i)
-    })(input)
+            .parse(i)
+    })(input.into())
 }
 
 fn parse_multiplicative_expression_or_higher(input: Span) -> BResult<Expression> {
@@ -200,18 +198,18 @@ fn parse_multiplicative_expression_or_higher(input: Span) -> BResult<Expression>
     left_chain(parse_range_expression_or_higher, |i| {
         nom::sequence::delimited(ws, alt((
             map(
-                tuple((nom_char('*'), not(nom_char('=')))),
+                (nom_char('*'), not(tok_assign())),
                 |_| BinaryOperator::Multiply,
             ),
             map(
-                tuple((nom_char('/'), not(nom_char('=')))),
+                (nom_char('/'), not(tok_assign())),
                 |_| BinaryOperator::Divide,
             ),
             map(
-                tuple((nom_char('%'), not(nom_char('=')))),
+                (nom_char('%'), not(tok_assign())),
                 |_| BinaryOperator::Modulo,
             ),
         )), ws)
-        .parse(i)
-    })(input)
+            .parse(i)
+    })(input.into())
 }

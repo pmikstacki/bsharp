@@ -1,14 +1,13 @@
 use crate::parser::keywords::is_keyword;
-use crate::syntax::errors::BResult;
 use crate::syntax::comment_parser::ws;
-use nom_supreme::ParserExt;
+use crate::syntax::errors::BResult;
 use nom::{
+    Parser,
     branch::alt,
     character::complete::{alpha1, alphanumeric1, char as nom_char},
     combinator::{map_opt, recognize},
     multi::many0,
     sequence::{pair, preceded},
-    Parser,
 };
 use syntax::Identifier;
 
@@ -26,7 +25,7 @@ pub fn parse_identifier<'a>(input: Span<'a>) -> BResult<'a, Identifier> {
             |span: Span<'a>| {
                 let s = span.fragment();
                 if !is_keyword(s) {
-                    Some(Identifier { name: s.to_string() })
+                    Some(Identifier::Simple(s.to_string()))
                 } else {
                     None
                 }
@@ -34,12 +33,11 @@ pub fn parse_identifier<'a>(input: Span<'a>) -> BResult<'a, Identifier> {
         )
         .parse(input)
     })
-    .context("identifier")
     .parse(input)
 }
 
-// Parse a qualified name (e.g., System.Collections.Generic)
-pub fn parse_qualified_name<'a>(input: Span<'a>) -> BResult<'a, Vec<Identifier>> {
+// Parse a qualified name (e.g., System.Collections.Generic) into Identifier segments
+pub fn parse_qualified_name(input: Span) -> BResult<Vec<Identifier>> {
     (|input| {
         use nom::sequence::delimited;
         let dot = delimited(ws, nom_char('.'), ws);
@@ -50,7 +48,6 @@ pub fn parse_qualified_name<'a>(input: Span<'a>) -> BResult<'a, Vec<Identifier>>
         result.extend(others);
         Ok((rest, result))
     })
-    .context("qualified name")
     .parse(input)
 }
 use crate::syntax::span::Span;

@@ -1,26 +1,26 @@
+use crate::keywords::contextual_misc_keywords::kw_global;
 use crate::parser::expressions::declarations::delegate_declaration_parser::parse_delegate_declaration;
 use crate::parser::expressions::declarations::enum_declaration_parser::parse_enum_declaration;
 use crate::parser::expressions::declarations::type_declaration_parser::{
-    parse_class_declaration, parse_interface_declaration_span, parse_record_declaration,
+    parse_class_declaration, parse_interface_declaration, parse_record_declaration,
     parse_struct_declaration_span,
 };
 use crate::parser::expressions::declarations::using_directive_parser::parse_using_directive;
 use crate::parser::identifier_parser::parse_qualified_name;
-use crate::syntax::errors::BResult;
 use crate::parser::keywords::declaration_keywords::{kw_namespace, kw_using};
 use crate::syntax::comment_parser::ws;
-use nom::Parser;
-use nom::sequence::delimited;
-use nom::character::complete::satisfy;
-use nom::combinator::peek;
-use nom_supreme::ParserExt;
+use crate::syntax::errors::BResult;
 use log::trace;
+use nom::Parser;
 use nom::branch::alt;
 use nom::combinator::map;
+use nom::combinator::peek;
+use nom::sequence::delimited;
+use nom_supreme::ParserExt;
+use syntax::Identifier;
 use syntax::declarations::{
     FileScopedNamespaceDeclaration, MemberDeclaration, NamespaceBodyDeclaration,
 };
-use syntax::Identifier;
 // using directive parsing moved to declarations/using_directive_parser.rs
 
 /// Parse a file-scoped namespace declaration
@@ -34,21 +34,21 @@ pub fn parse_file_scoped_namespace_declaration(
 
     let (input, _) = delimited(ws, kw_namespace(), ws)
         .context("namespace keyword")
-        .parse(input)?;
+        .parse(input.into())?;
     trace!("[DEBUG] parse_file_scoped_namespace_declaration: after namespace keyword");
 
     let (input, name) = delimited(ws, parse_qualified_name, ws)
         .context("namespace name")
-        .parse(input)?;
+        .parse(input.into())?;
     trace!(
         "[DEBUG] parse_file_scoped_namespace_declaration: parsed name = {:?}",
         name
     );
 
     // Parse the semicolon (this is what makes it file-scoped)
-    let (input, _) = delimited(ws, satisfy(|c| c == ';'), ws)
+    let (input, _) = delimited(ws, tok_semicolon(), ws)
         .context("file-scoped namespace semicolon")
-        .parse(input)?;
+        .parse(input.into())?;
     trace!("[DEBUG] parse_file_scoped_namespace_declaration: after semicolon");
 
     // Parse using directives and type declarations with a manual loop for precise control
@@ -76,9 +76,12 @@ pub fn parse_file_scoped_namespace_declaration(
         // Attempt to parse a type declaration; stop if nothing matches without consuming input
         match alt((
             map(parse_class_declaration, NamespaceBodyDeclaration::Class),
-            map(parse_struct_declaration_span, NamespaceBodyDeclaration::Struct),
             map(
-                parse_interface_declaration_span,
+                parse_struct_declaration_span,
+                NamespaceBodyDeclaration::Struct,
+            ),
+            map(
+                parse_interface_declaration,
                 NamespaceBodyDeclaration::Interface,
             ),
             map(parse_enum_declaration, NamespaceBodyDeclaration::Enum),
@@ -101,19 +104,27 @@ pub fn parse_file_scoped_namespace_declaration(
         }
     }
 
-    // Convert Vec<Identifier> to a single namespace string
-    let namespace_str = name
-        .iter()
-        .map(|id| id.name.clone())
-        .collect::<Vec<_>>()
-        .join(".");
+    // Convert Vec<Identifier> to segments, then build Identifier as Simple or Qualified
+    let namespace_segments: Vec<String> = name
+        .into_iter()
+        .map(|id| match id {
+            Identifier::Simple(s) => s,
+            Identifier::QualifiedIdentifier(v) => v.join("."),
+            Identifier::OperatorOverrideIdentifier(_) => "operator".to_string(),
+        })
+        .collect();
+    let ns_ident = if namespace_segments.len() == 1 {
+        Identifier::Simple(namespace_segments[0].clone())
+    } else {
+        Identifier::QualifiedIdentifier(namespace_segments)
+    };
 
     Ok((
         current,
         FileScopedNamespaceDeclaration {
-            name: Identifier::new(&namespace_str),
-            using_directives,
+            name: ns_ident,
             declarations: type_declarations,
+            using_directives,
         },
     ))
 }
@@ -126,18 +137,17 @@ pub struct FileScoped {
 
 /// Parse a global using declaration within a file-scoped namespace
 /// Example: global using System.Collections.Generic;
-pub fn parse_global_using<'a>(input: Span<'a>) -> BResult<'a, GlobalUsing> {
+pub fn parse_global_using(input: Span) -> BResult<GlobalUsing> {
     use nom_supreme::ParserExt;
-    use nom::bytes::complete::tag_no_case;
+
     use nom::sequence::delimited;
-    use nom::character::complete::satisfy;
 
     (|i| {
         // 'global' 'using'
-        let (i, _) = delimited(ws, tag_no_case("global"), ws)
+        let (i, _) = delimited(ws, kw_global(), ws)
             .context("global keyword")
             .parse(i)?;
-        let (i, _) = delimited(ws, tag_no_case("using"), ws)
+        let (i, _) = delimited(ws, kw_using(), ws)
             .context("using keyword")
             .parse(i)?;
         // namespace
@@ -145,13 +155,13 @@ pub fn parse_global_using<'a>(input: Span<'a>) -> BResult<'a, GlobalUsing> {
             .context("namespace name")
             .parse(i)?;
         // semicolon
-        let (i, _) = delimited(ws, satisfy(|c| c == ';'), ws)
+        let (i, _) = delimited(ws, tok_semicolon(), ws)
             .context("using semicolon")
             .parse(i)?;
         Ok((i, GlobalUsing { namespace }))
     })
     .context("global using declaration")
-    .parse(input)
+    .parse(input.into())
 }
 
 /// Simplified structure for global using
@@ -159,3 +169,4 @@ pub struct GlobalUsing {
     pub namespace: Vec<Identifier>,
 }
 use crate::syntax::span::Span;
+use crate::tokens::separators::tok_semicolon;

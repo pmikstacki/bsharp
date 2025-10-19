@@ -5,7 +5,7 @@ use syntax::declarations::{ClassBodyDeclaration, ClassDeclaration, Modifier};
 use syntax::identifier::Identifier;
 
 fn parse_class_declaration_helper(code: &str) -> Result<ClassDeclaration, String> {
-    match parse_class_declaration(code) {
+    match parse_class_declaration(code.into()) {
         Ok((remaining, declaration)) => {
             if remaining.trim().is_empty() {
                 Ok(declaration)
@@ -27,7 +27,7 @@ fn test_parse_class_with_nested_class() {
         }
     "#;
 
-    let result = parse_class_declaration_helper(code);
+    let result = parse_class_declaration_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse class with nested class: {:?}",
@@ -61,7 +61,7 @@ fn test_parse_class_with_nested_struct() {
         }
     "#;
 
-    let result = parse_class_declaration_helper(code);
+    let result = parse_class_declaration_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse class with nested struct: {:?}",
@@ -93,7 +93,7 @@ fn test_parse_class_with_nested_interface() {
         }
     "#;
 
-    let result = parse_class_declaration_helper(code);
+    let result = parse_class_declaration_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse class with nested interface: {:?}",
@@ -127,7 +127,7 @@ fn test_parse_class_with_nested_enum() {
         }
     "#;
 
-    let result = parse_class_declaration_helper(code);
+    let result = parse_class_declaration_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse class with nested enum: {:?}",
@@ -157,7 +157,7 @@ fn test_parse_class_with_nested_record() {
         }
     "#;
 
-    let result = parse_class_declaration_helper(code);
+    let result = parse_class_declaration_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse class with nested record: {:?}",
@@ -190,7 +190,7 @@ fn test_parse_class_with_multiple_nested_types() {
         }
     "#;
 
-    let result = parse_class_declaration_helper(code);
+    let result = parse_class_declaration_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse class with multiple nested types: {:?}",
@@ -234,7 +234,7 @@ fn test_parse_class_with_deeply_nested_types() {
         }
     "#;
 
-    let result = parse_class_declaration_helper(code);
+    let result = parse_class_declaration_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse class with deeply nested types: {:?}",
@@ -276,7 +276,7 @@ fn test_parse_class_with_nested_types_and_members() {
         }
     "#;
 
-    let result = parse_class_declaration_helper(code);
+    let result = parse_class_declaration_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse class with mixed nested types and members: {:?}",
@@ -362,7 +362,7 @@ fn test_parse_nested_class_with_inheritance() {
         }
     "#;
 
-    let result = parse_class_declaration_helper(code);
+    let result = parse_class_declaration_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse nested class with inheritance: {:?}",

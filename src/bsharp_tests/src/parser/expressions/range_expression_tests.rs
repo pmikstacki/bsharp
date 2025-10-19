@@ -6,7 +6,7 @@ use syntax::expressions::UnaryOperator;
 use syntax::identifier::Identifier;
 
 fn check_expr(input: &str, expected_expr: Expression) {
-    let (_, expr) = parse_expression(input)
+    let (_, expr) = parse_expression(input.into())
         .unwrap_or_else(|e| panic!("Failed to parse expression '{}': {:?}", input, e));
     assert_eq!(expr, expected_expr, "Input: {}", input);
 }
@@ -266,7 +266,7 @@ fn test_range_missing_operand_error() {
 
     // Note: "x. .y" actually parses as member access "x." followed by ".y" which is invalid
     // So we'll test for the three dots case which should definitely be an error
-    let result2 = parse_expression(r#"x...y"#); // Three dots
+    let result2 = parse_expression(r#"x...y"#.into()); // Three dots
     match result2 {
         Ok((remaining, _expr)) => {
             // Should have remaining input ".y" which indicates incomplete parsing
@@ -281,7 +281,7 @@ fn test_range_missing_operand_error() {
     }
 
     // Test for incomplete range that would cause issues in a larger context
-    let result3 = parse_expression(r#"[.x]"#); // Invalid start to range in array indexer
+    let result3 = parse_expression(r#"[.x]"#.into()); // Invalid start to range in array indexer
     assert!(
         result3.is_err(),
         "Expected error for malformed range expression. Input: [.x]"
@@ -290,7 +290,7 @@ fn test_range_missing_operand_error() {
 
 #[test]
 fn test_index_missing_operand_error() {
-    let result = parse_expression("^");
+    let result = parse_expression("^".into());
     assert!(
         result.is_err(),
         "Expected error for index operator without operand. Input: ^"

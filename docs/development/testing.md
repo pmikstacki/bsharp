@@ -77,7 +77,7 @@ use bsharp::parser::expressions::parse_my_feature;
 #[test]
 fn test_my_feature() {
     let input = "my feature syntax";
-    let result = parse_my_feature(input);
+    let result = parse_my_feature(input.into());
     let ast = expect_ok(input, result);
     // assertions...
 }
@@ -98,7 +98,7 @@ use bsharp::syntax::test_helpers::expect_ok;
 #[test]
 fn test_parse_class() {
     let input = "public class MyClass { }";
-    let result = parse_class_declaration(input);
+    let result = parse_class_declaration(input.into());
     let class = expect_ok(input, result);
     
     assert_eq!(class.identifier.name, "MyClass");
@@ -123,7 +123,7 @@ public clas MyClass { }
 
 **`parse_input_unwrap()`** - Unwrap parse result:
 ```rust
-let (remaining, ast) = parse_input_unwrap(parse_expression(input));
+let (remaining, ast) = parse_input_unwrap(parse_expression(input.into()));
 assert_eq!(remaining, "");  // Verify full consumption
 ```
 
@@ -142,7 +142,7 @@ assert_parse_error(parse_expression("invalid syntax"));
 #[test]
 fn test_if_statement() {
     let input = "if (x > 0) { return x; }";
-    let stmt = expect_ok(input, parse_if_statement(input));
+    let stmt = expect_ok(input, parse_if_statement(input.into()));
     
     // Now assert on the AST structure
     match stmt {
@@ -161,14 +161,14 @@ fn test_if_statement() {
 #[test]
 fn test_simple_lambda() {
     let input = "x => x * 2";
-    let expr = expect_ok(input, parse_lambda_expression(input));
+    let expr = expect_ok(input, parse_lambda_expression(input.into()));
     // Test one thing
 }
 
 #[test]
 fn test_lambda_with_multiple_params() {
     let input = "(x, y) => x + y";
-    let expr = expect_ok(input, parse_lambda_expression(input));
+    let expr = expect_ok(input, parse_lambda_expression(input.into()));
     // Test another thing
 }
 ```
@@ -191,7 +191,7 @@ When disambiguation is possible, add tests for both valid and invalid cases:
 fn test_ternary_vs_nullable() {
     // Valid ternary
     let input = "x ? y : z";
-    expect_ok(input, parse_conditional_expression(input));
+    expect_ok(input, parse_conditional_expression(input.into()));
     
     // Valid null-conditional (different test)
 }
@@ -199,7 +199,7 @@ fn test_ternary_vs_nullable() {
 #[test]
 fn test_null_conditional_operator() {
     let input = "obj?.Property";
-    expect_ok(input, parse_postfix_expression(input));
+    expect_ok(input, parse_postfix_expression(input.into()));
 }
 ```
 
@@ -231,21 +231,21 @@ For complex constructs like `new` expressions with initializers:
 #[test]
 fn test_new_with_object_initializer() {
     let input = "new Person { Name = \"John\", Age = 30 }";
-    let expr = expect_ok(input, parse_new_expression(input));
+    let expr = expect_ok(input, parse_new_expression(input.into()));
     // Verify structure
 }
 
 #[test]
 fn test_new_with_collection_initializer() {
     let input = "new List<int> { 1, 2, 3 }";
-    let expr = expect_ok(input, parse_new_expression(input));
+    let expr = expect_ok(input, parse_new_expression(input.into()));
     // Verify structure
 }
 
 #[test]
 fn test_target_typed_new() {
     let input = "new(42, \"test\")";
-    let expr = expect_ok(input, parse_new_expression(input));
+    let expr = expect_ok(input, parse_new_expression(input.into()));
     // Verify structure
 }
 ```
@@ -258,7 +258,7 @@ fn test_target_typed_new() {
 #[test]
 fn test_unclosed_paren_diagnostic() {
     let input = "(x + y";
-    let result = parse_expression(input);
+    let result = parse_expression(input.into());
     
     assert!(result.is_err());
     // Optionally check error contains expected message
@@ -283,7 +283,7 @@ fn parse_parenthesized(input: &str) -> BResult<&str, Expression> {
         bchar('('),
         parse_expression,
         cut(bchar(')'))  // ✅ Prevents misleading backtracking
-    )(input)
+    )(input.into())
 }
 ```
 
@@ -295,9 +295,9 @@ Ensure whitespace/comments are handled consistently:
 use crate::syntax::parser_helpers::bws;
 
 fn parse_if_statement(input: &str) -> BResult<&str, Statement> {
-    let (input, _) = bws(keyword("if"))(input)?;
-    let (input, _) = bws(bchar('('))(input)?;
-    let (input, condition) = bws(parse_expression)(input)?;
+    let (input, _) = bws(keyword("if"))(input.into())?;
+    let (input, _) = bws(bchar('('))(input.into())?;
+    let (input, condition) = bws(parse_expression)(input.into())?;
     // ...
 }
 ```
@@ -400,7 +400,7 @@ use insta::assert_json_snapshot;
 #[test]
 fn test_class_ast_structure() {
     let input = "public class MyClass { public int Field; }";
-    let result = parse_class_declaration(input);
+    let result = parse_class_declaration(input.into());
     let class = expect_ok(input, result);
     
     // Creates snapshot file on first run
@@ -452,7 +452,7 @@ fn test_with_logging() {
     let input = "complex syntax";
     log::debug!("Parsing: {}", input);
     
-    let result = parse_expression(input);
+    let result = parse_expression(input.into());
     log::debug!("Result: {:?}", result);
     
     expect_ok(input, result);
@@ -473,7 +473,7 @@ If a complex parser fails, test its sub-parsers individually:
 fn test_method_declaration() {
     // Fails - too complex
     let input = "public async Task<int> Method(int x) { return x; }";
-    expect_ok(input, parse_method_declaration(input));
+    expect_ok(input, parse_method_declaration(input.into()));
 }
 
 // Break it down:
@@ -481,19 +481,19 @@ fn test_method_declaration() {
 #[test]
 fn test_method_modifiers() {
     let input = "public async";
-    expect_ok(input, parse_modifiers(input));
+    expect_ok(input, parse_modifiers(input.into()));
 }
 
 #[test]
 fn test_method_return_type() {
     let input = "Task<int>";
-    expect_ok(input, parse_type(input));
+    expect_ok(input, parse_type(input.into()));
 }
 
 #[test]
 fn test_method_parameters() {
     let input = "(int x)";
-    expect_ok(input, parse_parameter_list(input));
+    expect_ok(input, parse_parameter_list(input.into()));
 }
 ```
 
@@ -522,7 +522,7 @@ fn test_recovery_from_malformed_member() {
     }
     "#;
     
-    let result = parse_class_declaration(input);
+    let result = parse_class_declaration(input.into());
     // Should parse despite error
     assert!(result.is_ok());
 }
@@ -667,13 +667,13 @@ cargo tarpaulin --out Html --output-dir coverage
 #[test]
 fn test_valid_syntax() {
     let input = "valid syntax";
-    expect_ok(input, parse_feature(input));
+    expect_ok(input, parse_feature(input.into()));
 }
 
 #[test]
 fn test_invalid_syntax() {
     let input = "invalid syntax";
-    assert!(parse_feature(input).is_err());
+    assert!(parse_feature(input.into()).is_err());
 }
 ```
 
@@ -693,7 +693,7 @@ fn test_minimal_input() {
 #[test]
 fn test_maximal_input() {
     let input = "very complex nested structure...";
-    expect_ok(input, parse_feature(input));
+    expect_ok(input, parse_feature(input.into()));
 }
 ```
 
@@ -742,7 +742,7 @@ fn test_whitespace_insensitive() {
 #[test]
 fn test_lambda_with_multiple_params() {
     let input = "(x, y) => x + y";
-    let expr = expect_ok(input, parse_lambda_expression(input));
+    let expr = expect_ok(input, parse_lambda_expression(input.into()));
     // ...
 }
 ```

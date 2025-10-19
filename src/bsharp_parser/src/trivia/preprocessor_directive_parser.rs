@@ -1,39 +1,38 @@
-use crate::syntax::errors::BResult;
 use crate::syntax::comment_parser::ws;
+use crate::syntax::errors::BResult;
 use nom::branch::alt;
 use nom::bytes::complete::is_not;
 use nom::character::complete::{char as nom_char, line_ending, space0};
 use nom::combinator::{map, opt};
-use nom::sequence::tuple;
-use syntax::trivia::preprocessor::PreprocessorDirective;
-use nom::Parser;
 use nom::sequence::delimited;
+use nom::Parser;
 use nom_supreme::ParserExt;
+use syntax::trivia::preprocessor::PreprocessorDirective;
 
 /// Parse a preprocessor directive line starting with '#'
 /// Supports: #pragma <rest> and #line <rest> (stored as strings)
 /// Consumes the directive and its trailing newline (if any)
-pub fn parse_preprocessor_directive<'a>(input: Span<'a>) -> BResult<'a, PreprocessorDirective> {
+pub fn parse_preprocessor_directive(input: Span) -> BResult<PreprocessorDirective> {
     use crate::parser::identifier_parser::parse_identifier;
     use crate::parser::keywords::preprocessor_keywords::*;
     use nom::combinator::cut;
 
     (|i| {
         let (i, _) = delimited(ws, nom_char('#'), ws).parse(i)?;
-        let (i, directive) = nom::combinator::cut(alt((
+        let (i, directive) = cut(alt((
             // #define SYMBOL
             map(
-                tuple((kw_define(), space0, cut(delimited(ws, parse_identifier, ws)))),
+                (kw_define(), space0, cut(delimited(ws, parse_identifier, ws))),
                 |(_, _, sym)| PreprocessorDirective::Define { symbol: sym },
             ),
             // #undef SYMBOL
             map(
-                tuple((kw_undef(), space0, cut(delimited(ws, parse_identifier, ws)))),
+                (kw_undef(), space0, cut(delimited(ws, parse_identifier, ws))),
                 |(_, _, sym)| PreprocessorDirective::Undef { symbol: sym },
             ),
             // #if CONDITION (rest of line)
             map(
-                tuple((kw_if(), space0, opt(is_not("\r\n")))),
+                (kw_if(), space0, opt(is_not("\r\n"))),
                 |(_, _, cond)| PreprocessorDirective::If {
                     condition: cond
                         .map(|s: Span| *s.fragment())
@@ -44,7 +43,7 @@ pub fn parse_preprocessor_directive<'a>(input: Span<'a>) -> BResult<'a, Preproce
             ),
             // #elif CONDITION (rest of line)
             map(
-                tuple((kw_elif(), space0, opt(is_not("\r\n")))),
+                (kw_elif(), space0, opt(is_not("\r\n"))),
                 |(_, _, cond)| PreprocessorDirective::Elif {
                     condition: cond
                         .map(|s| *s.fragment())
@@ -59,7 +58,7 @@ pub fn parse_preprocessor_directive<'a>(input: Span<'a>) -> BResult<'a, Preproce
             map(kw_endif(), |_| PreprocessorDirective::Endif),
             // #region [name]
             map(
-                tuple((kw_region(), space0, opt(is_not("\r\n")))),
+                (kw_region(), space0, opt(is_not("\r\n"))),
                 |(_, _, name)| PreprocessorDirective::Region {
                     name: name.map(|s: Span| (*s.fragment()).trim().to_string()),
                 },
@@ -68,7 +67,7 @@ pub fn parse_preprocessor_directive<'a>(input: Span<'a>) -> BResult<'a, Preproce
             map(kw_endregion(), |_| PreprocessorDirective::EndRegion),
             // #error message
             map(
-                tuple((kw_error(), space0, opt(is_not("\r\n")))),
+                (kw_error(), space0, opt(is_not("\r\n"))),
                 |(_, _, msg)| PreprocessorDirective::Error {
                     message: msg
                         .map(|s: Span| *s.fragment())
@@ -79,7 +78,7 @@ pub fn parse_preprocessor_directive<'a>(input: Span<'a>) -> BResult<'a, Preproce
             ),
             // #warning message
             map(
-                tuple((kw_warning(), space0, opt(is_not("\r\n")))),
+                (kw_warning(), space0, opt(is_not("\r\n"))),
                 |(_, _, msg)| PreprocessorDirective::Warning {
                     message: msg
                         .map(|s| *s.fragment())
@@ -90,7 +89,7 @@ pub fn parse_preprocessor_directive<'a>(input: Span<'a>) -> BResult<'a, Preproce
             ),
             // #pragma ...
             map(
-                tuple((kw_pragma(), space0, opt(is_not("\r\n")))),
+                (kw_pragma(), space0, opt(is_not("\r\n"))),
                 |(_, _, rest_of_line)| PreprocessorDirective::Pragma {
                     pragma: rest_of_line
                         .map(|s: Span| *s.fragment())
@@ -101,7 +100,7 @@ pub fn parse_preprocessor_directive<'a>(input: Span<'a>) -> BResult<'a, Preproce
             ),
             // #line ...
             map(
-                tuple((kw_line(), space0, opt(is_not("\r\n")))),
+                (kw_line(), space0, opt(is_not("\r\n"))),
                 |(_, _, line_rest)| PreprocessorDirective::Line {
                     line: line_rest
                         .map(|s: Span| *s.fragment())
@@ -121,14 +120,14 @@ pub fn parse_preprocessor_directive<'a>(input: Span<'a>) -> BResult<'a, Preproce
                 }
             }),
         )))
-        .parse(i)?;
+            .parse(i)?;
 
         // Consume optional trailing newline to fully skip the directive line
         let (i, _) = opt(line_ending).parse(i)?;
 
         Ok((i, directive))
     })
-    .context("preprocessor directive")
-    .parse(input)
+        .context("preprocessor directive")
+        .parse(input.into())
 }
 use crate::syntax::span::Span;

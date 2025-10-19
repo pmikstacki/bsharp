@@ -8,7 +8,7 @@ use syntax::types::{Parameter, Type};
 #[test]
 fn test_class_primary_constructor_parameters() {
     let input = "class Point(int X, int Y) { }";
-    let (rest, decl) = parse_class_declaration(input).expect("parse ok");
+    let (rest, decl) = parse_class_declaration(input.into()).expect("parse ok");
     assert!(rest.trim().is_empty());
     let ClassDeclaration {
         name,
@@ -26,7 +26,7 @@ fn test_class_primary_constructor_parameters() {
 #[test]
 fn test_struct_primary_constructor_parameters() {
     let input = "struct Size(int W, int H) { }";
-    let (rest, decl) = parse_struct_declaration(input).expect("parse ok");
+    let (rest, decl) = parse_struct_declaration(input.into()).expect("parse ok");
     assert!(rest.trim().is_empty());
     let StructDeclaration {
         name,

@@ -2,7 +2,7 @@ use parser::expressions::primary_expression_parser::parse_expression;
 use syntax::expressions::{expression::Expression, BinaryOperator};
 
 fn parse_ok(input: &str) -> Expression {
-    let (remaining, expr) = parse_expression(input).expect("parse ok");
+    let (remaining, expr) = parse_expression(input.into()).expect("parse ok");
     assert_eq!(remaining.trim(), "", "remaining input should be empty");
     expr
 }

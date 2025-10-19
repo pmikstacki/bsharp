@@ -23,7 +23,7 @@ fn walk_lock_and_yield_and_label_and_local_function() {
     void Local() { }
 }
 "#;
-    let (_, stmt) = parse_statement_ws(code).expect("should parse");
+    let (_, stmt) = parse_statement_ws(code.into()).expect("should parse");
 
     assert!(matches!(stmt, Statement::Block(_)));
 
@@ -47,7 +47,7 @@ fn walk_fixed_and_using_and_unsafe() {
     unsafe { fixed (int* q = &x) { } }
 }
 "#;
-    let (_, stmt) = parse_statement_ws(code).expect("should parse");
+    let (_, stmt) = parse_statement_ws(code.into()).expect("should parse");
 
     let fixed_count = count_kind(&stmt, |s| matches!(s, Statement::Fixed(_)));
     let using_count = count_kind(&stmt, |s| matches!(s, Statement::Using(_)));

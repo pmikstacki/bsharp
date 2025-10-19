@@ -6,24 +6,24 @@ use crate::syntax::errors::BResult;
 
 use nom::combinator::cut;
 use nom::combinator::map;
-use nom::sequence::{terminated, delimited};
-use nom::character::complete::char as nom_char;
+use nom::sequence::{delimited, terminated};
 use nom::Parser;
 use nom_supreme::ParserExt;
 use syntax::statements::statement::Statement;
 use syntax::statements::ContinueStatement;
 
 // Original parse_continue_statement function from statement_parser.rs
-pub fn parse_continue_statement<'a>(input: Span<'a>) -> BResult<'a, Statement> {
+pub fn parse_continue_statement(input: Span) -> BResult<Statement> {
     map(
         terminated(
             kw_continue().context("continue keyword"),
-            cut(delimited(ws, nom_char(';'), ws))
+            cut(delimited(ws, tok_semicolon(), ws))
                 .context("semicolon after continue statement"),
         ),
         |_| Statement::Continue(ContinueStatement),
     )
-    .context("continue statement")
-    .parse(input)
+        .context("continue statement")
+        .parse(input.into())
 }
 use crate::syntax::span::Span;
+use crate::tokens::separators::tok_semicolon;

@@ -1,7 +1,8 @@
 #![cfg(test)]
 
+use parser::Parsable;
 use parser::bsharp::parse_csharp_source;
-use syntax::ast::TopLevelDeclaration;
+use syntax::ast::{CompilationUnit, TopLevelDeclaration};
 use syntax::declarations::NamespaceBodyDeclaration;
 
 #[test]
@@ -13,18 +14,18 @@ namespace N1 {
     }
 }
 "#;
-    let result = parse_csharp_source(code);
+    let result = CompilationUnit::parse(code.into());
     assert!(result.is_ok());
     let (_, cu) = result.unwrap();
     assert_eq!(cu.declarations.len(), 1);
 
     match &cu.declarations[0] {
         TopLevelDeclaration::Namespace(ns1) => {
-            assert_eq!(ns1.name.name, "N1");
+            assert_eq!(ns1.name.to_string(), "N1");
             assert_eq!(ns1.declarations.len(), 1);
             match &ns1.declarations[0] {
                 NamespaceBodyDeclaration::Namespace(ns2) => {
-                    assert_eq!(ns2.name.name, "N2");
+                    assert_eq!(ns2.name.to_string(), "N2");
                     assert_eq!(ns2.declarations.len(), 1);
                 }
                 _ => panic!("Expected nested namespace"),
@@ -45,20 +46,20 @@ namespace N1 {
     }
 }
 "#;
-    let result = parse_csharp_source(code);
+    let result = CompilationUnit::parse(code.into());
     assert!(result.is_ok());
     let (_, cu) = result.unwrap();
     assert_eq!(cu.declarations.len(), 1);
 
     match &cu.declarations[0] {
         TopLevelDeclaration::Namespace(ns1) => {
-            assert_eq!(ns1.name.name, "N1");
+            assert_eq!(ns1.name.to_string(), "N1");
             match &ns1.declarations[0] {
                 NamespaceBodyDeclaration::Namespace(ns2) => {
-                    assert_eq!(ns2.name.name, "N2");
+                    assert_eq!(ns2.name.to_string(), "N2");
                     match &ns2.declarations[0] {
                         NamespaceBodyDeclaration::Namespace(ns3) => {
-                            assert_eq!(ns3.name.name, "N3");
+                            assert_eq!(ns3.name.to_string(), "N3");
                             assert_eq!(ns3.declarations.len(), 1);
                         }
                         _ => panic!("Expected N3"),
@@ -78,14 +79,14 @@ namespace N1.N2.N3 {
     class MyClass {}
 }
 "#;
-    let result = parse_csharp_source(code);
+    let result = CompilationUnit::parse(code.into());
     assert!(result.is_ok());
     let (_, cu) = result.unwrap();
     assert_eq!(cu.declarations.len(), 1);
 
     match &cu.declarations[0] {
         TopLevelDeclaration::Namespace(ns) => {
-            assert_eq!(ns.name.name, "N1.N2.N3");
+            assert_eq!(ns.name.to_string(), "N1.N2.N3");
             assert_eq!(ns.declarations.len(), 1);
         }
         _ => panic!("Expected namespace"),
@@ -103,20 +104,20 @@ namespace Outer {
     }
 }
 "#;
-    let result = parse_csharp_source(code);
+    let result = CompilationUnit::parse(code.into());
     assert!(result.is_ok());
     let (_, cu) = result.unwrap();
     assert_eq!(cu.declarations.len(), 1);
 
     match &cu.declarations[0] {
         TopLevelDeclaration::Namespace(ns_outer) => {
-            assert_eq!(ns_outer.name.name, "Outer");
+            assert_eq!(ns_outer.name.to_string(), "Outer");
             assert_eq!(ns_outer.using_directives.len(), 1);
             assert_eq!(ns_outer.declarations.len(), 1);
 
             match &ns_outer.declarations[0] {
                 NamespaceBodyDeclaration::Namespace(ns_inner) => {
-                    assert_eq!(ns_inner.name.name, "Inner");
+                    assert_eq!(ns_inner.name.to_string(), "Inner");
                     assert_eq!(ns_inner.using_directives.len(), 1);
                 }
                 _ => panic!("Expected inner namespace"),
@@ -138,14 +139,14 @@ namespace Parent {
     }
 }
 "#;
-    let result = parse_csharp_source(code);
+    let result = CompilationUnit::parse(code.into());
     assert!(result.is_ok());
     let (_, cu) = result.unwrap();
     assert_eq!(cu.declarations.len(), 1);
 
     match &cu.declarations[0] {
         TopLevelDeclaration::Namespace(parent) => {
-            assert_eq!(parent.name.name, "Parent");
+            assert_eq!(parent.name.to_string(), "Parent");
             assert_eq!(parent.declarations.len(), 2);
         }
         _ => panic!("Expected parent namespace"),
@@ -162,14 +163,14 @@ namespace Outer {
     }
 }
 "#;
-    let result = parse_csharp_source(code);
+    let result = CompilationUnit::parse(code.into());
     assert!(result.is_ok());
     let (_, cu) = result.unwrap();
     assert_eq!(cu.declarations.len(), 1);
 
     match &cu.declarations[0] {
         TopLevelDeclaration::Namespace(outer) => {
-            assert_eq!(outer.name.name, "Outer");
+            assert_eq!(outer.name.to_string(), "Outer");
             assert_eq!(outer.declarations.len(), 2);
             // Should have both class and nested namespace
             let has_class = outer
@@ -201,7 +202,7 @@ namespace L1 {
     }
 }
 "#;
-    let result = parse_csharp_source(code);
+    let result = CompilationUnit::parse(code.into());
     assert!(result.is_ok());
     let (_, cu) = result.unwrap();
     assert_eq!(cu.declarations.len(), 1);

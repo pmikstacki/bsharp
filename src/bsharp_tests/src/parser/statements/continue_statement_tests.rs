@@ -9,7 +9,7 @@ use syntax::statements::statement::Statement;
 #[test]
 fn test_parse_continue_statement() {
     let input = "continue;";
-    let result = parse_all(parse_continue_statement, input);
+    let result = parse_all(parse_continue_statement, input.into());
     assert!(result.is_ok());
     assert_eq!(result.unwrap().1, Statement::Continue(ContinueStatement {}));
 }

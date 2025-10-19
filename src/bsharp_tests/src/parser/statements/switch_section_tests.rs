@@ -10,6 +10,6 @@ fn parse_switch_section(code: &str) -> Result<SwitchSection, String> {
 fn test_parse_switch_section() {
     let code = "case 1: x++; break;";
     // let expected = ...;
-    // assert_eq!(parse_switch_section(code), Ok(expected));
-    assert!(parse_switch_section(code).is_err());
+    // assert_eq!(parse_switch_section(code.into()), Ok(expected));
+    assert!(parse_switch_section(code.into()).is_err());
 }

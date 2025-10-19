@@ -9,7 +9,21 @@ pub trait AstNode: Any {
     /// Push all direct child nodes via the provided callback.
     /// Implementations should call `push(DynNodeRef(child))` for each child.
     fn children<'a>(&'a self, _push: &mut dyn FnMut(DynNodeRef<'a>)) {}
+
+    /// A stable kind string for this node, defaults to the Rust type name.
+    fn node_kind(&self) -> &'static str {
+        core::any::type_name::<Self>()
+    }
+
+    /// A short human-friendly label for visualization. Defaults to `node_kind()`.
+    fn node_label(&self) -> String {
+        format!("{} ({})", self.node_kind(), core::any::type_name::<Self>())
+    }
 }
 
 /// Public ergonomic alias used across the codebase.
 pub type NodeRef<'a> = DynNodeRef<'a>;
+
+pub fn push_child<'a, T: AstNode + 'a>(push: &mut dyn FnMut(NodeRef<'a>), node: &'a T) {
+    push(DynNodeRef(node));
+}

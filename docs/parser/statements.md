@@ -249,7 +249,7 @@ fn parse_statement(input: &str) -> BResult<&str, Statement> {
         parse_local_function_statement,
         parse_expression_statement,
         parse_empty_statement,
-    ))(input)
+    ))(input.into())
 }
 ```
 

@@ -10,24 +10,23 @@ use crate::parser::types::type_parser::parse_type_expression;
 use crate::syntax::comment_parser::ws;
 use crate::syntax::errors::BResult;
 use nom::combinator::cut;
-use nom::{combinator::map, sequence::{tuple, delimited}};
-use nom::bytes::complete::tag;
 use nom::Parser;
+use nom::{combinator::map, sequence::delimited};
 use nom_supreme::ParserExt;
 use syntax::statements::statement::Statement;
 use syntax::statements::ForEachStatement;
 
 // Parse a foreach statement following Roslyn's structure:
 // foreach (<type> <identifier> in <expression>) <statement>
-pub fn parse_foreach_statement<'a>(input: Span<'a>) -> BResult<'a, Statement> {
+pub fn parse_foreach_statement(input: Span) -> BResult<Statement> {
     map(
-        tuple((
+        (
             // 0. Optional 'await'
             nom::combinator::opt(delimited(ws, kw_await(), ws)),
             // 1. Foreach keyword
             kw_foreach().context("foreach keyword"),
             // 2. Opening parenthesis
-            delimited(ws, tag("("), ws)
+            delimited(ws, tok_l_paren(), ws)
                 .context("opening parenthesis after foreach"),
             // 3. Variable type
             delimited(ws, parse_type_expression, ws)
@@ -41,23 +40,23 @@ pub fn parse_foreach_statement<'a>(input: Span<'a>) -> BResult<'a, Statement> {
             delimited(ws, parse_expression, ws)
                 .context("collection expression in foreach"),
             // 7. Closing parenthesis
-            cut(delimited(ws, tag(")"), ws))
+            cut(delimited(ws, tok_r_paren(), ws))
                 .context("closing parenthesis after foreach header"),
             // 8. Body statement
             cut(delimited(ws, parse_statement_ws, ws))
                 .context("foreach body statement"),
-        )),
+        ),
         |(
-            await_opt,
-            _foreach_kw,
-            _open_paren,
-            var_type,
-            var_name,
-            _in_kw,
-            collection,
-            _close_paren,
-            body,
-        )| {
+             await_opt,
+             _foreach_kw,
+             _open_paren,
+             var_type,
+             var_name,
+             _in_kw,
+             collection,
+             _close_paren,
+             body,
+         )| {
             Statement::ForEach(Box::new(ForEachStatement {
                 is_await: await_opt.is_some(),
                 var_type,
@@ -67,7 +66,8 @@ pub fn parse_foreach_statement<'a>(input: Span<'a>) -> BResult<'a, Statement> {
             }))
         },
     )
-    .context("foreach statement (expected 'foreach (type identifier in collection) statement')")
-    .parse(input)
+        .context("foreach statement")
+        .parse(input.into())
 }
 use crate::syntax::span::Span;
+use crate::tokens::delimiters::{tok_l_paren, tok_r_paren};

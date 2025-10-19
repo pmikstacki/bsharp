@@ -7,41 +7,39 @@ use crate::parser::keywords::declaration_keywords::kw_delegate;
 use crate::parser::keywords::modifier_keywords::kw_async;
 use crate::parser::keywords::parameter_modifier_keywords::{kw_in, kw_out, kw_ref};
 use crate::parser::types::type_parser::parse_type_expression;
+use crate::syntax::comment_parser::ws;
 use crate::syntax::errors::BResult;
+use crate::syntax::list_parser::parse_delimited_list0;
+use nom::character::complete::satisfy;
+use nom::sequence::delimited;
+use nom::Parser;
 use nom::{
     branch::alt,
     combinator::{map, opt},
-    sequence::tuple,
 };
-use crate::syntax::comment_parser::ws;
-use nom::sequence::delimited;
-use nom::character::complete::char as nom_char;
-use nom::character::complete::satisfy;
-use nom::Parser;
 use nom_supreme::ParserExt;
 use syntax::expressions::{
     AnonymousMethodExpression, Expression, LambdaBody, LambdaExpression, LambdaParameter,
     LambdaParameterModifier,
 };
 use syntax::statements::statement::Statement;
-use crate::syntax::list_parser::parse_delimited_list0;
 
 /// Parse a parenthesized lambda parameter list: (p1, p2, ...)
 fn parse_param_list(i: Span) -> BResult<Vec<LambdaParameter>> {
-    parse_delimited_list0::<_, _, _, _, char, LambdaParameter, char, char, LambdaParameter>(
-        |i| delimited(ws, nom_char('('), ws).parse(i),
+    parse_delimited_list0::<_, _, _, _, char, char, char, LambdaParameter>(
+        |i| delimited(ws, tok_l_paren(), ws).parse(i),
         |i| delimited(ws, parse_lambda_parameter, ws).parse(i),
-        |i| delimited(ws, nom_char(','), ws).parse(i),
-        |i| delimited(ws, nom_char(')'), ws).parse(i),
+        |i| delimited(ws, tok_comma(), ws).parse(i),
+        |i| delimited(ws, tok_r_paren(), ws).parse(i),
         false,
         true,
     )
-    .parse(i)
+        .parse(i)
 }
 
 /// Parse a lambda parameter modifier (ref, out, in)
 fn parse_lambda_parameter_modifier(input: Span) -> BResult<LambdaParameterModifier> {
-    nom::combinator::map(
+    map(
         alt((
             map(kw_ref(), |_| LambdaParameterModifier::Ref),
             map(kw_out(), |_| LambdaParameterModifier::Out),
@@ -49,20 +47,20 @@ fn parse_lambda_parameter_modifier(input: Span) -> BResult<LambdaParameterModifi
         )),
         |v| v,
     )
-    .context("lambda parameter modifier")
-    .parse(input)
+        .context("lambda parameter modifier")
+        .parse(input.into())
 }
 
 /// Parse a lambda parameter: [modifier] [type] name
 fn parse_lambda_parameter(input: Span) -> BResult<LambdaParameter> {
-    nom::combinator::map(alt((
+    map(alt((
         // Try full parameter with modifier and type: ref int x
         map(
-            tuple((
+            (
                 delimited(ws, parse_lambda_parameter_modifier, ws),
                 delimited(ws, parse_type_expression, ws),
                 delimited(ws, parse_identifier, ws),
-            )),
+            ),
             |(modifier, ty, name)| LambdaParameter {
                 name,
                 ty: Some(ty),
@@ -71,7 +69,7 @@ fn parse_lambda_parameter(input: Span) -> BResult<LambdaParameter> {
         ),
         // Try parameter with just type: int x
         map(
-            tuple((delimited(ws, parse_type_expression, ws), delimited(ws, parse_identifier, ws))),
+            (delimited(ws, parse_type_expression, ws), delimited(ws, parse_identifier, ws)),
             |(ty, name)| LambdaParameter {
                 name,
                 ty: Some(ty),
@@ -80,7 +78,7 @@ fn parse_lambda_parameter(input: Span) -> BResult<LambdaParameter> {
         ),
         // Try parameter with just modifier: ref x
         map(
-            tuple((delimited(ws, parse_lambda_parameter_modifier, ws), delimited(ws, parse_identifier, ws))),
+            (delimited(ws, parse_lambda_parameter_modifier, ws), delimited(ws, parse_identifier, ws)),
             |(modifier, name)| LambdaParameter {
                 name,
                 ty: None,
@@ -94,13 +92,13 @@ fn parse_lambda_parameter(input: Span) -> BResult<LambdaParameter> {
             modifier: None,
         }),
     )), |v| v)
-    .context("lambda parameter")
-    .parse(input)
+        .context("lambda parameter")
+        .parse(input.into())
 }
 
 /// Parse lambda parameters - either single parameter or parenthesized list
 fn parse_lambda_parameters(input: Span) -> BResult<Vec<LambdaParameter>> {
-    nom::combinator::map(alt((
+    map(alt((
         // Parenthesized list: (x, y) => x + y or (int x, string y) => ...
         parse_param_list,
         // Single parameter without parentheses: x => x * 2
@@ -113,20 +111,20 @@ fn parse_lambda_parameters(input: Span) -> BResult<Vec<LambdaParameter>> {
             }]
         }),
     )), |v| v)
-    .context("lambda parameters")
-    .parse(input)
+        .context("lambda parameters")
+        .parse(input.into())
 }
 
 /// Parse lambda body block statements (for lambda { ... } bodies)
 fn parse_lambda_block_body(input: Span) -> BResult<Vec<Statement>> {
-    let (input, block_statement) = parse_block_statement(input)?;
+    let (input, block_statement) = parse_block_statement(input.into())?;
     let statements = extract_statements_from_block(block_statement);
     Ok((input, statements))
 }
 
 /// Parse lambda body - either expression or block
 fn parse_lambda_body(input: Span) -> BResult<LambdaBody> {
-    nom::combinator::map(alt((
+    map(alt((
         // Block body: { statements... }
         map(parse_lambda_block_body, |statements| {
             LambdaBody::Block(statements)
@@ -134,20 +132,20 @@ fn parse_lambda_body(input: Span) -> BResult<LambdaBody> {
         // Expression body: expression
         map(parse_expression, LambdaBody::ExpressionSyntax),
     )), |v| v)
-    .context("lambda body")
-    .parse(input)
+        .context("lambda body")
+        .parse(input.into())
 }
 
 /// Parse a lambda expression: \[async] parameters => body
 pub fn parse_lambda_expression(input: Span) -> BResult<Expression> {
     map(
-        tuple((
+        (
             opt(kw_async()),
             delimited(ws, parse_lambda_parameters, ws),
-            delimited(ws, satisfy(|c| c == '='), ws),
+            delimited(ws, tok_assign(), ws),
             delimited(ws, satisfy(|c| c == '>'), ws),
             delimited(ws, parse_lambda_body, ws),
-        )),
+        ),
         |(async_kw, parameters, _, _, body)| {
             Expression::Lambda(Box::new(LambdaExpression {
                 parameters,
@@ -156,19 +154,19 @@ pub fn parse_lambda_expression(input: Span) -> BResult<Expression> {
             }))
         },
     )
-    .context("lambda expression")
-    .parse(input)
+        .context("lambda expression")
+        .parse(input.into())
 }
 
 /// Parse an anonymous method expression: async delegate [parameters] body
 pub fn parse_anonymous_method_expression(input: Span) -> BResult<Expression> {
     map(
-        tuple((
+        (
             opt(|i| delimited(ws, kw_async(), ws).parse(i)),
             delimited(ws, kw_delegate(), ws),
             opt(parse_param_list),
             delimited(ws, parse_lambda_body, ws),
-        )),
+        ),
         |(async_kw, _, parameters, body)| {
             Expression::AnonymousMethod(Box::new(AnonymousMethodExpression {
                 parameters: parameters.unwrap_or_default(),
@@ -177,14 +175,17 @@ pub fn parse_anonymous_method_expression(input: Span) -> BResult<Expression> {
             }))
         },
     )
-    .context("anonymous method expression")
-    .parse(input)
+        .context("anonymous method expression")
+        .parse(input.into())
 }
 
 /// Parse any lambda-like expression (lambda or anonymous method)
 pub fn parse_lambda_or_anonymous_method(input: Span) -> BResult<Expression> {
-    nom::combinator::map(alt((parse_lambda_expression, parse_anonymous_method_expression)), |v| v)
+    map(alt((parse_lambda_expression, parse_anonymous_method_expression)), |v| v)
         .context("lambda or anonymous method")
-        .parse(input)
+        .parse(input.into())
 }
 use crate::syntax::span::Span;
+use crate::tokens::assignment::tok_assign;
+use crate::tokens::delimiters::{tok_l_paren, tok_r_paren};
+use crate::tokens::separators::tok_comma;

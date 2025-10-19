@@ -6,7 +6,7 @@ use syntax::trivia::preprocessor::PreprocessorDirective;
 #[test]
 fn test_parse_pragma_warning_disable() {
     let code = "#pragma warning disable CS0168";
-    let result = parse_preprocessor_directive(code);
+    let result = parse_preprocessor_directive(code.into());
     assert!(result.is_ok());
     let (_, directive) = result.unwrap();
     match directive {
@@ -20,7 +20,7 @@ fn test_parse_pragma_warning_disable() {
 #[test]
 fn test_parse_pragma_warning_restore() {
     let code = "#pragma warning restore CS0219";
-    let result = parse_preprocessor_directive(code);
+    let result = parse_preprocessor_directive(code.into());
     assert!(result.is_ok());
     let (_, directive) = result.unwrap();
     match directive {
@@ -34,7 +34,7 @@ fn test_parse_pragma_warning_restore() {
 #[test]
 fn test_parse_pragma_nullable_enable() {
     let code = "#pragma nullable enable";
-    let result = parse_preprocessor_directive(code);
+    let result = parse_preprocessor_directive(code.into());
     assert!(result.is_ok());
     let (_, directive) = result.unwrap();
     match directive {
@@ -48,7 +48,7 @@ fn test_parse_pragma_nullable_enable() {
 #[test]
 fn test_parse_pragma_checksum() {
     let code = r#"#pragma checksum "file.cs" "{12345678-1234}" "ABC""#;
-    let result = parse_preprocessor_directive(code);
+    let result = parse_preprocessor_directive(code.into());
     assert!(result.is_ok());
     let (_, directive) = result.unwrap();
     match directive {
@@ -62,7 +62,7 @@ fn test_parse_pragma_checksum() {
 #[test]
 fn test_parse_pragma_empty() {
     let code = "#pragma";
-    let result = parse_preprocessor_directive(code);
+    let result = parse_preprocessor_directive(code.into());
     assert!(result.is_ok());
     let (_, directive) = result.unwrap();
     match directive {
@@ -76,7 +76,7 @@ fn test_parse_pragma_empty() {
 #[test]
 fn test_parse_line_number() {
     let code = "#line 100";
-    let result = parse_preprocessor_directive(code);
+    let result = parse_preprocessor_directive(code.into());
     assert!(result.is_ok());
     let (_, directive) = result.unwrap();
     match directive {
@@ -90,7 +90,7 @@ fn test_parse_line_number() {
 #[test]
 fn test_parse_line_number_and_file() {
     let code = r#"#line 200 "source.cs""#;
-    let result = parse_preprocessor_directive(code);
+    let result = parse_preprocessor_directive(code.into());
     assert!(result.is_ok());
     let (_, directive) = result.unwrap();
     match directive {
@@ -104,7 +104,7 @@ fn test_parse_line_number_and_file() {
 #[test]
 fn test_parse_line_default() {
     let code = "#line default";
-    let result = parse_preprocessor_directive(code);
+    let result = parse_preprocessor_directive(code.into());
     assert!(result.is_ok());
     let (_, directive) = result.unwrap();
     match directive {
@@ -118,7 +118,7 @@ fn test_parse_line_default() {
 #[test]
 fn test_parse_line_hidden() {
     let code = "#line hidden";
-    let result = parse_preprocessor_directive(code);
+    let result = parse_preprocessor_directive(code.into());
     assert!(result.is_ok());
     let (_, directive) = result.unwrap();
     match directive {
@@ -132,7 +132,7 @@ fn test_parse_line_hidden() {
 #[test]
 fn test_parse_line_empty() {
     let code = "#line";
-    let result = parse_preprocessor_directive(code);
+    let result = parse_preprocessor_directive(code.into());
     assert!(result.is_ok());
     let (_, directive) = result.unwrap();
     match directive {
@@ -146,7 +146,7 @@ fn test_parse_line_empty() {
 #[test]
 fn test_parse_pragma_with_whitespace() {
     let code = "#pragma   warning   disable   CS0168  ";
-    let result = parse_preprocessor_directive(code);
+    let result = parse_preprocessor_directive(code.into());
     assert!(result.is_ok());
     let (_, directive) = result.unwrap();
     match directive {
@@ -160,7 +160,7 @@ fn test_parse_pragma_with_whitespace() {
 #[test]
 fn test_parse_line_with_whitespace() {
     let code = "#line   500   ";
-    let result = parse_preprocessor_directive(code);
+    let result = parse_preprocessor_directive(code.into());
     assert!(result.is_ok());
     let (_, directive) = result.unwrap();
     match directive {
@@ -174,7 +174,7 @@ fn test_parse_line_with_whitespace() {
 #[test]
 fn test_directive_consumes_until_newline() {
     let code = "#pragma warning disable\nclass Test {}";
-    let result = parse_preprocessor_directive(code);
+    let result = parse_preprocessor_directive(code.into());
     assert!(result.is_ok());
     let (remaining, directive) = result.unwrap();
     match directive {
@@ -190,7 +190,7 @@ fn test_directive_consumes_until_newline() {
 #[test]
 fn test_line_directive_with_span_info() {
     let code = r#"#line (10,5)-(10,30) "file.cs""#;
-    let result = parse_preprocessor_directive(code);
+    let result = parse_preprocessor_directive(code.into());
     assert!(result.is_ok());
     let (_, directive) = result.unwrap();
     match directive {
@@ -204,7 +204,7 @@ fn test_line_directive_with_span_info() {
 #[test]
 fn test_unknown_region_directive() {
     let code = "#region My Region";
-    let result = parse_preprocessor_directive(code);
+    let result = parse_preprocessor_directive(code.into());
     assert!(result.is_ok());
     let (_, directive) = result.unwrap();
     match directive {
@@ -218,12 +218,12 @@ fn test_unknown_region_directive() {
 #[test]
 fn test_unknown_define_directive() {
     let code = "#define FOO";
-    let result = parse_preprocessor_directive(code);
+    let result = parse_preprocessor_directive(code.into());
     assert!(result.is_ok());
     let (_, directive) = result.unwrap();
     match directive {
         PreprocessorDirective::Define { symbol } => {
-            assert_eq!(symbol.name, "FOO");
+            assert_eq!(symbol.to_string(), "FOO");
         }
         _ => panic!("Expected Define directive for #define"),
     }

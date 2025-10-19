@@ -1,7 +1,7 @@
 use crate::parser::expressions::declarations::delegate_declaration_parser::parse_delegate_declaration;
 use crate::parser::expressions::declarations::enum_declaration_parser::parse_enum_declaration;
 use crate::parser::expressions::declarations::type_declaration_parser::{
-    parse_class_declaration, parse_interface_declaration_span, parse_record_declaration,
+    parse_class_declaration, parse_interface_declaration, parse_record_declaration,
     parse_struct_declaration_span,
 };
 use crate::parser::expressions::declarations::using_directive_parser::parse_using_directive;
@@ -12,16 +12,16 @@ use crate::syntax::errors::BResult;
 
 use crate::parser::keywords::declaration_keywords::{kw_namespace, kw_using};
 use crate::syntax::comment_parser::ws;
-use nom::sequence::delimited;
-use nom::character::complete::satisfy;
-use nom::combinator::{peek, cut};
-use nom::Parser;
-use nom_supreme::ParserExt;
 use log::trace;
+use nom::Parser;
 use nom::branch::alt;
-use nom::combinator::{map};
-use syntax::declarations::{NamespaceBodyDeclaration, NamespaceDeclaration, UsingDirective};
+use nom::character::complete::satisfy;
+use nom::combinator::map;
+use nom::combinator::{cut, peek};
+use nom::sequence::delimited;
+use nom_supreme::ParserExt;
 use syntax::Identifier;
+use syntax::declarations::{NamespaceBodyDeclaration, NamespaceDeclaration, UsingDirective};
 
 /// Parse a namespace member (class, struct, interface, enum, record, or nested namespace)
 fn parse_namespace_member_safe(input: Span) -> BResult<NamespaceBodyDeclaration> {
@@ -32,31 +32,35 @@ fn parse_namespace_member_safe(input: Span) -> BResult<NamespaceBodyDeclaration>
 
     // Use with_ws to handle whitespace and comments before type declarations, and skip directives
     alt((
-            // Try class, struct, interface, enum, record, delegate first since they have specific keywords
-            map(parse_class_declaration, NamespaceBodyDeclaration::Class),
-            map(parse_struct_declaration_span, NamespaceBodyDeclaration::Struct),
-            map(
-                parse_interface_declaration_span,
-                NamespaceBodyDeclaration::Interface,
-            ),
-            map(parse_enum_declaration, NamespaceBodyDeclaration::Enum),
-            map(parse_record_declaration, NamespaceBodyDeclaration::Record),
-            map(
-                parse_delegate_declaration,
-                NamespaceBodyDeclaration::Delegate,
-            ),
-            // Try nested namespace last since it might be more ambiguous
-            map(
-                parse_namespace_declaration,
-                NamespaceBodyDeclaration::Namespace,
-            ),
-        )).context("namespace member")
-    .parse(input)
+        // Try class, struct, interface, enum, record, delegate first since they have specific keywords
+        map(parse_class_declaration, NamespaceBodyDeclaration::Class),
+        map(
+            parse_struct_declaration_span,
+            NamespaceBodyDeclaration::Struct,
+        ),
+        map(
+            parse_interface_declaration,
+            NamespaceBodyDeclaration::Interface,
+        ),
+        map(parse_enum_declaration, NamespaceBodyDeclaration::Enum),
+        map(parse_record_declaration, NamespaceBodyDeclaration::Record),
+        map(
+            parse_delegate_declaration,
+            NamespaceBodyDeclaration::Delegate,
+        ),
+        // Try nested namespace last since it might be more ambiguous
+        map(
+            parse_namespace_declaration,
+            NamespaceBodyDeclaration::Namespace,
+        ),
+    ))
+    .context("namespace member")
+    .parse(input.into())
 }
 
 /// Public wrapper to allow tools and traits to parse a single namespace body declaration.
-pub fn parse_namespace_member_for_spans<'a>(input: Span<'a>) -> BResult<'a, NamespaceBodyDeclaration> {
-    parse_namespace_member_safe(input)
+pub fn parse_namespace_member_for_spans(input: Span) -> BResult<NamespaceBodyDeclaration> {
+    parse_namespace_member_safe(input.into())
 }
 
 /// Parse a C# namespace declaration using proper Nom combinators
@@ -67,7 +71,7 @@ pub fn parse_namespace_member_for_spans<'a>(input: Span<'a>) -> BResult<'a, Name
 ///     public class MyClass { }
 /// }
 /// ```
-pub fn parse_namespace_declaration<'a>(input: Span<'a>) -> BResult<'a, NamespaceDeclaration> {
+pub fn parse_namespace_declaration(input: Span) -> BResult<NamespaceDeclaration> {
     trace!(
         "[DEBUG] parse_namespace_declaration: input = {:?}",
         input.chars().take(60).collect::<String>()
@@ -76,22 +80,25 @@ pub fn parse_namespace_declaration<'a>(input: Span<'a>) -> BResult<'a, Namespace
     // Parse the "namespace" keyword
     let (input, _) = delimited(ws, kw_namespace(), ws)
         .context("namespace keyword")
-        .parse(input)?;
+        .parse(input.into())?;
 
     // Parse qualified name (e.g., "System.Collections")
     let (input, name_parts) = delimited(ws, parse_qualified_name, ws)
         .context("namespace name")
-        .parse(input)?;
-    let name_str = name_parts
+        .parse(input.into())?;
+    let name_segments: Vec<String> = name_parts
         .iter()
-        .map(|id| id.name.clone())
-        .collect::<Vec<_>>()
-        .join(".");
+        .map(|id| match id {
+            Identifier::Simple(s) => s.clone(),
+            Identifier::QualifiedIdentifier(v) => v.join("."),
+            Identifier::OperatorOverrideIdentifier(_) => "operator".to_string(),
+        })
+        .collect();
 
     // Parse opening brace
     let (input, _) = delimited(ws, satisfy(|c| c == '{'), ws)
         .context("namespace body opening")
-        .parse(input)?;
+        .parse(input.into())?;
     trace!("[DEBUG] parse_namespace_declaration: after open brace");
 
     // Parse using directives inside namespace body (namespace-scoped usings)
@@ -99,7 +106,7 @@ pub fn parse_namespace_declaration<'a>(input: Span<'a>) -> BResult<'a, Namespace
     let mut using_directives: Vec<UsingDirective> = Vec::new();
     loop {
         // consume whitespace/comments between usings
-        let (r, _) = crate::syntax::comment_parser::ws(cur)?;
+        let (r, _) = ws(cur)?;
         cur = r;
         if peek(delimited(ws, kw_using(), ws)).parse(cur).is_ok() {
             let (r2, u) = delimited(ws, parse_using_directive, ws).parse(cur)?;
@@ -114,12 +121,15 @@ pub fn parse_namespace_declaration<'a>(input: Span<'a>) -> BResult<'a, Namespace
     let mut members: Vec<NamespaceBodyDeclaration> = Vec::new();
     loop {
         // Skip whitespace/comments and any preprocessor directives
-        let (r, _) = crate::syntax::comment_parser::ws(cur)?;
+        let (r, _) = ws(cur)?;
         cur = r;
         cur = skip_preprocessor_directives(cur, false);
 
         // Stop at closing brace
-        if peek(delimited(ws, satisfy(|c| c == '}'), ws)).parse(cur).is_ok() {
+        if peek(delimited(ws, satisfy(|c| c == '}'), ws))
+            .parse(cur)
+            .is_ok()
+        {
             break;
         }
 
@@ -148,7 +158,7 @@ pub fn parse_namespace_declaration<'a>(input: Span<'a>) -> BResult<'a, Namespace
     Ok((
         input_final,
         NamespaceDeclaration {
-            name: Identifier { name: name_str },
+            name: Identifier::QualifiedIdentifier(name_segments),
             using_directives,      // collected namespace-scoped usings
             declarations: members, // parsed members
         },

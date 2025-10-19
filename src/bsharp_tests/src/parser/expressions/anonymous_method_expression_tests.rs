@@ -5,7 +5,7 @@ use syntax::expressions::expression::Expression;
 use syntax::expressions::lambda_expression::LambdaBody;
 
 fn parse(code: &str) -> Expression {
-    let (rest, expr) = parse_expression(code).expect("parse ok");
+    let (rest, expr) = parse_expression(code.into()).expect("parse ok");
     assert!(rest.trim().is_empty(), "unparsed: {}", rest);
     expr
 }

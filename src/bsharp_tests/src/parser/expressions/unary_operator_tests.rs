@@ -10,6 +10,6 @@ fn parse_unary_operator(code: &str) -> Result<UnaryOperator, String> {
 fn test_parse_unary_operator() {
     let code = "-";
     // let expected = ...;
-    // assert_eq!(parse_unary_operator(code), Ok(expected));
-    assert!(parse_unary_operator(code).is_err());
+    // assert_eq!(parse_unary_operator(code.into()), Ok(expected));
+    assert!(parse_unary_operator(code.into()).is_err());
 }

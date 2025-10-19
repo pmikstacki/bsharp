@@ -10,6 +10,6 @@ fn parse_finally_clause(code: &str) -> Result<FinallyClause, String> {
 fn test_parse_finally_clause() {
     let code = "finally { }";
     // let expected = ...;
-    // assert_eq!(parse_finally_clause(code), Ok(expected));
-    assert!(parse_finally_clause(code).is_err());
+    // assert_eq!(parse_finally_clause(code.into()), Ok(expected));
+    assert!(parse_finally_clause(code.into()).is_err());
 }

@@ -1,7 +1,7 @@
 use anyhow::{bail, Context, Result};
 use std::fs;
 use std::path::PathBuf;
-
+use clap::Args;
 use bsharp_analysis::context::AnalysisContext;
 use bsharp_analysis::framework::lookup::find_symbols_with_locations;
 use bsharp_analysis::framework::pipeline::AnalyzerPipeline;
@@ -9,24 +9,67 @@ use bsharp_analysis::framework::session::AnalysisSession;
 use bsharp_analysis::report::AnalysisReport;
 use bsharp_analysis::workspace::WorkspaceLoader;
 use bsharp_parser::facade::Parser;
+use bsharp_parser::syntax::span::Span;
 use serde_json;
+use crate::commands::analyze;
 
-pub struct AnalyzeOptions {
+#[derive(Args, Debug, Clone)]
+pub struct AnalyzeArgs {
+    /// The input C# file to analyze
+    #[arg(required = true)]
+    pub input: PathBuf,
+
+    /// Optional symbol name to search for; if omitted, prints all top-level declaration spans
+    #[arg(short, long)]
     pub symbol: Option<String>,
+
+    /// Optional analysis config file (JSON/TOML)
+    #[arg(long)]
     pub config: Option<PathBuf>,
+
+    /// Optional output file path for the analysis JSON report
+    #[arg(long, value_name = "FILE")]
     pub out: Option<PathBuf>,
+
+    /// Follow ProjectReference dependencies (default: true)
+    #[arg(long, default_value_t = true)]
     pub follow_refs: bool,
+
+    /// Include only files matching these globs (workspace mode). Multiple allowed.
+    #[arg(long, value_name = "GLOB", num_args = 0..)]
     pub include: Vec<String>,
+
+    /// Exclude files matching these globs (workspace mode). Multiple allowed.
+    #[arg(long, value_name = "GLOB", num_args = 0..)]
     pub exclude: Vec<String>,
+
+    /// Output format: json (compact) or pretty-json (default)
+    #[arg(long, value_parser = ["json", "pretty-json"], default_value = "pretty-json")]
     pub format: String,
+
+    /// Enable specific rulesets by id (multiple allowed)
+    #[arg(long, value_name = "ID", num_args = 0..)]
     pub enable_ruleset: Vec<String>,
+
+    /// Disable specific rulesets by id (multiple allowed)
+    #[arg(long, value_name = "ID", num_args = 0..)]
     pub disable_ruleset: Vec<String>,
+
+    /// Enable specific passes by id (multiple allowed)
+    #[arg(long, value_name = "ID", num_args = 0..)]
     pub enable_pass: Vec<String>,
+
+    /// Disable specific passes by id (multiple allowed)
+    #[arg(long, value_name = "ID", num_args = 0..)]
     pub disable_pass: Vec<String>,
+
+    /// Override severities: CODE=level (level: error|warning|info|hint); multiple allowed
+    #[arg(long, value_name = "PAIR", num_args = 0..)]
     pub severity: Vec<String>,
 }
 
-pub fn execute(input: PathBuf, opts: AnalyzeOptions) -> Result<()> {
+
+pub fn execute(input: PathBuf, opts: AnalyzeArgs) -> Result<()> {
     let path_str = input
         .to_str()
         .map(|s| s.to_string())
@@ -126,7 +169,7 @@ pub fn execute(input: PathBuf, opts: AnalyzeOptions) -> Result<()> {
         .with_context(|| format!("Failed to read input file: {}", path_str))?;
     let parser = Parser::new();
     let (cu, spans) = parser
-        .parse_with_spans(&source)
+        .parse_with_spans(Span::new(source.as_str()))
         .map_err(|e| anyhow::anyhow!(e))
         .with_context(|| "Parse error")?;
     let mut ctx = AnalysisContext::new(path_str.clone(), source);

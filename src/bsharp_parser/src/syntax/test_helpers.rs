@@ -8,8 +8,8 @@ pub fn parse_all<'a, O, P>(mut parser: P, input: Span<'a>) -> BResult<'a, O>
 where
     P: FnMut(Span<'a>) -> BResult<'a, O>,
 {
-    let guard = brace_tracker::install(input);
-    let parse_result = parser(input);
+    let guard = brace_tracker::install(input.into());
+    let parse_result = parser(input.into());
     let status = guard.finish();
 
     match parse_result {
@@ -21,7 +21,7 @@ where
             } else {
                 // Prefer unmatched brace diagnostic if available
                 use nom_supreme::error::{BaseErrorKind, ErrorTree, Expectation};
-                let error_tree = if let Some(offset) = status.unmatched_open {
+                let error_tree = if let Some(_offset) = status.unmatched_open {
                     let location = remaining; // point at remaining for clarity
                     ErrorTree::Base {
                         location,
@@ -46,13 +46,13 @@ where
 }
 
 /// Parse statement and ensure all input is consumed
-pub fn parse_statement_all<'a>(input: Span<'a>) -> BResult<'a, Statement> {
+pub fn parse_statement_all(input: Span) -> BResult<Statement> {
     parse_all(crate::parser::statement_parser::parse_statement, input)
 }
 
 /// Helper function to unwrap a syntax result or panic on error.
 /// Used in tests to simplify result handling.
-pub fn parse_input_unwrap<'a, T>(parser_result: BResult<'a, T>) -> (Span<'a>, T) {
+pub fn parse_input_unwrap<T>(parser_result: BResult<T>) -> (Span, T) {
     parser_result.unwrap_or_else(|e| panic!("Parse error: {:?}", e))
 }
 

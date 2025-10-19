@@ -7,9 +7,9 @@ use syntax::declarations::TypeParameterConstraint;
 fn test_parse_where_class() {
     let code = "where T : class";
     let (rest, clause) =
-        parse_type_parameter_where_clause(code).expect("should parse where clause");
-    assert!(rest.is_empty());
-    assert_eq!(clause.type_param.name, "T");
+        parse_type_parameter_where_clause(code.into()).expect("should parse where clause");
+    assert!(rest.fragment().trim().is_empty());
+    assert_eq!(clause.type_param.to_string(), "T");
     assert_eq!(clause.constraints.len(), 1);
     assert!(matches!(
         clause.constraints[0],
@@ -21,7 +21,7 @@ fn test_parse_where_class() {
 fn test_parse_where_multiple_constraints() {
     let code = "where T : struct, new()";
     let (_, clause) =
-        parse_type_parameter_where_clause(code).expect("should parse multiple constraints");
-    assert_eq!(clause.type_param.name, "T");
+        parse_type_parameter_where_clause(code.into()).expect("should parse multiple constraints");
+    assert_eq!(clause.type_param.to_string(), "T");
     assert_eq!(clause.constraints.len(), 2);
 }

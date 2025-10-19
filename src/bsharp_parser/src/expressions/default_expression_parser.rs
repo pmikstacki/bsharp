@@ -5,27 +5,26 @@ use crate::syntax::errors::BResult;
 use crate::syntax::comment_parser::ws;
 
 use nom::combinator::cut;
+use nom::Parser;
 use nom::{
     branch::alt,
     combinator::map,
     sequence::{delimited, preceded},
 };
-use nom::character::complete::char as nom_char;
-use nom::Parser;
 use nom_supreme::ParserExt;
 use syntax::expressions::{DefaultExpression, Expression};
 
 /// Parse a default expression: `default(Type)` or `default`
-pub fn parse_default_expression<'a>(input: Span<'a>) -> BResult<'a, Expression> {
+pub fn parse_default_expression(input: Span) -> BResult<Expression> {
     alt((
         // default(Type) - explicit type
         map(
             preceded(
                 kw_default(),
                 delimited(
-                    delimited(ws, nom_char('('), ws),
+                    delimited(ws, tok_l_paren(), ws),
                     delimited(ws, parse_type_expression, ws),
-                    cut(delimited(ws, nom_char(')'), ws)),
+                    cut(delimited(ws, tok_r_paren(), ws)),
                 ),
             ),
             |target_type| {
@@ -39,7 +38,8 @@ pub fn parse_default_expression<'a>(input: Span<'a>) -> BResult<'a, Expression> 
             Expression::Default(Box::new(DefaultExpression { target_type: None }))
         }),
     ))
-    .context("default expression")
-    .parse(input)
+        .context("default expression")
+        .parse(input.into())
 }
 use crate::syntax::span::Span;
+use crate::tokens::delimiters::{tok_l_paren, tok_r_paren};

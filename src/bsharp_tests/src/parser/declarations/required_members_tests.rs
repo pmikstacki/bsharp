@@ -7,12 +7,12 @@ use syntax::types::{PrimitiveType, Type};
 #[test]
 fn required_property_modifer_is_parsed() {
     let code = "public required string Name { get; init; }";
-    let (rest, prop) = parse_property_declaration(code).expect("parse");
+    let (rest, prop) = parse_property_declaration(code.into()).expect("parse");
     assert!(rest.trim().is_empty());
     assert!(prop.modifiers.contains(&Modifier::Public));
     assert!(prop.modifiers.contains(&Modifier::Required));
     assert_eq!(prop.ty, Type::Primitive(PrimitiveType::String));
-    assert_eq!(prop.name, Identifier::new("Name"));
+    assert_eq!(prop.name, Identifier::Simple("Name"));
     // Make sure we saw get/init
     assert!(
         prop.accessors
@@ -29,7 +29,7 @@ fn required_property_modifer_is_parsed() {
 #[test]
 fn required_field_modifier_is_parsed() {
     let code = "public required int Id;";
-    let (rest, field) = parse_field_declaration(code).expect("parse");
+    let (rest, field) = parse_field_declaration(code.into()).expect("parse");
     assert!(rest.trim().is_empty());
     assert!(field.modifiers.contains(&Modifier::Public));
     assert!(field.modifiers.contains(&Modifier::Required));

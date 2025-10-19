@@ -1,10 +1,9 @@
 use std::path::PathBuf;
 
 pub fn repo_fixtures_root() -> PathBuf {
+    // Fixtures for tests live in this crate under src/fixtures
     let mut p = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-    p.push("..");
-    p.push("..");
-    p.push("tests");
+    p.push("src");
     p.push("fixtures");
     p
 }

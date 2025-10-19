@@ -10,6 +10,6 @@ fn parse_struct_declaration(code: &str) -> Result<StructDeclaration, String> {
 fn test_parse_struct() {
     let code = "struct MyStruct { }";
     // let expected = ...;
-    // assert_eq!(parse_struct_declaration(code), Ok(expected));
-    assert!(parse_struct_declaration(code).is_err());
+    // assert_eq!(parse_struct_declaration(code.into()), Ok(expected));
+    assert!(parse_struct_declaration(code.into()).is_err());
 }

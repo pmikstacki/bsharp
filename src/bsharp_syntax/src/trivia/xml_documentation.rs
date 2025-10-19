@@ -1,9 +1,10 @@
 // Assuming Identifier is in crate::nodes
 use crate::Identifier;
+use bsharp_syntax_derive::AstNode;
 use serde::{Deserialize, Serialize};
 
 /// Represents an attribute in an XML element (e.g., name="value").
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(AstNode, Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct XmlAttribute {
     pub name: Identifier, // e.g., "name" in <param name="value">
     pub value: String,    // e.g., "value" in <param name="value">
@@ -11,7 +12,7 @@ pub struct XmlAttribute {
 
 /// Represents an XML element within a documentation comment.
 /// e.g., <summary>...</summary> or <param name="value">...</param>
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(AstNode, Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct XmlElement {
     pub name: Identifier, // e.g., "summary", "param"
     pub attributes: Vec<XmlAttribute>,
@@ -19,7 +20,7 @@ pub struct XmlElement {
 }
 
 /// Represents a node within an XML structure, which can be an element, text, or CData.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(AstNode, Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum XmlNode {
     Element(XmlElement),
     Text(String),    // Plain text content
@@ -29,7 +30,7 @@ pub enum XmlNode {
 
 /// Represents a parsed C# XML documentation comment block.
 /// Typically starts with /// or /**
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(AstNode, Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct XmlDocumentationComment {
     /// The root-level XML nodes found within the documentation comment.
     /// Common examples include <summary>, <remarks>, <param>, <returns>.
@@ -41,7 +42,7 @@ impl XmlElement {
     pub fn get_attribute_value(&self, attribute_name: &str) -> Option<&String> {
         self.attributes
             .iter()
-            .find(|attr| attr.name.name == attribute_name)
+            .find(|attr| ident_equals(&attr.name, attribute_name))
             .map(|attr| &attr.value)
     }
 }
@@ -52,9 +53,17 @@ impl XmlDocumentationComment {
         self.elements
             .iter()
             .filter_map(|node| match node {
-                XmlNode::Element(el) if el.name.name == element_name => Some(el),
+                XmlNode::Element(el) if ident_equals(&el.name, element_name) => Some(el),
                 _ => None,
             })
             .collect()
+    }
+}
+
+fn ident_equals(id: &Identifier, name: &str) -> bool {
+    match id {
+        Identifier::Simple(s) => s == name,
+        Identifier::QualifiedIdentifier(segs) => segs.join(".") == name,
+        Identifier::OperatorOverrideIdentifier(_) => false,
     }
 }

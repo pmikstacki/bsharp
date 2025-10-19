@@ -8,7 +8,7 @@ use syntax::statements::statement::Statement;
 #[test]
 fn test_simple_using_statement() {
     let input = "using (stream) { Console.WriteLine(\"Hello\"); }";
-    let result = parse_using_statement(input);
+    let result = parse_using_statement(input.into());
 
     assert!(result.is_ok());
     let (remaining, statement) = result.unwrap();
@@ -17,7 +17,7 @@ fn test_simple_using_statement() {
             // Check that the resource is a variable expression
             match &using_stmt.resource {
                 Some(Expression::Variable(ident)) => {
-                    assert_eq!(ident.name, "stream");
+                    assert_eq!(ident.to_string(), "stream");
                 }
                 _ => panic!("Expected variable expression for resource"),
             }
@@ -42,21 +42,21 @@ fn test_using_statement_with_block_body() {
     { 
         Console.WriteLine("Inside using block"); 
     }"#;
-    let result = parse_using_statement(input);
+    let result = parse_using_statement(input.into());
 
     assert!(result.is_ok());
     let (remaining, _) = result.unwrap();
-    assert_eq!(remaining, "");
+    assert!(remaining.fragment().trim().is_empty());
 }
 
 #[test]
 fn test_using_statement_with_single_statement_body() {
     let input = "using (resource) Console.WriteLine(\"test\");";
-    let result = parse_using_statement(input);
+    let result = parse_using_statement(input.into());
 
     assert!(result.is_ok());
     let (remaining, statement) = result.unwrap();
-    assert_eq!(remaining, "");
+    assert!(remaining.fragment().trim().is_empty());
 
     match statement {
         Statement::Using(using_stmt) => {
@@ -77,7 +77,7 @@ fn test_using_statement_with_single_statement_body() {
 #[test]
 fn test_using_statement_fails_without_parentheses() {
     let input = "using resource { }";
-    let result = parse_using_statement(input);
+    let result = parse_using_statement(input.into());
 
     assert!(result.is_err());
 }
@@ -85,7 +85,7 @@ fn test_using_statement_fails_without_parentheses() {
 #[test]
 fn test_using_statement_fails_without_body() {
     let input = "using (resource)";
-    let result = parse_using_statement(input);
+    let result = parse_using_statement(input.into());
 
     assert!(result.is_err());
 }

@@ -1,6 +1,5 @@
 use crate::parser::bsharp::{parse_csharp_source, parse_csharp_source_with_spans};
 use crate::parser::SpanTable;
-use crate::syntax::ast;
 use nom::Finish;
 use syntax::ast::CompilationUnit;
 
@@ -13,8 +12,9 @@ impl Parser {
         Parser
     }
 
-    pub fn parse(&self, input: Span) -> Result<CompilationUnit, String> {
-        match parse_csharp_source(input).finish() {
+    pub fn parse<S: AsRef<str>>(&self, input: S) -> Result<CompilationUnit, String> {
+        let span = Span::new(input.as_ref());
+        match parse_csharp_source(span).finish() {
             Ok((remaining, compilation_unit)) => {
                 // Treat significant trailing input as a parse error to surface failures in CLI
                 if remaining.trim().is_empty() {
@@ -32,11 +32,12 @@ impl Parser {
     }
 
     /// Parse and also return a table of byte-span ranges for top-level declarations.
-    pub fn parse_with_spans(
+    pub fn parse_with_spans<S: AsRef<str>>(
         &self,
-        input: Span,
-    ) -> Result<(ast::CompilationUnit, SpanTable), String> {
-        match parse_csharp_source_with_spans(input).finish() {
+        input: S,
+    ) -> Result<(CompilationUnit, SpanTable), String> {
+        let span = Span::new(input.as_ref());
+        match parse_csharp_source_with_spans(span).finish() {
             Ok((_, result)) => Ok(result),
             Err(e) => Err(format!("Failed to parse C# code (with spans): {:?}", e)),
         }

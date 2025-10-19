@@ -8,12 +8,12 @@ use syntax::statements::statement::Statement;
 use syntax::types::{PrimitiveType, Type};
 
 fn parse_lambda_expr(code: &str) -> Result<Expression, String> {
-    match parse_lambda_expression(code) {
+    match parse_lambda_expression(code.into()) {
         Ok((remaining, expr)) => {
-            if remaining.trim().is_empty() {
+            if remaining.fragment().trim().is_empty() {
                 Ok(expr)
             } else {
-                Err(format!("Unparsed input: {}", remaining))
+                Err(format!("Unparsed input: {}", remaining.fragment()))
             }
         }
         Err(e) => Err(format!("Parse error: {:?}", e)),
@@ -21,12 +21,12 @@ fn parse_lambda_expr(code: &str) -> Result<Expression, String> {
 }
 
 fn parse_anon_method_expr(code: &str) -> Result<Expression, String> {
-    match parse_anonymous_method_expression(code) {
+    match parse_anonymous_method_expression(code.into()) {
         Ok((remaining, expr)) => {
-            if remaining.trim().is_empty() {
+            if remaining.fragment().trim().is_empty() {
                 Ok(expr)
             } else {
-                Err(format!("Unparsed input: {}", remaining))
+                Err(format!("Unparsed input: {}", remaining.fragment()))
             }
         }
         Err(e) => Err(format!("Parse error: {:?}", e)),
@@ -36,7 +36,7 @@ fn parse_anon_method_expr(code: &str) -> Result<Expression, String> {
 #[test]
 fn test_parse_simple_lambda_expr() {
     let code = "x => x * 2";
-    let result = parse_lambda_expr(code);
+    let result = parse_lambda_expr(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse simple lambda: {:?}",
@@ -45,7 +45,7 @@ fn test_parse_simple_lambda_expr() {
 
     if let Ok(Expression::Lambda(lambda)) = result {
         assert_eq!(lambda.parameters.len(), 1);
-        assert_eq!(lambda.parameters[0].name.name, "x");
+        assert_eq!(lambda.parameters[0].name.to_string(), "x");
         assert!(lambda.parameters[0].ty.is_none());
         assert!(lambda.parameters[0].modifier.is_none());
         assert!(!lambda.is_async);
@@ -58,7 +58,7 @@ fn test_parse_simple_lambda_expr() {
 #[test]
 fn test_parse_lambda_with_parentheses() {
     let code = "(x) => x + 1";
-    let result = parse_lambda_expr(code);
+    let result = parse_lambda_expr(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse lambda with parentheses: {:?}",
@@ -67,7 +67,7 @@ fn test_parse_lambda_with_parentheses() {
 
     if let Ok(Expression::Lambda(lambda)) = result {
         assert_eq!(lambda.parameters.len(), 1);
-        assert_eq!(lambda.parameters[0].name.name, "x");
+        assert_eq!(lambda.parameters[0].name.to_string(), "x");
     } else {
         panic!("Expected Lambda expression");
     }
@@ -76,7 +76,7 @@ fn test_parse_lambda_with_parentheses() {
 #[test]
 fn test_parse_lambda_multiple_parameters() {
     let code = "(x, y) => x + y";
-    let result = parse_lambda_expr(code);
+    let result = parse_lambda_expr(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse lambda with multiple parameters: {:?}",
@@ -85,8 +85,8 @@ fn test_parse_lambda_multiple_parameters() {
 
     if let Ok(Expression::Lambda(lambda)) = result {
         assert_eq!(lambda.parameters.len(), 2);
-        assert_eq!(lambda.parameters[0].name.name, "x");
-        assert_eq!(lambda.parameters[1].name.name, "y");
+        assert_eq!(lambda.parameters[0].name.to_string(), "x");
+        assert_eq!(lambda.parameters[1].name.to_string(), "y");
     } else {
         panic!("Expected Lambda expression");
     }
@@ -95,7 +95,7 @@ fn test_parse_lambda_multiple_parameters() {
 #[test]
 fn test_parse_lambda_with_types() {
     let code = "(int x, string y) => x.ToString() + y";
-    let result = parse_lambda_expr(code);
+    let result = parse_lambda_expr(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse lambda with typed parameters: {:?}",
@@ -104,7 +104,7 @@ fn test_parse_lambda_with_types() {
 
     if let Ok(Expression::Lambda(lambda)) = result {
         assert_eq!(lambda.parameters.len(), 2);
-        assert_eq!(lambda.parameters[0].name.name, "x");
+        assert_eq!(lambda.parameters[0].name.to_string(), "x");
         assert!(lambda.parameters[0].ty.is_some());
 
         println!("First parameter type: {:?}", lambda.parameters[0].ty);
@@ -118,7 +118,7 @@ fn test_parse_lambda_with_types() {
             );
         }
 
-        assert_eq!(lambda.parameters[1].name.name, "y");
+        assert_eq!(lambda.parameters[1].name.to_string(), "y");
         assert!(lambda.parameters[1].ty.is_some());
 
         println!("Second parameter type: {:?}", lambda.parameters[1].ty);
@@ -139,13 +139,13 @@ fn test_parse_lambda_with_types() {
 #[test]
 fn test_parse_async_lambda() {
     let code = "async x => await SomeMethodAsync(x)";
-    let result = parse_lambda_expr(code);
+    let result = parse_lambda_expr(code.into());
     assert!(result.is_ok(), "Failed to parse async lambda: {:?}", result);
 
     if let Ok(Expression::Lambda(lambda)) = result {
         assert!(lambda.is_async);
         assert_eq!(lambda.parameters.len(), 1);
-        assert_eq!(lambda.parameters[0].name.name, "x");
+        assert_eq!(lambda.parameters[0].name.to_string(), "x");
     } else {
         panic!("Expected Lambda expression");
     }
@@ -154,7 +154,7 @@ fn test_parse_async_lambda() {
 #[test]
 fn test_parse_lambda_no_parameters() {
     let code = "() => 42";
-    let result = parse_lambda_expr(code);
+    let result = parse_lambda_expr(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse parameterless lambda: {:?}",
@@ -172,7 +172,7 @@ fn test_parse_lambda_no_parameters() {
 #[test]
 fn test_parse_lambda_with_ref_parameter() {
     let code = "(ref int x) => x++";
-    let result = parse_lambda_expr(code);
+    let result = parse_lambda_expr(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse lambda with ref parameter: {:?}",
@@ -181,7 +181,7 @@ fn test_parse_lambda_with_ref_parameter() {
 
     if let Ok(Expression::Lambda(lambda)) = result {
         assert_eq!(lambda.parameters.len(), 1);
-        assert_eq!(lambda.parameters[0].name.name, "x");
+        assert_eq!(lambda.parameters[0].name.to_string(), "x");
         assert!(matches!(
             lambda.parameters[0].modifier,
             Some(LambdaParameterModifier::Ref)
@@ -194,7 +194,7 @@ fn test_parse_lambda_with_ref_parameter() {
 #[test]
 fn test_parse_anonymous_method() {
     let code = "delegate(int x) { return x * 2; }";
-    let result = parse_anon_method_expr(code);
+    let result = parse_anon_method_expr(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse anonymous method: {:?}",
@@ -203,7 +203,7 @@ fn test_parse_anonymous_method() {
 
     if let Ok(Expression::AnonymousMethod(anon_method)) = result {
         assert_eq!(anon_method.parameters.len(), 1);
-        assert_eq!(anon_method.parameters[0].name.name, "x");
+        assert_eq!(anon_method.parameters[0].name.to_string(), "x");
         assert!(!anon_method.is_async);
         assert!(matches!(anon_method.body, LambdaBody::Block(_)));
     } else {
@@ -214,7 +214,7 @@ fn test_parse_anonymous_method() {
 #[test]
 fn test_parse_async_anonymous_method() {
     let code = "async delegate(int x) { return await ProcessAsync(x); }";
-    let result = parse_anon_method_expr(code);
+    let result = parse_anon_method_expr(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse async anonymous method: {:?}",
@@ -224,7 +224,7 @@ fn test_parse_async_anonymous_method() {
     if let Ok(Expression::AnonymousMethod(anon_method)) = result {
         assert!(anon_method.is_async);
         assert_eq!(anon_method.parameters.len(), 1);
-        assert_eq!(anon_method.parameters[0].name.name, "x");
+        assert_eq!(anon_method.parameters[0].name.to_string(), "x");
     } else {
         panic!("Expected AnonymousMethod expression");
     }
@@ -233,7 +233,7 @@ fn test_parse_async_anonymous_method() {
 #[test]
 fn test_parse_anonymous_method_no_parameters() {
     let code = "delegate { return 42; }";
-    let result = parse_anon_method_expr(code);
+    let result = parse_anon_method_expr(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse parameterless anonymous method: {:?}",
@@ -250,10 +250,10 @@ fn test_parse_anonymous_method_no_parameters() {
 
 #[test]
 fn debug_type_parsing() {
-    let result = parse_type_expression("int");
+    let result = parse_type_expression("int".into());
     println!("Type parsing result for 'int': {:?}", result);
 
-    let result2 = parse_type_expression("string");
+    let result2 = parse_type_expression("string".into());
     println!("Type parsing result for 'string': {:?}", result2);
 }
 
@@ -261,7 +261,7 @@ fn debug_type_parsing() {
 fn debug_lambda_parameter_parsing() {
     use parser::expressions::lambda_expression_parser::parse_lambda_or_anonymous_method;
 
-    let result = parse_lambda_or_anonymous_method("(int x) => x");
+    let result = parse_lambda_or_anonymous_method("(int x) => x".into());
     println!(
         "Lambda parameter parsing result for '(int x) => x': {:?}",
         result
@@ -271,7 +271,7 @@ fn debug_lambda_parameter_parsing() {
 #[test]
 fn test_parse_lambda_with_block_body() {
     let code = "x => { return x * 2; }";
-    let result = parse_lambda_expr(code);
+    let result = parse_lambda_expr(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse lambda with block body: {:?}",
@@ -280,7 +280,7 @@ fn test_parse_lambda_with_block_body() {
 
     if let Ok(Expression::Lambda(lambda)) = result {
         assert_eq!(lambda.parameters.len(), 1);
-        assert_eq!(lambda.parameters[0].name.name, "x");
+        assert_eq!(lambda.parameters[0].name.to_string(), "x");
         assert!(!lambda.is_async);
 
         // Check that the body is a block with actual statements
@@ -309,7 +309,7 @@ fn test_parse_lambda_with_block_body() {
 #[test]
 fn test_parse_lambda_with_multiple_statements() {
     let code = "(x, y) => { int sum = x + y; return sum * 2; }";
-    let result = parse_lambda_expr(code);
+    let result = parse_lambda_expr(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse lambda with multiple statements: {:?}",
@@ -342,7 +342,7 @@ fn test_parse_lambda_with_multiple_statements() {
 #[test]
 fn test_parse_lambda_empty_block() {
     let code = "() => { }";
-    let result = parse_lambda_expr(code);
+    let result = parse_lambda_expr(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse lambda with empty block: {:?}",
@@ -365,7 +365,7 @@ fn test_parse_lambda_empty_block() {
 #[test]
 fn test_parse_async_lambda_with_block_body() {
     let code = "async x => { var result = await ProcessAsync(x); return result; }";
-    let result = parse_lambda_expr(code);
+    let result = parse_lambda_expr(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse async lambda with block body: {:?}",
@@ -393,7 +393,7 @@ fn test_parse_async_lambda_with_block_body() {
 #[test]
 fn test_parse_anonymous_method_with_block_body() {
     let code = "delegate(int x) { Console.WriteLine(x); return x * 2; }";
-    let result = parse_anon_method_expr(code);
+    let result = parse_anon_method_expr(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse anonymous method with block body: {:?}",
@@ -402,7 +402,7 @@ fn test_parse_anonymous_method_with_block_body() {
 
     if let Ok(Expression::AnonymousMethod(anon_method)) = result {
         assert_eq!(anon_method.parameters.len(), 1);
-        assert_eq!(anon_method.parameters[0].name.name, "x");
+        assert_eq!(anon_method.parameters[0].name.to_string(), "x");
         assert!(!anon_method.is_async);
 
         if let LambdaBody::Block(statements) = &anon_method.body {
@@ -434,7 +434,7 @@ fn test_parse_lambda_with_complex_block() {
             return 0;
         }
     }"#;
-    let result = parse_lambda_expr(code);
+    let result = parse_lambda_expr(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse lambda with complex block: {:?}",
@@ -462,7 +462,7 @@ fn test_parse_lambda_with_complex_block() {
 #[test]
 fn test_parse_lambda_with_local_variables() {
     let code = "(a, b) => { var temp = a; a = b; b = temp; return a + b; }";
-    let result = parse_lambda_expr(code);
+    let result = parse_lambda_expr(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse lambda with local variables: {:?}",
@@ -493,7 +493,7 @@ fn test_parse_lambda_with_local_variables() {
 #[test]
 fn test_parse_lambda_with_try_catch() {
     let code = "x => { try { return x; } catch { return 0; } }";
-    let result = parse_lambda_expr(code);
+    let result = parse_lambda_expr(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse lambda with try-catch: {:?}",
@@ -521,7 +521,7 @@ fn test_parse_lambda_with_try_catch() {
 #[test]
 fn test_parse_nested_lambda_expressions() {
     let code = "x => { return y => x + y; }";
-    let result = parse_lambda_expr(code);
+    let result = parse_lambda_expr(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse nested lambda expressions: {:?}",
@@ -549,7 +549,7 @@ fn test_parse_nested_lambda_expressions() {
 #[test]
 fn test_parse_lambda_with_foreach_loop() {
     let code = "items => { foreach (var item in items) { Console.WriteLine(item); } }";
-    let result = parse_lambda_expr(code);
+    let result = parse_lambda_expr(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse lambda with foreach loop: {:?}",

@@ -12,7 +12,7 @@ use syntax::statements::switch_label::SwitchLabel;
 #[test]
 fn test_parse_switch_statement() {
     let input = "switch (x) { case 1: DoCase1(); break; case 2: { DoCase2(); } default: DoDefault(); break; }";
-    let result = parse_all(parse_switch_statement, input);
+    let result = parse_all(parse_switch_statement, input.into());
     assert!(result.is_ok());
     match result.unwrap().1 {
         Statement::Switch(ss) => {
@@ -35,7 +35,7 @@ fn test_parse_switch_statement() {
     }
 
     let input_empty = "switch(y) {}";
-    let result_empty = parse_all(parse_switch_statement, input_empty);
+    let result_empty = parse_all(parse_switch_statement, input_empty.into());
     assert!(result_empty.is_ok());
     match result_empty.unwrap().1 {
         Statement::Switch(ss) => {
@@ -46,7 +46,7 @@ fn test_parse_switch_statement() {
     }
 
     let input_fallthrough = "switch(z) { case 0: case 1: DoZeroOrOne(); break; }";
-    let result_fallthrough = parse_all(parse_switch_statement, input_fallthrough);
+    let result_fallthrough = parse_all(parse_switch_statement, input_fallthrough.into());
     assert!(result_fallthrough.is_ok());
     match result_fallthrough.unwrap().1 {
         Statement::Switch(ss) => {

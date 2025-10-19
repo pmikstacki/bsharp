@@ -10,7 +10,7 @@ use syntax::types::{PrimitiveType, Type};
 
 fn parse_stackalloc_expr(code: &str) -> Result<Expression, String> {
     println!("Parsing stackalloc: '{}'", code);
-    match parse_stackalloc_expression(code) {
+    match parse_stackalloc_expression(code.into()) {
         Ok((rest, expr)) => {
             println!("Success! Rest: '{}', Expr: {:?}", rest, expr);
             if rest.trim().is_empty() {
@@ -29,7 +29,7 @@ fn parse_stackalloc_expr(code: &str) -> Result<Expression, String> {
 #[test]
 fn test_parse_stackalloc_with_size() {
     let code = "stackalloc int[10]";
-    let result = parse_stackalloc_expr(code);
+    let result = parse_stackalloc_expr(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse stackalloc with size: {:?}",
@@ -57,7 +57,7 @@ fn test_parse_stackalloc_with_size() {
 #[test]
 fn test_parse_stackalloc_with_variable_size() {
     let code = "stackalloc byte[size]";
-    let result = parse_stackalloc_expr(code);
+    let result = parse_stackalloc_expr(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse stackalloc with variable size: {:?}",
@@ -73,7 +73,7 @@ fn test_parse_stackalloc_with_variable_size() {
         assert!(stackalloc.initializer.is_none());
 
         if let Some(Expression::Variable(var)) = stackalloc.count {
-            assert_eq!(var.name, "size");
+            assert_eq!(var.to_string(), "size");
         } else {
             panic!("Expected variable 'size' as count");
         }
@@ -85,7 +85,7 @@ fn test_parse_stackalloc_with_variable_size() {
 #[test]
 fn test_parse_stackalloc_with_initializer() {
     let code = "stackalloc int[] { 1, 2, 3, 4 }";
-    let result = parse_stackalloc_expr(code);
+    let result = parse_stackalloc_expr(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse stackalloc with initializer: {:?}",
@@ -119,7 +119,7 @@ fn test_parse_stackalloc_with_initializer() {
 #[test]
 fn test_parse_stackalloc_implicitly_typed() {
     let code = "stackalloc[] { 1, 2, 3 }";
-    let result = parse_stackalloc_expr(code);
+    let result = parse_stackalloc_expr(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse implicitly typed stackalloc: {:?}",
@@ -141,7 +141,7 @@ fn test_parse_stackalloc_implicitly_typed() {
 #[test]
 fn test_parse_stackalloc_empty_initializer() {
     let code = "stackalloc int[] { }";
-    let result = parse_stackalloc_expr(code);
+    let result = parse_stackalloc_expr(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse stackalloc with empty initializer: {:?}",
@@ -166,7 +166,7 @@ fn test_parse_stackalloc_empty_initializer() {
 #[test]
 fn test_parse_stackalloc_with_expression_size() {
     let code = "stackalloc double[count * 2]";
-    let result = parse_stackalloc_expr(code);
+    let result = parse_stackalloc_expr(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse stackalloc with expression size: {:?}",
@@ -195,7 +195,7 @@ fn test_parse_stackalloc_with_expression_size() {
 #[test]
 fn test_parse_stackalloc_with_mixed_expressions() {
     let code = "stackalloc string[] { \"hello\", \"world\" }";
-    let result = parse_stackalloc_expr(code);
+    let result = parse_stackalloc_expr(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse stackalloc with mixed expressions: {:?}",
@@ -232,7 +232,7 @@ fn test_parse_stackalloc_with_mixed_expressions() {
 #[test]
 fn test_parse_stackalloc_pointer_type() {
     let code = "stackalloc char[buffer_size]";
-    let result = parse_stackalloc_expr(code);
+    let result = parse_stackalloc_expr(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse stackalloc with pointer type: {:?}",
@@ -247,7 +247,7 @@ fn test_parse_stackalloc_pointer_type() {
         assert!(stackalloc.count.is_some());
 
         if let Some(Expression::Variable(var)) = stackalloc.count {
-            assert_eq!(var.name, "buffer_size");
+            assert_eq!(var.to_string(), "buffer_size");
         } else {
             panic!("Expected variable 'buffer_size' as count");
         }
@@ -268,7 +268,7 @@ fn test_parse_stackalloc_whitespace_variations() {
     ];
 
     for code in variations {
-        let result = parse_stackalloc_expr(code);
+        let result = parse_stackalloc_expr(code.into());
         assert!(
             result.is_ok(),
             "Failed to parse stackalloc with whitespace variation: '{}' -> {:?}",
@@ -289,7 +289,7 @@ fn test_parse_stackalloc_errors() {
     ];
 
     for code in invalid_cases {
-        let result = parse_stackalloc_expr(code);
+        let result = parse_stackalloc_expr(code.into());
         assert!(result.is_err(), "Expected parsing to fail for: '{}'", code);
     }
 }

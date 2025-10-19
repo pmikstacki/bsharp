@@ -7,7 +7,7 @@ use syntax::identifier::Identifier;
 use syntax::types::{Parameter, ParameterModifier, PrimitiveType, Type};
 
 fn parse_param_ok(code: &str) -> Parameter {
-    match parse_parameter(code) {
+    match parse_parameter(code.into()) {
         Ok((rest, p)) if rest.trim().is_empty() => p,
         Ok((rest, _)) => panic!("Unparsed: '{}'", rest),
         Err(e) => panic!("Parse error: {:?}", e),
@@ -18,7 +18,7 @@ fn parse_param_ok(code: &str) -> Parameter {
 fn parameter_with_single_attribute() {
     let p = parse_param_ok("[A] int x");
     assert_eq!(p.attributes.len(), 1);
-    assert_eq!(p.attributes[0].name.name, "A");
+    assert_eq!(p.attributes[0].name.to_string(), "A");
     assert_eq!(p.parameter_type, Type::Primitive(PrimitiveType::Int));
     assert_eq!(p.name, Identifier::new("x"));
     assert!(p.default_value.is_none());
@@ -28,8 +28,8 @@ fn parameter_with_single_attribute() {
 fn parameter_with_multiple_attribute_lists_and_default() {
     let p = parse_param_ok("[A][B] string name = \"John\"");
     assert_eq!(p.attributes.len(), 2);
-    assert_eq!(p.attributes[0].name.name, "A");
-    assert_eq!(p.attributes[1].name.name, "B");
+    assert_eq!(p.attributes[0].name.to_string(), "A");
+    assert_eq!(p.attributes[1].name.to_string(), "B");
     assert_eq!(p.parameter_type, Type::Primitive(PrimitiveType::String));
     assert_eq!(p.name, Identifier::new("name"));
     assert!(
@@ -49,12 +49,12 @@ fn parameter_with_modifier_and_attribute() {
 #[test]
 fn parameter_list_with_attributes_and_defaults() {
     let code = "([A] int x = 1, out string name)";
-    let (rest, list) = parse_parameter_list(code).expect("parse list");
+    let (rest, list) = parse_parameter_list(code.into()).expect("parse list");
     assert!(rest.trim().is_empty());
     assert_eq!(list.len(), 2);
     // First param
     assert_eq!(list[0].attributes.len(), 1);
-    assert_eq!(list[0].attributes[0].name.name, "A");
+    assert_eq!(list[0].attributes[0].name.to_string(), "A");
     assert_eq!(list[0].parameter_type, Type::Primitive(PrimitiveType::Int));
     assert!(matches!(
         list[0].default_value,

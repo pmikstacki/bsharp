@@ -7,26 +7,7 @@ use syntax::identifier::Identifier;
 #[test]
 fn test_parse_global_attribute() {
     let code = "[assembly: MyAttr]";
-    let expected = GlobalAttribute {
-        target: Identifier {
-            name: "assembly".to_string(),
-        },
-        attribute: Attribute {
-            name: Identifier {
-                name: "MyAttr".to_string(),
-            },
-            arguments: vec![],
-            structured: Some(syntax::declarations::attribute::AttributeName {
-                qualifier: vec![],
-                name: Identifier {
-                    name: "MyAttr".to_string(),
-                },
-                type_arguments: vec![],
-            }),
-        },
-    };
-
-    let result = parse_global_attribute(code);
+    let result = parse_global_attribute(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse global attribute: {:?}",
@@ -34,14 +15,17 @@ fn test_parse_global_attribute() {
     );
 
     let (remaining, actual) = result.unwrap();
-    assert_eq!(remaining, "");
-    assert_eq!(actual, expected);
+    assert!(remaining.fragment().trim().is_empty());
+    assert_eq!(actual.target.to_string(), "assembly");
+    assert_eq!(actual.attribute.name.to_string(), "MyAttr");
+    assert!(actual.attribute.arguments.is_empty());
+    assert!(actual.attribute.structured.is_some());
 }
 
 #[test]
 fn test_parse_module_attribute() {
     let code = "[module: TestAttribute]";
-    let result = parse_global_attribute(code);
+    let result = parse_global_attribute(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse module attribute: {:?}",
@@ -49,9 +33,9 @@ fn test_parse_module_attribute() {
     );
 
     let (remaining, attr) = result.unwrap();
-    assert_eq!(remaining, "");
-    assert_eq!(attr.target.name, "module");
-    assert_eq!(attr.attribute.name.name, "TestAttribute");
+    assert!(remaining.fragment().trim().is_empty());
+    assert_eq!(attr.target.to_string(), "module");
+    assert_eq!(attr.attribute.name.to_string(), "TestAttribute");
     assert!(attr.attribute.arguments.is_empty());
     assert!(attr.attribute.structured.is_some());
 }
@@ -59,7 +43,7 @@ fn test_parse_module_attribute() {
 #[test]
 fn test_parse_assembly_attribute_with_arguments() {
     let code = "[assembly: AssemblyVersion(\"1.0.0.0\")]";
-    let result = parse_global_attribute(code);
+    let result = parse_global_attribute(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse assembly attribute with arguments: {:?}",
@@ -67,9 +51,9 @@ fn test_parse_assembly_attribute_with_arguments() {
     );
 
     let (remaining, attr) = result.unwrap();
-    assert_eq!(remaining, "");
-    assert_eq!(attr.target.name, "assembly");
-    assert_eq!(attr.attribute.name.name, "AssemblyVersion");
+    assert!(remaining.fragment().trim().is_empty());
+    assert_eq!(attr.target.to_string(), "assembly");
+    assert_eq!(attr.attribute.name.to_string(), "AssemblyVersion");
     assert_eq!(attr.attribute.arguments.len(), 1);
     assert!(attr.attribute.structured.is_some());
 }

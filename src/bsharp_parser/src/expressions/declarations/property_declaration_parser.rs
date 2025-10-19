@@ -5,18 +5,18 @@ use crate::parser::identifier_parser::parse_identifier;
 use crate::parser::types::type_parser::parse_type_expression;
 use crate::syntax::comment_parser::ws;
 use crate::syntax::errors::BResult;
-use nom::Parser;
-use nom_supreme::ParserExt;
-use nom::sequence::delimited;
-use nom::character::complete::satisfy;
 use nom::bytes::complete::tag_no_case;
+use nom::character::complete::satisfy;
 use nom::combinator::cut;
+use nom::sequence::delimited;
+use nom::Parser;
 use nom::{
     branch::alt,
     combinator::{map, opt},
     multi::many0,
-    sequence::{preceded, tuple},
+    sequence::preceded,
 };
+use nom_supreme::ParserExt;
 use syntax::declarations::{PropertyAccessor, PropertyDeclaration};
 use syntax::expressions::Expression;
 use syntax::statements::statement::Statement;
@@ -24,21 +24,21 @@ use syntax::statements::statement::Statement;
 // Parse get accessor
 fn parse_get_accessor(input: Span) -> BResult<PropertyAccessor> {
     // Optional attribute lists and modifiers
-    let (input, attributes) = delimited(ws, parse_attribute_lists, ws).parse(input)?;
-    let (input, modifiers) = delimited(ws, |i| parse_modifiers_for_decl_type(i, "property"), ws).parse(input)?;
+    let (input, attributes) = delimited(ws, parse_attribute_lists, ws).parse(input.into())?;
+    let (input, modifiers) = delimited(ws, |i| parse_modifiers_for_decl_type(i, "property"), ws).parse(input.into())?;
     // Parse "get" followed by optional body or semicolon
     let (input, _) = delimited(ws, tag_no_case("get"), ws)
         .context("get accessor keyword")
-        .parse(input)?;
+        .parse(input.into())?;
 
     // Parse body or just a semicolon
-    let (input, body) = nom::combinator::map(alt((
+    let (input, body) = map(alt((
         // Expression-bodied accessor: get => expr;
         map(
-            tuple((
+            (
                 delimited(ws, tag_no_case("=>"), ws),
-                nom::combinator::cut(tuple((delimited(ws, parse_expression, ws), delimited(ws, satisfy(|c| c == ';'), ws)))),
-            )),
+                cut((delimited(ws, parse_expression, ws), delimited(ws, tok_semicolon(), ws))),
+            ),
             |(_, (expr, _))| Some(Statement::Expression(expr)),
         ),
         // Block body: get { ... }
@@ -49,12 +49,12 @@ fn parse_get_accessor(input: Span) -> BResult<PropertyAccessor> {
         ),
         // Auto-property with just semicolon: "get;"
         map(
-            delimited(ws, satisfy(|c| c == ';'), ws)
+            delimited(ws, tok_semicolon(), ws)
                 .context("get accessor terminator"),
             |_| None,
         ),
     )), |x| x)
-    .parse(input)?;
+        .parse(input.into())?;
 
     Ok((
         input,
@@ -69,21 +69,21 @@ fn parse_get_accessor(input: Span) -> BResult<PropertyAccessor> {
 // Parse set accessor
 fn parse_set_accessor(input: Span) -> BResult<PropertyAccessor> {
     // Optional attribute lists and modifiers
-    let (input, attributes) = delimited(ws, parse_attribute_lists, ws).parse(input)?;
-    let (input, modifiers) = delimited(ws, |i| parse_modifiers_for_decl_type(i, "property"), ws).parse(input)?;
+    let (input, attributes) = delimited(ws, parse_attribute_lists, ws).parse(input.into())?;
+    let (input, modifiers) = delimited(ws, |i| parse_modifiers_for_decl_type(i, "property"), ws).parse(input.into())?;
     // Parse "set" followed by optional body or semicolon
     let (input, _) = delimited(ws, tag_no_case("set"), ws)
         .context("set accessor keyword (expected 'set')")
-        .parse(input)?;
+        .parse(input.into())?;
 
     // Parse body or just a semicolon
-    let (input, body) = nom::combinator::map(alt((
+    let (input, body) = map(alt((
         // Expression-bodied accessor: set => expr;
         map(
-            tuple((
+            (
                 delimited(ws, tag_no_case("=>"), ws),
-                nom::combinator::cut(tuple((delimited(ws, parse_expression, ws), delimited(ws, satisfy(|c| c == ';'), ws)))),
-            )),
+                cut((delimited(ws, parse_expression, ws), delimited(ws, tok_semicolon(), ws))),
+            ),
             |(_, (expr, _))| Some(Statement::Expression(expr)),
         ),
         map(
@@ -92,12 +92,12 @@ fn parse_set_accessor(input: Span) -> BResult<PropertyAccessor> {
             Some,
         ),
         map(
-            delimited(ws, satisfy(|c| c == ';'), ws)
+            delimited(ws, tok_semicolon(), ws)
                 .context("set accessor terminator"),
             |_| None,
         ),
     )), |x| x)
-    .parse(input)?;
+        .parse(input.into())?;
 
     Ok((
         input,
@@ -112,21 +112,21 @@ fn parse_set_accessor(input: Span) -> BResult<PropertyAccessor> {
 // Parse init accessor (C# 9+)
 fn parse_init_accessor(input: Span) -> BResult<PropertyAccessor> {
     // Optional attribute lists and modifiers
-    let (input, attributes) = delimited(ws, parse_attribute_lists, ws).parse(input)?;
-    let (input, modifiers) = delimited(ws, |i| parse_modifiers_for_decl_type(i, "property"), ws).parse(input)?;
+    let (input, attributes) = delimited(ws, parse_attribute_lists, ws).parse(input.into())?;
+    let (input, modifiers) = delimited(ws, |i| parse_modifiers_for_decl_type(i, "property"), ws).parse(input.into())?;
     // Parse "init" followed by optional body or semicolon
     let (input, _) = delimited(ws, tag_no_case("init"), ws)
         .context("init accessor keyword (expected 'init')")
-        .parse(input)?;
+        .parse(input.into())?;
 
     // Parse body or just a semicolon
-    let (input, body) = nom::combinator::map(alt((
+    let (input, body) = map(alt((
         // Expression-bodied accessor: init => expr;
         map(
-            tuple((
+            (
                 delimited(ws, tag_no_case("=>"), ws),
-                nom::combinator::cut(tuple((delimited(ws, parse_expression, ws), delimited(ws, satisfy(|c| c == ';'), ws)))),
-            )),
+                cut((delimited(ws, parse_expression, ws), delimited(ws, tok_semicolon(), ws))),
+            ),
             |(_, (expr, _))| Some(Statement::Expression(expr)),
         ),
         map(
@@ -135,12 +135,12 @@ fn parse_init_accessor(input: Span) -> BResult<PropertyAccessor> {
             Some,
         ),
         map(
-            delimited(ws, satisfy(|c| c == ';'), ws)
+            delimited(ws, tok_semicolon(), ws)
                 .context("init accessor terminator"),
             |_| None,
         ),
     )), |x| x)
-    .parse(input)?;
+        .parse(input.into())?;
 
     Ok((
         input,
@@ -163,49 +163,49 @@ fn parse_property_accessors(input: Span) -> BResult<Vec<PropertyAccessor>> {
         }),
         cut(delimited(ws, satisfy(|c| c == '}'), ws)).context("property accessors closing"),
     )
-    .parse(input)
+        .parse(input.into())
 }
 
 // Parse optional property initializer: " = expression;"
 fn parse_property_initializer(input: Span) -> BResult<Option<Expression>> {
     opt(preceded(
-        delimited(ws, satisfy(|c| c == '='), ws)
+        delimited(ws, tok_assign(), ws)
             .context("property initializer"),
-        tuple((
+        (
             delimited(ws, parse_expression, ws)
                 .context("property initializer expression"),
-            delimited(ws, satisfy(|c| c == ';'), ws)
+            delimited(ws, tok_semicolon(), ws)
                 .context("property initializer terminator"),
-        )),
+        ),
     ))
-    .parse(input)
-    .map(|(input, result)| (input, result.map(|(expr, _)| expr)))
+        .parse(input.into())
+        .map(|(input, result)| (input, result.map(|(expr, _)| expr)))
 }
 
 // Parse a property declaration
 pub fn parse_property_declaration(input: Span) -> BResult<PropertyDeclaration> {
     // Parse attributes (zero or more groups)
-    let (input, attributes) = delimited(ws, parse_attribute_lists, ws).parse(input)?;
+    let (input, attributes) = delimited(ws, parse_attribute_lists, ws).parse(input.into())?;
     // Parse modifiers specifically for property declarations (they consume trailing space)
     let (input, modifiers) = (|i| parse_modifiers_for_decl_type(i, "property"))
         .context("property modifiers")
-        .parse(input)?;
+        .parse(input.into())?;
     // Consume any additional optional whitespace before the type
-    let (input, _) = ws(input)?;
+    let (input, _) = ws(input.into())?;
     let (input, ty) = parse_type_expression
         .context("property type")
-        .parse(input)?;
+        .parse(input.into())?;
     let (input, name) = delimited(ws, parse_identifier, ws)
         .context("property name")
-        .parse(input)?;
+        .parse(input.into())?;
     // Either an accessor block { ... } or an expression-bodied property => expr;
-    let (input, (accessors, initializer)) = nom::combinator::map(alt((
+    let (input, (accessors, initializer)) = map(alt((
         // Expression-bodied property: `=> expr;`
         map(
-            tuple((
+            (
                 delimited(ws, tag_no_case("=>"), ws),
-                nom::combinator::cut(tuple((delimited(ws, parse_expression, ws), delimited(ws, satisfy(|c| c == ';'), ws)))),
-            )),
+                cut((delimited(ws, parse_expression, ws), delimited(ws, tok_semicolon(), ws))),
+            ),
             |(_, (expr, _))| {
                 (
                     vec![PropertyAccessor::Get {
@@ -219,14 +219,14 @@ pub fn parse_property_declaration(input: Span) -> BResult<PropertyDeclaration> {
         ),
         // Traditional accessor block with optional initializer
         map(
-            tuple((
+            (
                 |i| delimited(ws, parse_property_accessors, ws).parse(i),
                 |i| delimited(ws, parse_property_initializer, ws).parse(i),
-            )),
+            ),
             |(accessors, initializer)| (accessors, initializer),
         ),
     )), |x| x)
-    .parse(input)?;
+        .parse(input.into())?;
 
     Ok((
         input,
@@ -241,3 +241,5 @@ pub fn parse_property_declaration(input: Span) -> BResult<PropertyDeclaration> {
     ))
 }
 use crate::syntax::span::Span;
+use crate::tokens::assignment::tok_assign;
+use crate::tokens::separators::tok_semicolon;

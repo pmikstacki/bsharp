@@ -10,6 +10,6 @@ fn parse_catch_clause(code: &str) -> Result<CatchClause, String> {
 fn test_parse_catch_clause() {
     let code = "catch (Exception ex) {}";
     // let expected = ...;
-    // assert_eq!(parse_catch_clause(code), Ok(expected));
-    assert!(parse_catch_clause(code).is_err());
+    // assert_eq!(parse_catch_clause(code.into()), Ok(expected));
+    assert!(parse_catch_clause(code.into()).is_err());
 }

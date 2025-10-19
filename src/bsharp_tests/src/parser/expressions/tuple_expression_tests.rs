@@ -7,7 +7,7 @@ use syntax::expressions::tuple_expression::{TupleElement, TupleExpression};
 use syntax::identifier::Identifier;
 
 fn check_tuple_expr(input: &str, expected_elements: Vec<TupleElement>) {
-    let (_, expr) = parse_expression(input)
+    let (_, expr) = parse_expression(input.into())
         .unwrap_or_else(|e| panic!("Failed to parse tuple expression '{}': {:?}", input, e));
     let expected_expr = Expression::Tuple(TupleExpression {
         elements: expected_elements,
@@ -218,7 +218,7 @@ fn test_tuple_whitespace_variations() {
 // Error case: Single element is not a tuple, should be parsed as parenthesized expression
 #[test]
 fn test_single_element_not_a_tuple() {
-    let result = parse_expression("(1)");
+    let result = parse_expression("(1)".into());
     assert!(
         result.is_ok(),
         "Expected parenthesized expression, not tuple error. Input: (1)"
@@ -230,7 +230,7 @@ fn test_single_element_not_a_tuple() {
         "Expected parenthesized literal 1. Input: (1)"
     );
 
-    let result_named = parse_expression("(a: 1)");
+    let result_named = parse_expression("(a: 1)".into());
     assert!(
         result_named.is_err(),
         "Expected error for named single element tuple. Input: (a:1)"
@@ -242,13 +242,13 @@ fn test_empty_tuple_is_error() {
     // C# does not support empty tuples like ()
     // It would be a method call with zero arguments if `()` was a variable of delegate type.
     // Otherwise, it's a parser error. Our syntax should error.
-    let result = parse_expression("()");
+    let result = parse_expression("()".into());
     assert!(result.is_err(), "Expected error for empty tuple. Input: ()");
 }
 
 #[test]
 fn test_tuple_with_just_comma_is_error() {
-    let result = parse_expression("(,)");
+    let result = parse_expression("(,)".into());
     assert!(
         result.is_err(),
         "Expected error for tuple with just comma. Input: (,)"
@@ -257,7 +257,7 @@ fn test_tuple_with_just_comma_is_error() {
 
 #[test]
 fn test_tuple_missing_closing_paren_is_error() {
-    let result = parse_expression("(1, 2");
+    let result = parse_expression("(1, 2".into());
     assert!(
         result.is_err(),
         "Expected error for missing closing paren. Input: (1, 2"
@@ -266,7 +266,7 @@ fn test_tuple_missing_closing_paren_is_error() {
 
 #[test]
 fn test_tuple_missing_comma_is_error() {
-    let result = parse_expression("(1 2)");
+    let result = parse_expression("(1 2)".into());
     assert!(
         result.is_err(),
         "Expected error for missing comma. Input: (1 2)"
@@ -276,7 +276,7 @@ fn test_tuple_missing_comma_is_error() {
 #[test]
 fn test_tuple_invalid_element_name() {
     // e.g. (1: x, 2) - number cannot be a name
-    let result = parse_expression("(1: x, 2)");
+    let result = parse_expression("(1: x, 2)".into());
     assert!(
         result.is_err(),
         "Expected error for invalid element name. Input: (1: x, 2)"

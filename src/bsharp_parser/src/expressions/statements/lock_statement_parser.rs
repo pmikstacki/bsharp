@@ -1,33 +1,32 @@
 use crate::parser::expressions::primary_expression_parser::parse_expression;
 use crate::parser::keywords::exception_and_safety_keywords::kw_lock;
 use crate::parser::statement_parser::parse_statement_ws;
-use crate::syntax::errors::BResult;
 use crate::syntax::comment_parser::ws;
+use crate::syntax::errors::BResult;
 
 use nom::combinator::cut;
 use nom::{
     combinator::map,
-    sequence::{delimited, tuple},
+    sequence::{delimited},
     Parser,
 };
-use nom::character::complete::char as nom_char;
 use nom_supreme::ParserExt;
 use syntax::statements::statement::Statement;
 use syntax::statements::LockStatement;
 
 /// Parse a lock statement: lock (expression) statement
-pub fn parse_lock_statement<'a>(input: Span<'a>) -> BResult<'a, Statement> {
+pub fn parse_lock_statement(input: Span) -> BResult<Statement> {
     map(
-        tuple((
+        (
             kw_lock().context("lock keyword"),
             delimited(
-                delimited(ws, nom_char('('), ws),
+                delimited(ws, tok_l_paren(), ws),
                 parse_expression.context("lock object expression"),
-                cut(delimited(ws, nom_char(')'), ws)).context("closing parenthesis"),
+                cut(delimited(ws, tok_r_paren(), ws)).context("closing parenthesis"),
             )
-            .context("lock object in parentheses"),
+                .context("lock object in parentheses"),
             cut(delimited(ws, parse_statement_ws, ws)).context("lock body"),
-        )),
+        ),
         |(_, lock_object, body)| {
             Statement::Lock(Box::new(LockStatement {
                 expr: lock_object,
@@ -35,7 +34,8 @@ pub fn parse_lock_statement<'a>(input: Span<'a>) -> BResult<'a, Statement> {
             }))
         },
     )
-    .context("lock statement")
-    .parse(input)
+        .context("lock statement")
+        .parse(input.into())
 }
 use crate::syntax::span::Span;
+use crate::tokens::delimiters::{tok_l_paren, tok_r_paren};

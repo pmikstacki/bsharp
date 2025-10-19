@@ -10,7 +10,7 @@ use syntax::statements::statement::Statement;
 #[test]
 fn test_parse_if_statement() {
     let input_if_only = "if (true) { return 1; }";
-    let result_if_only = parse_all(parse_if_statement, input_if_only);
+    let result_if_only = parse_all(parse_if_statement, input_if_only.into());
     assert!(result_if_only.is_ok());
     match result_if_only.unwrap().1 {
         Statement::If(if_stmt) => {
@@ -27,14 +27,14 @@ fn test_parse_if_statement() {
     }
 
     let input_if_else = "if (x) DoTrue(); else DoFalse();";
-    let result_if_else = parse_all(parse_if_statement, input_if_else);
+    let result_if_else = parse_all(parse_if_statement, input_if_else.into());
     assert!(result_if_else.is_ok());
     match result_if_else.unwrap().1 {
         Statement::If(if_stmt) => {
             // Check the condition
             assert!(matches!(
                 if_stmt.condition,
-                Expression::Variable(Identifier { .. })
+                Expression::Variable(_)
             ));
             // Check the consequence (ExpressionStatement)
             assert!(matches!(*if_stmt.consequence, Statement::Expression(_)));
@@ -49,7 +49,7 @@ fn test_parse_if_statement() {
 
     let input_if_else_if = "if (a) 1; else if (b) 2; else 3;"; // Requires careful parsing of else part
     // This structure is handled by how parse_statement recursively handles the else branch.
-    let result_if_else_if = parse_all(parse_if_statement, input_if_else_if);
+    let result_if_else_if = parse_all(parse_if_statement, input_if_else_if.into());
     assert!(result_if_else_if.is_ok());
     if let Statement::If(outer_if) = result_if_else_if.unwrap().1 {
         // Check outer if condition

@@ -6,30 +6,32 @@ use crate::parser::expressions::stackalloc_expression_parser::parse_stackalloc_e
 use crate::parser::expressions::typeof_expression_parser::parse_typeof_expression;
 use crate::parser::keywords::exception_and_safety_keywords::{kw_checked, kw_unchecked};
 use crate::parser::types::type_parser::parse_type_expression;
-use crate::syntax::errors::BResult;
 use crate::syntax::comment_parser::ws;
+use crate::syntax::errors::BResult;
 
+use crate::syntax::span::Span;
 use nom::{
     branch::alt,
-    combinator::{map, recognize},
-    sequence::{pair, delimited},
     character::complete::char as nom_char,
+    combinator::{map, recognize},
+    sequence::{delimited, pair},
     Parser,
 };
 use syntax::expressions::{Expression, IndexExpression, UnaryOperator, UncheckedExpression};
-use crate::syntax::span::Span;
+use crate::tokens::delimiters::{tok_l_paren, tok_r_paren};
+use crate::tokens::nullish::tok_not;
 
 /// Parse a unary expression or higher precedence constructs
 pub(crate) fn parse_unary_expression_or_higher(input: Span) -> BResult<Expression> {
     // checked(expr)
-    if let Ok((input_after_kw, _)) = delimited(ws, kw_checked(), ws).parse(input) {
-        if let Ok((rest, _)) = delimited(ws, nom_char('('), ws).parse(input_after_kw) {
+    if let Ok((input_after_kw, _)) = delimited(ws, kw_checked(), ws).parse(input.into()) {
+        if let Ok((rest, _)) = delimited(ws, tok_l_paren(), ws).parse(input_after_kw) {
             let (rest, inner) = parse_expression(rest)?;
-            let (rest, _) = delimited(ws, nom_char(')'), ws).parse(rest)?;
+            let (rest, _) = delimited(ws, tok_r_paren(), ws).parse(rest)?;
             return Ok((
                 rest,
                 Expression::Checked(Box::new(
-                    crate::syntax::expressions::checked_expression::CheckedExpression {
+                    syntax::expressions::checked_expression::CheckedExpression {
                         expr: Box::new(inner),
                     },
                 )),
@@ -38,10 +40,10 @@ pub(crate) fn parse_unary_expression_or_higher(input: Span) -> BResult<Expressio
     }
 
     // unchecked(expr)
-    if let Ok((input_after_kw, _)) = delimited(ws, kw_unchecked(), ws).parse(input) {
-        if let Ok((rest, _)) = delimited(ws, nom_char('('), ws).parse(input_after_kw) {
+    if let Ok((input_after_kw, _)) = delimited(ws, kw_unchecked(), ws).parse(input.into()) {
+        if let Ok((rest, _)) = delimited(ws, tok_l_paren(), ws).parse(input_after_kw) {
             let (rest, inner) = parse_expression(rest)?;
-            let (rest, _) = delimited(ws, nom_char(')'), ws).parse(rest)?;
+            let (rest, _) = delimited(ws, tok_r_paren(), ws).parse(rest)?;
             return Ok((
                 rest,
                 Expression::Unchecked(Box::new(UncheckedExpression {
@@ -51,12 +53,12 @@ pub(crate) fn parse_unary_expression_or_higher(input: Span) -> BResult<Expressio
         }
     }
     // Try ref expression first
-    if let Ok((input, ref_expr)) = parse_ref_expression(input) {
+    if let Ok((input, ref_expr)) = parse_ref_expression(input.into()) {
         return Ok((input, ref_expr));
     }
 
     // Try enhanced await expression first (handles complex patterns)
-    if let Ok((input, await_expr)) = parse_await_expression(input) {
+    if let Ok((input, await_expr)) = parse_await_expression(input.into()) {
         return Ok((input, await_expr));
     }
 
@@ -67,16 +69,16 @@ pub(crate) fn parse_unary_expression_or_higher(input: Span) -> BResult<Expressio
         map(recognize(pair(nom_char('-'), nom_char('-'))), |_| UnaryOperator::Decrement),
         map(nom_char('+'), |_| UnaryOperator::Plus),
         map(nom_char('-'), |_| UnaryOperator::Minus),
-        map(nom_char('!'), |_| UnaryOperator::LogicalNot),
+        map(tok_not(), |_| UnaryOperator::LogicalNot),
         map(nom_char('~'), |_| UnaryOperator::BitwiseNot),
         map(nom_char('&'), |_| UnaryOperator::AddressOf),
         map(nom_char('*'), |_| UnaryOperator::PointerIndirection),
         // ^ (index from end) operator as unary
         map(nom_char('^'), |_| UnaryOperator::IndexFromEnd),
     )), ws)
-    .parse(input)
+        .parse(input.into())
     {
-        let (input, operand) = parse_unary_expression_or_higher(input)?;
+        let (input, operand) = parse_unary_expression_or_higher(input.into())?;
         // If the operator is IndexFromEnd, wrap it in Expression::Index
         if op == UnaryOperator::IndexFromEnd {
             return Ok((
@@ -96,10 +98,10 @@ pub(crate) fn parse_unary_expression_or_higher(input: Span) -> BResult<Expressio
     }
 
     // Try cast expression: (Type)expression - but be more careful to avoid conflicts with parenthesized expressions
-    if let Ok((input_after_paren, _)) = delimited(ws, nom_char('('), ws).parse(input) {
+    if let Ok((input_after_paren, _)) = delimited(ws, tok_l_paren(), ws).parse(input.into()) {
         // Try to parse as a type, but only if it's followed by something that looks like an expression
         if let Ok((input_after_type, ty)) = parse_type_expression(input_after_paren) {
-            if let Ok((input_after_close_paren, _)) = delimited(ws, nom_char(')'), ws).parse(input_after_type) {
+            if let Ok((input_after_close_paren, _)) = delimited(ws, tok_r_paren(), ws).parse(input_after_type) {
                 // Only treat as cast if the operand parses successfully; otherwise, backtrack.
                 if let Ok((input, operand)) =
                     parse_unary_expression_or_higher(input_after_close_paren)
@@ -117,20 +119,20 @@ pub(crate) fn parse_unary_expression_or_higher(input: Span) -> BResult<Expressio
     }
 
     // Try stackalloc expression
-    if let Ok((input, stackalloc_expr)) = parse_stackalloc_expression(input) {
+    if let Ok((input, stackalloc_expr)) = parse_stackalloc_expression(input.into()) {
         return Ok((input, stackalloc_expr));
     }
 
     // Try sizeof expression
-    if let Ok((input, sizeof_expr)) = parse_sizeof_expression(input) {
+    if let Ok((input, sizeof_expr)) = parse_sizeof_expression(input.into()) {
         return Ok((input, sizeof_expr));
     }
 
     // Try typeof expression
-    if let Ok((input, typeof_expr)) = parse_typeof_expression(input) {
+    if let Ok((input, typeof_expr)) = parse_typeof_expression(input.into()) {
         return Ok((input, typeof_expr));
     }
 
     // If none of the above work, try postfix expressions
-    crate::parser::expressions::postfix_expression_parser::parse_postfix_expression_or_higher(input)
+    crate::parser::expressions::postfix_expression_parser::parse_postfix_expression_or_higher(input.into())
 }

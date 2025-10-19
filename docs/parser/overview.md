@@ -44,12 +44,12 @@ The parser is built from small, focused parser functions that combine to handle 
 ```rust
 // Example: Method declaration combines multiple sub-parsers
 fn parse_method_declaration(input: &str) -> BResult<&str, MethodDeclaration> {
-    let (input, attributes) = parse_attributes(input)?;
-    let (input, modifiers) = parse_modifiers(input)?;
-    let (input, return_type) = parse_type(input)?;
-    let (input, name) = parse_identifier(input)?;
-    let (input, parameters) = parse_parameter_list(input)?;
-    let (input, body) = opt(parse_block_statement)(input)?;
+    let (input, attributes) = parse_attributes(input.into())?;
+    let (input, modifiers) = parse_modifiers(input.into())?;
+    let (input, return_type) = parse_type(input.into())?;
+    let (input, name) = parse_identifier(input.into())?;
+    let (input, parameters) = parse_parameter_list(input.into())?;
+    let (input, body) = opt(parse_block_statement)(input.into())?;
     // ... construct and return MethodDeclaration
 }
 ```

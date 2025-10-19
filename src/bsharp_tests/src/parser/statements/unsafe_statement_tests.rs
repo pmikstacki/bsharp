@@ -10,6 +10,6 @@ fn parse_unsafe_statement(code: &str) -> Result<UnsafeStatement, String> {
 fn test_parse_unsafe_statement() {
     let code = "unsafe { x++; }";
     // let expected = ...;
-    // assert_eq!(parse_unsafe_statement(code), Ok(expected));
-    assert!(parse_unsafe_statement(code).is_err());
+    // assert_eq!(parse_unsafe_statement(code.into()), Ok(expected));
+    assert!(parse_unsafe_statement(code.into()).is_err());
 }

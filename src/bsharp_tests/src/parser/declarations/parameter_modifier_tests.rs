@@ -5,7 +5,7 @@ use syntax::identifier::Identifier;
 use syntax::types::{Parameter, ParameterModifier, PrimitiveType, Type};
 
 fn parse_parameter_test(code: &str) -> Result<Parameter, String> {
-    match parse_parameter(code) {
+    match parse_parameter(code.into()) {
         Ok((rest, param)) if rest.trim().is_empty() => Ok(param),
         Ok((rest, _)) => Err(format!("Unparsed input: {}", rest)),
         Err(e) => Err(format!("Parse error: {:?}", e)),
@@ -35,7 +35,7 @@ fn test_parse_out_parameter() {
         name: Identifier::new("result"),
         default_value: None,
     };
-    assert_eq!(parse_parameter_test(code), Ok(expected));
+    assert_eq!(parse_parameter_test(code.into()), Ok(expected));
 }
 
 #[test]
@@ -48,7 +48,7 @@ fn test_parse_in_parameter() {
         name: Identifier::new("data"),
         default_value: None,
     };
-    assert_eq!(parse_parameter_test(code), Ok(expected));
+    assert_eq!(parse_parameter_test(code.into()), Ok(expected));
 }
 
 #[test]
@@ -64,7 +64,7 @@ fn test_parse_params_parameter() {
         name: Identifier::new("values"),
         default_value: None,
     };
-    assert_eq!(parse_parameter_test(code), Ok(expected));
+    assert_eq!(parse_parameter_test(code.into()), Ok(expected));
 }
 
 #[test]
@@ -77,7 +77,7 @@ fn test_parse_regular_parameter() {
         name: Identifier::new("value"),
         default_value: None,
     };
-    assert_eq!(parse_parameter_test(code), Ok(expected));
+    assert_eq!(parse_parameter_test(code.into()), Ok(expected));
 }
 
 #[test]
@@ -149,15 +149,15 @@ fn test_parse_parameter_with_complex_types() {
     assert!(result.is_ok());
     let param = result.unwrap();
     assert_eq!(param.modifier, Some(ParameterModifier::Ref));
-    assert_eq!(param.name.name, "items");
+    assert_eq!(param.name.to_string(), "items");
 
     // Test out with nullable type
     let code = "out int? result";
-    let result = parse_parameter_test(code);
+    let result = parse_parameter_test(code.into());
     assert!(result.is_ok());
     let param = result.unwrap();
     assert_eq!(param.modifier, Some(ParameterModifier::Out));
-    assert_eq!(param.name.name, "result");
+    assert_eq!(param.name.to_string(), "result");
 }
 
 #[test]
@@ -170,11 +170,11 @@ fn test_parse_parameter_whitespace_variations() {
     ];
 
     for code in &variations {
-        let result = parse_parameter_test(code);
+        let result = parse_parameter_test(*code);
         assert!(result.is_ok(), "Failed to parse: {}", code);
         let param = result.unwrap();
         assert_eq!(param.modifier, Some(ParameterModifier::Ref));
-        assert_eq!(param.name.name, "value");
+        assert_eq!(param.name.to_string(), "value");
     }
 }
 
@@ -190,7 +190,7 @@ fn test_parameter_modifier_edge_cases() {
     ];
 
     for code in &invalid_cases {
-        let result = parse_parameter_test(code);
+        let result = parse_parameter_test(*code);
         // These should either fail or parse without modifiers
         if let Ok(param) = result {
             assert_eq!(

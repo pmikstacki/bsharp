@@ -4,8 +4,8 @@ use syntax::expressions::literal::Literal;
 use syntax::identifier::Identifier;
 
 fn parse_ok(input: &str) -> Expression {
-    let (rest, expr) = parse_expression(input).expect("parse ok");
-    assert!(rest.trim().is_empty(), "unparsed: {}", rest);
+    let (rest, expr) = parse_expression(input.into()).expect("parse ok");
+    assert!(rest.fragment().trim().is_empty(), "unparsed: {}", rest.fragment());
     expr
 }
 
@@ -32,8 +32,8 @@ fn test_collection_with_spread_and_binary() {
             assert_eq!(elems.len(), 4);
             // third is spread
             match &elems[2] {
-                CollectionElement::Spread(Expression::Variable(Identifier { name })) => {
-                    assert_eq!(name, "other")
+                CollectionElement::Spread(Expression::Variable(id)) => {
+                    assert_eq!(id.to_string(), "other")
                 }
                 _ => panic!("expected spread element"),
             }

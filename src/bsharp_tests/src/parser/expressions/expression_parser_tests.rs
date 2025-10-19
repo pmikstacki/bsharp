@@ -7,18 +7,18 @@ use syntax::types::Type;
 #[test]
 fn test_parse_simple_new_expression() {
     let input = "new Exception(\"Error\")";
-    let result = parse_expression(input);
+    let result = parse_expression(input.into());
     assert!(
         result.is_ok(),
         r#"Failed to parse 'new Exception("Error")': {:?}"#,
         result.err()
     );
     let (remaining, expr) = result.unwrap();
-    assert_eq!(remaining, "");
+    assert!(remaining.fragment().trim().is_empty());
     match expr {
         Expression::New(boxed_new_expr) => {
             match &boxed_new_expr.target_type {
-                Some(Type::Reference(ident)) => assert_eq!(ident.name, "Exception"),
+                Some(Type::Reference(ident)) => assert_eq!(ident.to_string(), "Exception"),
                 _ => panic!("Expected Some(Type::Reference) for new expression type"),
             }
             assert_eq!(boxed_new_expr.arguments.len(), 1);
@@ -36,18 +36,18 @@ fn test_parse_simple_new_expression() {
 #[test]
 fn test_parse_new_expression_no_args() {
     let input = "new Object()";
-    let result = parse_expression(input);
+    let result = parse_expression(input.into());
     assert!(
         result.is_ok(),
         "Failed to parse 'new Object()': {:?}",
         result.err()
     );
     let (remaining, expr) = result.unwrap();
-    assert_eq!(remaining, "");
+    assert!(remaining.fragment().trim().is_empty());
     match expr {
         Expression::New(boxed_new_expr) => {
             match &boxed_new_expr.target_type {
-                Some(Type::Reference(ident)) => assert_eq!(ident.name, "Object"),
+                Some(Type::Reference(ident)) => assert_eq!(ident.to_string(), "Object"),
                 _ => panic!("Expected Some(Type::Reference) for new expression type"),
             }
             assert!(boxed_new_expr.arguments.is_empty());
@@ -59,18 +59,18 @@ fn test_parse_new_expression_no_args() {
 #[test]
 fn test_parse_new_expression_multiple_args() {
     let input = "new Data(42, \"test\", true)";
-    let result = parse_expression(input);
+    let result = parse_expression(input.into());
     assert!(
         result.is_ok(),
         r#"Failed to parse 'new Data(42, "test", true)': {:?}"#,
         result.err()
     );
     let (remaining, expr) = result.unwrap();
-    assert_eq!(remaining, "");
+    assert!(remaining.fragment().trim().is_empty());
     match expr {
         Expression::New(boxed_new_expr) => {
             match &boxed_new_expr.target_type {
-                Some(Type::Reference(ident)) => assert_eq!(ident.name, "Data"),
+                Some(Type::Reference(ident)) => assert_eq!(ident.to_string(), "Data"),
                 _ => panic!("Expected Some(Type::Reference) for new expression type"),
             }
             assert_eq!(boxed_new_expr.arguments.len(), 3);

@@ -4,7 +4,7 @@ use parser::expressions::primary_expression_parser::parse_expression;
 use syntax::expressions::expression::Expression;
 
 fn parse_await_expr(code: &str) -> Result<Expression, String> {
-    match parse_expression(code) {
+    match parse_expression(code.into()) {
         Ok((remaining, expr)) => {
             if remaining.trim().is_empty() {
                 Ok(expr)
@@ -19,7 +19,7 @@ fn parse_await_expr(code: &str) -> Result<Expression, String> {
 #[test]
 fn test_parse_simple_await_expr() {
     let code = "await task";
-    let result = parse_await_expr(code);
+    let result = parse_await_expr(code.into());
     assert!(result.is_ok(), "Failed to parse simple await: {:?}", result);
 
     if let Ok(Expression::Await(await_expr)) = result {
@@ -33,7 +33,7 @@ fn test_parse_simple_await_expr() {
 #[test]
 fn test_parse_await_method_call() {
     let code = "await SomeMethodAsync()";
-    let result = parse_await_expr(code);
+    let result = parse_await_expr(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse await method call: {:?}",
@@ -51,7 +51,7 @@ fn test_parse_await_method_call() {
 #[test]
 fn test_parse_await_member_access() {
     let code = "await obj.MethodAsync()";
-    let result = parse_await_expr(code);
+    let result = parse_await_expr(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse await member access: {:?}",
@@ -69,7 +69,7 @@ fn test_parse_await_member_access() {
 #[test]
 fn test_parse_await_new_expression() {
     let code = "await new Task(() => { })";
-    let result = parse_await_expr(code);
+    let result = parse_await_expr(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse await new expression: {:?}",
@@ -87,7 +87,7 @@ fn test_parse_await_new_expression() {
 #[test]
 fn test_parse_await_parenthesized() {
     let code = "await (someTask)";
-    let result = parse_await_expr(code);
+    let result = parse_await_expr(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse await parenthesized: {:?}",
@@ -105,7 +105,7 @@ fn test_parse_await_parenthesized() {
 #[test]
 fn test_parse_nested_await() {
     let code = "await await GetTaskAsync()";
-    let result = parse_await_expr(code);
+    let result = parse_await_expr(code.into());
     assert!(result.is_ok(), "Failed to parse nested await: {:?}", result);
 
     if let Ok(Expression::Await(outer_await)) = result {
@@ -119,7 +119,7 @@ fn test_parse_nested_await() {
 #[test]
 fn test_parse_await_with_indexing() {
     let code = "await tasks[0]";
-    let result = parse_await_expr(code);
+    let result = parse_await_expr(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse await with indexing: {:?}",
@@ -137,7 +137,7 @@ fn test_parse_await_with_indexing() {
 #[test]
 fn test_parse_await_complex_expression() {
     let code = "await obj.GetServiceAsync().ConfigureAwait(false)";
-    let result = parse_await_expr(code);
+    let result = parse_await_expr(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse await complex expression: {:?}",

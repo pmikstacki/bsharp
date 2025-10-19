@@ -36,7 +36,7 @@ public class CTop { public void T() {} }
         .iter()
         .find_map(|m| match m {
             syntax::declarations::namespace_declaration::NamespaceBodyDeclaration::Class(c)
-                if c.name.name == "Outer" =>
+                if c.name.to_string() == "Outer" =>
             {
                 Some(c)
             }
@@ -49,7 +49,7 @@ public class CTop { public void T() {} }
         .iter()
         .find_map(|m| match m {
             syntax::declarations::ClassBodyDeclaration::NestedClass(c)
-                if c.name.name == "Inner" =>
+                if c.name.to_string() == "Inner" =>
             {
                 Some(c)
             }
@@ -79,7 +79,7 @@ public class CTop { public void T() {} }
         .declarations
         .iter()
         .find_map(|d| match d {
-            syntax::ast::TopLevelDeclaration::Class(c) if c.name.name == "CTop" => Some(c),
+            syntax::ast::TopLevelDeclaration::Class(c) if c.name.to_string() == "CTop" => Some(c),
             _ => None,
         })
         .expect("CTop class");

@@ -12,20 +12,16 @@ fn test_simple_binary_expression() {
         op: BinaryOperator::Add,
         right: Box::new(Expression::Literal(Literal::Integer(2))),
     };
-    let (_, actual) = parse_expression(input).unwrap();
+    let (_, actual) = parse_expression(input.into()).unwrap();
     assert_eq!(actual, expected);
 
     let input = "a * b";
     let expected = Expression::Binary {
-        left: Box::new(Expression::Variable(Identifier {
-            name: "a".to_string(),
-        })),
+        left: Box::new(Expression::Variable(Identifier::new("a"))),
         op: BinaryOperator::Multiply,
-        right: Box::new(Expression::Variable(Identifier {
-            name: "b".to_string(),
-        })),
+        right: Box::new(Expression::Variable(Identifier::new("b"))),
     };
-    let (_, actual) = parse_expression(input).unwrap();
+    let (_, actual) = parse_expression(input.into()).unwrap();
     assert_eq!(actual, expected);
 }
 
@@ -33,13 +29,11 @@ fn test_simple_binary_expression() {
 fn test_simple_assignment_expression() {
     let input = "x = 10";
     let expected = Expression::Assignment(Box::new(AssignmentExpression {
-        target: Box::new(Expression::Variable(Identifier {
-            name: "x".to_string(),
-        })),
+        target: Box::new(Expression::Variable(Identifier::new("x"))),
         op: BinaryOperator::Assign,
         value: Box::new(Expression::Literal(Literal::Integer(10))),
     }));
-    let (_, actual) = parse_expression(input).unwrap();
+    let (_, actual) = parse_expression(input.into()).unwrap();
     assert_eq!(actual, expected);
 }
 
@@ -47,26 +41,20 @@ fn test_simple_assignment_expression() {
 fn test_compound_assignment_expression() {
     let input = "y += 5";
     let expected = Expression::Assignment(Box::new(AssignmentExpression {
-        target: Box::new(Expression::Variable(Identifier {
-            name: "y".to_string(),
-        })),
+        target: Box::new(Expression::Variable(Identifier::new("y"))),
         op: BinaryOperator::AddAssign,
         value: Box::new(Expression::Literal(Literal::Integer(5))),
     }));
-    let (_, actual) = parse_expression(input).unwrap();
+    let (_, actual) = parse_expression(input.into()).unwrap();
     assert_eq!(actual, expected);
 
     let input = "z *= a";
     let expected = Expression::Assignment(Box::new(AssignmentExpression {
-        target: Box::new(Expression::Variable(Identifier {
-            name: "z".to_string(),
-        })),
+        target: Box::new(Expression::Variable(Identifier::new("z"))),
         op: BinaryOperator::MultiplyAssign,
-        value: Box::new(Expression::Variable(Identifier {
-            name: "a".to_string(),
-        })),
+        value: Box::new(Expression::Variable(Identifier::new("a"))),
     }));
-    let (_, actual) = parse_expression(input).unwrap();
+    let (_, actual) = parse_expression(input.into()).unwrap();
     assert_eq!(actual, expected);
 }
 
@@ -75,41 +63,29 @@ fn test_precedence() {
     // a + b * c -> a + (b * c)
     let input = "a + b * c";
     let expected = Expression::Binary {
-        left: Box::new(Expression::Variable(Identifier {
-            name: "a".to_string(),
-        })),
+        left: Box::new(Expression::Variable(Identifier::new("a"))),
         op: BinaryOperator::Add,
         right: Box::new(Expression::Binary {
-            left: Box::new(Expression::Variable(Identifier {
-                name: "b".to_string(),
-            })),
+            left: Box::new(Expression::Variable(Identifier::new("b"))),
             op: BinaryOperator::Multiply,
-            right: Box::new(Expression::Variable(Identifier {
-                name: "c".to_string(),
-            })),
+            right: Box::new(Expression::Variable(Identifier::new("c"))),
         }),
     };
-    let (_, actual) = parse_expression(input).unwrap();
+    let (_, actual) = parse_expression(input.into()).unwrap();
     assert_eq!(actual, expected);
 
     // x = y == z -> x = (y == z)
     let input = "x = y == z";
     let expected = Expression::Assignment(Box::new(AssignmentExpression {
-        target: Box::new(Expression::Variable(Identifier {
-            name: "x".to_string(),
-        })),
+        target: Box::new(Expression::Variable(Identifier::new("x"))),
         op: BinaryOperator::Assign,
         value: Box::new(Expression::Binary {
-            left: Box::new(Expression::Variable(Identifier {
-                name: "y".to_string(),
-            })),
+            left: Box::new(Expression::Variable(Identifier::new("y"))),
             op: BinaryOperator::Equal,
-            right: Box::new(Expression::Variable(Identifier {
-                name: "z".to_string(),
-            })),
+            right: Box::new(Expression::Variable(Identifier::new("z"))),
         }),
     }));
-    let (_, actual) = parse_expression(input).unwrap();
+    let (_, actual) = parse_expression(input.into()).unwrap();
     assert_eq!(actual, expected);
 }
 
@@ -119,20 +95,14 @@ fn test_parentheses() {
     let input = "(a + b) * c";
     let expected = Expression::Binary {
         left: Box::new(Expression::Binary {
-            left: Box::new(Expression::Variable(Identifier {
-                name: "a".to_string(),
-            })),
+            left: Box::new(Expression::Variable(Identifier::new("a"))),
             op: BinaryOperator::Add,
-            right: Box::new(Expression::Variable(Identifier {
-                name: "b".to_string(),
-            })),
+            right: Box::new(Expression::Variable(Identifier::new("b"))),
         }),
         op: BinaryOperator::Multiply,
-        right: Box::new(Expression::Variable(Identifier {
-            name: "c".to_string(),
-        })),
+        right: Box::new(Expression::Variable(Identifier::new("c"))),
     };
-    let (_, actual) = parse_expression(input).unwrap();
+    let (_, actual) = parse_expression(input.into()).unwrap();
     assert_eq!(actual, expected);
 }
 
@@ -142,20 +112,14 @@ fn test_left_associativity() {
     let input = "a - b + c";
     let expected = Expression::Binary {
         left: Box::new(Expression::Binary {
-            left: Box::new(Expression::Variable(Identifier {
-                name: "a".to_string(),
-            })),
+            left: Box::new(Expression::Variable(Identifier::new("a"))),
             op: BinaryOperator::Subtract,
-            right: Box::new(Expression::Variable(Identifier {
-                name: "b".to_string(),
-            })),
+            right: Box::new(Expression::Variable(Identifier::new("b"))),
         }),
         op: BinaryOperator::Add,
-        right: Box::new(Expression::Variable(Identifier {
-            name: "c".to_string(),
-        })),
+        right: Box::new(Expression::Variable(Identifier::new("c"))),
     };
-    let (_, actual) = parse_expression(input).unwrap();
+    let (_, actual) = parse_expression(input.into()).unwrap();
     assert_eq!(actual, expected);
 }
 
@@ -163,19 +127,15 @@ fn test_left_associativity() {
 fn test_assignment_associativity() {
     let code = "x = y = 5";
     let expected = Expression::Assignment(Box::new(AssignmentExpression {
-        target: Box::new(Expression::Variable(Identifier {
-            name: "x".to_string(),
-        })),
+        target: Box::new(Expression::Variable(Identifier::new("x"))),
         op: BinaryOperator::Assign,
         value: Box::new(Expression::Assignment(Box::new(AssignmentExpression {
-            target: Box::new(Expression::Variable(Identifier {
-                name: "y".to_string(),
-            })),
+            target: Box::new(Expression::Variable(Identifier::new("y"))),
             op: BinaryOperator::Assign,
             value: Box::new(Expression::Literal(Literal::Integer(5))),
         }))),
     }));
-    let (_, actual) = parse_expression(code).unwrap();
+    let (_, actual) = parse_expression(code.into()).unwrap();
     assert_eq!(actual, expected);
 }
 
@@ -183,13 +143,11 @@ fn test_assignment_associativity() {
 fn test_null_coalescing_assignment_expression() {
     let input = "x ??= 42";
     let expected = Expression::Assignment(Box::new(AssignmentExpression {
-        target: Box::new(Expression::Variable(Identifier {
-            name: "x".to_string(),
-        })),
+        target: Box::new(Expression::Variable(Identifier::new("x"))),
         op: BinaryOperator::NullCoalescingAssign,
         value: Box::new(Expression::Literal(Literal::Integer(42))),
     }));
-    let (_, actual) = parse_expression(input).unwrap();
+    let (_, actual) = parse_expression(input.into()).unwrap();
     assert_eq!(actual, expected);
 }
 
@@ -197,21 +155,15 @@ fn test_null_coalescing_assignment_expression() {
 fn test_null_coalescing_assignment_chain() {
     let input = "a ??= b ??= c";
     let expected = Expression::Assignment(Box::new(AssignmentExpression {
-        target: Box::new(Expression::Variable(Identifier {
-            name: "a".to_string(),
-        })),
+        target: Box::new(Expression::Variable(Identifier::new("a"))),
         op: BinaryOperator::NullCoalescingAssign,
         value: Box::new(Expression::Assignment(Box::new(AssignmentExpression {
-            target: Box::new(Expression::Variable(Identifier {
-                name: "b".to_string(),
-            })),
+            target: Box::new(Expression::Variable(Identifier::new("b"))),
             op: BinaryOperator::NullCoalescingAssign,
-            value: Box::new(Expression::Variable(Identifier {
-                name: "c".to_string(),
-            })),
+            value: Box::new(Expression::Variable(Identifier::new("c"))),
         }))),
     }));
-    let (_, actual) = parse_expression(input).unwrap();
+    let (_, actual) = parse_expression(input.into()).unwrap();
     assert_eq!(actual, expected);
 }
 
@@ -220,20 +172,14 @@ fn test_null_coalescing_vs_null_coalescing_assignment() {
     // Test that ?? and ??= are parsed correctly and don't interfere with each other
     let input = "result = x ?? y";
     let expected = Expression::Assignment(Box::new(AssignmentExpression {
-        target: Box::new(Expression::Variable(Identifier {
-            name: "result".to_string(),
-        })),
+        target: Box::new(Expression::Variable(Identifier::new("result"))),
         op: BinaryOperator::Assign,
         value: Box::new(Expression::Binary {
-            left: Box::new(Expression::Variable(Identifier {
-                name: "x".to_string(),
-            })),
+            left: Box::new(Expression::Variable(Identifier::new("x"))),
             op: BinaryOperator::NullCoalescing,
-            right: Box::new(Expression::Variable(Identifier {
-                name: "y".to_string(),
-            })),
+            right: Box::new(Expression::Variable(Identifier::new("y"))),
         }),
     }));
-    let (_, actual) = parse_expression(input).unwrap();
+    let (_, actual) = parse_expression(input.into()).unwrap();
     assert_eq!(actual, expected);
 }

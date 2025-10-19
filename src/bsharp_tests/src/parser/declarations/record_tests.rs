@@ -24,9 +24,7 @@ fn test_parse_record_class() {
     let expected = RecordDeclaration {
         attributes: vec![],                // Simplified
         modifiers: vec![Modifier::Public], // Use Modifier enum
-        name: Identifier {
-            name: "Person".to_string(),
-        },
+        name: Identifier::new("Person"),
         is_struct: false, // Key check for record class
         parameters: Some(
             vec![/* Parameter { name: Identifier { name: "Name".to_string() }, ... }, Parameter { name: Identifier { name: "Age".to_string() }, ... } */],
@@ -37,9 +35,9 @@ fn test_parse_record_class() {
     };
 
     // Check the flag specifically when syntax is implemented
-    // assert_eq!(parse_record(code).map(|r| r.is_struct), Ok(false));
+    // assert_eq!(parse_record(code.into()).map(|r| r.is_struct), Ok(false));
     assert!(
-        parse_record(code).is_err(),
+        parse_record(code.into()).is_err(),
         "Parser should not be implemented yet"
     );
 }
@@ -50,9 +48,7 @@ fn test_parse_record_struct() {
     let expected = RecordDeclaration {
         attributes: vec![],                  // Simplified
         modifiers: vec![Modifier::Internal], // Use Modifier enum
-        name: Identifier {
-            name: "Point".to_string(),
-        },
+        name: Identifier::new("Point"),
         is_struct: true, // Key check for record struct
         parameters: Some(
             vec![/* Parameter { name: Identifier { name: "X".to_string() }, ... }, Parameter { name: Identifier { name: "Y".to_string() }, ... } */],
@@ -63,9 +59,9 @@ fn test_parse_record_struct() {
     };
 
     // Check the flag specifically when syntax is implemented
-    // assert_eq!(parse_record(code).map(|r| r.is_struct), Ok(true));
+    // assert_eq!(parse_record(code.into()).map(|r| r.is_struct), Ok(true));
     assert!(
-        parse_record(code).is_err(),
+        parse_record(code.into()).is_err(),
         "Parser should not be implemented yet"
     );
 }

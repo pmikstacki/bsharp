@@ -10,6 +10,6 @@ fn parse_member_access_expr(code: &str) -> Result<MemberAccessExpression, String
 fn test_parse_member_access_expr() {
     let code = "foo.bar";
     // let expected = ...;
-    // assert_eq!(parse_member_access_expr(code), Ok(expected));
-    assert!(parse_member_access_expr(code).is_err());
+    // assert_eq!(parse_member_access_expr(code.into()), Ok(expected));
+    assert!(parse_member_access_expr(code.into()).is_err());
 }

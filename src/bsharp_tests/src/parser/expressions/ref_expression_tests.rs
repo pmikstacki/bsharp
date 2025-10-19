@@ -9,12 +9,12 @@ use syntax::identifier::Identifier;
 use syntax::types::{PrimitiveType, Type};
 
 fn parse_ref_expr_helper(code: &str) -> Result<Expression, String> {
-    match parse_ref_expression(code) {
+    match parse_ref_expression(code.into()) {
         Ok((remaining, expr)) => {
-            if remaining.trim().is_empty() {
+            if remaining.fragment().trim().is_empty() {
                 Ok(expr)
             } else {
-                Err(format!("Unexpected remaining input: '{}'", remaining))
+                Err(format!("Unexpected remaining input: '{}'", remaining.fragment()))
             }
         }
         Err(e) => Err(format!("Parse error: {:?}", e)),
@@ -22,12 +22,12 @@ fn parse_ref_expr_helper(code: &str) -> Result<Expression, String> {
 }
 
 fn parse_expr_helper(code: &str) -> Result<Expression, String> {
-    match parse_expression(code) {
+    match parse_expression(code.into()) {
         Ok((remaining, expr)) => {
-            if remaining.trim().is_empty() {
+            if remaining.fragment().trim().is_empty() {
                 Ok(expr)
             } else {
-                Err(format!("Unexpected remaining input: '{}'", remaining))
+                Err(format!("Unexpected remaining input: '{}'", remaining.fragment()))
             }
         }
         Err(e) => Err(format!("Parse error: {:?}", e)),
@@ -35,12 +35,12 @@ fn parse_expr_helper(code: &str) -> Result<Expression, String> {
 }
 
 fn parse_type_helper(code: &str) -> Result<Type, String> {
-    match parse_type_expression(code) {
+    match parse_type_expression(code.into()) {
         Ok((remaining, ty)) => {
-            if remaining.trim().is_empty() {
+            if remaining.fragment().trim().is_empty() {
                 Ok(ty)
             } else {
-                Err(format!("Unexpected remaining input: '{}'", remaining))
+                Err(format!("Unexpected remaining input: '{}'", remaining.fragment()))
             }
         }
         Err(e) => Err(format!("Parse error: {:?}", e)),
@@ -55,7 +55,7 @@ fn test_parse_ref_variable() {
     match result.unwrap() {
         Expression::Ref(inner) => match *inner {
             Expression::Variable(ref id) => {
-                assert_eq!(id.name, "myVariable");
+                assert_eq!(id.to_string(), "myVariable");
             }
             _ => panic!("Expected variable expression, got {:?}", inner),
         },
@@ -163,7 +163,7 @@ fn test_parse_ref_in_full_expression_parser() {
     match result.unwrap() {
         Expression::Ref(inner) => match *inner {
             Expression::Variable(ref id) => {
-                assert_eq!(id.name, "myVariable");
+                assert_eq!(id.to_string(), "myVariable");
             }
             _ => panic!("Expected variable expression, got {:?}", inner),
         },
@@ -220,7 +220,7 @@ fn test_parse_ref_return_types() {
     ];
 
     for (input, expected) in test_cases {
-        let result = parse_type_helper(input);
+        let result = parse_type_helper(input.into());
         assert!(
             result.is_ok(),
             "Failed to parse ref return type '{}': {:?}",
@@ -269,7 +269,7 @@ fn test_parse_ref_return_generic_types() {
     match result.unwrap() {
         Type::RefReturn(inner) => match *inner {
             Type::Generic { base, args } => {
-                assert_eq!(base.name, "List");
+                assert_eq!(base.to_string(), "List");
                 assert_eq!(args.len(), 1);
                 assert_eq!(args[0], Type::Primitive(PrimitiveType::String));
             }
@@ -300,7 +300,7 @@ fn test_parse_ref_assignment() {
                     // Check left side is variable
                     match assignment.target.as_ref() {
                         Expression::Variable(id) => {
-                            assert_eq!(id.name, "localVar");
+                            assert_eq!(id.to_string(), "localVar");
                         }
                         _ => panic!(
                             "Expected variable expression on left side, got: {:?}",
@@ -376,7 +376,7 @@ fn test_parse_ref_locals() {
             // Check left side is variable
             match *assignment.target {
                 Expression::Variable(ref id) => {
-                    assert_eq!(id.name, "refLocal");
+                    assert_eq!(id.to_string(), "refLocal");
                 }
                 _ => panic!("Expected variable expression on left side"),
             }
@@ -433,7 +433,7 @@ fn test_ref_expression_precedence() {
                     // Left side should be field variable
                     match left.as_ref() {
                         Expression::Variable(id) => {
-                            assert_eq!(id.name, "field");
+                            assert_eq!(id.to_string(), "field");
                         }
                         _ => panic!("Expected variable expression on left side"),
                     }

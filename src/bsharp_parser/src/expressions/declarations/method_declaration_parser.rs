@@ -9,7 +9,7 @@ use crate::parser::identifier_parser::parse_identifier;
 use crate::parser::types::type_parser::parse_type_expression;
 use crate::syntax::errors::BResult;
 use nom::branch::alt;
-use nom::combinator::opt;
+use nom::combinator::{map, opt};
 use nom_supreme::tag::complete::tag;
 use syntax::declarations::{
     ConstructorDeclaration, ConstructorInitializer, MemberDeclaration, MethodDeclaration,
@@ -19,65 +19,51 @@ use syntax::statements::statement::Statement;
 
 // use nom_supreme::ParserExt for .context()
 use crate::syntax::comment_parser::ws;
-use nom::sequence::delimited;
 use nom::character::complete::satisfy;
 use nom::combinator::peek;
+use nom::sequence::delimited;
 use nom::Parser;
 use nom_supreme::ParserExt;
 /// Parse an optional constructor initializer: ": base(args)" or ": this(args)"
-fn parse_constructor_initializer<'a>(input: Span<'a>) -> BResult<'a, ConstructorInitializer> {
-    use nom::branch::alt;
-    use nom::combinator::map;
-    use nom_supreme::tag::complete::tag;
+fn parse_constructor_initializer(input: Span) -> BResult<ConstructorInitializer> {
 
-    (|i: Span<'a>| {
-        let (i, _) = delimited(ws, satisfy(|c| c == ':'), ws).parse(i)?;
-        alt((
-            map(
-                |i2: Span<'a>| {
-                    let (i2, _) = delimited(ws, tag("base"), ws).parse(i2)?;
-                    let (i2, args) = crate::syntax::list_parser::parse_delimited_list0::<
-                        _, _, _, _, char, Expression, char, char, Expression,
-                    >(
-                        |j: Span<'a>| delimited(ws, satisfy(|c| c == '('), ws).parse(j),
-                        |j: Span<'a>| delimited(ws, crate::parser::expressions::primary_expression_parser::parse_expression, ws).parse(j),
-                        |j: Span<'a>| delimited(ws, satisfy(|c| c == ','), ws).parse(j),
-                        |j: Span<'a>| delimited(ws, satisfy(|c| c == ')'), ws).parse(j),
-                        false,
-                        true,
-                    )(i2)?;
-                    Ok((i2, ConstructorInitializer::Base(args)))
-                },
-                |x| x,
-            ),
-            map(
-                |i2: Span<'a>| {
-                    let (i2, _) = delimited(ws, tag("this"), ws).parse(i2)?;
-                    let (i2, args) = crate::syntax::list_parser::parse_delimited_list0::<
-                        _, _, _, _, char, Expression, char, char, Expression,
-                    >(
-                        |j: Span<'a>| delimited(ws, satisfy(|c| c == '('), ws).parse(j),
-                        |j: Span<'a>| delimited(ws, crate::parser::expressions::primary_expression_parser::parse_expression, ws).parse(j),
-                        |j: Span<'a>| delimited(ws, satisfy(|c| c == ','), ws).parse(j),
-                        |j: Span<'a>| delimited(ws, satisfy(|c| c == ')'), ws).parse(j),
-                        false,
-                        true,
-                    )(i2)?;
-                    Ok((i2, ConstructorInitializer::This(args)))
-                },
-                |x| x,
-            ),
-        ))
-        .parse(i)
-    })
-    .context("constructor initializer")
-    .parse(input)
+    // Shared arg-list parser for (expr, expr, ...)
+    fn parse_arg_list(i: Span) -> BResult<Vec<Expression>> {
+        crate::syntax::list_parser::parse_delimited_list0::<
+            _, _, _, _, char, char, char, Expression,
+        >(
+            |j: Span| delimited(ws, tok_l_paren(), ws).parse(j),
+            |j: Span| delimited(ws, parse_expression, ws).parse(j),
+            |j: Span| delimited(ws, tok_comma(), ws).parse(j),
+            |j: Span| delimited(ws, tok_r_paren(), ws).parse(j),
+            false,
+            true,
+        )
+            .parse(i)
+    }
+
+    map(
+        (
+            delimited(ws, tok_colon(), ws),
+            alt((
+                map((delimited(ws, tag("base"), ws), parse_arg_list), |(_, args)| {
+                    ConstructorInitializer::Base(args)
+                }),
+                map((delimited(ws, tag("this"), ws), parse_arg_list), |(_, args)| {
+                    ConstructorInitializer::This(args)
+                }),
+            )),
+        ),
+        |(_, init)| init,
+    )
+        .context("constructor initializer")
+        .parse(input.into())
 }
 
 /// Parse a pure method declaration, erroring if the unified parser determines constructor syntax.
-pub fn parse_pure_method_declaration<'a>(input: Span<'a>) -> BResult<'a, MethodDeclaration> {
+pub fn parse_pure_method_declaration(input: Span) -> BResult<MethodDeclaration> {
     use nom_supreme::error::{BaseErrorKind, ErrorTree, Expectation};
-    let (rest, member) = parse_member_declaration(input)?;
+    let (rest, member) = parse_member_declaration(input.into())?;
     if member.has_constructor_syntax() {
         return Err(nom::Err::Failure(ErrorTree::Base {
             location: input,
@@ -101,9 +87,9 @@ pub fn parse_pure_method_declaration<'a>(input: Span<'a>) -> BResult<'a, MethodD
 }
 
 /// Parse a pure constructor declaration, erroring if the unified parser determines method syntax.
-pub fn parse_constructor_declaration<'a>(input: Span<'a>) -> BResult<'a, ConstructorDeclaration> {
+pub fn parse_constructor_declaration(input: Span) -> BResult<ConstructorDeclaration> {
     use nom_supreme::error::{BaseErrorKind, ErrorTree, Expectation};
-    let (rest, member) = parse_member_declaration(input)?;
+    let (rest, member) = parse_member_declaration(input.into())?;
     if !member.has_constructor_syntax() {
         return Err(nom::Err::Failure(ErrorTree::Base {
             location: input,
@@ -136,36 +122,36 @@ fn parse_member_body(input: Span) -> BResult<Option<Statement>> {
         },
         // Expression body: => expr;
         |i| {
-            use nom::{combinator::cut, sequence::tuple};
-            let (i, _) = delimited(ws, tag("=>"), ws).parse(i)?;
-            let (i, (expr, _semi)) = cut(tuple((delimited(ws, parse_expression, ws), delimited(ws, satisfy(|c| c == ';'), ws))))
+            use nom::combinator::cut;
+            let (i, _) = delimited(ws, tok_lambda(), ws).parse(i)?;
+            let (i, (expr, _semi)) = cut((delimited(ws, parse_expression, ws), delimited(ws, tok_semicolon(), ws)))
                 .parse(i)?;
             Ok((i, Some(Statement::Expression(expr))))
         },
         // Abstract/interface member: ; (no body)
         |i| {
-            let (i, _) = delimited(ws, satisfy(|c| c == ';'), ws).parse(i)?;
+            let (i, _) = delimited(ws, tok_semicolon(), ws).parse(i)?;
             Ok((i, None))
         },
     ))
-    .context("member body (expected block '{...}', expression body '=> expr;', or ';')")
-    .parse(input)
+        .context("member body (expected block '{...}', expression body '=> expr;', or ';')")
+        .parse(input.into())
 }
 
 /// **Pure Structural Parser**
 /// Parse a member declaration (method or constructor) based purely on parser structure.
 /// NO semantic validation - all syntactically valid constructs are parsed successfully.
 /// The analyzer determines semantic meaning and validates semantic rules.
-pub fn parse_member_declaration<'a>(input: Span<'a>) -> BResult<'a, MemberDeclaration> {
+pub fn parse_member_declaration(input: Span) -> BResult<MemberDeclaration> {
     // 1. Parse modifiers (ALL modifiers allowed syntactically - no semantic checks here)
-    let (input, modifiers) = parse_modifiers(input)?;
+    let (input, modifiers) = parse_modifiers(input.into())?;
 
     // 2. We need to determine if this is a method (has return type) or constructor (no return type).
     // The challenge: `Type Name()` vs `Name()` - both start with an identifier.
     // Strategy: Try to parse as method first, if that fails, try as constructor.
 
     // Try method parsing first (Type Name(...))
-    if let Ok((after_type, return_type)) = delimited(ws, parse_type_expression, ws).parse(input) {
+    if let Ok((after_type, return_type)) = delimited(ws, parse_type_expression, ws).parse(input.into()) {
         // Successfully parsed a type, now try to parse an identifier after it
         if let Ok((after_name_candidate, name)) = delimited(ws, parse_identifier, ws).parse(after_type) {
             // Attempt to parse optional type parameters <T, U> for the method itself
@@ -215,7 +201,7 @@ pub fn parse_member_declaration<'a>(input: Span<'a>) -> BResult<'a, MemberDeclar
 
     // If method parsing failed, try constructor parsing: Name(...)
     // This path is also taken if the structure doesn't match Type Name<...>(...) pattern
-    let (input_after_mods, name) = delimited(ws, parse_identifier, ws).parse(input)?;
+    let (input_after_mods, name) = delimited(ws, parse_identifier, ws).parse(input.into())?;
     // 4. Parse type parameters (for generic constructors - though rare, syntactically possible)
     let (input_after_type_params, type_parameters) =
         opt(|i| delimited(ws, parse_type_parameter_list, ws).parse(i))
@@ -264,3 +250,6 @@ pub fn parse_member_declaration<'a>(input: Span<'a>) -> BResult<'a, MemberDeclar
     ))
 }
 use crate::syntax::span::Span;
+use crate::tokens::delimiters::{tok_l_paren, tok_r_paren};
+use crate::tokens::lambda::tok_lambda;
+use crate::tokens::separators::{tok_colon, tok_comma, tok_semicolon};

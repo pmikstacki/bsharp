@@ -112,7 +112,7 @@ The parser implements precedence using recursive descent with precedence climbin
 
 ```rust
 fn parse_expression(input: &str) -> BResult<&str, Expression> {
-    parse_assignment_expression(input)
+    parse_assignment_expression(input.into())
 }
 
 fn parse_assignment_expression(input: &str) -> BResult<&str, Expression> {

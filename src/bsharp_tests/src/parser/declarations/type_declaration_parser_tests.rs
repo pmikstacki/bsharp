@@ -1,7 +1,7 @@
 #![cfg(test)]
 use parser::expressions::declarations::type_declaration_parser::{
     parse_class_declaration, parse_interface_declaration, parse_record_declaration,
-    parse_struct_declaration, parse_type_declaration,
+    parse_struct_declaration_span as parse_struct_declaration, parse_type_declaration,
 };
 use syntax::declarations::{InterfaceBodyDeclaration, TypeDeclaration};
 
@@ -9,9 +9,9 @@ use syntax::declarations::{InterfaceBodyDeclaration, TypeDeclaration};
 fn test_simple_class() {
     let input = "class MyClass {}";
 
-    match parse_class_declaration(input) {
+    match parse_class_declaration(input.into()) {
         Ok((remaining, decl)) => {
-            assert_eq!(remaining, "");
+            assert!(remaining.fragment().trim().is_empty());
             assert_eq!(decl.name.to_string(), "MyClass");
             assert_eq!(decl.modifiers.len(), 0);
             assert_eq!(decl.body_declarations.len(), 0);
@@ -24,9 +24,9 @@ fn test_simple_class() {
 fn test_simple_struct() {
     let input = "struct MyStruct {}";
 
-    match parse_struct_declaration(input) {
+    match parse_struct_declaration(input.into()) {
         Ok((remaining, decl)) => {
-            assert_eq!(remaining, "");
+            assert!(remaining.fragment().trim().is_empty());
             assert_eq!(decl.name.to_string(), "MyStruct");
             assert_eq!(decl.modifiers.len(), 0);
             assert_eq!(decl.body_declarations.len(), 0);
@@ -39,9 +39,9 @@ fn test_simple_struct() {
 fn test_record_class() {
     let input = "record Person(string FirstName, string LastName);";
 
-    match parse_record_declaration(input) {
+    match parse_record_declaration(input.into()) {
         Ok((remaining, decl)) => {
-            assert_eq!(remaining, "");
+            assert!(remaining.fragment().trim().is_empty());
             assert_eq!(decl.name.to_string(), "Person");
             assert!(!decl.is_struct);
             assert!(decl.parameters.is_some());
@@ -55,9 +55,9 @@ fn test_record_class() {
 fn test_record_struct() {
     let input = "record struct Point(int X, int Y);";
 
-    match parse_record_declaration(input) {
+    match parse_record_declaration(input.into()) {
         Ok((remaining, decl)) => {
-            assert_eq!(remaining, "");
+            assert!(remaining.fragment().trim().is_empty());
             assert_eq!(decl.name.to_string(), "Point");
             assert!(decl.is_struct);
             assert!(decl.parameters.is_some());
@@ -71,9 +71,9 @@ fn test_record_struct() {
 fn test_simple_interface() {
     let input = "interface IComparable {}";
 
-    match parse_interface_declaration(input) {
+    match parse_interface_declaration(input.into()) {
         Ok((remaining, decl)) => {
-            assert_eq!(remaining, "");
+            assert!(remaining.fragment().trim().is_empty());
             assert_eq!(decl.name.to_string(), "IComparable");
             assert_eq!(decl.modifiers.len(), 0);
             assert_eq!(decl.body_declarations.len(), 0);
@@ -86,9 +86,9 @@ fn test_simple_interface() {
 fn test_interface_with_modifiers_and_base() {
     let input = "public interface IList<T> : ICollection<T>, IEnumerable<T> {}";
 
-    match parse_interface_declaration(input) {
+    match parse_interface_declaration(input.into()) {
         Ok((remaining, decl)) => {
-            assert_eq!(remaining, "");
+            assert!(remaining.fragment().trim().is_empty());
             assert_eq!(decl.name.to_string(), "IList");
             assert_eq!(decl.modifiers.len(), 1); // public
             assert_eq!(decl.base_types.len(), 2); // ICollection<T> and IEnumerable<T>
@@ -107,9 +107,9 @@ fn test_interface_with_modifiers_and_base() {
 fn test_interface_with_method() {
     let input = "interface IComparable { int CompareTo(object obj); }";
 
-    match parse_interface_declaration(input) {
+    match parse_interface_declaration(input.into()) {
         Ok((remaining, decl)) => {
-            assert_eq!(remaining, "");
+            assert!(remaining.fragment().trim().is_empty());
             assert_eq!(decl.name.to_string(), "IComparable");
             assert_eq!(decl.modifiers.len(), 0);
             assert_eq!(decl.body_declarations.len(), 1);
@@ -132,9 +132,9 @@ fn test_interface_with_method_body_error() {
     // Interface methods cannot have a body, but syntax should use error recovery
     let input = "interface IBad { void BadMethod() { return; } }";
 
-    match parse_interface_declaration(input) {
+    match parse_interface_declaration(input.into()) {
         Ok((remaining, decl)) => {
-            assert_eq!(remaining, "");
+            assert!(remaining.fragment().trim().is_empty());
             assert_eq!(decl.name.to_string(), "IBad");
             assert_eq!(decl.body_declarations.len(), 1);
 
@@ -157,9 +157,9 @@ fn test_interface_with_method_body_error() {
 fn test_type_declaration_interface() {
     let input = "interface IComparable { int CompareTo(object obj); }";
 
-    match parse_type_declaration(input) {
+    match parse_type_declaration(input.into()) {
         Ok((remaining, TypeDeclaration::Interface(decl))) => {
-            assert_eq!(remaining, "");
+            assert!(remaining.fragment().trim().is_empty());
             assert_eq!(decl.name.to_string(), "IComparable");
             assert_eq!(decl.body_declarations.len(), 1);
         }

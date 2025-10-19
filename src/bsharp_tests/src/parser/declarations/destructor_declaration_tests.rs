@@ -5,7 +5,7 @@ use syntax::declarations::{DestructorDeclaration, Modifier};
 use syntax::identifier::Identifier;
 
 fn parse_destructor_declaration_helper(code: &str) -> Result<DestructorDeclaration, String> {
-    match parse_destructor_declaration(code) {
+    match parse_destructor_declaration(code.into()) {
         Ok((remaining, declaration)) => {
             if remaining.trim().is_empty() {
                 Ok(declaration)
@@ -20,7 +20,7 @@ fn parse_destructor_declaration_helper(code: &str) -> Result<DestructorDeclarati
 #[test]
 fn test_parse_simple_destructor() {
     let code = "~MyClass() { }";
-    let result = parse_destructor_declaration_helper(code);
+    let result = parse_destructor_declaration_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse simple destructor: {:?}",
@@ -40,7 +40,7 @@ fn test_parse_simple_destructor() {
 #[test]
 fn test_parse_destructor_with_body() {
     let code = "~MyClass() { Console.WriteLine(\"Destructor called\"); }";
-    let result = parse_destructor_declaration_helper(code);
+    let result = parse_destructor_declaration_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse destructor with body: {:?}",
@@ -58,7 +58,7 @@ fn test_parse_destructor_with_body() {
 #[test]
 fn test_parse_extern_destructor() {
     let code = "extern ~MyClass();";
-    let result = parse_destructor_declaration_helper(code);
+    let result = parse_destructor_declaration_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse extern destructor: {:?}",
@@ -74,7 +74,7 @@ fn test_parse_extern_destructor() {
 #[test]
 fn test_parse_destructor_with_attributes() {
     let code = "[Obsolete] ~MyClass() { }";
-    let result = parse_destructor_declaration_helper(code);
+    let result = parse_destructor_declaration_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse destructor with attributes: {:?}",
@@ -92,7 +92,7 @@ fn test_parse_destructor_with_attributes() {
 #[test]
 fn test_parse_destructor_with_multiple_attributes() {
     let code = "[Obsolete][MethodImpl(MethodImplOptions.NoInlining)] ~MyClass() { }";
-    let result = parse_destructor_declaration_helper(code);
+    let result = parse_destructor_declaration_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse destructor with multiple attributes: {:?}",
@@ -135,7 +135,7 @@ fn test_parse_destructor_different_class_names() {
 #[test]
 fn test_parse_destructor_with_whitespace() {
     let code = "  ~  MyClass  (  )  {  }  ";
-    let result = parse_destructor_declaration_helper(code);
+    let result = parse_destructor_declaration_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse destructor with whitespace: {:?}",
@@ -149,7 +149,7 @@ fn test_parse_destructor_with_whitespace() {
 #[test]
 fn test_parse_destructor_with_comments() {
     let code = "/* comment */ ~MyClass() /* another comment */ { /* body comment */ }";
-    let result = parse_destructor_declaration_helper(code);
+    let result = parse_destructor_declaration_helper(code.into());
     // This test might fail if comment parsing isn't fully integrated
     // For now, we'll just check that it doesn't crash
     match result {
@@ -166,7 +166,7 @@ fn test_parse_destructor_with_comments() {
 #[test]
 fn test_parse_unsafe_destructor() {
     let code = "unsafe ~MyClass() { }";
-    let result = parse_destructor_declaration_helper(code);
+    let result = parse_destructor_declaration_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse unsafe destructor: {:?}",
@@ -181,7 +181,7 @@ fn test_parse_unsafe_destructor() {
 #[test]
 fn test_parse_destructor_empty_body() {
     let code = "~MyClass() { }";
-    let result = parse_destructor_declaration_helper(code);
+    let result = parse_destructor_declaration_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse destructor with empty body: {:?}",
@@ -199,7 +199,7 @@ fn test_parse_destructor_empty_body() {
 #[test]
 fn test_parse_destructor_generic_class() {
     let code = "~MyClass() { }";
-    let result = parse_destructor_declaration_helper(code);
+    let result = parse_destructor_declaration_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse destructor for generic class: {:?}",
@@ -215,7 +215,7 @@ fn test_parse_destructor_generic_class() {
 #[test]
 fn test_parse_destructor_nested_class() {
     let code = "~NestedClass() { }";
-    let result = parse_destructor_declaration_helper(code);
+    let result = parse_destructor_declaration_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse destructor for nested class: {:?}",

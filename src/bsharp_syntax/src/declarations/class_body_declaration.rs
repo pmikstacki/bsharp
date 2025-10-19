@@ -4,9 +4,10 @@ use super::{
     IndexerDeclaration, MethodDeclaration, OperatorDeclaration, PropertyDeclaration,
     RecordDeclaration,
 };
+use bsharp_syntax_derive::AstNode;
 use serde::{Deserialize, Serialize};
 
-#[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub enum ClassBodyDeclaration {
     Field(FieldDeclaration),
     Method(MethodDeclaration),

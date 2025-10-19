@@ -5,13 +5,12 @@ use crate::parser::expressions::primary_expression_parser::parse_expression;
 use crate::parser::keywords::declaration_keywords::kw_using;
 use crate::parser::keywords::expression_keywords::kw_await;
 use crate::parser::statement_parser::parse_statement_ws;
-use crate::syntax::errors::BResult;
 use crate::syntax::comment_parser::ws;
+use crate::syntax::errors::BResult;
 use nom::combinator::cut;
 use nom::combinator::opt;
-use nom::character::complete::char as nom_char;
-use nom::sequence::delimited;
 use nom::combinator::peek;
+use nom::sequence::delimited;
 use nom::Parser;
 use nom_supreme::ParserExt;
 use syntax::statements::statement::Statement;
@@ -22,7 +21,7 @@ use syntax::statements::UsingStatement;
 /// Examples:
 /// - using (var file = new FileStream(...)) { ... }
 /// - using (stream) { ... }
-pub fn parse_using_statement<'a>(input: Span<'a>) -> BResult<'a, Statement> {
+pub fn parse_using_statement(input: Span) -> BResult<Statement> {
     (|input| {
         // Optional 'await'
         let (input, is_await) = match opt(delimited(ws, kw_await(), ws)).parse(input) {
@@ -36,14 +35,14 @@ pub fn parse_using_statement<'a>(input: Span<'a>) -> BResult<'a, Statement> {
             .parse(input)?;
 
         // Two forms: ( ... ) statement  OR  declaration ;
-        if peek(delimited(ws, nom_char('('), ws)).parse(input).is_ok() {
+        if peek(delimited(ws, tok_l_paren(), ws)).parse(input).is_ok() {
             // Try declaration inside parens first, else expression
-            let (after_open, _) = delimited(ws, nom_char('('), ws).parse(input)?;
+            let (after_open, _) = delimited(ws, tok_l_paren(), ws).parse(input)?;
 
             if let Ok((rest_after_decl, decl)) =
                 delimited(ws, parse_variable_declaration, ws).parse(after_open)
             {
-                let (rest_after_paren, _) = cut(delimited(ws, nom_char(')'), ws))
+                let (rest_after_paren, _) = cut(delimited(ws, tok_r_paren(), ws))
                     .context("closing parenthesis after resource")
                     .parse(rest_after_decl)?;
                 let (rest_after_body, body) = cut(delimited(ws, parse_statement_ws, ws))
@@ -65,7 +64,7 @@ pub fn parse_using_statement<'a>(input: Span<'a>) -> BResult<'a, Statement> {
             let (after_resource, resource) = delimited(ws, parse_expression, ws)
                 .context("resource expression")
                 .parse(after_open)?;
-            let (after_paren, _) = cut(delimited(ws, nom_char(')'), ws))
+            let (after_paren, _) = cut(delimited(ws, tok_r_paren(), ws))
                 .context("closing parenthesis after resource")
                 .parse(after_resource)?;
             let (rest_after_body, body) = cut(delimited(ws, parse_statement_ws, ws))
@@ -95,7 +94,8 @@ pub fn parse_using_statement<'a>(input: Span<'a>) -> BResult<'a, Statement> {
             ))
         }
     })
-    .context("using statement or declaration")
-    .parse(input)
+        .context("using statement or declaration")
+        .parse(input)
 }
 use crate::syntax::span::Span;
+use crate::tokens::delimiters::{tok_l_paren, tok_r_paren};

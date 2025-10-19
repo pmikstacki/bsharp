@@ -5,14 +5,14 @@ use crate::syntax::errors::BResult;
 
 use nom::{
     combinator::{map, opt},
-    sequence::{preceded, delimited},
+    sequence::{delimited, preceded},
     Parser,
 };
 use nom_supreme::ParserExt;
 use syntax::expressions::{Expression, ThrowExpression};
 
 /// Parse a throw expression: `throw expr` or just `throw`
-pub fn parse_throw_expression<'a>(input: Span<'a>) -> BResult<'a, Expression> {
+pub fn parse_throw_expression(input: Span) -> BResult<Expression> {
     map(
         preceded(
             kw_throw(),
@@ -24,7 +24,7 @@ pub fn parse_throw_expression<'a>(input: Span<'a>) -> BResult<'a, Expression> {
             }))
         },
     )
-    .context("throw expression")
-    .parse(input)
+        .context("throw expression")
+        .parse(input.into())
 }
 use crate::syntax::span::Span;

@@ -1,5 +1,5 @@
 #![cfg(test)]
-use parser::expressions::declarations::type_declaration_parser::parse_struct_declaration;
+use parser::expressions::declarations::type_declaration_parser::parse_struct_declaration_span as parse_struct_declaration;
 use syntax::declarations::{Modifier, StructBodyDeclaration, StructDeclaration};
 use syntax::identifier::Identifier;
 use syntax::types::{PrimitiveType, Type, TypeParameter, Variance};
@@ -18,9 +18,9 @@ fn test_simple_struct() {
         constraints: None,
     };
 
-    match parse_struct_declaration(input) {
+    match parse_struct_declaration(input.into()) {
         Ok((remaining, actual)) => {
-            assert_eq!(remaining, "");
+            assert_eq!(*remaining.fragment(), "");
             assert_eq!(actual, expected);
         }
         Err(e) => panic!("Parsing failed: {:?}", e),
@@ -41,9 +41,9 @@ fn test_public_struct() {
         constraints: None,
     };
 
-    match parse_struct_declaration(input) {
+    match parse_struct_declaration(input.into()) {
         Ok((remaining, actual)) => {
-            assert_eq!(remaining, "");
+            assert!(remaining.fragment().trim().is_empty());
             assert_eq!(actual, expected);
         }
         Err(e) => panic!("Parsing failed: {:?}", e),
@@ -67,9 +67,9 @@ fn test_struct_with_single_generic_parameter() {
         constraints: None,
     };
 
-    match parse_struct_declaration(input) {
+    match parse_struct_declaration(input.into()) {
         Ok((remaining, actual)) => {
-            assert_eq!(remaining, "");
+            assert!(remaining.fragment().trim().is_empty());
             assert_eq!(actual, expected);
         }
         Err(e) => panic!("Parsing failed: {:?}", e),
@@ -99,9 +99,9 @@ fn test_public_struct_with_multiple_generic_parameters() {
         constraints: None,
     };
 
-    match parse_struct_declaration(input) {
+    match parse_struct_declaration(input.into()) {
         Ok((remaining, actual)) => {
-            assert_eq!(remaining, "");
+            assert!(remaining.fragment().trim().is_empty());
             assert_eq!(actual, expected);
         }
         Err(e) => panic!("Parsing failed: {:?}", e),
@@ -111,11 +111,11 @@ fn test_public_struct_with_multiple_generic_parameters() {
 #[test]
 fn test_struct_with_interface() {
     let input = "struct MyStruct : IDisposable {}";
-    let (_, result) = parse_struct_declaration(input).unwrap();
+    let (_, result) = parse_struct_declaration(input.into()).unwrap();
 
     assert_eq!(result.base_types.len(), 1);
     if let Type::Reference(id) = &result.base_types[0] {
-        assert_eq!(id.name, "IDisposable");
+        assert_eq!(id.to_string(), "IDisposable");
     } else {
         panic!("Expected Reference type but got {:?}", result.base_types[0]);
     }
@@ -124,18 +124,18 @@ fn test_struct_with_interface() {
 #[test]
 fn test_struct_with_multiple_interfaces() {
     let input = "struct MyStruct : IComparable, IDisposable {}";
-    let (_, result) = parse_struct_declaration(input).unwrap();
+    let (_, result) = parse_struct_declaration(input.into()).unwrap();
 
     assert_eq!(result.base_types.len(), 2);
 
     if let Type::Reference(id) = &result.base_types[0] {
-        assert_eq!(id.name, "IComparable");
+        assert_eq!(id.to_string(), "IComparable");
     } else {
         panic!("Expected Reference type");
     }
 
     if let Type::Reference(id) = &result.base_types[1] {
-        assert_eq!(id.name, "IDisposable");
+        assert_eq!(id.to_string(), "IDisposable");
     } else {
         panic!("Expected Reference type");
     }
@@ -144,12 +144,12 @@ fn test_struct_with_multiple_interfaces() {
 #[test]
 fn test_struct_with_field() {
     let input = "struct Point { int x; }";
-    let (_, result) = parse_struct_declaration(input).unwrap();
+    let (_, result) = parse_struct_declaration(input.into()).unwrap();
 
     assert_eq!(result.body_declarations.len(), 1);
     match &result.body_declarations[0] {
         StructBodyDeclaration::Field(field) => {
-            assert_eq!(field.name.name, "x");
+            assert_eq!(field.name.to_string(), "x");
             match &field.field_type {
                 Type::Primitive(pt) => assert_eq!(*pt, PrimitiveType::Int),
                 _ => panic!("Expected primitive type"),
@@ -162,9 +162,9 @@ fn test_struct_with_field() {
 #[test]
 fn test_struct_with_attribute() {
     let input = "[Serializable] struct MyStruct {}";
-    let (_, result) = parse_struct_declaration(input).unwrap();
+    let (_, result) = parse_struct_declaration(input.into()).unwrap();
 
     assert_eq!(result.attributes.len(), 1);
     assert_eq!(result.attributes[0].attributes.len(), 1);
-    assert_eq!(result.attributes[0].attributes[0].name.name, "Serializable");
+    assert_eq!(result.attributes[0].attributes[0].name.to_string(), "Serializable");
 }

@@ -14,6 +14,7 @@ pub mod node;
 pub mod emitters;
 pub mod query;
 mod formatter;
+pub use formatter::{FormatOptions, Formatter};
 // Added for XML documentation
 
 // Optional: Re-export all public items from submodules for easier access

@@ -7,8 +7,8 @@ authors.workspace = true
 
 [dependencies]
 log = "0.4"
-nom = "7"
-nom-supreme = "0.8.0"
+nom = "8.0.0"
+nom-supreme = { path = "../../dependencies/nom_supreme" }
 analysis = { package = "bsharp_analysis", path = "../bsharp_analysis" }
 parser = { package = "bsharp_parser", path = "../bsharp_parser" }
 syntax = { package = "bsharp_syntax", path = "../bsharp_syntax" }

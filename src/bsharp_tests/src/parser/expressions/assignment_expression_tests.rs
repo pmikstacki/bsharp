@@ -8,14 +8,14 @@ use syntax::expressions::BinaryOperator;
 use syntax::Identifier;
 
 fn parse_assignment_expr_helper(code: &str) -> Result<AssignmentExpression, String> {
-    match parse_expression(code) {
-        Ok((remaining, expr)) if remaining.trim().is_empty() => match expr {
+    match parse_expression(code.into()) {
+        Ok((remaining, expr)) if remaining.fragment().trim().is_empty() => match expr {
             Expression::Assignment(boxed_assignment_expr) => Ok(*boxed_assignment_expr),
             _ => Err(format!("Expected Expression::Assignment, got {:?}", expr)),
         },
         Ok((remaining, _)) => Err(format!(
             "Didn't consume all input. Remaining: '{}'",
-            remaining
+            remaining.fragment()
         )),
         Err(e) => Err(format!("Parse error: {:?}", e)),
     }
@@ -24,14 +24,14 @@ fn parse_assignment_expr_helper(code: &str) -> Result<AssignmentExpression, Stri
 #[test]
 fn test_simple_assignment() {
     let code = "x = 5";
-    let result = parse_assignment_expr_helper(code);
+    let result = parse_assignment_expr_helper(code.into());
     assert!(result.is_ok(), "Parsing 'x = 5' failed: {:?}", result.err());
     let assignment_expr = result.unwrap();
 
     assert_eq!(assignment_expr.op, BinaryOperator::Assign);
 
     match *assignment_expr.target {
-        Expression::Variable(Identifier { ref name }) => assert_eq!(name, "x"),
+        Expression::Variable(id) => assert_eq!(id.to_string(), "x"),
         _ => panic!(
             "Expected target to be Expression::Variable 'x', got {:?}",
             assignment_expr.target
@@ -50,7 +50,7 @@ fn test_simple_assignment() {
 #[test]
 fn test_null_coalescing_assignment() {
     let code = "x ??= 42";
-    let result = parse_assignment_expr_helper(code);
+    let result = parse_assignment_expr_helper(code.into());
     assert!(
         result.is_ok(),
         "Parsing 'x ??= 42' failed: {:?}",
@@ -61,7 +61,7 @@ fn test_null_coalescing_assignment() {
     assert_eq!(assignment_expr.op, BinaryOperator::NullCoalescingAssign);
 
     match *assignment_expr.target {
-        Expression::Variable(Identifier { ref name }) => assert_eq!(name, "x"),
+        Expression::Variable(id) => assert_eq!(id.to_string(), "x"),
         _ => panic!(
             "Expected target to be Expression::Variable 'x', got {:?}",
             assignment_expr.target
@@ -80,7 +80,7 @@ fn test_null_coalescing_assignment() {
 #[test]
 fn test_null_coalescing_assignment_with_complex_expression() {
     let code = "data.Value ??= GetDefaultValue()";
-    let result = parse_assignment_expr_helper(code);
+    let result = parse_assignment_expr_helper(code.into());
     assert!(
         result.is_ok(),
         "Parsing 'data.Value ??= GetDefaultValue()' failed: {:?}",
@@ -112,7 +112,7 @@ fn test_null_coalescing_assignment_with_complex_expression() {
 #[test]
 fn test_null_coalescing_assignment_chain() {
     let code = "a ??= b ??= c";
-    let result = parse_assignment_expr_helper(code);
+    let result = parse_assignment_expr_helper(code.into());
     assert!(
         result.is_ok(),
         "Parsing 'a ??= b ??= c' failed: {:?}",
@@ -138,7 +138,7 @@ fn test_null_coalescing_assignment_chain() {
 fn test_null_coalescing_vs_null_coalescing_assignment() {
     // Test that ?? and ??= are parsed correctly and don't interfere with each other
     let code = "result = x ?? y";
-    let result = parse_assignment_expr_helper(code);
+    let result = parse_assignment_expr_helper(code.into());
     assert!(
         result.is_ok(),
         "Parsing 'result = x ?? y' failed: {:?}",
@@ -164,7 +164,7 @@ fn test_null_coalescing_vs_null_coalescing_assignment() {
 #[test]
 fn test_null_coalescing_assignment_precedence() {
     let code = "x = y ??= z + 1";
-    let result = parse_assignment_expr_helper(code);
+    let result = parse_assignment_expr_helper(code.into());
     assert!(
         result.is_ok(),
         "Parsing 'x = y ??= z + 1' failed: {:?}",

@@ -24,3 +24,6 @@ mod throw_expr;
 mod tuple_expr;
 mod typeof_expr;
 mod expression_root;
+mod member_access;
+mod extras;
+mod switch_expr;

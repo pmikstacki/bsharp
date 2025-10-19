@@ -10,12 +10,12 @@ use syntax::statements::statement::Statement;
 #[test]
 fn test_parse_return_statement() {
     let input_no_expr = "return;";
-    let result_no_expr = parse_all(parse_return_statement, input_no_expr);
+    let result_no_expr = parse_all(parse_return_statement, input_no_expr.into());
     assert!(result_no_expr.is_ok());
     assert_eq!(result_no_expr.unwrap().1, Statement::Return(None));
 
     let input_with_expr = "return 42;";
-    let result_with_expr = parse_all(parse_return_statement, input_with_expr);
+    let result_with_expr = parse_all(parse_return_statement, input_with_expr.into());
     assert!(result_with_expr.is_ok());
     match result_with_expr.unwrap().1 {
         Statement::Return(Some(expr)) => {

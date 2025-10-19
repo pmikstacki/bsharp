@@ -6,12 +6,12 @@ use syntax::expressions::expression::Expression;
 use syntax::expressions::pattern::*;
 
 fn parse_pattern_test(code: &str) -> Result<Pattern, String> {
-    match parse_pattern(code) {
+    match parse_pattern(code.into()) {
         Ok((remaining, pattern)) => {
-            if remaining.trim().is_empty() {
+            if remaining.fragment().trim().is_empty() {
                 Ok(pattern)
             } else {
-                Err(format!("Unparsed input: {}", remaining))
+                Err(format!("Unparsed input: {}", remaining.fragment()))
             }
         }
         Err(e) => Err(format!("Parse error: {:?}", e)),
@@ -21,7 +21,7 @@ fn parse_pattern_test(code: &str) -> Result<Pattern, String> {
 #[test]
 fn test_parse_tuple_pattern_missing_first_element_should_error() {
     let input = "(, 2)";
-    let result = parse_pattern_test(input);
+    let result = parse_pattern_test(input.into());
     assert!(
         result.is_err(),
         "Expected error for malformed tuple pattern '{}', got: {:?}",
@@ -33,7 +33,7 @@ fn test_parse_tuple_pattern_missing_first_element_should_error() {
 #[test]
 fn test_parse_relational_pattern_missing_value_should_error() {
     let input = ">";
-    let result = parse_pattern_test(input);
+    let result = parse_pattern_test(input.into());
     assert!(
         result.is_err(),
         "Expected error for relational pattern missing value '{}', got: {:?}",
@@ -43,12 +43,12 @@ fn test_parse_relational_pattern_missing_value_should_error() {
 }
 
 fn parse_switch_test(code: &str) -> Result<Expression, String> {
-    match parse_switch_expression(code) {
+    match parse_switch_expression(code.into()) {
         Ok((remaining, expr)) => {
-            if remaining.trim().is_empty() {
+            if remaining.fragment().trim().is_empty() {
                 Ok(expr)
             } else {
-                Err(format!("Unparsed input: {}", remaining))
+                Err(format!("Unparsed input: {}", remaining.fragment()))
             }
         }
         Err(e) => Err(format!("Parse error: {:?}", e)),
@@ -56,12 +56,12 @@ fn parse_switch_test(code: &str) -> Result<Expression, String> {
 }
 
 fn parse_is_pattern_test(code: &str) -> Result<Expression, String> {
-    match parse_is_pattern_expression(code) {
+    match parse_is_pattern_expression(code.into()) {
         Ok((remaining, expr)) => {
-            if remaining.trim().is_empty() {
+            if remaining.fragment().trim().is_empty() {
                 Ok(expr)
             } else {
-                Err(format!("Unparsed input: {}", remaining))
+                Err(format!("Unparsed input: {}", remaining.fragment()))
             }
         }
         Err(e) => Err(format!("Parse error: {:?}", e)),
@@ -90,7 +90,7 @@ fn test_parse_var_pattern() {
     assert!(result.is_ok(), "Failed to parse var pattern: {:?}", result);
 
     if let Ok(Pattern::Var(identifier)) = result {
-        assert_eq!(identifier.name, "x");
+        assert_eq!(identifier.to_string(), "x");
     } else {
         panic!("Expected var pattern, got: {:?}", result);
     }
@@ -123,7 +123,7 @@ fn test_parse_type_pattern() {
     }) = result
     {
         if let Some(PatternDesignation::Variable(var)) = designation {
-            assert_eq!(var.name, "x");
+            assert_eq!(var.to_string(), "x");
         } else {
             panic!("Expected variable designation, got: {:?}", designation);
         }
@@ -243,10 +243,10 @@ fn test_parse_property_pattern() {
         assert!(type_name.is_none());
         assert_eq!(subpatterns.len(), 2);
 
-        assert_eq!(subpatterns[0].member_name.name, "Name");
+        assert_eq!(subpatterns[0].member_name.to_string(), "Name");
         assert!(matches!(subpatterns[0].pattern, Pattern::Var(_)));
 
-        assert_eq!(subpatterns[1].member_name.name, "Age");
+        assert_eq!(subpatterns[1].member_name.to_string(), "Age");
         assert!(matches!(subpatterns[1].pattern, Pattern::Relational { .. }));
     } else {
         panic!("Expected property pattern, got: {:?}", result);
@@ -481,7 +481,7 @@ fn test_parse_record_pattern_property_syntax() {
     {
         assert!(type_name.is_some(), "Expected type name for record pattern");
         assert_eq!(subpatterns.len(), 1);
-        assert_eq!(subpatterns[0].member_name.name, "FirstName");
+        assert_eq!(subpatterns[0].member_name.to_string(), "FirstName");
         assert!(matches!(subpatterns[0].pattern, Pattern::Constant(_)));
     } else {
         panic!("Expected record property pattern, got: {:?}", result);
@@ -505,13 +505,13 @@ fn test_parse_record_pattern_multiple_properties() {
         assert!(type_name.is_some(), "Expected type name for record pattern");
         assert_eq!(subpatterns.len(), 3);
 
-        assert_eq!(subpatterns[0].member_name.name, "FirstName");
+        assert_eq!(subpatterns[0].member_name.to_string(), "FirstName");
         assert!(matches!(subpatterns[0].pattern, Pattern::Constant(_)));
 
-        assert_eq!(subpatterns[1].member_name.name, "LastName");
+        assert_eq!(subpatterns[1].member_name.to_string(), "LastName");
         assert!(matches!(subpatterns[1].pattern, Pattern::Constant(_)));
 
-        assert_eq!(subpatterns[2].member_name.name, "Age");
+        assert_eq!(subpatterns[2].member_name.to_string(), "Age");
         assert!(matches!(subpatterns[2].pattern, Pattern::Relational { .. }));
     } else {
         panic!("Expected record property pattern, got: {:?}", result);
@@ -535,10 +535,10 @@ fn test_parse_record_pattern_with_var_patterns() {
         assert!(type_name.is_some(), "Expected type name for record pattern");
         assert_eq!(subpatterns.len(), 2);
 
-        assert_eq!(subpatterns[0].member_name.name, "FirstName");
+        assert_eq!(subpatterns[0].member_name.to_string(), "FirstName");
         assert!(matches!(subpatterns[0].pattern, Pattern::Var(_)));
 
-        assert_eq!(subpatterns[1].member_name.name, "LastName");
+        assert_eq!(subpatterns[1].member_name.to_string(), "LastName");
         assert!(matches!(subpatterns[1].pattern, Pattern::Var(_)));
     } else {
         panic!(
@@ -642,7 +642,7 @@ fn test_parse_nested_record_pattern() {
     {
         assert!(type_name.is_some(), "Expected type name for record pattern");
         assert_eq!(subpatterns.len(), 1);
-        assert_eq!(subpatterns[0].member_name.name, "Address");
+        assert_eq!(subpatterns[0].member_name.to_string(), "Address");
         assert!(matches!(subpatterns[0].pattern, Pattern::Property { .. }));
     } else {
         panic!("Expected nested record pattern, got: {:?}", result);
@@ -666,10 +666,10 @@ fn test_parse_record_pattern_with_discard() {
         assert!(type_name.is_some(), "Expected type name for record pattern");
         assert_eq!(subpatterns.len(), 2);
 
-        assert_eq!(subpatterns[0].member_name.name, "FirstName");
+        assert_eq!(subpatterns[0].member_name.to_string(), "FirstName");
         assert!(matches!(subpatterns[0].pattern, Pattern::Var(_)));
 
-        assert_eq!(subpatterns[1].member_name.name, "LastName");
+        assert_eq!(subpatterns[1].member_name.to_string(), "LastName");
         assert!(matches!(subpatterns[1].pattern, Pattern::Discard));
     } else {
         panic!("Expected record pattern with discard, got: {:?}", result);
@@ -720,7 +720,7 @@ fn test_parse_qualified_record_pattern() {
             "Expected type name for qualified record pattern"
         );
         assert_eq!(subpatterns.len(), 1);
-        assert_eq!(subpatterns[0].member_name.name, "Name");
+        assert_eq!(subpatterns[0].member_name.to_string(), "Name");
         assert!(matches!(subpatterns[0].pattern, Pattern::Var(_)));
     } else {
         panic!("Expected qualified record pattern, got: {:?}", result);
@@ -780,10 +780,10 @@ fn test_parse_record_pattern_with_relational_and_logical() {
         assert!(type_name.is_some(), "Expected type name for record pattern");
         assert_eq!(subpatterns.len(), 2);
 
-        assert_eq!(subpatterns[0].member_name.name, "Age");
+        assert_eq!(subpatterns[0].member_name.to_string(), "Age");
         assert!(matches!(subpatterns[0].pattern, Pattern::LogicalAnd(_, _)));
 
-        assert_eq!(subpatterns[1].member_name.name, "Name");
+        assert_eq!(subpatterns[1].member_name.to_string(), "Name");
         assert!(matches!(subpatterns[1].pattern, Pattern::Not(_)));
     } else {
         panic!(
@@ -858,11 +858,11 @@ fn test_parse_complex_nested_record_pattern() {
         assert_eq!(subpatterns.len(), 2);
 
         // Check Customer property has nested record pattern
-        assert_eq!(subpatterns[0].member_name.name, "Customer");
+        assert_eq!(subpatterns[0].member_name.to_string(), "Customer");
         assert!(matches!(subpatterns[0].pattern, Pattern::Property { .. }));
 
         // Check Items property has list pattern
-        assert_eq!(subpatterns[1].member_name.name, "Items");
+        assert_eq!(subpatterns[1].member_name.to_string(), "Items");
         assert!(matches!(subpatterns[1].pattern, Pattern::List { .. }));
     } else {
         panic!("Expected complex nested record pattern, got: {:?}", result);
@@ -903,7 +903,7 @@ fn test_parse_record_pattern_whitespace_variations() {
     ];
 
     for input in inputs {
-        let result = parse_pattern_test(input);
+        let result = parse_pattern_test(input.into());
         assert!(
             result.is_ok(),
             "Failed to parse record pattern with whitespace variation '{}': {:?}",
@@ -918,7 +918,7 @@ fn test_parse_record_pattern_whitespace_variations() {
         {
             assert!(type_name.is_some(), "Expected type name for record pattern");
             assert_eq!(subpatterns.len(), 1);
-            assert_eq!(subpatterns[0].member_name.name, "Name");
+            assert_eq!(subpatterns[0].member_name.to_string(), "Name");
         } else {
             panic!(
                 "Expected record pattern for input '{}', got: {:?}",
@@ -939,7 +939,7 @@ fn test_parse_record_pattern_errors() {
     ];
 
     for input in invalid_inputs {
-        let result = parse_pattern_test(input);
+        let result = parse_pattern_test(input.into());
         assert!(
             result.is_err(),
             "Expected error for invalid record pattern '{}', got: {:?}",

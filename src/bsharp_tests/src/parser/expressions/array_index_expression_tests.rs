@@ -10,6 +10,6 @@ fn parse_array_index_expr(code: &str) -> Result<ArrayIndexExpression, String> {
 fn test_parse_array_index_expr() {
     let code = "arr[0]";
     // let expected = ...;
-    // assert_eq!(parse_array_index_expr(code), Ok(expected));
-    assert!(parse_array_index_expr(code).is_err());
+    // assert_eq!(parse_array_index_expr(code.into()), Ok(expected));
+    assert!(parse_array_index_expr(code.into()).is_err());
 }

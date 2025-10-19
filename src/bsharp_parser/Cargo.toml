@@ -10,8 +10,7 @@ log = "0.4"
 nom = "8.0.0"
 nom-supreme = { path = "../../dependencies/nom_supreme" }
 syntax = { package = "bsharp_syntax", path = "../bsharp_syntax" }
-serde = { version = "1.0.219", features = ["derive"] }
-phf = { version = "0.11", features = ["macros"] }
+phf = { version = "0.13.1", features = ["macros"] }
 nom_locate = "5.0.0"
 
 [features]

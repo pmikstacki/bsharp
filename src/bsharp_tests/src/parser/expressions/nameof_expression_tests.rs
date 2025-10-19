@@ -5,22 +5,22 @@ use parser::expressions::primary_expression_parser::parse_expression;
 use syntax::expressions::expression::Expression;
 
 fn parse_nameof_expr_helper(code: &str) -> Result<Expression, String> {
-    match parse_nameof_expression(code) {
-        Ok((remaining, expr)) if remaining.trim().is_empty() => Ok(expr),
+    match parse_nameof_expression(code.into()) {
+        Ok((remaining, expr)) if remaining.fragment().trim().is_empty() => Ok(expr),
         Ok((remaining, _)) => Err(format!(
             "Didn't consume all input. Remaining: '{}'",
-            remaining
+            remaining.fragment()
         )),
         Err(e) => Err(format!("Parse error: {:?}", e)),
     }
 }
 
 fn parse_expr_helper(code: &str) -> Result<Expression, String> {
-    match parse_expression(code) {
-        Ok((remaining, expr)) if remaining.trim().is_empty() => Ok(expr),
+    match parse_expression(code.into()) {
+        Ok((remaining, expr)) if remaining.fragment().trim().is_empty() => Ok(expr),
         Ok((remaining, _)) => Err(format!(
             "Didn't consume all input. Remaining: '{}'",
-            remaining
+            remaining.fragment()
         )),
         Err(e) => Err(format!("Parse error: {:?}", e)),
     }
@@ -29,7 +29,7 @@ fn parse_expr_helper(code: &str) -> Result<Expression, String> {
 #[test]
 fn test_parse_simple_nameof_expression() {
     let code = "nameof(variable)";
-    let result = parse_nameof_expr_helper(code);
+    let result = parse_nameof_expr_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse simple nameof expression: {:?}",
@@ -38,7 +38,7 @@ fn test_parse_simple_nameof_expression() {
 
     if let Ok(Expression::Nameof(nameof_expr)) = result {
         if let Expression::Variable(var) = &*nameof_expr.expr {
-            assert_eq!(var.name, "variable");
+            assert_eq!(var.to_string(), "variable");
         } else {
             panic!("Expected variable expression inside nameof");
         }
@@ -50,7 +50,7 @@ fn test_parse_simple_nameof_expression() {
 #[test]
 fn test_parse_nameof_member_access() {
     let code = "nameof(MyClass.MyProperty)";
-    let result = parse_nameof_expr_helper(code);
+    let result = parse_nameof_expr_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse nameof with member access: {:?}",
@@ -67,7 +67,7 @@ fn test_parse_nameof_member_access() {
 #[test]
 fn test_parse_nameof_nested_member_access() {
     let code = "nameof(System.Console.WriteLine)";
-    let result = parse_nameof_expr_helper(code);
+    let result = parse_nameof_expr_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse nameof with nested member access: {:?}",
@@ -84,7 +84,7 @@ fn test_parse_nameof_nested_member_access() {
 #[test]
 fn test_parse_nameof_in_full_expression_parser() {
     let code = "nameof(value)";
-    let result = parse_expr_helper(code);
+    let result = parse_expr_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse nameof in full expression parser: {:?}",
@@ -93,7 +93,7 @@ fn test_parse_nameof_in_full_expression_parser() {
 
     if let Ok(Expression::Nameof(nameof_expr)) = result {
         if let Expression::Variable(var) = &*nameof_expr.expr {
-            assert_eq!(var.name, "value");
+            assert_eq!(var.to_string(), "value");
         } else {
             panic!("Expected variable expression inside nameof");
         }
@@ -112,7 +112,7 @@ fn test_parse_nameof_with_whitespace() {
     ];
 
     for code in variations {
-        let result = parse_expr_helper(code);
+        let result = parse_expr_helper(code.into());
         assert!(
             result.is_ok(),
             "Failed to parse nameof with whitespace '{}': {:?}",
@@ -122,7 +122,7 @@ fn test_parse_nameof_with_whitespace() {
 
         if let Ok(Expression::Nameof(nameof_expr)) = result {
             if let Expression::Variable(var) = &*nameof_expr.expr {
-                assert_eq!(var.name, "variable");
+                assert_eq!(var.to_string(), "variable");
             } else {
                 panic!(
                     "Expected variable expression inside nameof for input: '{}'",
@@ -138,7 +138,7 @@ fn test_parse_nameof_with_whitespace() {
 #[test]
 fn test_parse_nameof_parameter() {
     let code = "nameof(parameter)";
-    let result = parse_nameof_expr_helper(code);
+    let result = parse_nameof_expr_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse nameof with parameter: {:?}",
@@ -147,7 +147,7 @@ fn test_parse_nameof_parameter() {
 
     if let Ok(Expression::Nameof(nameof_expr)) = result {
         if let Expression::Variable(var) = &*nameof_expr.expr {
-            assert_eq!(var.name, "parameter");
+            assert_eq!(var.to_string(), "parameter");
         } else {
             panic!("Expected variable expression inside nameof");
         }
@@ -159,7 +159,7 @@ fn test_parse_nameof_parameter() {
 #[test]
 fn test_parse_nameof_property() {
     let code = "nameof(obj.Property)";
-    let result = parse_nameof_expr_helper(code);
+    let result = parse_nameof_expr_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse nameof with property: {:?}",
@@ -184,7 +184,7 @@ fn test_parse_invalid_nameof_expressions() {
     ];
 
     for code in invalid_cases {
-        let result = parse_nameof_expr_helper(code);
+        let result = parse_nameof_expr_helper(code.into());
         assert!(
             result.is_err(),
             "Expected parse error for invalid syntax: '{}'",

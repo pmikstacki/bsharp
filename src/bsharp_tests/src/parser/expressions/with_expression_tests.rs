@@ -3,8 +3,8 @@ use syntax::expressions::expression::{Expression, WithInitializerEntry};
 use syntax::identifier::Identifier;
 
 fn parse_expr_ok(src: &str) -> Expression {
-    let (rest, expr) = parse_expression(src).expect("parse ok");
-    assert!(rest.trim().is_empty(), "unparsed: {}", rest);
+    let (rest, expr) = parse_expression(src.into()).expect("parse ok");
+    assert!(rest.fragment().trim().is_empty(), "unparsed: {}", rest.fragment());
     expr
 }
 
@@ -17,9 +17,7 @@ fn test_simple_with_expression() {
             initializers,
         } => {
             // target should be variable x
-            assert!(
-                matches!(*target, Expression::Variable(Identifier { ref name }) if name == "x")
-            );
+            assert!(matches!(*target, Expression::Variable(ref id) if id.to_string() == "x"));
             // two initializers
             assert_eq!(initializers.len(), 2);
             match &initializers[0] {

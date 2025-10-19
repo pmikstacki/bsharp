@@ -6,10 +6,9 @@ use crate::syntax::errors::BResult;
 
 use crate::syntax::comment_parser::ws;
 use nom::sequence::delimited;
-use nom::character::complete::satisfy;
 use nom::Parser;
-use nom_supreme::ParserExt;
 use nom::{combinator::opt, sequence::preceded};
+use nom_supreme::ParserExt;
 use syntax::declarations::FieldDeclaration;
 use syntax::expressions::Expression;
 // Removed local ws helper, using bws from parser_helpers instead
@@ -17,29 +16,29 @@ use syntax::expressions::Expression;
 // Parse the optional initializer part: "= Expression"
 fn parse_field_initializer(input: Span) -> BResult<Option<Expression>> {
     opt(preceded(
-        delimited(ws, satisfy(|c| c == '='), ws)
+        delimited(ws, tok_assign(), ws)
             .context("field initializer"),
         delimited(ws, parse_expression, ws)
             .context("field initializer expression"),
     ))
-    .parse(input)
+        .parse(input.into())
 }
 
 // Parse a field declaration
 // Format: [Modifiers] TypeSyntax Identifier [= Initializer];
 pub fn parse_field_declaration(input: Span) -> BResult<FieldDeclaration> {
     // Parse modifiers (private, readonly, etc.)
-    let (input, modifiers) = parse_modifiers(input)?;
+    let (input, modifiers) = parse_modifiers(input.into())?;
     let (input, ty) = delimited(ws, parse_type_expression, ws)
         .context("field type")
-        .parse(input)?;
+        .parse(input.into())?;
     let (input, name) = delimited(ws, parse_identifier, ws)
         .context("field name")
-        .parse(input)?;
-    let (input, initializer) = parse_field_initializer(input)?;
-    let (input, _) = delimited(ws, satisfy(|c| c == ';'), ws)
+        .parse(input.into())?;
+    let (input, initializer) = parse_field_initializer(input.into())?;
+    let (input, _) = delimited(ws, tok_semicolon(), ws)
         .context("field declaration terminator")
-        .parse(input)?;
+        .parse(input.into())?;
 
     Ok((
         input,
@@ -52,3 +51,5 @@ pub fn parse_field_declaration(input: Span) -> BResult<FieldDeclaration> {
     ))
 }
 use crate::syntax::span::Span;
+use crate::tokens::assignment::tok_assign;
+use crate::tokens::separators::tok_semicolon;

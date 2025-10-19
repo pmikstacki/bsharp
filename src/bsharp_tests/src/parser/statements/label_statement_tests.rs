@@ -10,6 +10,6 @@ fn parse_label_statement(code: &str) -> Result<LabelStatement, String> {
 fn test_parse_label_statement() {
     let code = "myLabel:";
     // let expected = ...;
-    // assert_eq!(parse_label_statement(code), Ok(expected));
-    assert!(parse_label_statement(code).is_err());
+    // assert_eq!(parse_label_statement(code.into()), Ok(expected));
+    assert!(parse_label_statement(code.into()).is_err());
 }

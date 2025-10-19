@@ -6,30 +6,29 @@ use crate::parser::keywords::exception_and_safety_keywords::{kw_catch, kw_finall
 use crate::parser::keywords::selection_and_switch_keywords::kw_when;
 use crate::parser::statement_parser::parse_statement_ws;
 use crate::parser::types::type_parser::parse_type_expression;
-use crate::syntax::errors::BResult;
 use crate::syntax::comment_parser::ws;
+use crate::syntax::errors::BResult;
 use nom::combinator::cut;
 use nom::sequence::preceded;
+use nom::Parser;
 use nom::{
     combinator::{map, opt},
     multi::many0,
-    sequence::{delimited, pair, tuple},
+    sequence::{delimited, pair},
 };
-use nom::character::complete::char as nom_char;
-use nom::Parser;
 use nom_supreme::ParserExt;
 use syntax::statements::statement::Statement;
 use syntax::statements::{CatchClause, FinallyClause, TryStatement};
 
 // Helper syntax for catch clauses, following Roslyn's structure
-pub fn parse_catch_clause<'a>(input: Span<'a>) -> BResult<'a, CatchClause> {
+pub fn parse_catch_clause(input: Span) -> BResult<CatchClause> {
     map(
-        tuple((
+        (
             kw_catch().context("catch keyword"),
             // Optional exception (Type ident)
             opt(
                 delimited(
-                    delimited(ws, nom_char('('), ws)
+                    delimited(ws, tok_l_paren(), ws)
                         .context("opening parenthesis for catch"),
                     pair(
                         delimited(ws, parse_type_expression, ws)
@@ -38,23 +37,23 @@ pub fn parse_catch_clause<'a>(input: Span<'a>) -> BResult<'a, CatchClause> {
                             "optional exception variable in catch",
                         ),
                     ),
-                    cut(delimited(ws, nom_char(')'), ws))
+                    cut(delimited(ws, tok_r_paren(), ws))
                         .context("closing parenthesis for catch"),
                 ),
             )
-            .context("optional catch type/variable"),
+                .context("optional catch type/variable"),
             // Optional when filter: when (expr)
             opt(preceded(
                 delimited(ws, kw_when(), ws),
                 delimited(
-                    delimited(ws, nom_char('('), ws),
+                    delimited(ws, tok_l_paren(), ws),
                     delimited(ws, parse_expression, ws),
-                    cut(delimited(ws, nom_char(')'), ws)),
+                    cut(delimited(ws, tok_r_paren(), ws)),
                 ),
             )),
             cut(delimited(ws, parse_statement_ws, ws))
                 .context("catch block"),
-        )),
+        ),
         |(_catch_kw, exception_info, when_clause, block_stmt)| {
             let (exception_type, exception_variable) = match exception_info {
                 Some((ty, ident_opt)) => (Some(ty), ident_opt),
@@ -68,28 +67,28 @@ pub fn parse_catch_clause<'a>(input: Span<'a>) -> BResult<'a, CatchClause> {
             }
         },
     )
-    .context("catch clause")
-    .parse(input)
+        .context("catch clause")
+        .parse(input.into())
 }
 
 // Helper syntax for the finally clause, following Roslyn's structure
-pub fn parse_finally_clause<'a>(input: Span<'a>) -> BResult<'a, FinallyClause> {
+pub fn parse_finally_clause(input: Span) -> BResult<FinallyClause> {
     map(
-        tuple((
+        (
             kw_finally().context("finally keyword"),
             cut(delimited(ws, parse_statement_ws, ws))
                 .context("finally block"),
-        )),
+        ),
         |(_finally_kw, block_stmt)| FinallyClause { block: Box::new(block_stmt) },
     )
-    .context("finally clause")
-    .parse(input)
+        .context("finally clause")
+        .parse(input.into())
 }
 
 // Parse a try-catch-finally statement, following Roslyn's structure
-pub fn parse_try_statement<'a>(input: Span<'a>) -> BResult<'a, Statement> {
+pub fn parse_try_statement(input: Span) -> BResult<Statement> {
     map(
-        tuple((
+        (
             kw_try().context("try keyword"),
             cut(delimited(ws, parse_statement_ws, ws))
                 .context("try block"),
@@ -97,7 +96,7 @@ pub fn parse_try_statement<'a>(input: Span<'a>) -> BResult<'a, Statement> {
                 .context("zero or more catch clauses"),
             opt(delimited(ws, parse_finally_clause, ws))
                 .context("optional finally clause"),
-        )),
+        ),
         |(_, try_block, catch_clauses, finally_clause)| {
             Statement::Try(Box::new(TryStatement {
                 try_block: Box::new(try_block),
@@ -106,7 +105,8 @@ pub fn parse_try_statement<'a>(input: Span<'a>) -> BResult<'a, Statement> {
             }))
         },
     )
-    .context("try statement")
-    .parse(input)
+        .context("try statement")
+        .parse(input.into())
 }
 use crate::syntax::span::Span;
+use crate::tokens::delimiters::{tok_l_paren, tok_r_paren};

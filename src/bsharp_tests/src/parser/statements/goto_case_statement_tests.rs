@@ -10,6 +10,6 @@ fn parse_goto_case_statement(code: &str) -> Result<GotoCaseStatement, String> {
 fn test_parse_goto_case_statement() {
     let code = "goto case 1;";
     // let expected = ...;
-    // assert_eq!(parse_goto_case_statement(code), Ok(expected));
-    assert!(parse_goto_case_statement(code).is_err());
+    // assert_eq!(parse_goto_case_statement(code.into()), Ok(expected));
+    assert!(parse_goto_case_statement(code.into()).is_err());
 }

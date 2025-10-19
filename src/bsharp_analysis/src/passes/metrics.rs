@@ -111,7 +111,7 @@ fn process_struct(analysis: &mut AstAnalysis, strukt: &StructDeclaration) {
 }
 
 fn accumulate_statement_metrics(analysis: &mut AstAnalysis, root: &Statement) {
-    fn walk<'a>(s: &'a Statement, f: &mut impl FnMut(&'a Statement)) {
+    fn walk(s: &Statement, f: &mut impl FnMut(&Statement)) {
         f(s);
         match s {
             Statement::Block(stmts) => {

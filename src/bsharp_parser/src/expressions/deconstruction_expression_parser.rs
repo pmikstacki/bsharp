@@ -2,38 +2,36 @@ use crate::parser::expressions::primary_expression_parser::parse_expression;
 use crate::parser::identifier_parser::parse_identifier;
 use crate::parser::keywords::contextual_misc_keywords::kw_var;
 use crate::parser::types::type_parser::parse_type_expression;
-use crate::syntax::errors::BResult;
 use crate::syntax::comment_parser::ws;
+use crate::syntax::errors::BResult;
 
+use nom::character::complete::satisfy;
 use nom::combinator::cut;
+use nom::sequence::delimited;
+use nom::Parser;
 use nom::{
     branch::alt,
     combinator::{map, verify},
     multi::separated_list1,
-    sequence::tuple,
 };
-use syntax::expressions::{DeconstructionExpression, DeconstructionTarget};
-use nom::character::complete::char as nom_char;
-use nom::character::complete::satisfy;
-use nom::sequence::delimited;
-use nom::Parser;
 use nom_supreme::ParserExt;
+use syntax::expressions::{DeconstructionExpression, DeconstructionTarget};
 
 /// Parse a deconstruction expression: (var x, var y) = tuple
 pub fn parse_deconstruction_expression(input: Span) -> BResult<DeconstructionExpression> {
     map(
-        tuple((
+        (
             parse_deconstruction_targets,
-            delimited(ws, satisfy(|c| c == '='), ws),
+            delimited(ws, tok_assign(), ws),
             delimited(ws, parse_expression, ws),
-        )),
+        ),
         |(targets, _, value)| DeconstructionExpression {
             targets,
             value: Box::new(value),
         },
     )
-    .context("deconstruction expression")
-    .parse(input)
+        .context("deconstruction expression")
+        .parse(input.into())
 }
 
 /// Parse deconstruction targets: (var x, var y) or (int a, string b)
@@ -41,20 +39,20 @@ fn parse_deconstruction_targets(input: Span) -> BResult<Vec<DeconstructionTarget
     delimited(
         ws,
         delimited(
-            delimited(ws, nom_char('('), ws),
+            delimited(ws, tok_l_paren(), ws),
             verify(
                 separated_list1(
-                    |i| delimited(ws, satisfy(|c| c == ','), ws).parse(i),
+                    |i| delimited(ws, tok_comma(), ws).parse(i),
                     |i| delimited(ws, parse_deconstruction_target, ws).parse(i),
                 ),
                 |targets: &Vec<DeconstructionTarget>| targets.len() >= 2,
             ),
-            cut(delimited(ws, nom_char(')'), ws)),
+            cut(delimited(ws, tok_r_paren(), ws)),
         ),
         ws,
     )
-    .context("deconstruction targets")
-    .parse(input)
+        .context("deconstruction targets")
+        .parse(input.into())
 }
 
 /// Parse a single deconstruction target
@@ -67,7 +65,7 @@ fn parse_deconstruction_target(input: Span) -> BResult<DeconstructionTarget> {
             DeconstructionTarget::Nested(targets)
         }),
         // Variable declaration with 'var': var x
-        map(tuple((delimited(ws, kw_var(), ws), delimited(ws, parse_identifier, ws))), |(_, name)| {
+        map((delimited(ws, kw_var(), ws), delimited(ws, parse_identifier, ws)), |(_, name)| {
             DeconstructionTarget::Declaration {
                 variable_type: None,
                 name,
@@ -76,7 +74,7 @@ fn parse_deconstruction_target(input: Span) -> BResult<DeconstructionTarget> {
         }),
         // Variable declaration with explicit type: int x, string y
         map(
-            tuple((delimited(ws, parse_type_expression, ws), delimited(ws, parse_identifier, ws))),
+            (delimited(ws, parse_type_expression, ws), delimited(ws, parse_identifier, ws)),
             |(variable_type, name)| DeconstructionTarget::Declaration {
                 variable_type: Some(variable_type),
                 name,
@@ -88,7 +86,10 @@ fn parse_deconstruction_target(input: Span) -> BResult<DeconstructionTarget> {
             DeconstructionTarget::Variable(name)
         }),
     ))
-    .context("deconstruction target")
-    .parse(input)
+        .context("deconstruction target")
+        .parse(input.into())
 }
 use crate::syntax::span::Span;
+use crate::tokens::assignment::tok_assign;
+use crate::tokens::delimiters::{tok_l_paren, tok_r_paren};
+use crate::tokens::separators::tok_comma;

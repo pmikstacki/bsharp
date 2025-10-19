@@ -55,7 +55,7 @@ fn snapshot_workspace_analysis_report_for_fixture_solution() {
     let mut json = json;
 
     // Normalize absolute paths for snapshot stability
-    let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../tests/fixtures/happy_path");
+    let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("src/fixtures/happy_path");
     let root_str = root.to_string_lossy().to_string();
     normalize_paths_in_json(&mut json, &root_str);
 

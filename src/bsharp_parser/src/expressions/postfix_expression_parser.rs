@@ -1,17 +1,27 @@
-use crate::syntax::span::Span;
-use crate::parser::expressions::primary_expression_parser::{parse_expression, parse_primary_expression};
+use crate::parser::expressions::primary_expression_parser::{
+    parse_expression, parse_primary_expression,
+};
 use crate::parser::identifier_parser::parse_identifier;
 use crate::parser::keywords::expression_keywords::kw_with;
-use crate::syntax::errors::BResult;
 use crate::syntax::comment_parser::ws;
+use crate::syntax::errors::BResult;
+use crate::syntax::span::Span;
 
+use crate::syntax::list_parser::parse_delimited_list0;
+use crate::tokens::assignment::tok_assign;
+use crate::tokens::delimiters::{
+    tok_l_brace, tok_l_brack, tok_l_paren, tok_r_brace, tok_r_brack, tok_r_paren,
+};
+use crate::tokens::nullish::tok_not;
+use crate::tokens::separators::{tok_colon, tok_comma};
+use nom::Parser;
+use nom::character::complete::char as nom_char;
 use nom::{
     branch::alt,
-    combinator::{cut, map},
-    sequence::{delimited, preceded, tuple},
+    combinator::{cut, map, peek},
+    sequence::{delimited, preceded},
 };
-use nom::character::complete::char as nom_char;
-use nom::Parser;
+use syntax::Identifier;
 use syntax::expressions::expression::WithInitializerEntry;
 use syntax::expressions::indexing_expression::IndexingExpression;
 use syntax::expressions::invocation_expression::{Argument, ArgumentModifier};
@@ -19,8 +29,7 @@ use syntax::expressions::{
     Expression, InvocationExpression, MemberAccessExpression, NullConditionalExpression,
     UnaryOperator,
 };
-use syntax::Identifier;
-use crate::syntax::list_parser::parse_delimited_list0;
+
 #[derive(Debug, Clone)]
 enum PostfixOpKind {
     Invocation(Vec<Argument>),
@@ -43,15 +52,20 @@ fn parse_invocation_argument(input: Span) -> BResult<Argument> {
     use nom::combinator::opt;
 
     // Optional modifier
-    let (input, modifier) = delimited(ws, opt(alt((
-        map(kw_ref(), |_| ArgumentModifier::Ref),
-        map(kw_out(), |_| ArgumentModifier::Out),
-        map(kw_in(), |_| ArgumentModifier::In),
-    ))), ws).parse(input)?;
+    let (input, modifier) = delimited(
+        ws,
+        opt(alt((
+            map(kw_ref(), |_| ArgumentModifier::Ref),
+            map(kw_out(), |_| ArgumentModifier::Out),
+            map(kw_in(), |_| ArgumentModifier::In),
+        ))),
+        ws,
+    )
+    .parse(input.into())?;
 
     // Optional name label: identifier:
     let (input, name) = if let Ok((i2, (id, _))) =
-        nom::sequence::delimited(ws, nom::sequence::tuple((parse_identifier, nom_char(':'))), ws).parse(input)
+        delimited(ws, (parse_identifier, tok_colon()), ws).parse(input.into())
     {
         (i2, Some(id))
     } else {
@@ -59,7 +73,7 @@ fn parse_invocation_argument(input: Span) -> BResult<Argument> {
     };
 
     // Expression
-    let (input, expr) = delimited(ws, parse_expression, ws).parse(input)?;
+    let (input, expr) = delimited(ws, parse_expression, ws).parse(input.into())?;
 
     Ok((
         input,
@@ -74,109 +88,135 @@ fn parse_invocation_argument(input: Span) -> BResult<Argument> {
 /// Enhanced method invocation parsing
 fn enhanced_method_invocation(input: Span) -> BResult<PostfixOpKind> {
     fn parse_args(i: Span) -> BResult<Vec<Argument>> {
-        parse_delimited_list0::<_, _, _, _, char, Argument, char, char, Argument>(
-            |i| delimited(ws, nom_char('('), ws).parse(i),
+        parse_delimited_list0::<_, _, _, _, char, char, char, Argument>(
+            |i| delimited(ws, tok_l_paren(), ws).parse(i),
             |i| delimited(ws, parse_invocation_argument, ws).parse(i),
-            |i| delimited(ws, nom_char(','), ws).parse(i),
-            |i| delimited(ws, nom_char(')'), ws).parse(i),
+            |i| delimited(ws, tok_comma(), ws).parse(i),
+            |i| delimited(ws, tok_r_paren(), ws).parse(i),
             false,
             true,
         )
         .parse(i)
     }
-    map(parse_args, PostfixOpKind::Invocation).parse(input)
+    map(parse_args, PostfixOpKind::Invocation).parse(input.into())
 }
 
 /// Enhanced member access parsing
 fn enhanced_member_access(input: Span) -> BResult<PostfixOpKind> {
     map(
         preceded(
-            tuple((delimited(ws, nom_char('.'), ws), nom::combinator::not(nom_char('.')))),
+            (
+                delimited(ws, nom_char('.'), ws),
+                nom::combinator::not(nom_char('.')),
+            ),
             cut(delimited(ws, parse_identifier, ws)),
         ),
         PostfixOpKind::MemberAccess,
     )
-    .parse(input)
+    .parse(input.into())
 }
 
 /// Enhanced indexing parsing
 fn enhanced_indexing(input: Span) -> BResult<PostfixOpKind> {
     map(
         delimited(
-            delimited(ws, nom_char('['), ws),
+            delimited(ws, tok_l_brack(), ws),
             cut(delimited(ws, parse_expression, ws)),
-            cut(delimited(ws, nom_char(']'), ws)),
+            cut(delimited(ws, tok_r_brack(), ws)),
         ),
         |expr| PostfixOpKind::Indexing(Box::new(expr)),
     )
-    .parse(input)
+    .parse(input.into())
 }
 
 /// Enhanced null conditional access parsing
 fn enhanced_null_conditional_access(input: Span) -> BResult<PostfixOpKind> {
-    nom::combinator::map(alt((
-        // ?. member access
-        map(
-            preceded(
-                delimited(ws, tuple((nom_char('?'), nom_char('.'))), ws),
-                cut(delimited(ws, parse_identifier, ws)),
+    map(
+        alt((
+            // ?. member access
+            map(
+                preceded(
+                    delimited(ws, (nom_char('?'), nom_char('.')), ws),
+                    cut(delimited(ws, parse_identifier, ws)),
+                ),
+                PostfixOpKind::NullConditionalMemberAccess,
             ),
-            PostfixOpKind::NullConditionalMemberAccess,
-        ),
-        // ?[ indexing
-        map(
-            delimited(
-                delimited(ws, tuple((nom_char('?'), nom_char('['))), ws),
-                cut(delimited(ws, parse_expression, ws)),
-                cut(delimited(ws, nom_char(']'), ws)),
+            // ?[ indexing
+            map(
+                delimited(
+                    delimited(ws, (nom_char('?'), tok_l_brack()), ws),
+                    cut(delimited(ws, parse_expression, ws)),
+                    cut(delimited(ws, tok_r_brack(), ws)),
+                ),
+                |expr| PostfixOpKind::NullConditionalIndexing(Box::new(expr)),
             ),
-            |expr| PostfixOpKind::NullConditionalIndexing(Box::new(expr)),
-        ),
-    )), |v| v)
-    .parse(input)
+        )),
+        |v| v,
+    )
+    .parse(input.into())
 }
 
 /// Simple postfix operations as fallback
 fn simple_postfix_operations(input: Span) -> BResult<PostfixOpKind> {
-    nom::combinator::map(alt((
-        map(delimited(ws, tuple((nom_char('+'), nom_char('+'))), ws), |_| {
-            PostfixOpKind::PostfixIncrement
-        }),
-        map(delimited(ws, tuple((nom_char('-'), nom_char('-'))), ws), |_| {
-            PostfixOpKind::PostfixDecrement
-        }),
-        map(delimited(ws, nom_char('!'), ws), |_| PostfixOpKind::NullForgiving),
-    )), |v| v)
-    .parse(input)
+    map(
+        alt((
+            map(delimited(ws, (nom_char('+'), nom_char('+')), ws), |_| {
+                PostfixOpKind::PostfixIncrement
+            }),
+            map(delimited(ws, (nom_char('-'), nom_char('-')), ws), |_| {
+                PostfixOpKind::PostfixDecrement
+            }),
+            map(
+                delimited(
+                    ws,
+                    (
+                        nom_char('!'),
+                        nom::combinator::not(nom_char('='))
+                    ),
+                    ws,
+                ),
+                |_| PostfixOpKind::NullForgiving,
+            ),
+        )),
+        |v| v,
+    )
+    .parse(input.into())
 }
 
 /// Parse with-expression postfix: `with { Name = expr, ... }`
 fn enhanced_with_expression(input: Span) -> BResult<PostfixOpKind> {
     use nom::branch::alt;
     map(
-        tuple((
+        (
             delimited(ws, kw_with(), ws),
-            delimited(ws, nom_char('{'), ws),
+            delimited(ws, tok_l_brace(), ws),
             // zero or more initializers (property or indexer) separated by commas
             nom::multi::separated_list0(
-                delimited(ws, nom_char(','), ws),
+                delimited(ws, tok_comma(), ws),
                 alt((
                     parse_with_indexer_assignment,
                     map(
-                        tuple((
+                        (
                             delimited(ws, parse_identifier, ws),
-                            delimited(ws, nom_char('='), ws),
+                            delimited(ws, tok_assign(), ws),
                             delimited(ws, parse_expression, ws),
-                        )),
-                        |(id, _, expr)| WithInitializerEntry::Property { name: id.name, value: expr },
+                        ),
+                        |(id, _, expr)| {
+                            let name = match id {
+                                Identifier::Simple(s) => s,
+                                Identifier::QualifiedIdentifier(segs) => segs.join("."),
+                                Identifier::OperatorOverrideIdentifier(_) => "operator".to_string(),
+                            };
+                            WithInitializerEntry::Property { name, value: expr }
+                        },
                     ),
                 )),
             ),
-            delimited(ws, nom_char('}'), ws),
-        )),
+            delimited(ws, tok_r_brace(), ws),
+        ),
         |(_, _, inits, _)| PostfixOpKind::With(inits),
     )
-    .parse(input)
+    .parse(input.into())
 }
 
 /// Indexer assignment inside with-initializer: [expr (, expr)* ] = expr
@@ -185,28 +225,34 @@ fn parse_with_indexer_assignment(input: Span) -> BResult<WithInitializerEntry> {
     use nom::multi::separated_list1;
     map(
         (
-            delimited(ws, nom_char('['), ws),
-            separated_list1(delimited(ws, nom_char(','), ws), delimited(ws, parse_expression, ws)),
-            cut(delimited(ws, nom_char(']'), ws)),
-            cut(delimited(ws, nom_char('='), ws)),
+            delimited(ws, tok_l_brack(), ws),
+            separated_list1(
+                delimited(ws, tok_comma(), ws),
+                delimited(ws, parse_expression, ws),
+            ),
+            cut(delimited(ws, tok_r_brack(), ws)),
+            cut(delimited(ws, tok_assign(), ws)),
             cut(delimited(ws, parse_expression, ws)),
         ),
         |(_, indices, _, _, value)| WithInitializerEntry::Indexer { indices, value },
     )
-    .parse(input)
+    .parse(input.into())
 }
 
 /// Enhanced postfix operation syntax with better error recovery
 fn enhanced_postfix_operation(input: Span) -> BResult<PostfixOpKind> {
-    nom::combinator::map(alt((
-        enhanced_member_access,
-        enhanced_method_invocation,
-        enhanced_indexing,
-        enhanced_null_conditional_access,
-        enhanced_with_expression,
-        simple_postfix_operations,
-    )), |v| v)
-    .parse(input)
+    map(
+        alt((
+            enhanced_member_access,
+            enhanced_method_invocation,
+            enhanced_indexing,
+            enhanced_null_conditional_access,
+            enhanced_with_expression,
+            simple_postfix_operations,
+        )),
+        |v| v,
+    )
+    .parse(input.into())
 }
 
 /// Apply a postfix operation to an expression
@@ -237,9 +283,7 @@ fn apply_postfix_operation(expr: Expression, op: PostfixOpKind) -> Expression {
         PostfixOpKind::NullConditionalIndexing(index) => {
             Expression::NullConditional(Box::new(NullConditionalExpression {
                 target: Box::new(expr),
-                member: Identifier {
-                    name: String::new(),
-                },
+                member: Identifier::Simple(String::new()),
                 is_element_access: true,
                 argument: Some(index),
             }))
@@ -265,8 +309,12 @@ fn apply_postfix_operation(expr: Expression, op: PostfixOpKind) -> Expression {
 
 /// Parse with-expression postfix: `with { Name = expr, ... }`
 pub(crate) fn parse_dotted_member_expression(input: Span) -> BResult<Expression> {
-    let (input, first) = delimited(ws, parse_identifier, ws).parse(input)?;
-    let (input, rest) = nom::multi::many0(preceded(delimited(ws, nom_char('.'), ws), delimited(ws, parse_identifier, ws))).parse(input)?;
+    let (input, first) = delimited(ws, parse_identifier, ws).parse(input.into())?;
+    let (input, rest) = nom::multi::many0(preceded(
+        delimited(ws, nom_char('.'), ws),
+        delimited(ws, parse_identifier, ws),
+    ))
+    .parse(input.into())?;
     if rest.is_empty() {
         Ok((input, Expression::Variable(first)))
     } else {
@@ -280,15 +328,45 @@ pub(crate) fn parse_dotted_member_expression(input: Span) -> BResult<Expression>
 
 /// Parse a postfix-expression-or-higher: primary-expression followed by zero or more postfix operations
 pub(crate) fn parse_postfix_expression_or_higher(input: Span) -> BResult<Expression> {
-    let (mut cur, base) = delimited(ws, parse_primary_expression, ws).parse(input)?;
+    let (mut cur, base) = delimited(ws, parse_primary_expression, ws).parse(input.into())?;
     let mut expr = base;
     loop {
+        // Detect if a postfix starter is present; if not, break.
+        let has_starter =
+            // . member access (but not range '..' and not float like '.5')
+            ({
+                let dot = peek(delimited(ws, nom_char('.'), ws)).parse(cur).is_ok();
+                let dotdot = peek(delimited(ws, (nom_char('.'), nom_char('.')), ws)).parse(cur).is_ok();
+                // dot followed by digit (float continuation) - avoid treating as postfix
+                let dot_digit = peek(delimited(ws, (nom_char('.'), nom::character::complete::digit1), ws)).parse(cur).is_ok();
+                dot && !dotdot && !dot_digit
+            })
+            // null-conditional member access ?.
+            || peek(delimited(ws, (nom_char('?'), nom_char('.')), ws)).parse(cur).is_ok()
+            // null-conditional index ?[
+            || peek(delimited(ws, (nom_char('?'), tok_l_brack()), ws)).parse(cur).is_ok()
+            // invocation (
+            || peek(delimited(ws, tok_l_paren(), ws)).parse(cur).is_ok()
+            // indexing [
+            || peek(delimited(ws, tok_l_brack(), ws)).parse(cur).is_ok()
+            // with-expression
+            || peek(delimited(ws, kw_with(), ws)).parse(cur).is_ok()
+            // postfix ++ / -- / ! (null-forgiving)
+            || peek(delimited(ws, (nom_char('+'), nom_char('+')), ws)).parse(cur).is_ok()
+            || peek(delimited(ws, (nom_char('-'), nom_char('-')), ws)).parse(cur).is_ok()
+            || peek(delimited(ws, (nom_char('!'), nom::combinator::not(nom_char('='))), ws)).parse(cur).is_ok();
+
+        if !has_starter {
+            break;
+        }
+
+        // Starter present: we must either successfully parse or produce an error
         match delimited(ws, enhanced_postfix_operation, ws).parse(cur) {
             Ok((next, op)) => {
                 expr = apply_postfix_operation(expr, op);
                 cur = next;
             }
-            Err(_) => break,
+            Err(e) => return Err(e),
         }
     }
     Ok((cur, expr))

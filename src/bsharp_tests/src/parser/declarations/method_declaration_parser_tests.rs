@@ -6,7 +6,7 @@ use syntax::expressions::expression::Expression;
 use syntax::expressions::literal::Literal;
 
 fn parse_class(code: &str) -> Result<syntax::declarations::ClassDeclaration, String> {
-    match parse_class_declaration(code) {
+    match parse_class_declaration(code.into()) {
         Ok((rest, decl)) if rest.trim().is_empty() => Ok(decl),
         Ok((rest, _)) => Err(format!("Unparsed input: {}", rest)),
         Err(e) => Err(format!("Parse error: {:?}", e)),
@@ -16,7 +16,7 @@ fn parse_class(code: &str) -> Result<syntax::declarations::ClassDeclaration, Str
 #[test]
 fn ctor_initializer_base_with_args() {
     let code = r#"class C { public C() : base(1, 2) {} }"#;
-    let class_decl = parse_class(code).expect("parse");
+    let class_decl = parse_class(code.into()).expect("parse");
     assert_eq!(class_decl.body_declarations.len(), 1);
     match &class_decl.body_declarations[0] {
         ClassBodyDeclaration::Constructor(ConstructorDeclaration { initializer, .. }) => {
@@ -37,7 +37,7 @@ fn ctor_initializer_base_with_args() {
 #[test]
 fn ctor_initializer_this_with_no_args() {
     let code = r#"class C { public C(int x) : this() {} }"#;
-    let class_decl = parse_class(code).expect("parse");
+    let class_decl = parse_class(code.into()).expect("parse");
     assert_eq!(class_decl.body_declarations.len(), 1);
     match &class_decl.body_declarations[0] {
         ClassBodyDeclaration::Constructor(ConstructorDeclaration { initializer, .. }) => {

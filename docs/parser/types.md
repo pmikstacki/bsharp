@@ -150,7 +150,7 @@ fn parse_type(input: &str) -> BResult<&str, Type> {
         parse_function_pointer_type,
         parse_named_type,
         parse_primitive_type,
-    ))(input)
+    ))(input.into())
 }
 ```
 

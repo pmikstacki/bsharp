@@ -1,10 +1,10 @@
+use crate::syntax::comment_parser::ws;
+use crate::syntax::errors::BResult;
+use crate::syntax::span::Span;
 use nom::combinator::{cut, opt, peek};
 use nom::multi::{many0, separated_list0};
 use nom::sequence::delimited;
 use nom::Parser;
-use crate::syntax::errors::BResult;
-use crate::syntax::span::Span;
-use crate::syntax::comment_parser::ws;
 
 /// Result of parsing either a singleton value or a delimited list of values
 #[derive(Debug, Clone, PartialEq)]
@@ -36,36 +36,36 @@ where
 {
     move |input: Span<'a>| {
         // Open delimiter (with whitespace/comments)
-        let (input, _) = delimited(ws, &mut open, ws).parse(input)?;
+        let (input, _) = delimited(ws, &mut open, ws).parse(input.into())?;
 
         // Parse the first element
-        let (input, first_val) = first(input)?;
+        let (input, first_val) = first(input.into())?;
 
         // Disambiguate by peeking the closing delimiter.
         // If close is next -> singleton; otherwise it's a list (expect a separator and parse rest).
-        if peek(delimited(ws, &mut close, ws)).parse(input).is_ok() {
-            let (input, _) = cut(delimited(ws, &mut close, ws)).parse(input)?;
+        if peek(delimited(ws, &mut close, ws)).parse(input.into()).is_ok() {
+            let (input, _) = cut(delimited(ws, &mut close, ws)).parse(input.into())?;
             Ok((input, OneOrMany::Single(first_val)))
         } else {
             // List path: require a separator, then parse the remaining elements
-            let (input, _) = delimited(ws, &mut sep, ws).parse(input)?;
+            let (input, _) = delimited(ws, &mut sep, ws).parse(input.into())?;
             let (input, mut rest) = separated_list0(
                 delimited(ws, &mut sep, ws),
                 delimited(ws, &mut rest_elem, ws),
-            ).parse(input)?;
+            ).parse(input.into())?;
 
             // Optional trailing separator
             let (input, _) = if allow_trailing_sep {
-                opt(delimited(ws, &mut sep, ws)).parse(input)?
+                opt(delimited(ws, &mut sep, ws)).parse(input.into())?
             } else {
                 (input, None)
             };
 
             // Close (guard with cut when committed to list)
             let (input, _) = if cut_close_on_many {
-                cut(delimited(ws, &mut close, ws)).parse(input)?
+                cut(delimited(ws, &mut close, ws)).parse(input.into())?
             } else {
-                delimited(ws, &mut close, ws).parse(input)?
+                delimited(ws, &mut close, ws).parse(input.into())?
             };
 
             rest.insert(0, first_val);
@@ -75,7 +75,7 @@ where
 }
 
 /// Parse zero-or-more elements between delimiters, with optional trailing separator and optional cut on close.
-pub fn parse_delimited_list0<'a, FO, FE, FS, FC, OOpen, OElem, OSep, OClose, T>(
+pub fn parse_delimited_list0<'a, FO, FE, FS, FC, OOpen, OSep, OClose, T>(
     mut open: FO,
     mut elem: FE,
     mut sep: FS,
@@ -90,38 +90,38 @@ where
     FC: FnMut(Span<'a>) -> BResult<'a, OClose>,
 {
     move |input: Span<'a>| {
-        let (input, _) = delimited(ws, &mut open, ws).parse(input)?;
+        let (input, _) = delimited(ws, &mut open, ws).parse(input.into())?;
 
         // Empty list if immediately closed
-        if peek(delimited(ws, &mut close, ws)).parse(input).is_ok() {
+        if peek(delimited(ws, &mut close, ws)).parse(input.into()).is_ok() {
             let (input, _) = if cut_close {
-                cut(delimited(ws, &mut close, ws)).parse(input)?
+                cut(delimited(ws, &mut close, ws)).parse(input.into())?
             } else {
-                delimited(ws, &mut close, ws).parse(input)?
+                delimited(ws, &mut close, ws).parse(input.into())?
             };
             return Ok((input, Vec::new()));
         }
 
         // Parse first element, then the rest
-        let (input, first) = delimited(ws, &mut elem, ws).parse(input)?;
+        let (input, first) = delimited(ws, &mut elem, ws).parse(input.into())?;
         let (input, mut rest) = many0(|i| {
             let (i, _) = delimited(ws, &mut sep, ws).parse(i)?;
             delimited(ws, &mut elem, ws).parse(i)
         })
-        .parse(input)?;
+            .parse(input.into())?;
 
         // Optional trailing separator
         let (input, _) = if allow_trailing_sep {
-            opt(delimited(ws, &mut sep, ws)).parse(input)?
+            opt(delimited(ws, &mut sep, ws)).parse(input.into())?
         } else {
             (input, None)
         };
 
         // Close
         let (input, _) = if cut_close {
-            cut(delimited(ws, &mut close, ws)).parse(input)?
+            cut(delimited(ws, &mut close, ws)).parse(input.into())?
         } else {
-            delimited(ws, &mut close, ws).parse(input)?
+            delimited(ws, &mut close, ws).parse(input.into())?
         };
 
         rest.insert(0, first);
@@ -130,7 +130,7 @@ where
 }
 
 /// Parse one-or-more elements between delimiters, with optional trailing separator and optional cut on close.
-pub fn parse_delimited_list1<'a, FO, FE, FS, FC, OOpen, OElem, OSep, OClose, T>(
+pub fn parse_delimited_list1<'a, FO, FE, FS, FC, OOpen, OSep, OClose, T>(
     mut open: FO,
     mut elem: FE,
     mut sep: FS,
@@ -145,26 +145,26 @@ where
     FC: FnMut(Span<'a>) -> BResult<'a, OClose>,
 {
     move |input: Span<'a>| {
-        let (input, _) = delimited(ws, &mut open, ws).parse(input)?;
+        let (input, _) = delimited(ws, &mut open, ws).parse(input.into())?;
 
         // Require first element
-        let (input, first) = delimited(ws, &mut elem, ws).parse(input)?;
+        let (input, first) = delimited(ws, &mut elem, ws).parse(input.into())?;
         // Parse zero or more pairs of (separator then element)
         let (input, mut rest) = many0(|i| {
             let (i, _) = delimited(ws, &mut sep, ws).parse(i)?;
             delimited(ws, &mut elem, ws).parse(i)
         })
-        .parse(input)?;
+            .parse(input.into())?;
         // Optional trailing separator
         let (input, _) = if allow_trailing_sep {
-            opt(delimited(ws, &mut sep, ws)).parse(input)?
+            opt(delimited(ws, &mut sep, ws)).parse(input.into())?
         } else {
             (input, None)
         };
         let (input, _) = if cut_close {
-            cut(delimited(ws, &mut close, ws)).parse(input)?
+            cut(delimited(ws, &mut close, ws)).parse(input.into())?
         } else {
-            delimited(ws, &mut close, ws).parse(input)?
+            delimited(ws, &mut close, ws).parse(input.into())?
         };
         rest.insert(0, first);
         Ok((input, rest))
@@ -181,5 +181,5 @@ where
     FE: FnMut(Span<'a>) -> BResult<'a, T>,
     FS: FnMut(Span<'a>) -> BResult<'a, OSep>,
 {
-    move |input: Span<'a>| separated_list0(delimited(ws, &mut sep, ws), delimited(ws, &mut elem, ws)).parse(input)
+    move |input: Span<'a>| separated_list0(delimited(ws, &mut sep, ws), delimited(ws, &mut elem, ws)).parse(input.into())
 }

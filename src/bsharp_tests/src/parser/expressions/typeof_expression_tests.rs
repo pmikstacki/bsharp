@@ -6,22 +6,22 @@ use syntax::expressions::expression::Expression;
 use syntax::types::{PrimitiveType, Type};
 
 fn parse_typeof_expr_helper(code: &str) -> Result<Expression, String> {
-    match parse_typeof_expression(code) {
-        Ok((remaining, expr)) if remaining.trim().is_empty() => Ok(expr),
+    match parse_typeof_expression(code.into()) {
+        Ok((remaining, expr)) if remaining.fragment().trim().is_empty() => Ok(expr),
         Ok((remaining, _)) => Err(format!(
             "Didn't consume all input. Remaining: '{}'",
-            remaining
+            remaining.fragment()
         )),
         Err(e) => Err(format!("Parse error: {:?}", e)),
     }
 }
 
 fn parse_expr_helper(code: &str) -> Result<Expression, String> {
-    match parse_expression(code) {
-        Ok((remaining, expr)) if remaining.trim().is_empty() => Ok(expr),
+    match parse_expression(code.into()) {
+        Ok((remaining, expr)) if remaining.fragment().trim().is_empty() => Ok(expr),
         Ok((remaining, _)) => Err(format!(
             "Didn't consume all input. Remaining: '{}'",
-            remaining
+            remaining.fragment()
         )),
         Err(e) => Err(format!("Parse error: {:?}", e)),
     }
@@ -30,7 +30,7 @@ fn parse_expr_helper(code: &str) -> Result<Expression, String> {
 #[test]
 fn test_parse_typeof_primitive_type() {
     let code = "typeof(int)";
-    let result = parse_typeof_expr_helper(code);
+    let result = parse_typeof_expr_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse typeof with primitive type: {:?}",
@@ -54,7 +54,7 @@ fn test_parse_typeof_primitive_type() {
 #[test]
 fn test_parse_typeof_string_type() {
     let code = "typeof(string)";
-    let result = parse_typeof_expr_helper(code);
+    let result = parse_typeof_expr_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse typeof with string type: {:?}",
@@ -78,7 +78,7 @@ fn test_parse_typeof_string_type() {
 #[test]
 fn test_parse_typeof_reference_type() {
     let code = "typeof(MyClass)";
-    let result = parse_typeof_expr_helper(code);
+    let result = parse_typeof_expr_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse typeof with reference type: {:?}",
@@ -87,7 +87,7 @@ fn test_parse_typeof_reference_type() {
 
     if let Ok(Expression::Typeof(typeof_expr)) = result {
         if let Type::Reference(id) = &typeof_expr.target_type {
-            assert_eq!(id.name, "MyClass");
+            assert_eq!(id.to_string(), "MyClass");
         } else {
             panic!(
                 "Expected reference type, got: {:?}",
@@ -102,7 +102,7 @@ fn test_parse_typeof_reference_type() {
 #[test]
 fn test_parse_typeof_generic_type() {
     let code = "typeof(List<int>)";
-    let result = parse_typeof_expr_helper(code);
+    let result = parse_typeof_expr_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse typeof with generic type: {:?}",
@@ -119,7 +119,7 @@ fn test_parse_typeof_generic_type() {
 #[test]
 fn test_parse_typeof_array_type() {
     let code = "typeof(int[])";
-    let result = parse_typeof_expr_helper(code);
+    let result = parse_typeof_expr_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse typeof with array type: {:?}",
@@ -136,7 +136,7 @@ fn test_parse_typeof_array_type() {
 #[test]
 fn test_parse_typeof_in_full_expression_parser() {
     let code = "typeof(bool)";
-    let result = parse_expr_helper(code);
+    let result = parse_expr_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse typeof in full expression parser: {:?}",
@@ -167,7 +167,7 @@ fn test_parse_typeof_with_whitespace() {
     ];
 
     for code in variations {
-        let result = parse_expr_helper(code);
+        let result = parse_expr_helper(code.into());
         assert!(
             result.is_ok(),
             "Failed to parse typeof with whitespace '{}': {:?}",
@@ -190,7 +190,7 @@ fn test_parse_typeof_with_whitespace() {
 #[test]
 fn test_parse_typeof_void() {
     let code = "typeof(void)";
-    let result = parse_typeof_expr_helper(code);
+    let result = parse_typeof_expr_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse typeof with void type: {:?}",
@@ -214,7 +214,7 @@ fn test_parse_typeof_void() {
 #[test]
 fn test_parse_typeof_nullable_type() {
     let code = "typeof(int?)";
-    let result = parse_typeof_expr_helper(code);
+    let result = parse_typeof_expr_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse typeof with nullable type: {:?}",
@@ -239,7 +239,7 @@ fn test_parse_invalid_typeof_expressions() {
     ];
 
     for code in invalid_cases {
-        let result = parse_typeof_expr_helper(code);
+        let result = parse_typeof_expr_helper(code.into());
         assert!(
             result.is_err(),
             "Expected parse error for invalid syntax: '{}'",

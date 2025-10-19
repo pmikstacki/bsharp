@@ -163,10 +163,9 @@ impl WorkspaceLoader {
             .collect();
 
         while let Some(ref_path) = queue.pop_front() {
-            // Limit traversal to within root
-            if !ref_path.starts_with(root) {
-                continue;
-            }
+            // Previously we limited traversal to within 'root'. For SDK-style solutions
+            // with sibling projects (e.g., app references ../dependency), we allow
+            // following references outside the immediate project directory.
             if seen.contains(&ref_path) {
                 continue;
             }

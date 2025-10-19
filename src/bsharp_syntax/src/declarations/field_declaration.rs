@@ -3,9 +3,10 @@ use super::Modifier;
 use crate::expressions::Expression;
 use crate::types::Type;
 use crate::Identifier;
+use bsharp_syntax_derive::AstNode;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[derive(AstNode, Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct FieldDeclaration {
     pub modifiers: Vec<Modifier>, // Added modifiers support
     pub field_type: Type,

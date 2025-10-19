@@ -6,7 +6,7 @@ use syntax::identifier::Identifier;
 use syntax::types::{PrimitiveType, Type};
 
 fn parse_deconstruction_expr(code: &str) -> Result<DeconstructionExpression, String> {
-    match parse_deconstruction_expression(code) {
+    match parse_deconstruction_expression(code.into()) {
         Ok((rest, expr)) if rest.trim().is_empty() => Ok(expr),
         Ok((rest, _)) => Err(format!("Unparsed input: {}", rest)),
         Err(e) => Err(format!("Parse error: {:?}", e)),
@@ -31,7 +31,7 @@ fn test_parse_simple_var_deconstruction() {
         ],
         value: Box::new(Expression::Variable(Identifier::new("tuple"))),
     };
-    assert_eq!(parse_deconstruction_expr(code), Ok(expected));
+    assert_eq!(parse_deconstruction_expr(code.into()), Ok(expected));
 }
 
 #[test]
@@ -57,7 +57,7 @@ fn test_parse_typed_deconstruction() {
             },
         ))),
     };
-    assert_eq!(parse_deconstruction_expr(code), Ok(expected));
+    assert_eq!(parse_deconstruction_expr(code.into()), Ok(expected));
 }
 
 #[test]
@@ -78,7 +78,7 @@ fn test_parse_mixed_deconstruction() {
         ],
         value: Box::new(Expression::Variable(Identifier::new("point"))),
     };
-    assert_eq!(parse_deconstruction_expr(code), Ok(expected));
+    assert_eq!(parse_deconstruction_expr(code.into()), Ok(expected));
 }
 
 #[test]
@@ -91,7 +91,7 @@ fn test_parse_existing_variable_deconstruction() {
         ],
         value: Box::new(Expression::Variable(Identifier::new("tuple"))),
     };
-    assert_eq!(parse_deconstruction_expr(code), Ok(expected));
+    assert_eq!(parse_deconstruction_expr(code.into()), Ok(expected));
 }
 
 #[test]
@@ -108,7 +108,7 @@ fn test_parse_deconstruction_with_discard() {
         ],
         value: Box::new(Expression::Variable(Identifier::new("tuple"))),
     };
-    assert_eq!(parse_deconstruction_expr(code), Ok(expected));
+    assert_eq!(parse_deconstruction_expr(code.into()), Ok(expected));
 }
 
 #[test]
@@ -136,13 +136,13 @@ fn test_parse_nested_deconstruction() {
         ],
         value: Box::new(Expression::Variable(Identifier::new("nestedTuple"))),
     };
-    assert_eq!(parse_deconstruction_expr(code), Ok(expected));
+    assert_eq!(parse_deconstruction_expr(code.into()), Ok(expected));
 }
 
 #[test]
 fn test_parse_complex_value_expression() {
     let code = "(var x, var y) = obj.GetTuple()";
-    let result = parse_deconstruction_expr(code);
+    let result = parse_deconstruction_expr(code.into());
     assert!(result.is_ok());
     let deconstruction = result.unwrap();
     assert_eq!(deconstruction.targets.len(), 2);
@@ -153,7 +153,7 @@ fn test_parse_complex_value_expression() {
 #[test]
 fn test_parse_deconstruction_with_array_access() {
     let code = "(var x, var y) = tuples[0]";
-    let result = parse_deconstruction_expr(code);
+    let result = parse_deconstruction_expr(code.into());
     assert!(result.is_ok());
     let deconstruction = result.unwrap();
     assert_eq!(deconstruction.targets.len(), 2);
@@ -171,7 +171,7 @@ fn test_parse_deconstruction_whitespace_variations() {
     ];
 
     for code in &variations {
-        let result = parse_deconstruction_expr(code);
+        let result = parse_deconstruction_expr((*code).into());
         assert!(result.is_ok(), "Failed to parse: {}", code);
         let deconstruction = result.unwrap();
         assert_eq!(deconstruction.targets.len(), 2);
@@ -181,7 +181,7 @@ fn test_parse_deconstruction_whitespace_variations() {
 #[test]
 fn test_parse_complex_types_in_deconstruction() {
     let code = "(List<string> items, Dictionary<int, string> dict) = GetComplexTuple()";
-    let result = parse_deconstruction_expr(code);
+    let result = parse_deconstruction_expr(code.into());
     assert!(result.is_ok());
     let deconstruction = result.unwrap();
     assert_eq!(deconstruction.targets.len(), 2);
@@ -198,7 +198,7 @@ fn test_parse_complex_types_in_deconstruction() {
 #[test]
 fn test_parse_nullable_types_in_deconstruction() {
     let code = "(int? x, string? y) = GetNullableTuple()";
-    let result = parse_deconstruction_expr(code);
+    let result = parse_deconstruction_expr(code.into());
     assert!(result.is_ok());
     let deconstruction = result.unwrap();
     assert_eq!(deconstruction.targets.len(), 2);
@@ -217,7 +217,7 @@ fn test_deconstruction_parsing_errors() {
     ];
 
     for code in &invalid_cases {
-        let result = parse_deconstruction_expr(code);
+        let result = parse_deconstruction_expr((*code).into());
         assert!(result.is_err(), "Should fail to parse: {}", code);
     }
 }
@@ -225,7 +225,7 @@ fn test_deconstruction_parsing_errors() {
 #[test]
 fn test_deeply_nested_deconstruction() {
     let code = "(((var a, var b), var c), var d) = deeplyNested";
-    let result = parse_deconstruction_expr(code);
+    let result = parse_deconstruction_expr(code.into());
     assert!(result.is_ok());
     let deconstruction = result.unwrap();
     assert_eq!(deconstruction.targets.len(), 2);

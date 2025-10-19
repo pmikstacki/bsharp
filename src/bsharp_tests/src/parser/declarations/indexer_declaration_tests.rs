@@ -8,7 +8,7 @@ use syntax::types::Type::Primitive;
 use syntax::types::{PrimitiveType, Type};
 
 fn parse_indexer_declaration_helper(code: &str) -> Result<IndexerDeclaration, String> {
-    match parse_indexer_declaration(code) {
+    match parse_indexer_declaration(code.into()) {
         Ok((remaining, declaration)) => {
             if remaining.trim().is_empty() {
                 Ok(declaration)
@@ -23,7 +23,7 @@ fn parse_indexer_declaration_helper(code: &str) -> Result<IndexerDeclaration, St
 #[test]
 fn test_indexer_mixed_accessor_modifiers_set_private() {
     let code = "public string this[int i] { get; private set; }";
-    let decl = parse_indexer_declaration_helper(code).expect("parse ok");
+    let decl = parse_indexer_declaration_helper(code.into()).expect("parse ok");
     // Property-level modifier and type
     assert!(decl.modifiers.contains(&Modifier::Public));
     assert_eq!(decl.indexer_type, Type::Primitive(PrimitiveType::String));
@@ -48,7 +48,7 @@ fn test_indexer_mixed_accessor_modifiers_set_private() {
 #[test]
 fn test_indexer_mixed_accessor_modifiers_get_private() {
     let code = "public string this[int i] { private get; set; }";
-    let decl = parse_indexer_declaration_helper(code).expect("parse ok");
+    let decl = parse_indexer_declaration_helper(code.into()).expect("parse ok");
     // Property-level modifier and type
     assert!(decl.modifiers.contains(&Modifier::Public));
     assert_eq!(decl.indexer_type, Type::Primitive(PrimitiveType::String));
@@ -73,7 +73,7 @@ fn test_indexer_mixed_accessor_modifiers_get_private() {
 #[test]
 fn test_indexer_accessor_attrs_with_mixed_modifiers() {
     let code = "public string this[int i] { [A] get; private set; }";
-    let decl = parse_indexer_declaration_helper(code).expect("parse ok");
+    let decl = parse_indexer_declaration_helper(code.into()).expect("parse ok");
     // Declaration-level checks
     assert!(decl.modifiers.contains(&Modifier::Public));
     assert_eq!(decl.indexer_type, Type::Primitive(PrimitiveType::String));
@@ -85,7 +85,7 @@ fn test_indexer_accessor_attrs_with_mixed_modifiers() {
         .expect("get present");
     assert!(get_acc.modifiers.is_empty());
     assert_eq!(get_acc.attributes.len(), 1);
-    assert_eq!(get_acc.attributes[0].name.name, "A");
+    assert_eq!(get_acc.attributes[0].name.to_string(), "A");
     assert!(get_acc.body.is_none());
     // set accessor: private modifier, no attributes, no body
     let set_acc = decl
@@ -102,7 +102,7 @@ fn test_indexer_accessor_attrs_with_mixed_modifiers() {
 #[test]
 fn test_indexer_accessor_level_attributes_and_modifiers() {
     let code = "public int this[int index] { [A1] private get; [A2][A3] set; }";
-    let result = parse_indexer_declaration_helper(code);
+    let result = parse_indexer_declaration_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse indexer with accessor attrs/mods: {:?}",
@@ -117,7 +117,7 @@ fn test_indexer_accessor_level_attributes_and_modifiers() {
         .expect("get present");
     assert!(get_acc.modifiers.contains(&Modifier::Private));
     assert_eq!(get_acc.attributes.len(), 1);
-    assert_eq!(get_acc.attributes[0].name.name, "A1");
+    assert_eq!(get_acc.attributes[0].name.to_string(), "A1");
     assert!(get_acc.body.is_none());
     // set accessor present, no modifiers, with attributes A2 and A3
     let set_acc = decl
@@ -127,20 +127,20 @@ fn test_indexer_accessor_level_attributes_and_modifiers() {
         .expect("set present");
     assert!(set_acc.modifiers.is_empty());
     assert_eq!(set_acc.attributes.len(), 2);
-    let names: Vec<_> = set_acc
+    let names: Vec<String> = set_acc
         .attributes
         .iter()
-        .map(|a| a.name.name.as_str())
+        .map(|a| a.name.to_string())
         .collect();
-    assert!(names.contains(&"A2"));
-    assert!(names.contains(&"A3"));
+    assert!(names.iter().any(|n| n == "A2"));
+    assert!(names.iter().any(|n| n == "A3"));
     assert!(set_acc.body.is_none());
 }
 
 #[test]
 fn test_parse_simple_indexer() {
     let code = "public int this[int index] { get; set; }";
-    let result = parse_indexer_declaration_helper(code);
+    let result = parse_indexer_declaration_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse simple indexer: {:?}",
@@ -182,7 +182,7 @@ fn test_parse_simple_indexer() {
 #[test]
 fn test_parse_readonly_indexer() {
     let code = "public string this[int index] { get; }";
-    let result = parse_indexer_declaration_helper(code);
+    let result = parse_indexer_declaration_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse readonly indexer: {:?}",
@@ -211,7 +211,7 @@ fn test_parse_readonly_indexer() {
 #[test]
 fn test_parse_writeonly_indexer() {
     let code = "public string this[int index] { set; }";
-    let result = parse_indexer_declaration_helper(code);
+    let result = parse_indexer_declaration_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse writeonly indexer: {:?}",
@@ -241,7 +241,7 @@ fn test_parse_writeonly_indexer() {
 #[test]
 fn test_parse_multi_parameter_indexer() {
     let code = "public string this[int row, int col] { get; set; }";
-    let result = parse_indexer_declaration_helper(code);
+    let result = parse_indexer_declaration_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse multi-parameter indexer: {:?}",
@@ -268,7 +268,7 @@ fn test_parse_multi_parameter_indexer() {
 fn test_parse_indexer_with_body() {
     let code =
         "public int this[int index] { get { return _data[index]; } set { _data[index] = value; } }";
-    let result = parse_indexer_declaration_helper(code);
+    let result = parse_indexer_declaration_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse indexer with body: {:?}",
@@ -306,7 +306,7 @@ fn test_parse_indexer_with_body() {
 #[test]
 fn test_parse_private_indexer() {
     let code = "private object this[string key] { get; set; }";
-    let result = parse_indexer_declaration_helper(code);
+    let result = parse_indexer_declaration_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse private indexer: {:?}",
@@ -324,7 +324,7 @@ fn test_parse_private_indexer() {
 #[test]
 fn test_parse_protected_indexer() {
     let code = "protected internal T this[int index] { get; set; }";
-    let result = parse_indexer_declaration_helper(code);
+    let result = parse_indexer_declaration_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse protected internal indexer: {:?}",
@@ -339,7 +339,7 @@ fn test_parse_protected_indexer() {
 #[test]
 fn test_parse_virtual_indexer() {
     let code = "public virtual string this[int index] { get; set; }";
-    let result = parse_indexer_declaration_helper(code);
+    let result = parse_indexer_declaration_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse virtual indexer: {:?}",
@@ -354,7 +354,7 @@ fn test_parse_virtual_indexer() {
 #[test]
 fn test_parse_abstract_indexer() {
     let code = "public abstract string this[int index] { get; set; }";
-    let result = parse_indexer_declaration_helper(code);
+    let result = parse_indexer_declaration_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse abstract indexer: {:?}",
@@ -368,7 +368,7 @@ fn test_parse_abstract_indexer() {
 #[test]
 fn test_parse_override_indexer() {
     let code = "public override string this[int index] { get; set; }";
-    let result = parse_indexer_declaration_helper(code);
+    let result = parse_indexer_declaration_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse override indexer: {:?}",
@@ -382,7 +382,7 @@ fn test_parse_override_indexer() {
 #[test]
 fn test_parse_indexer_with_attributes() {
     let code = "[Obsolete] public string this[int index] { get; set; }";
-    let result = parse_indexer_declaration_helper(code);
+    let result = parse_indexer_declaration_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse indexer with attributes: {:?}",
@@ -399,7 +399,7 @@ fn test_parse_indexer_with_attributes() {
 #[test]
 fn test_parse_generic_indexer() {
     let code = "public T this[int index] { get; set; }";
-    let result = parse_indexer_declaration_helper(code);
+    let result = parse_indexer_declaration_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse generic indexer: {:?}",
@@ -416,7 +416,7 @@ fn test_parse_generic_indexer() {
 #[test]
 fn test_parse_complex_type_indexer() {
     let code = "public List<string> this[int index] { get; set; }";
-    let result = parse_indexer_declaration_helper(code);
+    let result = parse_indexer_declaration_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse complex type indexer: {:?}",
@@ -432,7 +432,7 @@ fn test_parse_complex_type_indexer() {
 #[test]
 fn test_parse_indexer_mixed_parameter_types() {
     let code = "public object this[string key, int version, bool flag] { get; set; }";
-    let result = parse_indexer_declaration_helper(code);
+    let result = parse_indexer_declaration_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse indexer with mixed parameter types: {:?}",

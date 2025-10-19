@@ -1,29 +1,31 @@
 use crate::parser::expressions::declarations::attribute_parser::parse_attribute;
 use crate::syntax::comment_parser::ws;
 use crate::syntax::errors::BResult;
+use crate::syntax::span::Span;
 
-use nom::character::complete::satisfy;
 use nom::Parser;
 use nom::branch::alt;
+use nom::character::complete::satisfy;
 use nom::sequence::delimited;
 use nom_supreme::ParserExt;
-use nom_supreme::tag::complete::tag;
 
+use crate::keywords::global_keywords::{kw_assembly, kw_module};
+use crate::tokens::separators::tok_colon;
 use nom::combinator::map;
-use syntax::declarations::GlobalAttribute;
 use syntax::Identifier;
+use syntax::declarations::GlobalAttribute;
 
 /// Parse a global attribute with target specification
 /// Examples:
 /// - `[assembly: System.Reflection.AssemblyVersion("1.0.0.0")]`
 /// - `[module: System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0161")]`
-pub fn parse_global_attribute<'a>(input: Span<'a>) -> BResult<'a, GlobalAttribute> {
+pub fn parse_global_attribute(input: Span) -> BResult<GlobalAttribute> {
     // [target: Attribute]
-    let (input, _) = delimited(ws, satisfy(|c| c == '['), ws).parse(input)?;
-    let (input, target) = parse_attribute_target(input)?;
-    let (input, _) = delimited(ws, satisfy(|c| c == ':'), ws).parse(input)?;
-    let (input, attribute) = delimited(ws, parse_attribute, ws).parse(input)?;
-    let (input, _) = delimited(ws, satisfy(|c| c == ']'), ws).parse(input)?;
+    let (input, _) = delimited(ws, satisfy(|c| c == '['), ws).parse(input.into())?;
+    let (input, target) = parse_attribute_target(input.into())?;
+    let (input, _) = delimited(ws, tok_colon(), ws).parse(input.into())?;
+    let (input, attribute) = delimited(ws, parse_attribute, ws).parse(input.into())?;
+    let (input, _) = delimited(ws, satisfy(|c| c == ']'), ws).parse(input.into())?;
 
     Ok((input, GlobalAttribute { target, attribute }))
 }
@@ -32,17 +34,17 @@ pub fn parse_global_attribute<'a>(input: Span<'a>) -> BResult<'a, GlobalAttribut
 fn parse_attribute_target(input: Span) -> BResult<Identifier> {
     alt((
         // Parse specific known targets first
-        map(delimited(ws, tag("assembly"), ws), |_| Identifier {
-            name: "assembly".to_string(),
+        map(delimited(ws, kw_assembly(), ws), |_| {
+            Identifier::Simple("assembly".to_string())
         }),
-        map(delimited(ws, tag("module"), ws), |_| Identifier {
-            name: "module".to_string(),
+        map(delimited(ws, kw_module(), ws), |_| {
+            Identifier::Simple("module".to_string())
         }),
         // For any other identifier targets, parse as identifier directly
         delimited(ws, crate::parser::identifier_parser::parse_identifier, ws),
     ))
     .context("attribute target")
-    .parse(input)
+    .parse(input.into())
 }
 
 /// Parse multiple global attributes that might appear at the top of a file
@@ -55,7 +57,7 @@ fn parse_attribute_target(input: Span) -> BResult<Identifier> {
 pub fn parse_global_attributes(input: Span) -> BResult<Vec<GlobalAttribute>> {
     // According to Nom docs, many0 should handle failure gracefully
     // First skip any leading whitespace
-    let (mut remaining, _) = ws(input)?;
+    let (mut remaining, _) = ws(input.into())?;
 
     let mut attributes = Vec::new();
 
@@ -69,4 +71,3 @@ pub fn parse_global_attributes(input: Span) -> BResult<Vec<GlobalAttribute>> {
 
     Ok((remaining, attributes))
 }
-use crate::syntax::span::Span;

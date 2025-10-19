@@ -2,7 +2,7 @@ use parser::types::type_parser::parse_type_expression;
 use syntax::types::{PrimitiveType, Type};
 
 fn parse_type_ok(src: &str) -> Type {
-    let (rest, ty) = parse_type_expression(src).expect("parse ok");
+    let (rest, ty) = parse_type_expression(src.into()).expect("parse ok");
     assert!(rest.trim().is_empty(), "unparsed: {}", rest);
     ty
 }

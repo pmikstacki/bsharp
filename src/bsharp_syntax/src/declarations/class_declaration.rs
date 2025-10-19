@@ -4,9 +4,10 @@ use crate::declarations::{
 use crate::trivia::xml_documentation::XmlDocumentationComment;
 use crate::types::{Parameter, Type, TypeParameter};
 use crate::Identifier;
+use bsharp_syntax_derive::AstNode;
 use serde::{Deserialize, Serialize};
 
-#[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct ClassDeclaration {
     pub attributes: Vec<AttributeList>,
     pub modifiers: Vec<Modifier>,

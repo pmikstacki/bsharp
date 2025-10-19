@@ -18,47 +18,47 @@ use nom_supreme::ParserExt;
 /// var name = "Alice";
 /// Console.WriteLine($"Hello, {name}!");
 /// ```
-pub fn parse_top_level_statements<'a>(input: Span<'a>) -> BResult<'a, Vec<Statement>> {
+pub fn parse_top_level_statements(input: Span) -> BResult<Vec<Statement>> {
     (|mut current| {
-            let mut statements = Vec::new();
-            loop {
-                let (after_ws, _) = ws(current)?;
-                current = after_ws;
+        let mut statements = Vec::new();
+        loop {
+            let (after_ws, _) = ws(current)?;
+            current = after_ws;
 
-                if current.is_empty() {
-                    break;
+            if current.is_empty() {
+                break;
+            }
+
+            let before_len = current.len();
+
+            match parse_statement(current) {
+                Ok((rest, stmt)) => {
+                    if rest.len() == before_len {
+                        break;
+                    }
+                    statements.push(stmt);
+                    current = rest;
                 }
-
-                let before_len = current.len();
-
-                match parse_statement(current) {
-                    Ok((rest, stmt)) => {
-                        if rest.len() == before_len {
-                            break;
-                        }
-                        statements.push(stmt);
-                        current = rest;
-                    }
-                    Err(nom::Err::Error(e)) => {
-                        return Err(nom::Err::Error(e));
-                    }
-                    Err(err) => {
-                        return Err(err);
-                    }
+                Err(nom::Err::Error(e)) => {
+                    return Err(nom::Err::Error(e));
+                }
+                Err(err) => {
+                    return Err(err);
                 }
             }
-            Ok((current, statements))
         }
+        Ok((current, statements))
+    }
     )
-    .context("top-level statements")
-    .parse(input)
+        .context("top-level statements")
+        .parse(input.into())
 }
 
 /// Parse a single top-level statement
 /// This is a wrapper around parse_statement that handles top-level context
-pub fn parse_top_level_statement<'a>(input: Span<'a>) -> BResult<'a, Statement> {
+pub fn parse_top_level_statement(input: Span) -> BResult<Statement> {
     parse_statement_ws
         .context("top-level statement")
-        .parse(input)
+        .parse(input.into())
 }
 use crate::syntax::span::Span;

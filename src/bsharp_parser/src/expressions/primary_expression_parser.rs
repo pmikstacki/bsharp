@@ -13,32 +13,33 @@ use crate::parser::expressions::throw_expression_parser::parse_throw_expression;
 use crate::parser::identifier_parser::parse_identifier;
 use crate::parser::keywords::contextual_misc_keywords::{kw_base, kw_this};
 use crate::parser::types::type_parser::parse_type_expression;
-use crate::syntax::errors::BResult;
 use crate::syntax::comment_parser::ws;
+use crate::syntax::errors::BResult;
 use nom_supreme::ParserExt;
 
 use crate::parser::expressions::assignment_expression_parser;
+use crate::syntax::list_parser::parse_delimited_list0;
+use crate::syntax::span::Span;
 use nom::{
     branch::alt,
     combinator::{map, peek},
-    Parser,
     sequence::delimited,
+    Parser,
 };
 use syntax::expressions::Expression;
 use syntax::types::Type;
-use syntax::Identifier;
-use crate::syntax::list_parser::parse_delimited_list0;
-use crate::syntax::span::Span;
+use crate::tokens::relational::{tok_gt, tok_lt};
+use crate::tokens::separators::tok_comma;
 
 /// Parse any expression - the main entry point for expression parsing
-pub fn parse_expression<'a>(input: Span<'a>) -> BResult<'a, Expression> {
+pub fn parse_expression(input: Span) -> BResult<Expression> {
     delimited(ws, assignment_expression_parser::parse_assignment_expression_or_higher, ws)
         .context("expression")
-        .parse(input)
+        .parse(input.into())
 }
 
-pub fn parse_primary_expression<'a>(input: Span<'a>) -> BResult<'a, Expression> {
-    nom::combinator::map(alt((
+pub fn parse_primary_expression(input: Span) -> BResult<Expression> {
+    map(alt((
         // Parenthesized or tuple must be tried very early to avoid other branches
         // (like switch basic expression) consuming '(' with a cut
         parse_paren_or_tuple_primary,
@@ -71,32 +72,31 @@ pub fn parse_primary_expression<'a>(input: Span<'a>) -> BResult<'a, Expression> 
         // Stackalloc expressions
         parse_stackalloc_expression,
     )), |v| v)
-    .context("primary expression")
-    .parse(input)
+        .context("primary expression")
+        .parse(input.into())
 }
 
 /// Parse a generic type name as a primary expression for static member access.
 /// Example: `Result<User>` (treated as a name for `Result` so that `Result<User>.Success(...)` parses)
 fn parse_generic_name_primary(input: Span) -> BResult<Expression> {
     use nom::character::complete::char as nom_char;
-    use nom::sequence::tuple;
 
     // Parse Identifier '<' type-args '>' and ensure a '.' follows (without consuming it)
     map(
-        tuple((
+        (
             delimited(ws, parse_identifier, ws),
-            parse_delimited_list0::<_, _, _, _, char, Type, char, char, Type>(
-                nom_char('<'),
+            parse_delimited_list0::<_, _, _, _, char, char, char, Type>(
+                tok_lt(),
                 parse_type_expression,
-                nom_char(','),
-                nom_char('>'),
+                tok_comma(),
+                tok_gt(),
                 false,
                 false,
             ),
             // Require a '.' next (static member access), but don't consume it
             peek(delimited(ws, nom_char('.'), ws)),
-        )),
-        |(id, _, _)| Expression::Variable(Identifier { name: id.name }),
+        ),
+        |(id, _, _)| Expression::Variable(id),
     )
-    .parse(input)
+    .parse(input.into())
 }

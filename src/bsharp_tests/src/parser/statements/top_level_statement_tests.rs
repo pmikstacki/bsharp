@@ -7,7 +7,7 @@ use parser::syntax::errors::format_error_tree;
 use syntax::statements::statement::Statement;
 
 fn parse_top_level_statements_helper(code: &str) -> Result<Vec<Statement>, String> {
-    match parse_top_level_statements(code) {
+    match parse_top_level_statements(code.into()) {
         Ok((remaining, statements)) => {
             if remaining.trim().is_empty() {
                 Ok(statements)
@@ -26,7 +26,7 @@ fn parse_top_level_statements_helper(code: &str) -> Result<Vec<Statement>, Strin
 }
 
 fn parse_top_level_statement_helper(code: &str) -> Result<Statement, String> {
-    match parse_top_level_statement(code) {
+    match parse_top_level_statement(code.into()) {
         Ok((remaining, statement)) => {
             if remaining.trim().is_empty() {
                 Ok(statement)
@@ -42,7 +42,7 @@ fn parse_top_level_statement_helper(code: &str) -> Result<Statement, String> {
 fn test_parse_simple_top_level_statement() {
     let code = r#"Console.WriteLine("Hello, World!");"#;
 
-    let result = parse_top_level_statement_helper(code);
+    let result = parse_top_level_statement_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse simple top-level statement: {:?}",
@@ -64,7 +64,7 @@ fn test_parse_multiple_top_level_statements() {
 var name = "Alice";
 Console.WriteLine($"Hello, {name}!");"#;
 
-    let result = parse_top_level_statements_helper(code);
+    let result = parse_top_level_statements_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse multiple top-level statements: {:?}",
@@ -105,7 +105,7 @@ fn test_parse_top_level_variable_declarations() {
 string message = "Hello";
 var list = new List<int>();"#;
 
-    let result = parse_top_level_statements_helper(code);
+    let result = parse_top_level_statements_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse top-level variable declarations: {:?}",
@@ -141,7 +141,7 @@ for (int i = 0; i < 3; i++) {
     Console.WriteLine($"Iteration {i}");
 }"#;
 
-    let result = parse_top_level_statements_helper(code);
+    let result = parse_top_level_statements_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse top-level control flow: {:?}",
@@ -182,7 +182,7 @@ fn test_parse_top_level_using_statements() {
     fileStream.Read(buffer, 0, buffer.Length);
 }"#;
 
-    let result = parse_top_level_statements_helper(code);
+    let result = parse_top_level_statements_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse top-level using statements: {:?}",
@@ -209,7 +209,7 @@ fn test_parse_top_level_try_catch() {
     Console.WriteLine("error");
 }"#;
 
-    let result = parse_top_level_statement_helper(code);
+    let result = parse_top_level_statement_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse top-level try-catch: {:?}",
@@ -241,7 +241,7 @@ switch (day) {
         break;
 }"#;
 
-    let result = parse_top_level_statements_helper(code);
+    let result = parse_top_level_statements_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse top-level switch statement: {:?}",
@@ -282,7 +282,7 @@ do {
     counter--;
 } while (counter > 0);"#;
 
-    let result = parse_top_level_statements_helper(code);
+    let result = parse_top_level_statements_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse top-level while loops: {:?}",
@@ -325,7 +325,7 @@ foreach (var number in numbers) {
     Console.WriteLine(number);
 }"#;
 
-    let result = parse_top_level_statements_helper(code);
+    let result = parse_top_level_statements_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse top-level foreach loop: {:?}",
@@ -365,7 +365,7 @@ static void PrintGreeting(string name) {
 int result = Add(5, 3);
 PrintGreeting("World");"#;
 
-    let result = parse_top_level_statements_helper(code);
+    let result = parse_top_level_statements_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse top-level local functions: {:?}",
@@ -433,7 +433,7 @@ for (int i = 0; i < numbers.Count; i++) {
     }
 }"#;
 
-    let result = parse_top_level_statements_helper(code);
+    let result = parse_top_level_statements_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse complex top-level program: {:?}",
@@ -448,7 +448,7 @@ for (int i = 0; i < numbers.Count; i++) {
 fn test_parse_empty_top_level_statements() {
     let code = "";
 
-    let result = parse_top_level_statements_helper(code);
+    let result = parse_top_level_statements_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse empty top-level statements: {:?}",
@@ -471,7 +471,7 @@ fn test_parse_top_level_statements_with_whitespace() {
 
 "#;
 
-    let result = parse_top_level_statements_helper(code);
+    let result = parse_top_level_statements_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse top-level statements with whitespace: {:?}",
@@ -489,7 +489,7 @@ fn test_parse_top_level_statements_error_recovery() {
 invalid parser here!
 Console.WriteLine("Another valid");"#;
 
-    let result = parse_top_level_statements_helper(code);
+    let result = parse_top_level_statements_helper(code.into());
     // This should either parse what it can or fail gracefully
     // The exact behavior depends on error recovery implementation
     match result {

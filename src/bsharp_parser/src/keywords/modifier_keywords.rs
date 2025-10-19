@@ -18,3 +18,5 @@ define_keyword_pair!(kw_new, peek_new, "new");
 define_keyword_pair!(kw_async, peek_async, "async");
 define_keyword_pair!(kw_required, peek_required, "required");
 define_keyword_pair!(kw_const, peek_const, "const");
+define_keyword_pair!(kw_managed, peek_managed, "managed");
+define_keyword_pair!(kw_unmanaged, peek_unmanaged, "unmanaged");

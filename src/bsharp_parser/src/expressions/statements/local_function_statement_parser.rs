@@ -6,16 +6,14 @@ use crate::parser::expressions::declarations::type_parameter_parser::{
 use crate::parser::expressions::statements::block_statement_parser::parse_block_statement;
 use crate::parser::identifier_parser::parse_identifier;
 use crate::parser::types::type_parser::parse_type_expression;
-use crate::syntax::errors::BResult;
 use crate::syntax::comment_parser::ws;
+use crate::syntax::errors::BResult;
+use nom::Parser;
 use nom::{
     branch::alt,
     combinator::{map, opt},
     sequence::delimited,
 };
-use nom_supreme::tag::complete::tag;
-use nom::character::complete::char as nom_char;
-use nom::Parser;
 use nom_supreme::ParserExt;
 use syntax::statements::statement::Statement;
 use syntax::statements::LocalFunctionStatement;
@@ -27,15 +25,15 @@ fn parse_local_function_body(input: Span) -> BResult<Statement> {
         delimited(ws, parse_block_statement, ws),
         // Expression body: => expr;
         |i| {
-            let (i, _) = delimited(ws, tag("=>"), ws).parse(i)?;
+            let (i, _) = delimited(ws, tok_lambda(), ws).parse(i)?;
             use crate::parser::expressions::primary_expression_parser::parse_expression;
             let (i, _expr) = delimited(ws, parse_expression, ws).parse(i)?;
-            let (i, _) = delimited(ws, nom_char(';'), ws).parse(i)?;
+            let (i, _) = delimited(ws, tok_semicolon(), ws).parse(i)?;
             Ok((i, Statement::Empty))
         },
     ))
-    .context("local function body")
-    .parse(input)
+        .context("local function body")
+        .parse(input.into())
 }
 
 /// Parse a local function statement
@@ -87,7 +85,9 @@ pub fn parse_local_function_statement(input: Span) -> BResult<Statement> {
             }))
         },
     )
-    .context("local function statement")
-    .parse(input)
+        .context("local function statement")
+        .parse(input.into())
 }
 use crate::syntax::span::Span;
+use crate::tokens::lambda::tok_lambda;
+use crate::tokens::separators::tok_semicolon;

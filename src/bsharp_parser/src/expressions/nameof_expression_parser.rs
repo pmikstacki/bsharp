@@ -1,16 +1,16 @@
 use crate::parser::identifier_parser::parse_identifier;
 use crate::parser::keywords::expression_keywords::kw_nameof;
-use crate::syntax::errors::BResult;
 use crate::syntax::comment_parser::ws;
+use crate::syntax::errors::BResult;
 
+use nom::character::complete::char as nom_char;
 use nom::combinator::cut;
+use nom::Parser;
 use nom::{
     combinator::map,
     multi::separated_list1,
     sequence::{delimited, preceded},
 };
-use nom::character::complete::char as nom_char;
-use nom::Parser;
 use nom_supreme::ParserExt;
 use syntax::expressions::{Expression, NameofExpression};
 
@@ -33,18 +33,18 @@ fn parse_qualified_name(input: Span) -> BResult<Expression> {
             expr
         }
     })
-    .parse(input)
+        .parse(input.into())
 }
 
 /// Parse a nameof expression: `nameof(identifier)` or `nameof(Class.Member)`
-pub fn parse_nameof_expression<'a>(input: Span<'a>) -> BResult<'a, Expression> {
+pub fn parse_nameof_expression(input: Span) -> BResult<Expression> {
     map(
         preceded(
             kw_nameof(),
             delimited(
-                delimited(ws, nom_char('('), ws),
+                delimited(ws, tok_l_paren(), ws),
                 delimited(ws, parse_qualified_name, ws),
-                cut(delimited(ws, nom_char(')'), ws)),
+                cut(delimited(ws, tok_r_paren(), ws)),
             ),
         ),
         |expr| {
@@ -53,7 +53,8 @@ pub fn parse_nameof_expression<'a>(input: Span<'a>) -> BResult<'a, Expression> {
             }))
         },
     )
-    .context("nameof expression")
-    .parse(input)
+        .context("nameof expression")
+        .parse(input.into())
 }
 use crate::syntax::span::Span;
+use crate::tokens::delimiters::{tok_l_paren, tok_r_paren};

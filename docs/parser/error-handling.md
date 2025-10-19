@@ -112,7 +112,7 @@ The directive is skipped and not present as a namespace member.
 Errors include contextual information about the parsing context:
 
 ```rust
-context("method declaration", parse_method_body)(input)
+context("method declaration", parse_method_body)(input.into())
 ```
 
 This provides clear error messages like "expected method body in method declaration context".

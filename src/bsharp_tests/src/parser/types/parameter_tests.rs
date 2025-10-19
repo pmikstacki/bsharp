@@ -10,6 +10,6 @@ fn parse_type_parameter(code: &str) -> Result<Parameter, String> {
 fn test_parse_type_parameter() {
     let code = "T";
     // let expected = ...;
-    // assert_eq!(parse_type_parameter(code), Ok(expected));
-    assert!(parse_type_parameter(code).is_err());
+    // assert_eq!(parse_type_parameter(code.into()), Ok(expected));
+    assert!(parse_type_parameter(code.into()).is_err());
 }

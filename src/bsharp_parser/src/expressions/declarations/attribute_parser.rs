@@ -1,145 +1,184 @@
 use crate::parser::expressions::primary_expression_parser::parse_expression;
 use crate::parser::identifier_parser::parse_qualified_name;
+use crate::parser::types::type_parser::parse_type_expression;
 use crate::syntax::comment_parser::ws;
 use crate::syntax::errors::BResult;
-use crate::syntax::list_parser;
-use crate::parser::types::type_parser::parse_type_expression;
-use nom::character::complete::{satisfy, char as nom_char};
+use crate::syntax::list_parser::parse_delimited_list0;
+use crate::syntax::span::Span;
+use crate::tokens::delimiters::{tok_l_brack, tok_l_paren, tok_r_brack, tok_r_paren};
+use crate::tokens::relational::{tok_gt, tok_lt};
+use crate::tokens::separators::tok_comma;
+use nom::Parser;
 use nom::{
     combinator::{map, opt},
     multi::many0,
     sequence::{delimited, terminated},
 };
-use nom::Parser;
 use nom_supreme::ParserExt;
 use syntax::declarations::{Attribute, AttributeList};
 use syntax::expressions::Expression;
 use syntax::types::Type;
-use crate::syntax::list_parser::parse_delimited_list0;
-use crate::syntax::span::Span;
+
+// Helper: pretty-print a Type for attribute generic arguments (limited coverage for tests)
+fn type_to_string(t: &syntax::types::Type) -> String {
+    match t {
+        syntax::types::Type::Primitive(p) => p.to_string(),
+        syntax::types::Type::Reference(id) => id.to_string(),
+        syntax::types::Type::Generic { base, args } => {
+            let args_s = args.iter().map(type_to_string).collect::<Vec<_>>().join(", ");
+            format!("{}<{}>", base.to_string(), args_s)
+        }
+        syntax::types::Type::Array { element_type, rank } => {
+            let mut s = type_to_string(element_type);
+            if *rank == 1 { s.push_str("[]"); }
+            else { s.push('['); s.push_str(&",".repeat(rank.saturating_sub(1))); s.push(']'); }
+            s
+        }
+        syntax::types::Type::Pointer(inner) => format!("{}*", type_to_string(inner)),
+        syntax::types::Type::Nullable(inner) => format!("{}?", type_to_string(inner)),
+        _ => format!("{:?}", t),
+    }
+}
 
 /// Parses an attribute list enclosed in square brackets
 /// Example: `[Serializable, DataContract]`
 fn parse_attribute_group(input: Span) -> BResult<AttributeList> {
     map(
-        parse_delimited_list0::<_, _, _, _, char, Attribute, char, char, Attribute>(
-            |i| delimited(ws, satisfy(|c| c == '['), ws).parse(i),
+        parse_delimited_list0::<_, _, _, _, char, char, char, Attribute>(
+            |i| delimited(ws, tok_l_brack(), ws).parse(i),
             parse_attribute,
-            |i| delimited(ws, satisfy(|c| c == ','), ws).parse(i),
-            |i| delimited(ws, satisfy(|c| c == ']'), ws).parse(i),
+            |i| delimited(ws, tok_comma(), ws).parse(i),
+            |i| delimited(ws, tok_r_brack(), ws).parse(i),
             false,
             true,
         ),
         |attributes| AttributeList { attributes },
     )
     .context("attribute group")
-    .parse(input)
+    .parse(input.into())
 }
 
 /// Parses multiple attribute lists that might appear before a declaration
 /// Example: `[Serializable] [DataContract]`
 pub fn parse_attribute_lists(input: Span) -> BResult<Vec<AttributeList>> {
-    many0(terminated(parse_attribute_group, ws))
-        .context("attribute  lists")
-        .parse(input)
+    (|i| {
+        let (rest, lists) = many0(terminated(parse_attribute_group, ws)).parse(i)?;
+        // IMPORTANT: Do not rebase spans; keep original base to preserve correct offsets
+        Ok((rest, lists))
+    })
+    .context("attribute  lists")
+    .parse(input.into())
 }
 
 // Parse a single attribute: MyAttribute or MyAttribute(arg1, arg2)
 pub fn parse_attribute(input: Span) -> BResult<Attribute> {
     (|i| {
-            // Parse the qualified (dotted) identifier first
-            let (rest0, name_parts) = parse_qualified_name(i)?;
+        // Parse the qualified (dotted) identifier first
+        let (rest0, name_parts) = parse_qualified_name(i)?;
 
-            // Optional generic type argument list on the last segment
-            let (rest, type_args_opt) = opt(list_parser::parse_delimited_list0::<
-                _,
-                _,
-                _,
-                _,
-                char,
-                Type,
-                char,
-                char,
-                Type,
-            >(
-                |i2| delimited(ws, satisfy(|c| c == '<'), ws).parse(i2),
+        // Optional generic type argument list on the last segment
+        let (rest, type_args_opt) =
+            opt(parse_delimited_list0::<_, _, _, _, char, char, char, Type>(
+                |i2| delimited(ws, tok_lt(), ws).parse(i2),
                 parse_type_expression,
-                |i2| delimited(ws, satisfy(|c| c == ','), ws).parse(i2),
-                |i2| delimited(ws, satisfy(|c| c == '>'), ws).parse(i2),
+                |i2| delimited(ws, tok_comma(), ws).parse(i2),
+                |i2| delimited(ws, tok_gt(), ws).parse(i2),
                 false,
                 true,
             ))
             .parse(rest0)?;
 
-            // Optional argument list ( ... )
-            let (rest_after_args, args_opt) = opt(parse_delimited_list0::<
-                _,
-                _,
-                _,
-                _,
-                char,
-                Expression,
-                char,
-                char,
-                Expression,
-            >(
-                |i2| delimited(ws, satisfy(|c| c == '('), ws).parse(i2),
-                parse_expression,
-                |i2| delimited(ws, satisfy(|c| c == ','), ws).parse(i2),
-                |i2| delimited(ws, satisfy(|c| c == ')'), ws).parse(i2),
-                false,
-                true,
-            ))
-            .parse(rest)?;
+        // Optional argument list ( ... )
+        let (rest_after_args, args_opt) = opt(parse_delimited_list0::<
+            _,
+            _,
+            _,
+            _,
+            char,
+            char,
+            char,
+            Expression,
+        >(
+            |i2| delimited(ws, tok_l_paren(), ws).parse(i2),
+            parse_expression,
+            |i2| delimited(ws, tok_comma(), ws).parse(i2),
+            |i2| delimited(ws, tok_r_paren(), ws).parse(i2),
+            false,
+            true,
+        ))
+        .parse(rest)?;
 
-            let name_str = name_parts
-                .iter()
-                .map(|id| id.name.clone())
-                .collect::<Vec<_>>()
-                .join(".");
-            // Keep name string without generic arguments; use 'structured' to capture generics.
+        // Build qualified identifier segments for the attribute name, appending generic args to the last segment for display
+        let mut name_segments: Vec<String> = name_parts
+            .iter()
+            .map(|id| match id {
+                syntax::Identifier::Simple(s) => s.clone(),
+                syntax::Identifier::QualifiedIdentifier(v) => v.join("."),
+                syntax::Identifier::OperatorOverrideIdentifier(_) => "operator".to_string(),
+            })
+            .collect();
+        if let Some(type_args) = &type_args_opt {
+            if let Some(last) = name_segments.last_mut() {
+                
+                let mut appended = String::new();
+                appended.push_str(last);
+                appended.push('<');
+                for (i, t) in type_args.iter().enumerate() {
+                    if i > 0 { appended.push_str(", "); }
+                    appended.push_str(&type_to_string(t));
+                }
+                appended.push('>');
+                *last = appended;
+            }
+        }
 
-            Ok((
-                rest_after_args,
-                Attribute {
-                    name: crate::syntax::identifier::Identifier { name: name_str },
-                    arguments: args_opt.unwrap_or_default(),
-                    structured: Some(crate::syntax::declarations::attribute::AttributeName {
-                        qualifier: name_parts[..name_parts.len().saturating_sub(1)].to_vec(),
-                        name: name_parts.last().cloned().unwrap_or_else(|| {
-                            crate::syntax::identifier::Identifier {
-                                name: String::new(),
-                            }
-                        }),
-                        type_arguments: type_args_opt.unwrap_or_default(),
-                    }),
-                },
-            ))
-        })
-        .context("attribute")
-        .parse(input)
+        // Build final Identifier: Simple if single segment, otherwise QualifiedIdentifier
+        let final_name = if name_segments.len() == 1 {
+            syntax::identifier::Identifier::Simple(name_segments[0].clone())
+        } else {
+            syntax::identifier::Identifier::QualifiedIdentifier(name_segments.clone())
+        };
+
+        Ok((
+            rest_after_args,
+            Attribute {
+                name: final_name,
+                arguments: args_opt.unwrap_or_default(),
+                structured: Some(syntax::declarations::attribute::AttributeName {
+                    qualifier: name_parts[..name_parts.len().saturating_sub(1)].to_vec(),
+                    name: name_parts
+                        .last()
+                        .cloned()
+                        .unwrap_or_else(|| syntax::identifier::Identifier::Simple(String::new())),
+                    type_arguments: type_args_opt.unwrap_or_default(),
+                }),
+            },
+        ))
+    })
+    .context("attribute")
+    .parse(input.into())
 }
 
 // Parse a single attribute list: [Attr1, Attr2]
-pub fn parse_attribute_list<'a>(input: Span<'a>) -> BResult<'a, AttributeList> {
+pub fn parse_attribute_list(input: Span) -> BResult<AttributeList> {
     map(
-        parse_delimited_list0::<_, _, _, _, char, Attribute, char, char, Attribute>(
-            |i| delimited(ws, nom_char('['), ws).parse(i),
+        parse_delimited_list0::<_, _, _, _, char, char, char, Attribute>(
+            |i| delimited(ws, tok_l_brack(), ws).parse(i),
             parse_attribute,
-            |i| delimited(ws, nom_char(','), ws).parse(i),
-            |i| delimited(ws, nom_char(']'), ws).parse(i),
+            |i| delimited(ws, tok_comma(), ws).parse(i),
+            |i| delimited(ws, tok_r_brack(), ws).parse(i),
             false,
             false,
         ),
         |attributes| AttributeList { attributes },
     )
     .context("attribute list")
-    .parse(input)
+    .parse(input.into())
 }
 
 // Parse multiple attribute lists: [Attr1] [Attr2] [Attr3, Attr4]
-pub fn parse_attribute_lists_new<'a>(input: Span<'a>) -> BResult<'a, Vec<AttributeList>> {
+pub fn parse_attribute_lists_new(input: Span) -> BResult<Vec<AttributeList>> {
     many0(|i| delimited(ws, parse_attribute_list, ws).parse(i))
         .context("attribute lists")
-        .parse(input)
+        .parse(input.into())
 }

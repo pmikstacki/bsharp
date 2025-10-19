@@ -6,7 +6,7 @@ use syntax::statements::statement::Statement;
 use syntax::types::{PrimitiveType, Type};
 
 fn parse_deconstruction_stmt(code: &str) -> Result<Statement, String> {
-    match parse_deconstruction_statement(code) {
+    match parse_deconstruction_statement(code.into()) {
         Ok((rest, stmt)) if rest.trim().is_empty() => Ok(stmt),
         Ok((rest, _)) => Err(format!("Unparsed input: {}", rest)),
         Err(e) => Err(format!("Parse error: {:?}", e)),
@@ -16,7 +16,7 @@ fn parse_deconstruction_stmt(code: &str) -> Result<Statement, String> {
 #[test]
 fn test_parse_simple_deconstruction_statement() {
     let code = "(var x, var y) = tuple;";
-    let result = parse_deconstruction_stmt(code);
+    let result = parse_deconstruction_stmt(code.into());
     assert!(result.is_ok());
 
     match result.unwrap() {
@@ -38,7 +38,7 @@ fn test_parse_simple_deconstruction_statement() {
 #[test]
 fn test_parse_typed_deconstruction_statement() {
     let code = "(int x, string y) = GetTuple();";
-    let result = parse_deconstruction_stmt(code);
+    let result = parse_deconstruction_stmt(code.into());
     assert!(result.is_ok());
 
     match result.unwrap() {
@@ -51,7 +51,7 @@ fn test_parse_typed_deconstruction_statement() {
                     name,
                     is_var: false,
                 } => {
-                    assert_eq!(name.name, "x");
+                    assert_eq!(name.to_string(), "x");
                 }
                 _ => panic!("Expected int declaration"),
             }
@@ -62,7 +62,7 @@ fn test_parse_typed_deconstruction_statement() {
                     name,
                     is_var: false,
                 } => {
-                    assert_eq!(name.name, "y");
+                    assert_eq!(name.to_string(), "y");
                 }
                 _ => panic!("Expected string declaration"),
             }
@@ -74,7 +74,7 @@ fn test_parse_typed_deconstruction_statement() {
 #[test]
 fn test_parse_existing_variable_deconstruction_statement() {
     let code = "(existingX, existingY) = tuple;";
-    let result = parse_deconstruction_stmt(code);
+    let result = parse_deconstruction_stmt(code.into());
     assert!(result.is_ok());
 
     match result.unwrap() {
@@ -83,14 +83,14 @@ fn test_parse_existing_variable_deconstruction_statement() {
 
             match &deconstruction.targets[0] {
                 DeconstructionTarget::Variable(name) => {
-                    assert_eq!(name.name, "existingX");
+                    assert_eq!(name.to_string(), "existingX");
                 }
                 _ => panic!("Expected variable target"),
             }
 
             match &deconstruction.targets[1] {
                 DeconstructionTarget::Variable(name) => {
-                    assert_eq!(name.name, "existingY");
+                    assert_eq!(name.to_string(), "existingY");
                 }
                 _ => panic!("Expected variable target"),
             }
@@ -102,7 +102,7 @@ fn test_parse_existing_variable_deconstruction_statement() {
 #[test]
 fn test_parse_deconstruction_with_discard_statement() {
     let code = "(var x, _) = tuple;";
-    let result = parse_deconstruction_stmt(code);
+    let result = parse_deconstruction_stmt(code.into());
     assert!(result.is_ok());
 
     match result.unwrap() {
@@ -124,7 +124,7 @@ fn test_parse_deconstruction_with_discard_statement() {
 #[test]
 fn test_parse_nested_deconstruction_statement() {
     let code = "((var a, var b), var c) = nestedTuple;";
-    let result = parse_deconstruction_stmt(code);
+    let result = parse_deconstruction_stmt(code.into());
     assert!(result.is_ok());
 
     match result.unwrap() {
@@ -154,7 +154,7 @@ fn test_parse_nested_deconstruction_statement() {
 #[test]
 fn test_parse_complex_value_expression_statement() {
     let code = "(var x, var y) = obj.Property.GetTuple();";
-    let result = parse_deconstruction_stmt(code);
+    let result = parse_deconstruction_stmt(code.into());
     assert!(result.is_ok());
 
     match result.unwrap() {
@@ -177,7 +177,7 @@ fn test_parse_multiple_deconstruction_statements() {
     ];
 
     for code in &statements {
-        let result = parse_deconstruction_stmt(code);
+        let result = parse_deconstruction_stmt(*code);
         assert!(result.is_ok(), "Failed to parse: {}", code);
         assert!(matches!(result.unwrap(), Statement::Deconstruction(_)));
     }
@@ -194,7 +194,7 @@ fn test_parse_deconstruction_whitespace_variations() {
     ];
 
     for code in &variations {
-        let result = parse_deconstruction_stmt(code);
+        let result = parse_deconstruction_stmt(*code);
         assert!(result.is_ok(), "Failed to parse: {}", code);
         assert!(matches!(result.unwrap(), Statement::Deconstruction(_)));
     }
@@ -212,7 +212,7 @@ fn test_deconstruction_statement_parsing_errors() {
     ];
 
     for code in &invalid_cases {
-        let result = parse_deconstruction_stmt(code);
+        let result = parse_deconstruction_stmt(*code);
         assert!(result.is_err(), "Should fail to parse: {}", code);
     }
 }
@@ -241,7 +241,7 @@ fn test_parse_complex_type_deconstruction_statement() {
 #[test]
 fn test_parse_mixed_declaration_types_statement() {
     let code = "(var x, int y, string z, existing) = GetMixedTuple();";
-    let result = parse_deconstruction_stmt(code);
+    let result = parse_deconstruction_stmt(code.into());
     assert!(result.is_ok());
 
     match result.unwrap() {

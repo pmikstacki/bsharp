@@ -8,16 +8,16 @@ use crate::parser::expressions::statements::block_statement_parser::parse_block_
 use crate::parser::keywords::accessor_keywords::{kw_get, kw_set};
 use crate::parser::keywords::contextual_misc_keywords::kw_this;
 use crate::parser::types::type_parser::parse_type_expression;
-use crate::syntax::errors::BResult;
 use crate::syntax::comment_parser::ws;
+use crate::syntax::errors::BResult;
+use crate::syntax::list_parser::parse_delimited_list0;
+use nom::character::complete::satisfy;
 use nom::combinator::{cut, peek};
 use nom::sequence::delimited;
-use nom::character::complete::satisfy;
 use nom::Parser;
 use nom_supreme::ParserExt;
 use syntax::declarations::{IndexerAccessor, IndexerAccessorList, IndexerDeclaration};
 use syntax::types::Parameter;
-use crate::syntax::list_parser::parse_delimited_list0;
 
 /// Parse a C# indexer declaration
 ///
@@ -26,25 +26,25 @@ use crate::syntax::list_parser::parse_delimited_list0;
 /// public int this[int index] { get; set; }
 /// public string this[int row, int col] { get { return _data[row][col]; } set { _data[row][col] = value; } }
 /// ```
-pub fn parse_indexer_declaration<'a>(input: Span<'a>) -> BResult<'a, IndexerDeclaration> {
+pub fn parse_indexer_declaration(input: Span) -> BResult<IndexerDeclaration> {
     // Parse attributes, modifiers, type, 'this', parameters, and accessor list
     // Attributes
-    let (input, attribute_lists) = parse_attribute_lists(input)?;
+    let (input, attribute_lists) = parse_attribute_lists(input.into())?;
     let attributes = convert_attributes(attribute_lists);
     // Modifiers
-    let (input, modifiers) = parse_modifiers(input)?;
+    let (input, modifiers) = parse_modifiers(input.into())?;
     // Return type
     let (input, ty) = delimited(ws, parse_type_expression, ws)
         .context("indexer return type")
-        .parse(input)?;
+        .parse(input.into())?;
     // 'this'
     let (input, _) = delimited(ws, kw_this(), ws)
         .context("this keyword")
-        .parse(input)?;
+        .parse(input.into())?;
     // Parameters
-    let (input, parameters) = parse_indexer_parameters(input)?;
+    let (input, parameters) = parse_indexer_parameters(input.into())?;
     // Accessor list
-    let (input, accessor_list) = parse_indexer_accessor_list(input)?;
+    let (input, accessor_list) = parse_indexer_accessor_list(input.into())?;
 
     let indexer_declaration = IndexerDeclaration {
         attributes,
@@ -61,16 +61,16 @@ pub fn parse_indexer_declaration<'a>(input: Span<'a>) -> BResult<'a, IndexerDecl
 fn parse_indexer_parameters(input: Span) -> BResult<Vec<Parameter>> {
     use crate::parser::expressions::declarations::parameter_parser::parse_parameter;
 
-    parse_delimited_list0::<_, _, _, _, char, Parameter, char, char, Parameter>(
+    parse_delimited_list0::<_, _, _, _, char, char, char, Parameter>(
         |i| delimited(ws, satisfy(|c| c == '['), ws).parse(i),
         |i| delimited(ws, parse_parameter, ws).parse(i),
-        |i| delimited(ws, satisfy(|c| c == ','), ws).parse(i),
+        |i| delimited(ws, tok_comma(), ws).parse(i),
         |i| delimited(ws, satisfy(|c| c == ']'), ws).parse(i),
         false,
         true,
     )
-    .context("indexer parameters")
-    .parse(input)
+        .context("indexer parameters")
+        .parse(input.into())
 }
 
 /// Parse the indexer accessor list
@@ -78,15 +78,15 @@ fn parse_indexer_accessor_list(input: Span) -> BResult<IndexerAccessorList> {
     // Parse opening brace
     let (input, _) = delimited(ws, satisfy(|c| c == '{'), ws)
         .context("accessor list opening brace")
-        .parse(input)?;
+        .parse(input.into())?;
 
     // Parse accessors (get and/or set)
-    let (input, (get_accessor, set_accessor)) = parse_accessors(input)?;
+    let (input, (get_accessor, set_accessor)) = parse_accessors(input.into())?;
 
     // Parse closing brace
     let (input, _) = cut(delimited(ws, satisfy(|c| c == '}'), ws))
         .context("accessor list closing brace")
-        .parse(input)?;
+        .parse(input.into())?;
 
     Ok((
         input,
@@ -126,10 +126,10 @@ fn parse_accessors(
             map(get_branch, |a| (true, a)),
             map(set_branch, |a| (false, a)),
         ))
-        .parse(i)
+            .parse(i)
     };
 
-    let (cur, pairs) = many0(one_accessor).parse(input)?;
+    let (cur, pairs) = many0(one_accessor).parse(input.into())?;
     let mut get_accessor: Option<IndexerAccessor> = None;
     let mut set_accessor: Option<IndexerAccessor> = None;
     for (is_get, accessor) in pairs {
@@ -146,20 +146,20 @@ fn parse_accessors(
 /// Parse a get accessor declaration
 fn parse_get_accessor_declaration(input: Span) -> BResult<IndexerAccessor> {
     // Optional attribute lists and modifiers
-    let (input, attribute_lists) = delimited(ws, parse_attribute_lists, ws).parse(input)?;
+    let (input, attribute_lists) = delimited(ws, parse_attribute_lists, ws).parse(input.into())?;
     let attributes = convert_attributes(attribute_lists);
-    let (input, modifiers) = delimited(ws, parse_modifiers, ws).parse(input)?;
+    let (input, modifiers) = delimited(ws, parse_modifiers, ws).parse(input.into())?;
 
     // Parse the get keyword
     let (input, _) = delimited(ws, kw_get(), ws)
         .context("get keyword")
-        .parse(input)?;
+        .parse(input.into())?;
 
     // Parse the body (either block or semicolon)
     let (input, body) = alt((
         // Semicolon (auto-accessor)
         map(
-            delimited(ws, satisfy(|c| c == ';'), ws)
+            delimited(ws, tok_semicolon(), ws)
                 .context("get accessor semicolon"),
             |_| None,
         ),
@@ -169,7 +169,7 @@ fn parse_get_accessor_declaration(input: Span) -> BResult<IndexerAccessor> {
             Some,
         ),
     ))
-    .parse(input)?;
+        .parse(input.into())?;
 
     Ok((
         input,
@@ -184,20 +184,20 @@ fn parse_get_accessor_declaration(input: Span) -> BResult<IndexerAccessor> {
 /// Parse a set accessor declaration  
 fn parse_set_accessor_declaration(input: Span) -> BResult<IndexerAccessor> {
     // Optional attribute lists and modifiers
-    let (input, attribute_lists) = delimited(ws, parse_attribute_lists, ws).parse(input)?;
+    let (input, attribute_lists) = delimited(ws, parse_attribute_lists, ws).parse(input.into())?;
     let attributes = convert_attributes(attribute_lists);
-    let (input, modifiers) = delimited(ws, parse_modifiers, ws).parse(input)?;
+    let (input, modifiers) = delimited(ws, parse_modifiers, ws).parse(input.into())?;
 
     // Parse the set keyword
     let (input, _) = delimited(ws, kw_set(), ws)
         .context("set keyword")
-        .parse(input)?;
+        .parse(input.into())?;
 
     // Parse the body (either block or semicolon)
     let (input, body) = alt((
         // Semicolon (auto-accessor)
         map(
-            delimited(ws, satisfy(|c| c == ';'), ws)
+            delimited(ws, tok_semicolon(), ws)
                 .context("set accessor semicolon"),
             |_| None,
         ),
@@ -207,7 +207,7 @@ fn parse_set_accessor_declaration(input: Span) -> BResult<IndexerAccessor> {
             Some,
         ),
     ))
-    .parse(input)?;
+        .parse(input.into())?;
 
     Ok((
         input,
@@ -219,3 +219,4 @@ fn parse_set_accessor_declaration(input: Span) -> BResult<IndexerAccessor> {
     ))
 }
 use crate::syntax::span::Span;
+use crate::tokens::separators::{tok_comma, tok_semicolon};

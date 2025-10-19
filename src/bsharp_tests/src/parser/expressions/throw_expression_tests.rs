@@ -6,22 +6,22 @@ use syntax::expressions::expression::Expression;
 use syntax::expressions::literal::Literal;
 
 fn parse_throw_expr_helper(code: &str) -> Result<Expression, String> {
-    match parse_throw_expression(code) {
-        Ok((remaining, expr)) if remaining.trim().is_empty() => Ok(expr),
+    match parse_throw_expression(code.into()) {
+        Ok((remaining, expr)) if remaining.fragment().trim().is_empty() => Ok(expr),
         Ok((remaining, _)) => Err(format!(
             "Didn't consume all input. Remaining: '{}'",
-            remaining
+            remaining.fragment()
         )),
         Err(e) => Err(format!("Parse error: {:?}", e)),
     }
 }
 
 fn parse_expr_helper(code: &str) -> Result<Expression, String> {
-    match parse_expression(code) {
-        Ok((remaining, expr)) if remaining.trim().is_empty() => Ok(expr),
+    match parse_expression(code.into()) {
+        Ok((remaining, expr)) if remaining.fragment().trim().is_empty() => Ok(expr),
         Ok((remaining, _)) => Err(format!(
             "Didn't consume all input. Remaining: '{}'",
-            remaining
+            remaining.fragment()
         )),
         Err(e) => Err(format!("Parse error: {:?}", e)),
     }
@@ -30,7 +30,7 @@ fn parse_expr_helper(code: &str) -> Result<Expression, String> {
 #[test]
 fn test_parse_simple_throw_expression() {
     let code = "throw new Exception()";
-    let result = parse_throw_expr_helper(code);
+    let result = parse_throw_expr_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse simple throw expression: {:?}",
@@ -50,7 +50,7 @@ fn test_parse_simple_throw_expression() {
 #[test]
 fn test_parse_throw_variable() {
     let code = "throw ex";
-    let result = parse_throw_expr_helper(code);
+    let result = parse_throw_expr_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse throw variable: {:?}",
@@ -61,7 +61,7 @@ fn test_parse_throw_variable() {
         assert!(throw_expr.expr.is_some());
         if let Some(ref inner_expr) = throw_expr.expr {
             if let Expression::Variable(var) = &**inner_expr {
-                assert_eq!(var.name, "ex");
+                assert_eq!(var.to_string(), "ex");
             } else {
                 panic!("Expected variable expression");
             }
@@ -74,7 +74,7 @@ fn test_parse_throw_variable() {
 #[test]
 fn test_parse_throw_literal() {
     let code = "throw \"Error message\"";
-    let result = parse_throw_expr_helper(code);
+    let result = parse_throw_expr_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse throw literal: {:?}",
@@ -98,7 +98,7 @@ fn test_parse_throw_literal() {
 #[test]
 fn test_parse_throw_without_expression() {
     let code = "throw";
-    let result = parse_throw_expr_helper(code);
+    let result = parse_throw_expr_helper(code.into());
     assert!(result.is_ok(), "Failed to parse bare throw: {:?}", result);
 
     if let Ok(Expression::Throw(throw_expr)) = result {
@@ -111,7 +111,7 @@ fn test_parse_throw_without_expression() {
 #[test]
 fn test_parse_throw_complex_expression() {
     let code = "throw GetException()";
-    let result = parse_throw_expr_helper(code);
+    let result = parse_throw_expr_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse throw with method call: {:?}",
@@ -131,7 +131,7 @@ fn test_parse_throw_complex_expression() {
 #[test]
 fn test_parse_throw_member_access() {
     let code = "throw ex.InnerException";
-    let result = parse_throw_expr_helper(code);
+    let result = parse_throw_expr_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse throw with member access: {:?}",
@@ -151,7 +151,7 @@ fn test_parse_throw_member_access() {
 #[test]
 fn test_parse_throw_in_full_expression_parser() {
     let code = "throw new ArgumentException(\"Invalid argument\")";
-    let result = parse_expr_helper(code);
+    let result = parse_expr_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse throw in full expression parser: {:?}",
@@ -179,7 +179,7 @@ fn test_parse_throw_with_whitespace() {
     ];
 
     for code in variations {
-        let result = parse_expr_helper(code);
+        let result = parse_expr_helper(code.into());
         assert!(
             result.is_ok(),
             "Failed to parse throw with whitespace '{}': {:?}",
@@ -199,7 +199,7 @@ fn test_parse_throw_with_whitespace() {
 fn test_throw_expression_precedence() {
     // Throw should have low precedence
     let code = "throw x + y";
-    let result = parse_expr_helper(code);
+    let result = parse_expr_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse throw with addition: {:?}",
@@ -226,7 +226,7 @@ fn test_parse_invalid_throw_expressions() {
     ];
 
     for code in invalid_cases {
-        let result = parse_throw_expr_helper(code);
+        let result = parse_throw_expr_helper(code.into());
         assert!(
             result.is_err(),
             "Expected parse error for invalid syntax: '{}'",

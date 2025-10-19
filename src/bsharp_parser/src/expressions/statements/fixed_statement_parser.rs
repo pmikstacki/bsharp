@@ -1,34 +1,33 @@
 use crate::parser::expressions::declarations::variable_declaration_parser::parse_variable_declaration;
 use crate::parser::keywords::exception_and_safety_keywords::kw_fixed;
 use crate::parser::statement_parser::parse_statement_ws;
-use crate::syntax::errors::BResult;
 use crate::syntax::comment_parser::ws;
+use crate::syntax::errors::BResult;
 use nom::combinator::cut;
 use nom::Parser;
 use nom::{
     combinator::map,
-    sequence::{delimited, tuple},
+    sequence::delimited,
 };
-use nom::character::complete::char as nom_char;
 use nom_supreme::ParserExt;
 use syntax::statements::statement::Statement;
 use syntax::statements::FixedStatement;
 
 /// Parse a fixed statement: fixed (type* ptr = &expr, ...) { ... }
-pub fn parse_fixed_statement<'a>(input: Span<'a>) -> BResult<'a, Statement> {
+pub fn parse_fixed_statement(input: Span) -> BResult<Statement> {
     map(
-        tuple((
+        (
             kw_fixed().context("fixed keyword"),
             delimited(
-                delimited(ws, nom_char('('), ws).context("opening parenthesis"),
+                delimited(ws, tok_l_paren(), ws).context("opening parenthesis"),
                 // Parse a single variable declaration (no trailing semicolon inside parentheses)
                 delimited(ws, parse_variable_declaration, ws)
                     .context("fixed variable declaration"),
-                cut(delimited(ws, nom_char(')'), ws)).context("closing parenthesis"),
+                cut(delimited(ws, tok_r_paren(), ws)).context("closing parenthesis"),
             )
-            .context("fixed variable declarations in parentheses"),
-            nom::combinator::cut(delimited(ws, parse_statement_ws, ws)).context("fixed body"),
-        )),
+                .context("fixed variable declarations in parentheses"),
+            cut(delimited(ws, parse_statement_ws, ws)).context("fixed body"),
+        ),
         |(_, decl, body)| {
             // Take the first declarator to populate FixedStatement fields
             let first = decl
@@ -46,7 +45,8 @@ pub fn parse_fixed_statement<'a>(input: Span<'a>) -> BResult<'a, Statement> {
             }))
         },
     )
-    .context("fixed statement")
-    .parse(input)
+        .context("fixed statement")
+        .parse(input.into())
 }
 use crate::syntax::span::Span;
+use crate::tokens::delimiters::{tok_l_paren, tok_r_paren};

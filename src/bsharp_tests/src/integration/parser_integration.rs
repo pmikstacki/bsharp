@@ -42,7 +42,7 @@ public interface ICalculator {
     // Should have file-scoped namespace
     assert!(compilation_unit.file_scoped_namespace.is_some());
     let file_scoped_ns = compilation_unit.file_scoped_namespace.unwrap();
-    assert_eq!(file_scoped_ns.name.name, "MyCompany.MyProject");
+    assert_eq!(file_scoped_ns.name.to_string(), "MyCompany.MyProject");
     assert_eq!(file_scoped_ns.declarations.len(), 2); // class and interface
     assert_eq!(file_scoped_ns.using_directives.len(), 2); // local using directives
 
@@ -213,7 +213,7 @@ public class MyClass {
     // Should have file-scoped namespace
     assert!(compilation_unit.file_scoped_namespace.is_some());
     let file_scoped_ns = compilation_unit.file_scoped_namespace.unwrap();
-    assert_eq!(file_scoped_ns.name.name, "MyNs");
+    assert_eq!(file_scoped_ns.name.to_string(), "MyNs");
     assert_eq!(file_scoped_ns.declarations.len(), 1);
 }
 
@@ -333,7 +333,7 @@ public class Calculator {
     // Should have file-scoped namespace
     assert!(compilation_unit.file_scoped_namespace.is_some());
     let file_scoped_ns = compilation_unit.file_scoped_namespace.unwrap();
-    assert_eq!(file_scoped_ns.name.name, "MyProject");
+    assert_eq!(file_scoped_ns.name.to_string(), "MyProject");
     assert_eq!(file_scoped_ns.declarations.len(), 1);
     assert_eq!(file_scoped_ns.using_directives.len(), 0); // No local using directives
 

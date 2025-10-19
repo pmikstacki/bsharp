@@ -1,9 +1,17 @@
 use crate::artifacts::symbols::{FqnMap, NameIndex, SymbolIndex, SymbolKind};
 use crate::framework::{
-    class_fqn, method_fqn, namespace_fqn, AnalysisSession, AnalyzerPass, Phase, Query,
+    AnalysisSession, AnalyzerPass, Phase, Query, class_fqn, method_fqn, namespace_fqn,
 };
 use crate::syntax::ast::CompilationUnit;
 use bsharp_syntax::declarations::{ClassDeclaration, MethodDeclaration, NamespaceDeclaration};
+
+fn ident_text(id: &crate::syntax::Identifier) -> String {
+    match id {
+        crate::syntax::Identifier::Simple(s) => s.clone(),
+        crate::syntax::Identifier::QualifiedIdentifier(parts) => parts.join("."),
+        crate::syntax::Identifier::OperatorOverrideIdentifier(_) => "operator".to_string(),
+    }
+}
 
 pub struct IndexingPass;
 
@@ -36,7 +44,7 @@ impl AnalyzerPass for IndexingPass {
         // Namespaces
         for ns in Query::from(cu).of::<NamespaceDeclaration>() {
             let ns_path = namespace_fqn(cu, ns);
-            let seg = ns.name.name.clone();
+            let seg = ident_text(&ns.name);
             push_symbol(
                 &mut symbols,
                 &mut names,
@@ -51,7 +59,7 @@ impl AnalyzerPass for IndexingPass {
         // Classes and Methods
         for class in Query::from(cu).of::<ClassDeclaration>() {
             let cfqn = class_fqn(cu, class);
-            let name = class.name.name.clone();
+            let name = ident_text(&class.name);
             push_symbol(
                 &mut symbols,
                 &mut names,
@@ -63,7 +71,7 @@ impl AnalyzerPass for IndexingPass {
         }
         for m in Query::from(cu).of::<MethodDeclaration>() {
             let mfqn = method_fqn(cu, m);
-            let name = m.name.name.clone();
+            let name = ident_text(&m.name);
             push_symbol(
                 &mut symbols,
                 &mut names,

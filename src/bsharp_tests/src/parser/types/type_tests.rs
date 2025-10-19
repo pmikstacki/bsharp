@@ -5,9 +5,9 @@ use syntax::identifier::Identifier;
 use syntax::types::{PrimitiveType, Type};
 
 fn parse_type(code: &str) -> Result<Type, String> {
-    match parse_type_expression(code) {
-        Ok((rest, ty)) if rest.trim().is_empty() => Ok(ty),
-        Ok((rest, _)) => Err(format!("Unparsed input: {}", rest)),
+    match parse_type_expression(code.into()) {
+        Ok((rest, ty)) if rest.fragment().trim().is_empty() => Ok(ty),
+        Ok((rest, _)) => Err(format!("Unparsed input: {}", rest.fragment())),
         Err(e) => Err(format!("Parse error: {:?}", e)),
     }
 }
@@ -28,18 +28,14 @@ fn test_parse_primitive_type() {
 fn test_parse_reference_type() {
     assert_eq!(
         parse_type("MyClass"),
-        Ok(Type::Reference(Identifier {
-            name: "MyClass".to_string()
-        }))
+        Ok(Type::Reference(Identifier::new("MyClass")))
     );
 }
 
 #[test]
 fn test_parse_generic_type() {
     let expected = Type::Generic {
-        base: Identifier {
-            name: "List".to_string(),
-        },
+        base: Identifier::new("List"),
         args: vec![Type::Primitive(PrimitiveType::Int)],
     };
     assert_eq!(parse_type("List<int>"), Ok(expected));

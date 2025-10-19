@@ -30,18 +30,16 @@ fn test_parse_file_scoped_namespace() {
     // This test focuses on recognizing the file-scoped structure itself.
     let code = "namespace MyFileScope.Example;\n\nusing System;\n\nclass MyClass {}\n";
     let expected = FileScopedNamespaceDeclaration {
-        name: Identifier {
-            name: "MyFileScope.Example".to_string(),
-        }, // Assuming IdentifierNameSyntax handles qualified names
+        name: Identifier::Simple("MyBlockScope".to_string()),
         using_directives: vec![/* ... using directives ... */], // Use correct field name
         declarations: vec![/* ... class/struct/etc ... */],     // Use correct field name
     };
 
     // For now, we'll just check if the syntax *would* fail, as it's not implemented
     // A real test would parse the whole file and check the structure.
-    // assert_eq!(parse_file_scope_ns(code).map(|ns| ns.name), Ok(expected.name)); // Example check
+    // assert_eq!(parse_file_scope_ns(code.into()).map(|ns| ns.name), Ok(expected.name)); // Example check
     assert!(
-        parse_file_scope_ns(code).is_err(),
+        parse_file_scope_ns(code.into()).is_err(),
         "Parser should not be implemented yet"
     );
 }
@@ -51,16 +49,14 @@ fn test_parse_block_scoped_namespace() {
     // Similar to above, member parsing is needed for a full test.
     let code = "namespace MyBlockScope {\n using System; \n class Inner {}\n }";
     let expected = NamespaceDeclaration {
-        name: Identifier {
-            name: "MyBlockScope".to_string(),
-        },
+        name: Identifier::Simple("MyBlockScope".to_string()),
         using_directives: vec![/* ... */], // Use correct field name
         declarations: vec![/* ... */],     // Use correct field name
     };
 
-    // assert_eq!(parse_block_scope_ns(code).map(|ns| ns.name), Ok(expected.name)); // Example check
+    // assert_eq!(parse_block_scope_ns(code.into()).map(|ns| ns.name), Ok(expected.name)); // Example check
     assert!(
-        parse_block_scope_ns(code).is_err(),
+        parse_block_scope_ns(code.into()).is_err(),
         "Parser should not be implemented yet"
     );
 }

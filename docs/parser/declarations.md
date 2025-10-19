@@ -340,8 +340,8 @@ The declaration parser uses a multi-stage approach:
 
 ```rust
 fn parse_type_declaration(input: &str) -> BResult<&str, TypeDeclaration> {
-    let (input, attributes) = many0(parse_attribute)(input)?;
-    let (input, modifiers) = parse_modifiers(input)?;
+    let (input, attributes) = many0(parse_attribute)(input.into())?;
+    let (input, modifiers) = parse_modifiers(input.into())?;
     let (input, declaration) = alt((
         parse_class_declaration,
         parse_interface_declaration,
@@ -349,7 +349,7 @@ fn parse_type_declaration(input: &str) -> BResult<&str, TypeDeclaration> {
         parse_enum_declaration,
         parse_delegate_declaration,
         parse_record_declaration,
-    ))(input)?;
+    ))(input.into())?;
     
     Ok((input, TypeDeclaration {
         attributes,

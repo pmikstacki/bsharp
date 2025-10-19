@@ -53,7 +53,7 @@ fn snapshot_workspace_analysis_include_only_program() {
     let mut json = serde_json::to_value(&report).expect("serialize");
 
     // Normalize for snapshot stability
-    let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../tests/fixtures/happy_path");
+    let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("src/fixtures/happy_path");
     let root_str = root.to_string_lossy().to_string();
     normalize_paths_in_json(&mut json, &root_str);
 
@@ -95,7 +95,7 @@ fn snapshot_workspace_analysis_exclude_dependency_project() {
     let mut json = serde_json::to_value(&report).expect("serialize");
 
     // Normalize for snapshot stability
-    let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../../tests/fixtures/happy_path");
+    let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("src/fixtures/happy_path");
     let root_str = root.to_string_lossy().to_string();
     normalize_paths_in_json(&mut json, &root_str);
 

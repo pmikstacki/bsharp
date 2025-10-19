@@ -2,14 +2,14 @@
 
 use parser::expressions::declarations::file_scoped_namespace_parser::parse_file_scoped_namespace_declaration;
 use syntax::declarations::{
-    namespace_declaration::NamespaceBodyDeclaration, FileScopedNamespaceDeclaration, UsingDirective,
+    FileScopedNamespaceDeclaration, UsingDirective, namespace_declaration::NamespaceBodyDeclaration,
 };
 use syntax::identifier::Identifier;
 
 fn parse_file_scoped_namespace_declaration_helper(
     code: &str,
 ) -> Result<FileScopedNamespaceDeclaration, String> {
-    match parse_file_scoped_namespace_declaration(code) {
+    match parse_file_scoped_namespace_declaration(code.into()) {
         Ok((remaining, declaration)) => {
             if remaining.trim().is_empty() {
                 Ok(declaration)
@@ -25,14 +25,12 @@ fn parse_file_scoped_namespace_declaration_helper(
 fn test_parse_simple_file_scoped_namespace() {
     let code = "namespace MyNs;";
     let expected = FileScopedNamespaceDeclaration {
-        name: Identifier {
-            name: "MyNs".to_string(),
-        },
+        name: Identifier::Simple("MyNs".to_string()),
         using_directives: vec![],
         declarations: vec![],
     };
     assert_eq!(
-        parse_file_scoped_namespace_declaration_helper(code),
+        parse_file_scoped_namespace_declaration_helper(code.into()),
         Ok(expected)
     );
 }
@@ -41,14 +39,15 @@ fn test_parse_simple_file_scoped_namespace() {
 fn test_parse_qualified_file_scoped_namespace() {
     let code = "namespace MyCompany.MyProject;";
     let expected = FileScopedNamespaceDeclaration {
-        name: Identifier {
-            name: "MyCompany.MyProject".to_string(),
-        },
+        name: Identifier::QualifiedIdentifier(vec![
+            "MyCompany".to_string(),
+            "MyProject".to_string(),
+        ]),
         using_directives: vec![],
         declarations: vec![],
     };
     assert_eq!(
-        parse_file_scoped_namespace_declaration_helper(code),
+        parse_file_scoped_namespace_declaration_helper(code.into()),
         Ok(expected)
     );
 }
@@ -60,7 +59,7 @@ fn test_parse_file_scoped_namespace_with_using() {
 using System;
 using System.Collections.Generic;"#;
 
-    let result = parse_file_scoped_namespace_declaration_helper(code);
+    let result = parse_file_scoped_namespace_declaration_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse file-scoped namespace with using directives: {:?}",
@@ -68,19 +67,19 @@ using System.Collections.Generic;"#;
     );
 
     let namespace = result.unwrap();
-    assert_eq!(namespace.name.name, "MyNs");
+    assert_eq!(namespace.name.to_string(), "MyNs");
     assert_eq!(namespace.using_directives.len(), 2);
 
     match &namespace.using_directives[0] {
         UsingDirective::Namespace { namespace } => {
-            assert_eq!(namespace.name, "System");
+            assert_eq!(namespace.to_string(), "System");
         }
         _ => panic!("Expected namespace using directive"),
     }
 
     match &namespace.using_directives[1] {
         UsingDirective::Namespace { namespace } => {
-            assert_eq!(namespace.name, "System.Collections.Generic");
+            assert_eq!(namespace.to_string(), "System.Collections.Generic");
         }
         _ => panic!("Expected namespace using directive"),
     }
@@ -94,7 +93,7 @@ public class TestClass {
     public void TestMethod() { }
 }"#;
 
-    let result = parse_file_scoped_namespace_declaration_helper(code);
+    let result = parse_file_scoped_namespace_declaration_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse file-scoped namespace with class: {:?}",
@@ -102,12 +101,12 @@ public class TestClass {
     );
 
     let namespace = result.unwrap();
-    assert_eq!(namespace.name.name, "MyNs");
+    assert_eq!(namespace.name.to_string(), "MyNs");
     assert_eq!(namespace.declarations.len(), 1);
 
     match &namespace.declarations[0] {
         NamespaceBodyDeclaration::Class(class_decl) => {
-            assert_eq!(class_decl.name.name, "TestClass");
+            assert_eq!(class_decl.name.to_string(), "TestClass");
         }
         _ => panic!("Expected class declaration"),
     }
@@ -137,7 +136,7 @@ public enum Operation {
     Divide
 }"#;
 
-    let result = parse_file_scoped_namespace_declaration_helper(code);
+    let result = parse_file_scoped_namespace_declaration_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse complete file-scoped namespace: {:?}",
@@ -145,14 +144,14 @@ public enum Operation {
     );
 
     let namespace = result.unwrap();
-    assert_eq!(namespace.name.name, "MyCompany.MyProject");
+    assert_eq!(namespace.name.to_string(), "MyCompany.MyProject");
     assert_eq!(namespace.using_directives.len(), 2);
     assert_eq!(namespace.declarations.len(), 3); // class, interface, enum
 
     // Check class
     match &namespace.declarations[0] {
         NamespaceBodyDeclaration::Class(class_decl) => {
-            assert_eq!(class_decl.name.name, "Calculator");
+            assert_eq!(class_decl.name.to_string(), "Calculator");
         }
         _ => panic!("Expected class declaration"),
     }
@@ -160,7 +159,7 @@ public enum Operation {
     // Check interface
     match &namespace.declarations[1] {
         NamespaceBodyDeclaration::Interface(interface_decl) => {
-            assert_eq!(interface_decl.name.name, "ICalculator");
+            assert_eq!(interface_decl.name.to_string(), "ICalculator");
         }
         _ => panic!("Expected interface declaration"),
     }
@@ -168,7 +167,7 @@ public enum Operation {
     // Check enum
     match &namespace.declarations[2] {
         NamespaceBodyDeclaration::Enum(enum_decl) => {
-            assert_eq!(enum_decl.name.name, "Operation");
+            assert_eq!(enum_decl.name.to_string(), "Operation");
         }
         _ => panic!("Expected enum declaration"),
     }
@@ -182,7 +181,7 @@ public record Person(string FirstName, string LastName);
 
 public record struct Point(int X, int Y);"#;
 
-    let result = parse_file_scoped_namespace_declaration_helper(code);
+    let result = parse_file_scoped_namespace_declaration_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse file-scoped namespace with records: {:?}",
@@ -190,20 +189,20 @@ public record struct Point(int X, int Y);"#;
     );
 
     let namespace = result.unwrap();
-    assert_eq!(namespace.name.name, "Records");
+    assert_eq!(namespace.name.to_string(), "Records");
     assert_eq!(namespace.declarations.len(), 2);
 
     // Check records
     match &namespace.declarations[0] {
         NamespaceBodyDeclaration::Record(record_decl) => {
-            assert_eq!(record_decl.name.name, "Person");
+            assert_eq!(record_decl.name.to_string(), "Person");
         }
         _ => panic!("Expected record declaration"),
     }
 
     match &namespace.declarations[1] {
         NamespaceBodyDeclaration::Record(record_decl) => {
-            assert_eq!(record_decl.name.name, "Point");
+            assert_eq!(record_decl.name.to_string(), "Point");
         }
         _ => panic!("Expected record declaration"),
     }
@@ -219,7 +218,7 @@ public struct Vector3 {
     public float Z;
 }"#;
 
-    let result = parse_file_scoped_namespace_declaration_helper(code);
+    let result = parse_file_scoped_namespace_declaration_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse file-scoped namespace with struct: {:?}",
@@ -227,12 +226,12 @@ public struct Vector3 {
     );
 
     let namespace = result.unwrap();
-    assert_eq!(namespace.name.name, "Structs");
+    assert_eq!(namespace.name.to_string(), "Structs");
     assert_eq!(namespace.declarations.len(), 1);
 
     match &namespace.declarations[0] {
         NamespaceBodyDeclaration::Struct(struct_decl) => {
-            assert_eq!(struct_decl.name.name, "Vector3");
+            assert_eq!(struct_decl.name.to_string(), "Vector3");
         }
         _ => panic!("Expected struct declaration"),
     }
@@ -245,7 +244,7 @@ fn test_parse_file_scoped_namespace_with_delegate() {
 public delegate int Calculator(int x, int y);
 public delegate void EventHandler<T>(T args);"#;
 
-    let result = parse_file_scoped_namespace_declaration_helper(code);
+    let result = parse_file_scoped_namespace_declaration_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse file-scoped namespace with delegates: {:?}",
@@ -253,19 +252,19 @@ public delegate void EventHandler<T>(T args);"#;
     );
 
     let namespace = result.unwrap();
-    assert_eq!(namespace.name.name, "Delegates");
+    assert_eq!(namespace.name.to_string(), "Delegates");
     assert_eq!(namespace.declarations.len(), 2);
 
     match &namespace.declarations[0] {
         NamespaceBodyDeclaration::Delegate(delegate_decl) => {
-            assert_eq!(delegate_decl.name.name, "Calculator");
+            assert_eq!(delegate_decl.name.to_string(), "Calculator");
         }
         _ => panic!("Expected delegate declaration"),
     }
 
     match &namespace.declarations[1] {
         NamespaceBodyDeclaration::Delegate(delegate_decl) => {
-            assert_eq!(delegate_decl.name.name, "EventHandler");
+            assert_eq!(delegate_decl.name.to_string(), "EventHandler");
         }
         _ => panic!("Expected delegate declaration"),
     }
@@ -281,7 +280,7 @@ fn test_parse_file_scoped_namespace_whitespace_variations() {
       public void TestMethod() { }
   }"#;
 
-    let result = parse_file_scoped_namespace_declaration_helper(code);
+    let result = parse_file_scoped_namespace_declaration_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse file-scoped namespace with whitespace variations: {:?}",
@@ -289,7 +288,7 @@ fn test_parse_file_scoped_namespace_whitespace_variations() {
     );
 
     let namespace = result.unwrap();
-    assert_eq!(namespace.name.name, "MyNs");
+    assert_eq!(namespace.name.to_string(), "MyNs");
     assert_eq!(namespace.using_directives.len(), 1);
     assert_eq!(namespace.declarations.len(), 1);
 }
@@ -298,17 +297,17 @@ fn test_parse_file_scoped_namespace_whitespace_variations() {
 fn test_parse_file_scoped_namespace_errors() {
     // Missing semicolon should fail
     let code = "namespace MyNs";
-    let result = parse_file_scoped_namespace_declaration_helper(code);
+    let result = parse_file_scoped_namespace_declaration_helper(code.into());
     assert!(result.is_err(), "Expected error for missing semicolon");
 
     // Empty namespace name should fail
     let code = "namespace ;";
-    let result = parse_file_scoped_namespace_declaration_helper(code);
+    let result = parse_file_scoped_namespace_declaration_helper(code.into());
     assert!(result.is_err(), "Expected error for empty namespace name");
 
     // Invalid namespace name should fail
     let code = "namespace 123Invalid;";
-    let result = parse_file_scoped_namespace_declaration_helper(code);
+    let result = parse_file_scoped_namespace_declaration_helper(code.into());
     assert!(result.is_err(), "Expected error for invalid namespace name");
 }
 

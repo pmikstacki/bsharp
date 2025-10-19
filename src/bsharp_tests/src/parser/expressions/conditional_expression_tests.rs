@@ -10,6 +10,6 @@ fn parse_conditional_expr(code: &str) -> Result<ConditionalExpression, String> {
 fn test_parse_conditional_expr() {
     let code = "x ? y : z";
     // let expected = ...;
-    // assert_eq!(parse_conditional_expr(code), Ok(expected));
-    assert!(parse_conditional_expr(code).is_err());
+    // assert_eq!(parse_conditional_expr(code.into()), Ok(expected));
+    assert!(parse_conditional_expr(code.into()).is_err());
 }

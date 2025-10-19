@@ -23,7 +23,7 @@ where
 {
     move |mut input: Span<'a>| {
         // parse first operand
-        let (mut i, mut left) = next(input)?;
+        let (mut i, mut left) = next(input.into())?;
         // loop for (op next)*
         loop {
             match op(i) {

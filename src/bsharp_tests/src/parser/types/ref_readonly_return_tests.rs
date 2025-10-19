@@ -3,7 +3,7 @@ use syntax::types::Type;
 
 #[test]
 fn parses_ref_readonly_return_type() {
-    let (rest, ty) = parse_type_expression("ref readonly int").expect("parse");
+    let (rest, ty) = parse_type_expression("ref readonly int".into()).expect("parse");
     assert!(rest.trim().is_empty());
     match ty {
         Type::RefReadOnlyReturn(inner) => match *inner {

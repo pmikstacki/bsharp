@@ -2,13 +2,12 @@
 
 use nom::combinator::cut;
 use nom::combinator::opt;
-use nom::sequence::{preceded, delimited};
-use nom::character::complete::char as nom_char;
+use nom::sequence::{delimited, preceded};
 use nom::Parser;
 
 use crate::parser::keywords::selection_and_switch_keywords::{kw_else, kw_if};
-use crate::syntax::errors::BResult;
 use crate::syntax::comment_parser::ws;
+use crate::syntax::errors::BResult;
 
 use crate::parser::expressions::primary_expression_parser::parse_expression;
 use crate::parser::statement_parser::parse_statement_ws;
@@ -20,18 +19,18 @@ use syntax::statements::IfStatement;
 /// Parse an if statement with optional else branch
 /// Format: if (expr) stmt [else stmt]
 /// Note: In C#, if statements MUST have block bodies (braces are required)
-pub fn parse_if_statement<'a>(input: Span<'a>) -> BResult<'a, Statement> {
+pub fn parse_if_statement(input: Span) -> BResult<Statement> {
     (|input| {
         // if keyword
         let (input, _) = kw_if().context("if keyword").parse(input)?;
         // (
-        let (input, _) = delimited(ws, nom_char('('), ws)
+        let (input, _) = delimited(ws, tok_l_paren(), ws)
             .context("opening parenthesis for if condition")
             .parse(input)?;
         // condition expr
         let (input, condition) = delimited(ws, parse_expression, ws).parse(input)?;
         // )
-        let (after_paren, _) = cut(delimited(ws, nom_char(')'), ws))
+        let (after_paren, _) = cut(delimited(ws, tok_r_paren(), ws))
             .context("closing parenthesis for if condition")
             .parse(input)?;
 
@@ -58,7 +57,7 @@ pub fn parse_if_statement<'a>(input: Span<'a>) -> BResult<'a, Statement> {
                 })),
             },
         ))
-        .parse(input)?;
+            .parse(input)?;
 
         Ok((
             input,
@@ -69,7 +68,8 @@ pub fn parse_if_statement<'a>(input: Span<'a>) -> BResult<'a, Statement> {
             })),
         ))
     })
-    .context("if statement")
-    .parse(input)
+        .context("if statement")
+        .parse(input)
 }
 use crate::syntax::span::Span;
+use crate::tokens::delimiters::{tok_l_paren, tok_r_paren};

@@ -8,7 +8,7 @@ use syntax::identifier::Identifier;
 use syntax::types::{PrimitiveType, Type};
 
 fn parse_field_decl_test(code: &str) -> Result<FieldDeclaration, String> {
-    match parse_field_declaration(code) {
+    match parse_field_declaration(code.into()) {
         Ok((rest, decl)) if rest.trim().is_empty() => Ok(decl),
         Ok((rest, _)) => Err(format!("Unparsed input: {}", rest)),
         Err(e) => Err(format!("Parse error: {:?}", e)),
@@ -21,12 +21,10 @@ fn test_parse_simple_field() {
     let expected = FieldDeclaration {
         modifiers: vec![],
         field_type: Type::Primitive(PrimitiveType::Int),
-        name: Identifier {
-            name: "count".to_string(),
-        },
+        name: Identifier::Simple("count".to_string()),
         initializer: None,
     };
-    assert_eq!(parse_field_decl_test(code), Ok(expected));
+    assert_eq!(parse_field_decl_test(code.into()), Ok(expected));
 }
 
 #[test]
@@ -35,12 +33,10 @@ fn test_parse_field_with_initializer() {
     let expected = FieldDeclaration {
         modifiers: vec![],
         field_type: Type::Primitive(PrimitiveType::String),
-        name: Identifier {
-            name: "message".to_string(),
-        },
+        name: Identifier::Simple("message".to_string()),
         initializer: Some(Expression::Literal(Literal::String("Hello".to_string()))),
     };
-    assert_eq!(parse_field_decl_test(code), Ok(expected));
+    assert_eq!(parse_field_decl_test(code.into()), Ok(expected));
 }
 
 #[test]
@@ -49,16 +45,14 @@ fn test_parse_field_bool_initializer() {
     let expected = FieldDeclaration {
         modifiers: vec![],
         field_type: Type::Primitive(PrimitiveType::Bool),
-        name: Identifier {
-            name: "enabled".to_string(),
-        },
+        name: Identifier::Simple("enabled".to_string()),
         initializer: Some(Expression::Literal(Literal::Boolean(true))),
     };
-    assert_eq!(parse_field_decl_test(code), Ok(expected));
+    assert_eq!(parse_field_decl_test(code.into()), Ok(expected));
 }
 
 #[test]
 fn test_parse_field_missing_semicolon() {
     let code = "int value = 5"; // Missing semicolon
-    assert!(parse_field_decl_test(code).is_err());
+    assert!(parse_field_decl_test(code.into()).is_err());
 }

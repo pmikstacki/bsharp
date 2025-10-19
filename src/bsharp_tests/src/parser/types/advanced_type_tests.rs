@@ -7,7 +7,7 @@ use syntax::types::{PrimitiveType, Type};
 
 // Helper function for unwrapping syntax results
 fn parse_test(code: &str) -> Result<Type, String> {
-    match parse_type_expression(code) {
+    match parse_type_expression(code.into()) {
         Ok((remaining, ty)) if remaining.trim().is_empty() => Ok(ty),
         Ok((remaining, _)) => Err(format!(
             "Didn't consume all input. Remaining: '{}'",

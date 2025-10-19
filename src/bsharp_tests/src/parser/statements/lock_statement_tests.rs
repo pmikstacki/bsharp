@@ -10,6 +10,6 @@ fn parse_lock_statement(code: &str) -> Result<LockStatement, String> {
 fn test_parse_lock_statement() {
     let code = "lock (obj) { }";
     // let expected = ...;
-    // assert_eq!(parse_lock_statement(code), Ok(expected));
-    assert!(parse_lock_statement(code).is_err());
+    // assert_eq!(parse_lock_statement(code.into()), Ok(expected));
+    assert!(parse_lock_statement(code.into()).is_err());
 }

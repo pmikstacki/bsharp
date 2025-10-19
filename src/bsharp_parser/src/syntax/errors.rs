@@ -1,6 +1,6 @@
+use crate::syntax::span::Span;
 use nom::IResult;
 use nom_supreme::error::{BaseErrorKind, ErrorTree, StackContext};
-use crate::syntax::span::Span;
 
 pub type BResult<'a, O> = IResult<Span<'a>, O, ErrorTree<Span<'a>>>;
 
@@ -67,7 +67,7 @@ pub fn format_error_tree(input: &str, error: &ErrorTree<Span<'_>>) -> String {
         let indent = |d: usize| "  ".repeat(d);
         match e {
             ErrorTree::Base { location, kind } => {
-                let off = location.location_offset();
+                let _off = location.location_offset();
                 let line = location.location_line() as usize;
                 let col = location.get_utf8_column();
                 let src_line = line_slice(input, line);

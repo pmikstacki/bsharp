@@ -1,9 +1,17 @@
+use crate::framework::NodeRef;
 use crate::framework::{AnalysisSession, Rule, RuleSet};
 use crate::syntax::ast::TopLevelDeclaration;
 use crate::{DiagnosticBuilder, DiagnosticCode};
 use bsharp_syntax::declarations::ClassBodyDeclaration;
 use bsharp_syntax::declarations::Modifier::Const;
-use crate::framework::NodeRef;
+
+fn ident_text(id: &crate::syntax::Identifier) -> String {
+    match id {
+        crate::syntax::Identifier::Simple(s) => s.clone(),
+        crate::syntax::Identifier::QualifiedIdentifier(parts) => parts.join("."),
+        crate::syntax::Identifier::OperatorOverrideIdentifier(_) => "operator".to_string(),
+    }
+}
 
 fn is_pascal_case(name: &str) -> bool {
     let mut chars = name.chars();
@@ -24,12 +32,15 @@ impl Rule for PropertyPascalCase {
         "Naming"
     }
     fn visit(&self, node: &NodeRef, session: &mut AnalysisSession) {
-        let Some(cu) = node.of::<crate::syntax::ast::CompilationUnit>() else { return; };
+        let Some(cu) = node.of::<crate::syntax::ast::CompilationUnit>() else {
+            return;
+        };
         for decl in &cu.declarations {
             if let TopLevelDeclaration::Class(c) = decl {
                 for m in &c.body_declarations {
                     if let ClassBodyDeclaration::Property(p) = m {
-                        let name = p.name.name.as_str();
+                        let name_owned = ident_text(&p.name);
+                        let name = name_owned.as_str();
                         if !is_pascal_case(name) {
                             let b = DiagnosticBuilder::new(DiagnosticCode::BSW02002)
                                 .with_message(format!("Property '{}' should be PascalCase", name));
@@ -51,12 +62,15 @@ impl Rule for FieldCamelOrConstUpper {
         "Naming"
     }
     fn visit(&self, node: &NodeRef, session: &mut AnalysisSession) {
-        let Some(cu) = node.of::<crate::syntax::ast::CompilationUnit>() else { return; };
+        let Some(cu) = node.of::<crate::syntax::ast::CompilationUnit>() else {
+            return;
+        };
         for decl in &cu.declarations {
             if let TopLevelDeclaration::Class(c) = decl {
                 for m in &c.body_declarations {
                     if let ClassBodyDeclaration::Field(f) = m {
-                        let name = f.name.name.as_str();
+                        let name_owned = ident_text(&f.name);
+                        let name = name_owned.as_str();
                         let is_const = f.modifiers.iter().any(|m| m == &Const);
 
                         if is_const {
@@ -88,14 +102,17 @@ impl Rule for ParameterCamelCase {
         "Naming"
     }
     fn visit(&self, node: &NodeRef, session: &mut AnalysisSession) {
-        let Some(cu) = node.of::<crate::syntax::ast::CompilationUnit>() else { return; };
+        let Some(cu) = node.of::<crate::syntax::ast::CompilationUnit>() else {
+            return;
+        };
         for decl in &cu.declarations {
             if let TopLevelDeclaration::Class(c) = decl {
                 for m in &c.body_declarations {
                     match m {
                         ClassBodyDeclaration::Method(md) => {
                             for p in &md.parameters {
-                                let name = p.name.name.as_str();
+                                let name_owned = ident_text(&p.name);
+                                let name = name_owned.as_str();
                                 if !is_camel_case(name) {
                                     let b = DiagnosticBuilder::new(DiagnosticCode::BSW02002)
                                         .with_message(format!(
@@ -108,7 +125,8 @@ impl Rule for ParameterCamelCase {
                         }
                         ClassBodyDeclaration::Constructor(ctor) => {
                             for p in &ctor.parameters {
-                                let name = p.name.name.as_str();
+                                let name_owned = ident_text(&p.name);
+                                let name = name_owned.as_str();
                                 if !is_camel_case(name) {
                                     let b = DiagnosticBuilder::new(DiagnosticCode::BSW02002)
                                         .with_message(format!(
@@ -195,10 +213,13 @@ impl Rule for ClassPascalCase {
         "Naming"
     }
     fn visit(&self, node: &NodeRef, session: &mut AnalysisSession) {
-        let Some(cu) = node.of::<crate::syntax::ast::CompilationUnit>() else { return; };
+        let Some(cu) = node.of::<crate::syntax::ast::CompilationUnit>() else {
+            return;
+        };
         for decl in &cu.declarations {
             if let TopLevelDeclaration::Class(c) = decl {
-                let name = c.name.name.as_str();
+                let name_owned = ident_text(&c.name);
+                let name = name_owned.as_str();
                 if !is_pascal_case(name) {
                     let mut b = DiagnosticBuilder::new(DiagnosticCode::BSW02002)
                         .with_message(format!("Type '{}' should be PascalCase", name));
@@ -221,10 +242,13 @@ impl Rule for InterfaceIPascalCase {
         "Naming"
     }
     fn visit(&self, node: &NodeRef, session: &mut AnalysisSession) {
-        let Some(cu) = node.of::<crate::syntax::ast::CompilationUnit>() else { return; };
+        let Some(cu) = node.of::<crate::syntax::ast::CompilationUnit>() else {
+            return;
+        };
         for decl in &cu.declarations {
             if let TopLevelDeclaration::Interface(i) = decl {
-                let name = i.name.name.as_str();
+                let name_owned = ident_text(&i.name);
+                let name = name_owned.as_str();
                 if !is_interface_ipascal_case(name) {
                     let mut b = DiagnosticBuilder::new(DiagnosticCode::BSW02002)
                         .with_message(format!("Interface '{}' should follow I* PascalCase", name));
@@ -257,13 +281,17 @@ impl Rule for MethodPascalCase {
         "Naming"
     }
     fn visit(&self, node: &NodeRef, session: &mut AnalysisSession) {
-        let Some(cu) = node.of::<crate::syntax::ast::CompilationUnit>() else { return; };
+        let Some(cu) = node.of::<crate::syntax::ast::CompilationUnit>() else {
+            return;
+        };
         for decl in &cu.declarations {
             if let TopLevelDeclaration::Class(c) = decl {
-                let class_name = &c.name.name;
+                let class_name_owned = ident_text(&c.name);
+                let class_name = class_name_owned.as_str();
                 for m in &c.body_declarations {
                     if let ClassBodyDeclaration::Method(md) = m {
-                        let name = md.name.name.as_str();
+                        let name_owned = ident_text(&md.name);
+                        let name = name_owned.as_str();
                         if !is_pascal_case(name) {
                             let mut b = DiagnosticBuilder::new(DiagnosticCode::BSW02002)
                                 .with_message(format!("Method '{}' should be PascalCase", name));

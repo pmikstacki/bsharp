@@ -22,14 +22,12 @@ fn test_parse_global_using_namespace() {
     let code = "global using System;";
     let expected = GlobalUsingDirective {
         using_directive: UsingDirective::Namespace {
-            namespace: Identifier {
-                name: "System".to_string(),
-            },
+            namespace: Identifier::new("System"),
         },
     };
-    // assert_eq!(parse_global_using(code), Ok(expected)); // Uncomment when syntax implemented
+    // assert_eq!(parse_global_using(code.into()), Ok(expected)); // Uncomment when syntax implemented
     assert!(
-        parse_global_using(code).is_err(),
+        parse_global_using(code.into()).is_err(),
         "Parser should not be implemented yet"
     );
 }
@@ -39,17 +37,13 @@ fn test_parse_global_using_alias() {
     let code = "global using MyAlias = System.Collections.Generic;";
     let expected = GlobalUsingDirective {
         using_directive: UsingDirective::Alias {
-            alias: Identifier {
-                name: "MyAlias".to_string(),
-            },
-            namespace_or_type: Identifier {
-                name: "System.Collections.Generic".to_string(),
-            }, // Assuming IdentifierNameSyntax handles qualified names for now
+            alias: Identifier::new("MyAlias"),
+            namespace_or_type: Identifier::new("System.Collections.Generic"), // Assuming IdentifierNameSyntax handles qualified names for now
         },
     };
-    // assert_eq!(parse_global_using(code), Ok(expected)); // Uncomment when syntax implemented
+    // assert_eq!(parse_global_using(code.into()), Ok(expected)); // Uncomment when syntax implemented
     assert!(
-        parse_global_using(code).is_err(),
+        parse_global_using(code.into()).is_err(),
         "Parser should not be implemented yet"
     );
 }
@@ -59,14 +53,12 @@ fn test_parse_global_using_static() {
     let code = "global using static System.Math;";
     let expected = GlobalUsingDirective {
         using_directive: UsingDirective::Static {
-            type_name: Identifier {
-                name: "System.Math".to_string(),
-            }, // Assuming IdentifierNameSyntax handles qualified names
+            type_name: Identifier::new("System.Math"), // Assuming IdentifierNameSyntax handles qualified names
         },
     };
-    // assert_eq!(parse_global_using(code), Ok(expected)); // Uncomment when syntax implemented
+    // assert_eq!(parse_global_using(code.into()), Ok(expected)); // Uncomment when syntax implemented
     assert!(
-        parse_global_using(code).is_err(),
+        parse_global_using(code.into()).is_err(),
         "Parser should not be implemented yet"
     );
 }
@@ -76,24 +68,27 @@ fn test_parse_global_using_static() {
 #[test]
 fn test_parse_using_namespace() {
     let code = "using System.Text;";
-    let (rest, dir) = parse_using_directive(code).expect("should parse namespace using");
-    assert!(rest.is_empty());
-    assert!(
-        matches!(dir, UsingDirective::Namespace { namespace: Identifier { name } } if name == "System.Text")
-    );
+    let (rest, dir) = parse_using_directive(code.into()).expect("should parse namespace using");
+    assert!(rest.fragment().trim().is_empty());
+    match dir {
+        UsingDirective::Namespace { namespace } => {
+            assert_eq!(namespace.to_string(), "System.Text");
+        }
+        _ => panic!("expected namespace using"),
+    }
 }
 
 #[test]
 fn test_parse_using_alias() {
     let code = "using TCol = System.Collections.Generic;";
-    let (_, dir) = parse_using_directive(code).expect("should parse alias using");
+    let (_, dir) = parse_using_directive(code.into()).expect("should parse alias using");
     match dir {
         UsingDirective::Alias {
             alias,
             namespace_or_type,
         } => {
-            assert_eq!(alias.name, "TCol");
-            assert_eq!(namespace_or_type.name, "System.Collections.Generic");
+            assert_eq!(alias.to_string(), "TCol");
+            assert_eq!(namespace_or_type.to_string(), "System.Collections.Generic");
         }
         _ => panic!("expected alias using"),
     }
@@ -102,8 +97,11 @@ fn test_parse_using_alias() {
 #[test]
 fn test_parse_using_static() {
     let code = "using static System.Math;";
-    let (_, dir) = parse_using_directive(code).expect("should parse static using");
-    assert!(
-        matches!(dir, UsingDirective::Static { type_name: Identifier { name } } if name == "System.Math")
-    );
+    let (_, dir) = parse_using_directive(code.into()).expect("should parse static using");
+    match dir {
+        UsingDirective::Static { type_name } => {
+            assert_eq!(type_name.to_string(), "System.Math");
+        }
+        _ => panic!("expected static using"),
+    }
 }

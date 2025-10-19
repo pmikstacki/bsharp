@@ -2,7 +2,7 @@ use parser::expressions::literal_parser::parse_literal;
 use syntax::expressions::literal::{IntegerSuffix, Literal};
 
 fn parse_ok(code: &str) -> Literal {
-    let (rest, lit) = parse_literal(code).expect("parse");
+    let (rest, lit) = parse_literal(code.into()).expect("parse");
     assert!(rest.trim().is_empty(), "unparsed tail: {:?}", rest);
     lit
 }

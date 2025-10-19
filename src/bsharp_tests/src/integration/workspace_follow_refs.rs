@@ -2,22 +2,12 @@ use std::path::PathBuf;
 
 use analysis::workspace::loader::WorkspaceLoadOptions;
 use analysis::workspace::WorkspaceLoader;
+use crate::integration::common::happy_path_app_csproj;
 
 #[test]
 fn loader_respects_follow_refs_flag_for_csproj() {
     // Arrange: load the application csproj directly (it references testDependency)
-    let app_csproj: PathBuf = [
-        env!("CARGO_MANIFEST_DIR"),
-        "..",
-        "..",
-        "tests",
-        "fixtures",
-        "happy_path",
-        "testApplication",
-        "testApplication.csproj",
-    ]
-    .iter()
-    .collect();
+    let app_csproj: PathBuf = happy_path_app_csproj();
 
     // Act: follow_refs = false
     let ws_no_refs = WorkspaceLoader::from_path_with_options(

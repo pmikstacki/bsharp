@@ -3,14 +3,14 @@ use syntax::expressions::expression::Expression;
 use syntax::expressions::new_expression::{NewExpression, ObjectInitializerEntry};
 
 fn parse_ok(input: &str) -> Expression {
-    let (rest, expr) = parse_expression(input).expect("parse ok");
+    let (rest, expr) = parse_expression(input.into()).expect("parse ok");
     assert!(rest.trim().is_empty(), "unparsed: {}", rest);
     expr
 }
 
 #[test]
 fn test_target_typed_new_mixed_object_and_collection_initializer_should_error() {
-    let res = parse_expression("new() { P = 1, 2 }");
+    let res = parse_expression("new() { P = 1, 2 }".into());
     assert!(
         res.is_err(),
         "expected parse error for mixed initializer, got: {:?}",

@@ -3,7 +3,7 @@ use syntax::identifier::Identifier;
 use syntax::types::{Parameter, ParameterModifier, PrimitiveType, Type};
 
 fn parse_ok(src: &str) -> Parameter {
-    let (rest, p) = parse_parameter(src).expect("parse");
+    let (rest, p) = parse_parameter(src.into()).expect("parse");
     assert!(rest.trim().is_empty());
     p
 }

@@ -3,18 +3,18 @@
 
 use crate::syntax::comment_parser::ws;
 use crate::syntax::errors::BResult;
-use syntax::declarations::Modifier;
 use crate::syntax::span::Span;
-use nom::Parser;
-use nom::sequence::{terminated, delimited};
-use nom::combinator::{peek, not, map};
 use nom::character::complete::satisfy;
+use nom::combinator::{map, not, peek};
+use nom::sequence::{delimited, terminated};
+use nom::Parser;
 use nom_supreme::tag::complete::tag;
+use syntax::declarations::Modifier;
 
 /// Helper for consuming optional whitespace
 pub fn optional_whitespace(input: Span) -> BResult<&str> {
     // Consume whitespace and comments without returning the slice (consistent with ws signature)
-    let (input, consumed) = ws(input)?;
+    let (input, consumed) = ws(input.into())?;
     Ok((input, consumed))
 }
 
@@ -39,10 +39,10 @@ where
 
     move |input: Span<'a>| {
         // Parse modifiers (which might be empty)
-        let (input, modifiers) = modifiers_parser(input)?;
+        let (input, modifiers) = modifiers_parser(input.into())?;
 
         // Parse the keyword (struct, interface, etc.)
-        let (input, keyword_result) = delimited(ws, &mut kw_parser, ws).parse(input)?;
+        let (input, keyword_result) = delimited(ws, &mut kw_parser, ws).parse(input.into())?;
 
         Ok((input, (modifiers, keyword_result)))
     }

@@ -9,11 +9,11 @@ use crate::parser::keywords::parameter_modifier_keywords::{kw_in, kw_out, kw_par
 use crate::syntax::errors::BResult;
 
 use crate::syntax::comment_parser::ws;
-use nom::Parser;
-use nom_supreme::ParserExt;
-use nom::{branch::alt, combinator::value, multi::many0, sequence::delimited};
-use syntax::declarations::Modifier;
 use crate::syntax::span::Span;
+use nom::Parser;
+use nom::{branch::alt, combinator::value, multi::many0, sequence::delimited};
+use nom_supreme::ParserExt;
+use syntax::declarations::Modifier;
 
 // Parse a single modifier keyword with word boundary check
 fn parse_single_modifier(input: Span) -> BResult<Modifier> {
@@ -56,8 +56,8 @@ fn parse_single_modifier(input: Span) -> BResult<Modifier> {
             value(Modifier::Fixed, crate::parser::keywords::exception_and_safety_keywords::kw_fixed()),
         )),
     ))
-    .context("modifier (expected access modifier, static, abstract, sealed, virtual, override, extern, unsafe, readonly, volatile, new, partial, ref, out, in, params, async, const, or fixed)")
-    .parse(input)
+        .context("modifier (expected access modifier, static, abstract, sealed, virtual, override, extern, unsafe, readonly, volatile, new, partial, ref, out, in, params, async, const, or fixed)")
+        .parse(input.into())
 }
 
 /// Parse modifiers specifically for a given declaration type (e.g., "method", "class", etc.)
@@ -68,14 +68,12 @@ pub fn parse_modifiers_for_decl_type<'a>(
 ) -> BResult<'a, Vec<Modifier>> {
     parse_modifiers
         .context("declaration modifiers (expected zero or more valid C# modifiers)")
-        .parse(input)
+        .parse(input.into())
 }
 
 // Parse zero or more modifiers (for backward compatibility or general use)
-pub fn parse_modifiers<'a>(input: Span<'a>) -> BResult<'a, Vec<Modifier>> {
-    let (input, mut modifiers) = many0(delimited(ws, parse_single_modifier, ws)).parse(input)?;
-
-    Modifier::order_modifiers(modifiers.as_mut_slice());
-
+pub fn parse_modifiers(input: Span) -> BResult<Vec<Modifier>> {
+    let (input, modifiers) = many0(delimited(ws, parse_single_modifier, ws)).parse(input.into())?;
+    // Preserve input order to match expectations in tests and downstream consumers
     Ok((input, modifiers))
 }

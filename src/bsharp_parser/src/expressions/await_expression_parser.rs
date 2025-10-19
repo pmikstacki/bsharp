@@ -14,7 +14,7 @@ use crate::syntax::span::Span;
 
 /// Enhanced await expression syntax using robust Nom combinators
 /// Handles complex patterns like: await _userRepository.GetByEmailAsync(email)
-pub fn parse_await_expression<'a>(input: Span<'a>) -> BResult<'a, Expression> {
+pub fn parse_await_expression(input: Span) -> BResult<Expression> {
     map(
         preceded(
             kw_await(),
@@ -26,25 +26,25 @@ pub fn parse_await_expression<'a>(input: Span<'a>) -> BResult<'a, Expression> {
             }))
         },
     )
-    .context("await expression")
-    .parse(input)
+        .context("await expression")
+        .parse(input.into())
 }
 
 /// Parse various types of awaitable expressions with fallback
 fn parse_awaitable_expression(input: Span) -> BResult<Expression> {
-    if let Ok(r) = parse_complex_method_chain(input) { return Ok(r); }
-    parse_simple_awaitable(input)
+    if let Ok(r) = parse_complex_method_chain(input.into()) { return Ok(r); }
+    parse_simple_awaitable(input.into())
 }
 
 /// Parse complex method chains like _userRepository.GetByEmailAsync(email)
 fn parse_complex_method_chain(input: Span) -> BResult<Expression> {
     // Import the main expression syntax to handle the full complexity
-    parse_expression.parse(input)
+    parse_expression.parse(input.into())
 }
 
 /// Parse simple awaitable expressions as fallback
 fn parse_simple_awaitable(input: Span) -> BResult<Expression> {
     // Parse identifier or simple expressions
     use crate::parser::identifier_parser::parse_identifier;
-    map(parse_identifier, Expression::Variable).parse(input)
+    map(parse_identifier, Expression::Variable).parse(input.into())
 }

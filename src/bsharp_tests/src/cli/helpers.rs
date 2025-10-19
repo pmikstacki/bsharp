@@ -1,4 +1,5 @@
 use std::path::PathBuf;
+use parser::syntax::span::Span;
 
 /// Test helper equivalent of CLI parse command. Reads C# file, parses, writes JSON AST.
 pub fn parse_execute(
@@ -9,7 +10,6 @@ pub fn parse_execute(
     lenient: bool,
 ) -> anyhow::Result<()> {
     use anyhow::{anyhow, Context};
-    use nom::Finish;
     use parser::bsharp::{parse_csharp_source, parse_csharp_source_strict};
     use parser::parse_mode;
     use std::fs;
@@ -24,7 +24,7 @@ pub fn parse_execute(
     };
     let prev_strict = parse_mode::is_strict();
     parse_mode::set_strict(!lenient);
-    let parsed = parser(&source_code).finish();
+    let parsed = parser(Span::from(source_code.as_str()));
     parse_mode::set_strict(prev_strict);
     let (_remaining, ast) = parsed.map_err(|e| anyhow!("Parse error: {:?}", e))?;
 
@@ -42,7 +42,6 @@ pub fn parse_execute(
 /// Test helper equivalent of CLI tree command. Generates Mermaid or DOT AST graph.
 pub fn tree_execute(input: PathBuf, output: Option<PathBuf>, format: String) -> anyhow::Result<()> {
     use anyhow::{anyhow, Context};
-    use nom::Finish;
     use parser::bsharp::parse_csharp_source;
     use parser::parse_mode;
     use parser::syntax::{ast, declarations::UsingDirective};
@@ -53,7 +52,7 @@ pub fn tree_execute(input: PathBuf, output: Option<PathBuf>, format: String) -> 
 
     let prev = parse_mode::is_strict();
     parse_mode::set_strict(false);
-    let parsed = parse_csharp_source(&source_code).finish();
+    let parsed = parse_csharp_source(source_code.as_str());
     parse_mode::set_strict(prev);
     let (_remaining, ast) = parsed.map_err(|e| anyhow!("Parse error: {:?}", e))?;
 
@@ -70,14 +69,14 @@ pub fn tree_execute(input: PathBuf, output: Option<PathBuf>, format: String) -> 
     // Generators (minimal copy from CLI)
     fn format_using_directive(using: &UsingDirective) -> String {
         match using {
-            UsingDirective::Namespace { namespace } => format!("using {};", namespace.name),
+            UsingDirective::Namespace { namespace } => format!("using {};", namespace.to_string()),
             UsingDirective::Alias {
                 alias,
                 namespace_or_type,
             } => {
-                format!("using {} = {};", alias.name, namespace_or_type.name)
+                format!("using {} = {};", alias.to_string(), namespace_or_type.to_string())
             }
-            UsingDirective::Static { type_name } => format!("using static {};", type_name.name),
+            UsingDirective::Static { type_name } => format!("using static {};", type_name.to_string()),
         }
     }
     fn generate_mermaid_ast(ast: &ast::CompilationUnit) -> String {
@@ -99,21 +98,21 @@ pub fn tree_execute(input: PathBuf, output: Option<PathBuf>, format: String) -> 
         for (i, member) in ast.declarations.iter().enumerate() {
             let id = format!("d{}", i);
             let label = match member {
-                ast::TopLevelDeclaration::Namespace(ns) => format!("Namespace: {}", ns.name.name),
+                ast::TopLevelDeclaration::Namespace(ns) => format!("Namespace: {}", ns.name.to_string()),
                 ast::TopLevelDeclaration::FileScopedNamespace(fs) => {
-                    format!("File-Scoped Namespace: {}", fs.name.name)
+                    format!("File-Scoped Namespace: {}", fs.name.to_string())
                 }
-                ast::TopLevelDeclaration::Class(cl) => format!("Class: {}", cl.name.name),
+                ast::TopLevelDeclaration::Class(cl) => format!("Class: {}", cl.name.to_string()),
                 ast::TopLevelDeclaration::Interface(iface) => {
-                    format!("Interface: {}", iface.name.name)
+                    format!("Interface: {}", iface.name.to_string())
                 }
-                ast::TopLevelDeclaration::Struct(st) => format!("Struct: {}", st.name.name),
-                ast::TopLevelDeclaration::Enum(en) => format!("Enum: {}", en.name.name),
-                ast::TopLevelDeclaration::Record(rec) => format!("Record: {}", rec.name.name),
-                ast::TopLevelDeclaration::Delegate(del) => format!("Delegate: {}", del.name.name),
+                ast::TopLevelDeclaration::Struct(st) => format!("Struct: {}", st.name.to_string()),
+                ast::TopLevelDeclaration::Enum(en) => format!("Enum: {}", en.name.to_string()),
+                ast::TopLevelDeclaration::Record(rec) => format!("Record: {}", rec.name.to_string()),
+                ast::TopLevelDeclaration::Delegate(del) => format!("Delegate: {}", del.name.to_string()),
                 ast::TopLevelDeclaration::GlobalAttribute(ga) => format!(
                     "Global Attribute: {} -> {}",
-                    ga.target.name, ga.attribute.name.name
+                    ga.target.to_string(), ga.attribute.name.to_string()
                 ),
             };
             lines.push(format!("{id}[\"{label}\"]"));
@@ -141,21 +140,21 @@ pub fn tree_execute(input: PathBuf, output: Option<PathBuf>, format: String) -> 
         for (i, member) in ast.declarations.iter().enumerate() {
             let id = format!("d{}", i);
             let label = match member {
-                ast::TopLevelDeclaration::Namespace(ns) => format!("Namespace: {}", ns.name.name),
+                ast::TopLevelDeclaration::Namespace(ns) => format!("Namespace: {}", ns.name.to_string()),
                 ast::TopLevelDeclaration::FileScopedNamespace(fs) => {
-                    format!("File-Scoped Namespace: {}", fs.name.name)
+                    format!("File-Scoped Namespace: {}", fs.name.to_string())
                 }
-                ast::TopLevelDeclaration::Class(cl) => format!("Class: {}", cl.name.name),
+                ast::TopLevelDeclaration::Class(cl) => format!("Class: {}", cl.name.to_string()),
                 ast::TopLevelDeclaration::Interface(iface) => {
-                    format!("Interface: {}", iface.name.name)
+                    format!("Interface: {}", iface.name.to_string())
                 }
-                ast::TopLevelDeclaration::Struct(st) => format!("Struct: {}", st.name.name),
-                ast::TopLevelDeclaration::Enum(en) => format!("Enum: {}", en.name.name),
-                ast::TopLevelDeclaration::Record(rec) => format!("Record: {}", rec.name.name),
-                ast::TopLevelDeclaration::Delegate(del) => format!("Delegate: {}", del.name.name),
+                ast::TopLevelDeclaration::Struct(st) => format!("Struct: {}", st.name.to_string()),
+                ast::TopLevelDeclaration::Enum(en) => format!("Enum: {}", en.name.to_string()),
+                ast::TopLevelDeclaration::Record(rec) => format!("Record: {}", rec.name.to_string()),
+                ast::TopLevelDeclaration::Delegate(del) => format!("Delegate: {}", del.name.to_string()),
                 ast::TopLevelDeclaration::GlobalAttribute(ga) => format!(
                     "Global Attribute: {} -> {}",
-                    ga.target.name, ga.attribute.name.name
+                    ga.target.to_string(), ga.attribute.name.to_string()
                 ),
             };
             out.push_str(&format!("  {id} [label=\"{label}\"];\n"));

@@ -1,8 +1,16 @@
 use crate::syntax::ast::{CompilationUnit, TopLevelDeclaration};
 use crate::syntax::declarations::{
-    namespace_declaration::NamespaceBodyDeclaration, ClassBodyDeclaration, ClassDeclaration, MethodDeclaration,
-    NamespaceDeclaration,
+    ClassBodyDeclaration, ClassDeclaration, MethodDeclaration, NamespaceDeclaration,
+    namespace_declaration::NamespaceBodyDeclaration,
 };
+
+fn ident_text(id: &crate::syntax::Identifier) -> String {
+    match id {
+        crate::syntax::Identifier::Simple(s) => s.clone(),
+        crate::syntax::Identifier::QualifiedIdentifier(parts) => parts.join("."),
+        crate::syntax::Identifier::OperatorOverrideIdentifier(_) => "operator".to_string(),
+    }
+}
 
 pub fn method_fqn(cu: &CompilationUnit, method: &MethodDeclaration) -> String {
     if let Some(fs) = &cu.file_scoped_namespace {
@@ -13,7 +21,7 @@ pub fn method_fqn(cu: &CompilationUnit, method: &MethodDeclaration) -> String {
     for decl in &cu.declarations {
         match decl {
             TopLevelDeclaration::Namespace(ns) => {
-                let ns_path = ns.name.name.clone();
+                let ns_path = ident_text(&ns.name);
                 if let Some((cfqn, name)) =
                     find_in_namespace(Some(&ns_path), &ns.declarations, method)
                 {
@@ -28,7 +36,7 @@ pub fn method_fqn(cu: &CompilationUnit, method: &MethodDeclaration) -> String {
             _ => {}
         }
     }
-    method.name.name.clone()
+    ident_text(&method.name)
 }
 
 fn find_in_namespace(
@@ -40,8 +48,8 @@ fn find_in_namespace(
         match m {
             NamespaceBodyDeclaration::Namespace(inner) => {
                 let new_ns = match ns_path {
-                    Some(p) => format!("{}.{}", p, inner.name.name),
-                    None => inner.name.name.clone(),
+                    Some(p) => format!("{}.{}", p, ident_text(&inner.name)),
+                    None => ident_text(&inner.name),
                 };
                 if let Some((cfqn, name)) =
                     find_in_namespace(Some(&new_ns), &inner.declarations, method)
@@ -66,7 +74,7 @@ fn find_in_class(
     method: &MethodDeclaration,
     stack: &mut Vec<String>,
 ) -> Option<(String, String)> {
-    stack.push(class.name.name.clone());
+    stack.push(ident_text(&class.name));
     for member in &class.body_declarations {
         match member {
             ClassBodyDeclaration::Method(m) => {
@@ -76,7 +84,7 @@ fn find_in_class(
                         Some(ns) => format!("{}.{}", ns, class_path),
                         None => class_path,
                     };
-                    let name = method.name.name.clone();
+                    let name = ident_text(&method.name);
                     stack.pop();
                     return Some((cfqn, name));
                 }
@@ -104,7 +112,7 @@ pub fn class_fqn(cu: &CompilationUnit, class: &ClassDeclaration) -> String {
     for decl in &cu.declarations {
         match decl {
             TopLevelDeclaration::Namespace(ns) => {
-                let ns_path = ns.name.name.clone();
+                let ns_path = ident_text(&ns.name);
                 if let Some(cfqn) = find_class_in_namespace(
                     Some(&ns_path),
                     &ns.declarations,
@@ -122,7 +130,7 @@ pub fn class_fqn(cu: &CompilationUnit, class: &ClassDeclaration) -> String {
             _ => {}
         }
     }
-    class.name.name.clone()
+    ident_text(&class.name)
 }
 
 fn find_class_in_namespace(
@@ -135,8 +143,8 @@ fn find_class_in_namespace(
         match m {
             NamespaceBodyDeclaration::Namespace(inner) => {
                 let new_ns = match ns_path {
-                    Some(p) => format!("{}.{}", p, inner.name.name),
-                    None => inner.name.name.clone(),
+                    Some(p) => format!("{}.{}", p, ident_text(&inner.name)),
+                    None => ident_text(&inner.name),
                 };
                 if let Some(cfqn) =
                     find_class_in_namespace(Some(&new_ns), &inner.declarations, target, stack)
@@ -161,7 +169,7 @@ fn find_class_path(
     target: &ClassDeclaration,
     stack: &mut Vec<String>,
 ) -> Option<String> {
-    stack.push(class.name.name.clone());
+    stack.push(ident_text(&class.name));
     for member in &class.body_declarations {
         if let ClassBodyDeclaration::NestedClass(nested) = member {
             if let Some(path) = find_class_path(ns_path, nested, target, stack) {
@@ -191,7 +199,7 @@ pub fn namespace_fqn(cu: &CompilationUnit, ns: &NamespaceDeclaration) -> String 
     }
     for decl in &cu.declarations {
         if let TopLevelDeclaration::Namespace(top) = decl {
-            let top_seg = top.name.name.clone();
+            let top_seg = ident_text(&top.name);
             if std::ptr::eq(top, ns) {
                 return top_seg;
             }
@@ -200,7 +208,7 @@ pub fn namespace_fqn(cu: &CompilationUnit, ns: &NamespaceDeclaration) -> String 
             }
         }
     }
-    ns.name.name.clone()
+    ident_text(&ns.name)
 }
 
 fn find_namespace_path(
@@ -210,7 +218,7 @@ fn find_namespace_path(
 ) -> Option<String> {
     for m in members {
         if let NamespaceBodyDeclaration::Namespace(inner) = m {
-            let seg = inner.name.name.clone();
+            let seg = ident_text(&inner.name);
             if std::ptr::eq(inner, target) {
                 return Some(match prefix {
                     Some(p) => format!("{}.{}", p, seg),

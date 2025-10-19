@@ -1,8 +1,6 @@
 // Integration tests for block_statement_parser.rs
 // Content moved from src/parser/statements/block_statement_parser.rs
 
-use nom::combinator::all_consuming;
-use nom::Finish;
 use parser::expressions::statements::block_statement_parser::parse_block_statement;
 use parser::syntax::test_helpers::parse_all;
 use syntax::declarations::LocalVariableDeclaration;
@@ -14,7 +12,7 @@ use syntax::types::{PrimitiveType, Type};
 #[test]
 fn test_parse_block_statement() {
     let input_empty = "{}";
-    let result_empty = parse_all(parse_block_statement, input_empty);
+    let result_empty = parse_all(parse_block_statement, input_empty.into());
     assert!(
         result_empty.is_ok(),
         "Parsing empty block failed: {:?}",
@@ -26,7 +24,7 @@ fn test_parse_block_statement() {
     }
 
     let input_simple = "{ int x = 1; return x; }";
-    let result_simple = parse_all(parse_block_statement, input_simple);
+    let result_simple = parse_all(parse_block_statement, input_simple.into());
     assert!(
         result_simple.is_ok(),
         "Parsing simple block failed: {:?}",
@@ -52,7 +50,7 @@ fn test_parse_block_statement() {
     }
 
     let input_nested = "{ { x = 5; } } "; // Note: trailing space
-    let result_nested = parse_all(parse_block_statement, input_nested.trim_end()); // Trim trailing space for all_consuming
+    let result_nested = parse_all(parse_block_statement, input_nested.trim_end().into());
     assert!(
         result_nested.is_ok(),
         "Parsing nested block failed: {:?}",
@@ -84,7 +82,7 @@ fn test_parse_block_statement() {
 #[test]
 fn test_parse_block_statement_empty() {
     let input = "{}";
-    let result = all_consuming(parse_block_statement)(input).finish();
+    let result = parse_all(parse_block_statement, input.into());
     assert!(
         result.is_ok(),
         "Parsing empty block failed: {:?}",
@@ -101,7 +99,7 @@ fn test_parse_block_statement_empty() {
 #[test]
 fn test_parse_block_statement_with_statements() {
     let input = "{ int a = 1; string b = \"test\"; }";
-    let result = all_consuming(parse_block_statement)(input).finish();
+    let result = parse_all(parse_block_statement, input.into());
     assert!(
         result.is_ok(),
         "Parsing block with statements failed: {:?}",
@@ -125,7 +123,7 @@ fn test_parse_block_statement_with_statements() {
                         "Expected one declarator for 'int a = 1;'"
                     );
                     let declarator = &declarators[0];
-                    assert_eq!(declarator.name.name, "a");
+                    assert_eq!(declarator.name.to_string(), "a");
                     assert!(matches!(
                         declarator.initializer,
                         Some(Expression::Literal(Literal::Integer(1)))
@@ -148,7 +146,7 @@ fn test_parse_block_statement_with_statements() {
                         "Expected one declarator for 'string b = \"test\";'"
                     );
                     let declarator = &declarators[0];
-                    assert_eq!(declarator.name.name, "b");
+                    assert_eq!(declarator.name.to_string(), "b");
                     assert!(
                         matches!(&declarator.initializer, Some(Expression::Literal(Literal::String(s))) if s == "test")
                     );

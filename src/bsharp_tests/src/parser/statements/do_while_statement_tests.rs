@@ -10,7 +10,7 @@ use syntax::statements::statement::Statement;
 #[test]
 fn test_parse_do_while_statement() {
     let input = "do { Print(\"Hello\"); } while (false);";
-    let result = parse_all(parse_do_while_statement, input);
+    let result = parse_all(parse_do_while_statement, input.into());
     assert!(result.is_ok());
     match result.unwrap().1 {
         Statement::DoWhile(do_while_stmt) => {

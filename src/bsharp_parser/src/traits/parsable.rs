@@ -1,3 +1,4 @@
+
 use crate::syntax::errors::BResult;
 use crate::syntax::span::Span;
 
@@ -46,7 +47,7 @@ macro_rules! impl_parsable_spanned {
 // Type declarations
 impl_parsable!(syntax::declarations::ClassDeclaration     => crate::parser::expressions::declarations::type_declaration_parser::parse_class_declaration);
 impl_parsable!(syntax::declarations::StructDeclaration    => crate::parser::expressions::declarations::type_declaration_parser::parse_struct_declaration_span);
-impl_parsable!(syntax::declarations::InterfaceDeclaration => crate::parser::expressions::declarations::type_declaration_parser::parse_interface_declaration_span);
+impl_parsable!(syntax::declarations::InterfaceDeclaration => crate::parser::expressions::declarations::type_declaration_parser::parse_interface_declaration);
 impl_parsable!(syntax::declarations::RecordDeclaration    => crate::parser::expressions::declarations::type_declaration_parser::parse_record_declaration);
 impl_parsable!(syntax::declarations::EnumDeclaration      => crate::parser::expressions::declarations::enum_declaration_parser::parse_enum_declaration);
 impl_parsable!(syntax::declarations::DelegateDeclaration  => crate::parser::expressions::declarations::delegate_declaration_parser::parse_delegate_declaration);

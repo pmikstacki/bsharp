@@ -1,10 +1,9 @@
 use crate::parser::expressions::deconstruction_expression_parser::parse_deconstruction_expression;
 use crate::syntax::comment_parser::ws;
 use crate::syntax::errors::BResult;
-use nom::{combinator::map, sequence::terminated};
-use nom::character::complete::char as nom_char;
 use nom::sequence::delimited;
 use nom::Parser;
+use nom::{combinator::map, sequence::terminated};
 use nom_supreme::ParserExt;
 use syntax::statements::statement::Statement;
 
@@ -14,12 +13,13 @@ pub fn parse_deconstruction_statement(input: Span) -> BResult<Statement> {
         terminated(
             delimited(ws, parse_deconstruction_expression, ws)
                 .context("deconstruction expression"),
-            delimited(ws, nom_char(';'), ws)
+            delimited(ws, tok_semicolon(), ws)
                 .context("semicolon after deconstruction statement"),
         ),
         |deconstruction| Statement::Deconstruction(Box::new(deconstruction)),
     )
-    .context("deconstruction statement")
-    .parse(input)
+        .context("deconstruction statement")
+        .parse(input.into())
 }
 use crate::syntax::span::Span;
+use crate::tokens::separators::tok_semicolon;

@@ -13,6 +13,7 @@
       <sourceFolder url="file://$MODULE_DIR$/dependencies/nom_supreme/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/bsharp_emitter/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/bsharp_syntax_derive/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/bsharp_parser/tests" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />

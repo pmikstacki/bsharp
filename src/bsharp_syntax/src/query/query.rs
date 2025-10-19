@@ -33,7 +33,6 @@ impl<'a> Query<'a> {
     }
 
     pub fn filter_typed<T: AstNode + 'static>(self, p: impl Fn(&T) -> bool + 'a) -> impl Iterator<Item = &'a T> + 'a {
-        let v: Vec<&'a T> = self.of::<T>().collect();
-        v.into_iter().filter(move |t| p(t))
+        self.of::<T>().filter(move |t| p(*t))
     }
 }

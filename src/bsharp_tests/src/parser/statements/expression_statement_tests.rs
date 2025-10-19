@@ -1,8 +1,6 @@
 // Integration tests for expression_statement_parser.rs
 // Content moved from src/parser/statements/expression_statement_parser.rs
 
-use nom::combinator::all_consuming;
-use nom::Finish;
 use parser::expressions::statements::expression_statement_parser::parse_expression_statement;
 use parser::statement_parser::parse_statement;
 use parser::syntax::test_helpers::parse_all;
@@ -18,7 +16,7 @@ use syntax::statements::statement::Statement;
 fn test_parse_expression_statement() {
     // Simple assignment
     let input_assign = "x = 10;";
-    let result_assign = parse_all(parse_expression_statement, input_assign);
+    let result_assign = parse_all(parse_expression_statement, input_assign.into());
     assert!(result_assign.is_ok());
     match result_assign.unwrap().1 {
         Statement::Expression(expr) => match expr {
@@ -37,7 +35,7 @@ fn test_parse_expression_statement() {
 
     // Invocation
     let input_invoke = "DoSomething();";
-    let result_invoke = parse_all(parse_expression_statement, input_invoke);
+    let result_invoke = parse_all(parse_expression_statement, input_invoke.into());
     assert!(result_invoke.is_ok());
     match result_invoke.unwrap().1 {
         Statement::Expression(expr) => match expr {
@@ -49,7 +47,7 @@ fn test_parse_expression_statement() {
 
     // Complex expression
     let input_complex = "obj.Method(a + b);";
-    let result_complex = parse_all(parse_expression_statement, input_complex);
+    let result_complex = parse_all(parse_expression_statement, input_complex.into());
     println!("Complex expression result: {:?}", result_complex);
     assert!(
         result_complex.is_ok(),
@@ -76,7 +74,7 @@ fn test_parse_expression_statement() {
 // Helper function from statement_tests.rs
 fn assert_statement_parses(code: &str, expected: Statement) {
     let code_trimmed = code.trim();
-    match all_consuming(parse_statement)(code_trimmed).finish() {
+    match parse_all(parse_statement, code_trimmed.into()) {
         Ok((_, parsed_statement)) => {
             assert_eq!(
                 parsed_statement, expected,
@@ -95,9 +93,7 @@ fn test_parse_expression_statement_call() {
     assert_statement_parses(
         "DoSomething();",
         Statement::Expression(Expression::Invocation(Box::new(InvocationExpression {
-            callee: Box::new(Expression::Variable(Identifier {
-                name: "DoSomething".to_string(),
-            })),
+            callee: Box::new(Expression::Variable(Identifier::new("DoSomething"))),
             arguments: vec![],
         }))),
     );
@@ -108,9 +104,7 @@ fn test_parse_expression_statement_assignment() {
     assert_statement_parses(
         "x = 10;",
         Statement::Expression(Expression::Assignment(Box::new(AssignmentExpression {
-            target: Box::new(Expression::Variable(Identifier {
-                name: "x".to_string(),
-            })),
+            target: Box::new(Expression::Variable(Identifier::new("x"))),
             op: BinaryOperator::Assign,
             value: Box::new(Expression::Literal(Literal::Integer(10))),
         }))),

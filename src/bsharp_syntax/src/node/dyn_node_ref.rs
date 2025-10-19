@@ -28,6 +28,7 @@ impl<'a, T: AstNode + 'a> From<&'a T> for DynNodeRef<'a> {
     }
 }
 
+
 impl<'a> DynNodeRef<'a> {
     /// Downcast to a concrete node type if it matches.
     pub fn of<T: AstNode + 'static>(&self) -> Option<&'a T> {

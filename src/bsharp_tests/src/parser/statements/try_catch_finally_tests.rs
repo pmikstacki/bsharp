@@ -12,20 +12,16 @@ use syntax::types::Type;
 #[test]
 fn test_parse_specific_catch_clause() {
     let input = "catch (Exception e) { } CATCH_SPECIFIC_BODY";
-    let (remaining_input, catch_clause) = parse_input_unwrap(parse_catch_clause(input));
+    let (remaining_input, catch_clause) = parse_input_unwrap(parse_catch_clause(input.into()));
     // With proper whitespace handling, there's no leading space anymore
-    assert_eq!(remaining_input, "CATCH_SPECIFIC_BODY");
+    assert_eq!(remaining_input.fragment(), &"CATCH_SPECIFIC_BODY");
     assert_eq!(
         catch_clause.exception_type,
-        Some(Type::Reference(Identifier {
-            name: "Exception".to_string()
-        }))
+        Some(Type::Reference(Identifier::new("Exception")))
     );
     assert_eq!(
         catch_clause.exception_variable,
-        Some(Identifier {
-            name: "e".to_string()
-        })
+        Some(Identifier::new("e"))
     );
     match *catch_clause.block {
         Statement::Block(ref block_statement) => assert!(block_statement.is_empty()),
@@ -36,9 +32,9 @@ fn test_parse_specific_catch_clause() {
 #[test]
 fn test_parse_general_catch_clause() {
     let input = "catch { } CATCH_GENERAL_BODY";
-    let (remaining_input, catch_clause) = parse_input_unwrap(parse_catch_clause(input));
+    let (remaining_input, catch_clause) = parse_input_unwrap(parse_catch_clause(input.into()));
     // With proper whitespace handling, there's no leading space anymore
-    assert_eq!(remaining_input, "CATCH_GENERAL_BODY");
+    assert_eq!(remaining_input.fragment(), &"CATCH_GENERAL_BODY");
     assert!(catch_clause.exception_type.is_none());
     assert!(catch_clause.exception_variable.is_none());
     match *catch_clause.block {
@@ -50,14 +46,12 @@ fn test_parse_general_catch_clause() {
 #[test]
 fn test_parse_catch_clause_no_identifier() {
     let input = "catch (System.Exception) { } CATCH_NO_IDENT_BODY";
-    let (remaining_input, catch_clause) = parse_input_unwrap(parse_catch_clause(input));
+    let (remaining_input, catch_clause) = parse_input_unwrap(parse_catch_clause(input.into()));
     // With proper whitespace handling, there's no leading space anymore
-    assert_eq!(remaining_input, "CATCH_NO_IDENT_BODY");
+    assert_eq!(remaining_input.fragment(), &"CATCH_NO_IDENT_BODY");
     assert_eq!(
         catch_clause.exception_type,
-        Some(Type::Reference(Identifier {
-            name: "System.Exception".to_string()
-        }))
+        Some(Type::Reference(Identifier::new("System.Exception")))
     );
     assert!(catch_clause.exception_variable.is_none());
 }
@@ -65,9 +59,9 @@ fn test_parse_catch_clause_no_identifier() {
 #[test]
 fn test_parse_finally_clause() {
     let input = "finally { } FINALLY_BODY";
-    let (remaining_input, finally_clause) = parse_input_unwrap(parse_finally_clause(input));
+    let (remaining_input, finally_clause) = parse_input_unwrap(parse_finally_clause(input.into()));
     // With proper whitespace handling, there's no leading space anymore
-    assert_eq!(remaining_input, "FINALLY_BODY");
+    assert_eq!(remaining_input.fragment(), &"FINALLY_BODY");
     match *finally_clause.block {
         Statement::Block(ref block_statement) => assert!(block_statement.is_empty()),
         _ => panic!("Expected BlockStatement for finally clause"),
@@ -77,7 +71,7 @@ fn test_parse_finally_clause() {
 #[test]
 fn test_parse_try_catch_statement() {
     let input = "try { } catch (Exception e) { }";
-    let result = parse_input_unwrap(parse_try_statement(input)).1;
+    let result = parse_input_unwrap(parse_try_statement(input.into())).1;
     match result {
         Statement::Try(ts) => {
             assert_eq!(ts.catches.len(), 1, "Expected 1 catch clause");
@@ -90,7 +84,7 @@ fn test_parse_try_catch_statement() {
 #[test]
 fn test_parse_try_catch_finally() {
     let input_try_catch = "try { DoSomething(); } catch (Exception e) { Log(e); }";
-    let result_try_catch = parse_all(parse_try_statement, input_try_catch);
+    let result_try_catch = parse_all(parse_try_statement, input_try_catch.into());
     assert!(result_try_catch.is_ok());
     match result_try_catch.unwrap().1 {
         Statement::Try(ts) => {
@@ -100,15 +94,11 @@ fn test_parse_try_catch_finally() {
             let catch_clause = &ts.catches[0];
             assert_eq!(
                 catch_clause.exception_type,
-                Some(Type::Reference(Identifier {
-                    name: "Exception".to_string()
-                }))
+                Some(Type::Reference(Identifier::new("Exception")))
             );
             assert_eq!(
                 catch_clause.exception_variable,
-                Some(Identifier {
-                    name: "e".to_string()
-                })
+                Some(Identifier::new("e"))
             );
             assert!(matches!(*catch_clause.block, Statement::Block(_)));
         }
@@ -117,7 +107,7 @@ fn test_parse_try_catch_finally() {
 
     // Note: The syntax was updated to allow try-finally without catch.
     let input_try_finally = "try { x = 1; } finally { CleanUp(); }";
-    let result_try_finally = parse_all(parse_try_statement, input_try_finally);
+    let result_try_finally = parse_all(parse_try_statement, input_try_finally.into());
     assert!(result_try_finally.is_ok());
     match result_try_finally.unwrap().1 {
         Statement::Try(ts) => {
@@ -133,7 +123,7 @@ fn test_parse_try_catch_finally() {
     }
 
     let input_try_catch_finally = "try { /*...*/ } catch (IOException ex) { } finally { /*...*/ }";
-    let result_try_catch_finally = parse_all(parse_try_statement, input_try_catch_finally);
+    let result_try_catch_finally = parse_all(parse_try_statement, input_try_catch_finally.into());
     assert!(result_try_catch_finally.is_ok());
     match result_try_catch_finally.unwrap().1 {
         Statement::Try(ts) => {
@@ -143,15 +133,11 @@ fn test_parse_try_catch_finally() {
             let catch_clause = &ts.catches[0];
             assert_eq!(
                 catch_clause.exception_type,
-                Some(Type::Reference(Identifier {
-                    name: "IOException".to_string()
-                }))
+                Some(Type::Reference(Identifier::new("IOException")))
             );
             assert_eq!(
                 catch_clause.exception_variable,
-                Some(Identifier {
-                    name: "ex".to_string()
-                })
+                Some(Identifier::new("ex"))
             );
             match ts.finally_clause {
                 Some(FinallyClause { block }) => assert!(matches!(*block, Statement::Block(_))),
@@ -162,7 +148,7 @@ fn test_parse_try_catch_finally() {
     }
 
     let input_try_multiple_catch = "try { } catch (ArgumentException a) { } catch { }";
-    let result_try_multiple_catch = parse_all(parse_try_statement, input_try_multiple_catch);
+    let result_try_multiple_catch = parse_all(parse_try_statement, input_try_multiple_catch.into());
     assert!(result_try_multiple_catch.is_ok());
     match result_try_multiple_catch.unwrap().1 {
         Statement::Try(ts) => {

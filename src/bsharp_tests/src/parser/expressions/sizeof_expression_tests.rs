@@ -6,22 +6,22 @@ use syntax::expressions::expression::Expression;
 use syntax::types::{PrimitiveType, Type};
 
 fn parse_sizeof_expr_helper(code: &str) -> Result<Expression, String> {
-    match parse_sizeof_expression(code) {
-        Ok((remaining, expr)) if remaining.trim().is_empty() => Ok(expr),
+    match parse_sizeof_expression(code.into()) {
+        Ok((remaining, expr)) if remaining.fragment().trim().is_empty() => Ok(expr),
         Ok((remaining, _)) => Err(format!(
             "Didn't consume all input. Remaining: '{}'",
-            remaining
+            remaining.fragment()
         )),
         Err(e) => Err(format!("Parse error: {:?}", e)),
     }
 }
 
 fn parse_expr_helper(code: &str) -> Result<Expression, String> {
-    match parse_expression(code) {
-        Ok((remaining, expr)) if remaining.trim().is_empty() => Ok(expr),
+    match parse_expression(code.into()) {
+        Ok((remaining, expr)) if remaining.fragment().trim().is_empty() => Ok(expr),
         Ok((remaining, _)) => Err(format!(
             "Didn't consume all input. Remaining: '{}'",
-            remaining
+            remaining.fragment()
         )),
         Err(e) => Err(format!("Parse error: {:?}", e)),
     }
@@ -30,7 +30,7 @@ fn parse_expr_helper(code: &str) -> Result<Expression, String> {
 #[test]
 fn test_parse_sizeof_primitive_type() {
     let code = "sizeof(int)";
-    let result = parse_sizeof_expr_helper(code);
+    let result = parse_sizeof_expr_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse sizeof with primitive type: {:?}",
@@ -54,7 +54,7 @@ fn test_parse_sizeof_primitive_type() {
 #[test]
 fn test_parse_sizeof_char_type() {
     let code = "sizeof(char)";
-    let result = parse_sizeof_expr_helper(code);
+    let result = parse_sizeof_expr_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse sizeof with char type: {:?}",
@@ -78,7 +78,7 @@ fn test_parse_sizeof_char_type() {
 #[test]
 fn test_parse_sizeof_double_type() {
     let code = "sizeof(double)";
-    let result = parse_sizeof_expr_helper(code);
+    let result = parse_sizeof_expr_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse sizeof with double type: {:?}",
@@ -102,7 +102,7 @@ fn test_parse_sizeof_double_type() {
 #[test]
 fn test_parse_sizeof_struct_type() {
     let code = "sizeof(MyStruct)";
-    let result = parse_sizeof_expr_helper(code);
+    let result = parse_sizeof_expr_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse sizeof with struct type: {:?}",
@@ -111,7 +111,7 @@ fn test_parse_sizeof_struct_type() {
 
     if let Ok(Expression::Sizeof(sizeof_expr)) = result {
         if let Type::Reference(id) = &sizeof_expr.target_type {
-            assert_eq!(id.name, "MyStruct");
+            assert_eq!(id.to_string(), "MyStruct");
         } else {
             panic!(
                 "Expected reference type, got: {:?}",
@@ -126,7 +126,7 @@ fn test_parse_sizeof_struct_type() {
 #[test]
 fn test_parse_sizeof_in_full_expression_parser() {
     let code = "sizeof(long)";
-    let result = parse_expr_helper(code);
+    let result = parse_expr_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse sizeof in full expression parser: {:?}",
@@ -157,7 +157,7 @@ fn test_parse_sizeof_with_whitespace() {
     ];
 
     for code in variations {
-        let result = parse_expr_helper(code);
+        let result = parse_expr_helper(code.into());
         assert!(
             result.is_ok(),
             "Failed to parse sizeof with whitespace '{}': {:?}",
@@ -180,7 +180,7 @@ fn test_parse_sizeof_with_whitespace() {
 #[test]
 fn test_parse_sizeof_byte_type() {
     let code = "sizeof(byte)";
-    let result = parse_sizeof_expr_helper(code);
+    let result = parse_sizeof_expr_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse sizeof with byte type: {:?}",
@@ -204,7 +204,7 @@ fn test_parse_sizeof_byte_type() {
 #[test]
 fn test_parse_sizeof_decimal_type() {
     let code = "sizeof(decimal)";
-    let result = parse_sizeof_expr_helper(code);
+    let result = parse_sizeof_expr_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse sizeof with decimal type: {:?}",
@@ -228,7 +228,7 @@ fn test_parse_sizeof_decimal_type() {
 #[test]
 fn test_parse_sizeof_pointer_type() {
     let code = "sizeof(int*)";
-    let result = parse_sizeof_expr_helper(code);
+    let result = parse_sizeof_expr_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse sizeof with pointer type: {:?}",
@@ -254,7 +254,7 @@ fn test_parse_invalid_sizeof_expressions() {
     ];
 
     for code in invalid_cases {
-        let result = parse_sizeof_expr_helper(code);
+        let result = parse_sizeof_expr_helper(code.into());
         // Note: Some of these might actually parse successfully depending on the type syntax
         // The "string" case might parse but would be a semantic error, not a parser error
         if code == "sizeof(string)" {

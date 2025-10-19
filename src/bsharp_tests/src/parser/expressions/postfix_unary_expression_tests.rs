@@ -5,8 +5,8 @@ use syntax::expressions::{Expression, UnaryOperator};
 
 #[test]
 fn postfix_increment_basic() {
-    let (rest, expr) = parse_expression("x++").expect("parse ok");
-    assert!(rest.trim().is_empty());
+    let (rest, expr) = parse_expression("x++".into()).expect("parse ok");
+    assert!(rest.fragment().trim().is_empty());
     match expr {
         Expression::PostfixUnary { op, .. } => assert_eq!(op, UnaryOperator::Increment),
         other => panic!("expected PostfixUnary ++, got {:?}", other),
@@ -15,8 +15,8 @@ fn postfix_increment_basic() {
 
 #[test]
 fn postfix_decrement_chained_with_member() {
-    let (rest, expr) = parse_expression("x--.ToString()").expect("parse ok");
-    assert!(rest.trim().is_empty());
+    let (rest, expr) = parse_expression("x--.ToString()".into()).expect("parse ok");
+    assert!(rest.fragment().trim().is_empty());
     match expr {
         Expression::Invocation(_) => {}
         other => panic!("expected Invocation after chaining, got {:?}", other),
@@ -25,8 +25,8 @@ fn postfix_decrement_chained_with_member() {
 
 #[test]
 fn null_forgiving_postfix() {
-    let (rest, expr) = parse_expression("x!").expect("parse ok");
-    assert!(rest.trim().is_empty());
+    let (rest, expr) = parse_expression("x!".into()).expect("parse ok");
+    assert!(rest.fragment().trim().is_empty());
     match expr {
         Expression::PostfixUnary { op, .. } => assert_eq!(op, UnaryOperator::NullForgiving),
         other => panic!("expected PostfixUnary ! (null-forgiving), got {:?}", other),

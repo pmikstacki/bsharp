@@ -10,6 +10,6 @@ fn parse_binary_operator(code: &str) -> Result<BinaryOperator, String> {
 fn test_parse_binary_operator() {
     let code = "+";
     // let expected = ...;
-    // assert_eq!(parse_binary_operator(code), Ok(expected));
-    assert!(parse_binary_operator(code).is_err());
+    // assert_eq!(parse_binary_operator(code.into()), Ok(expected));
+    assert!(parse_binary_operator(code.into()).is_err());
 }

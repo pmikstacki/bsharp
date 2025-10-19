@@ -1,7 +1,7 @@
 use parser::expressions::declarations::type_declaration_parser::parse_class_declaration;
 
 fn parse_class_decl(code: &str) -> Result<syntax::declarations::ClassDeclaration, String> {
-    match parse_class_declaration(code) {
+    match parse_class_declaration(code.into()) {
         Ok((rest, decl)) if rest.trim().is_empty() => Ok(decl),
         Ok((rest, _)) => Err(format!("Unparsed input: {}", rest)),
         Err(e) => Err(format!("Parse error: {:?}", e)),

@@ -10,6 +10,6 @@ fn parse_switch_label(code: &str) -> Result<SwitchLabel, String> {
 fn test_parse_switch_label() {
     let code = "case 1:";
     // let expected = ...;
-    // assert_eq!(parse_switch_label(code), Ok(expected));
-    assert!(parse_switch_label(code).is_err());
+    // assert_eq!(parse_switch_label(code.into()), Ok(expected));
+    assert!(parse_switch_label(code.into()).is_err());
 }

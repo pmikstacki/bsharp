@@ -3,63 +3,72 @@ use parser::expressions::declarations::modifier_parser::{
 };
 use syntax::declarations::Modifier;
 
+fn expect_modifiers(input: &str, expected_modifiers: Vec<Modifier>) {
+    let result = parse_modifiers(input.into());
+    assert!(result.is_ok());
+    let (remaining, modifiers) = result.unwrap();
+    assert_eq!(remaining.fragment().to_string(), "");
+    assert_eq!(modifiers, expected_modifiers);
+}
+
+fn expect_modifiers_decl(modifiers: &str, name: &str, expected_modifiers: Vec<Modifier>) {
+    let result = parse_modifiers_for_decl_type(modifiers.into(), name);
+    assert!(result.is_ok());
+    let (remaining, modifiers) = result.unwrap();
+    assert_eq!(remaining.fragment().to_string(), "");
+    assert_eq!(modifiers, expected_modifiers);
+}
 #[test]
 fn test_parse_single_modifier() {
-    let result = parse_modifiers("public").unwrap();
-    assert_eq!(result.0, "");
-    assert_eq!(result.1, vec![Modifier::Public]);
+    expect_modifiers("public", vec![Modifier::Public]);
 
-    let result = parse_modifiers("static").unwrap();
-    assert_eq!(result.0, "");
-    assert_eq!(result.1, vec![Modifier::Static]);
+    expect_modifiers("static", vec![Modifier::Static]);
 
-    let result = parse_modifiers("private").unwrap();
-    assert_eq!(result.0, "");
-    assert_eq!(result.1, vec![Modifier::Private]);
+    expect_modifiers("extern", vec![Modifier::Extern]);
+
+    expect_modifiers("unsafe", vec![Modifier::Unsafe]);
+
+    expect_modifiers("private", vec![Modifier::Private]);
 }
 
 #[test]
 fn test_parse_multiple_modifiers() {
-    let result = parse_modifiers("public static").unwrap();
-    assert_eq!(result.0, "");
-    assert_eq!(result.1, vec![Modifier::Public, Modifier::Static]);
-
-    let result_ws = parse_modifiers("public static ").unwrap();
-    assert_eq!(result_ws.0, "");
-    assert_eq!(result_ws.1, vec![Modifier::Public, Modifier::Static]);
-
-    let result = parse_modifiers("readonly private").unwrap();
-    assert_eq!(result.0, "");
-    assert_eq!(result.1, vec![Modifier::Private, Modifier::Readonly]);
-
-    let result_ws = parse_modifiers("readonly private ").unwrap();
-    assert_eq!(result_ws.0, "");
-    assert_eq!(result_ws.1, vec![Modifier::Private, Modifier::Readonly]);
-
-    let result = parse_modifiers("virtual internal protected").unwrap();
-    assert_eq!(result.0, "");
-    assert_eq!(
-        result.1,
-        vec![Modifier::Internal, Modifier::Protected, Modifier::Virtual]
+    expect_modifiers("public static", vec![Modifier::Public, Modifier::Static]);
+    expect_modifiers("public static ", vec![Modifier::Public, Modifier::Static]);
+    expect_modifiers(
+        "readonly private",
+        vec![Modifier::Readonly, Modifier::Private],
+    );
+    expect_modifiers(
+        "readonly private ",
+        vec![Modifier::Readonly, Modifier::Private],
     );
 
-    let result_ws = parse_modifiers("virtual internal protected ").unwrap();
-    assert_eq!(result_ws.0, "");
-    assert_eq!(
-        result_ws.1,
-        vec![Modifier::Internal, Modifier::Protected, Modifier::Virtual]
+    expect_modifiers(
+        "virtual internal protected",
+        vec![Modifier::Virtual, Modifier::Internal, Modifier::Protected],
+    );
+    expect_modifiers(
+        "virtual internal protected ",
+        vec![Modifier::Virtual, Modifier::Internal, Modifier::Protected],
     );
 }
 
 #[test]
 fn test_parse_no_modifiers() {
-    let result = parse_modifiers("").unwrap();
-    assert_eq!(result.0, "");
-    assert_eq!(result.1, vec![]);
+    expect_modifiers("", vec![]);
 }
 
 #[test]
 fn test_parse_modifiers_for_property() {
-    let result = parse_modifiers_for_decl_type("public static", "property").unwrap();
-    assert_eq!(result.0, "");
+    expect_modifiers_decl(
+        "public static",
+        "property",
+        vec![Modifier::Public, Modifier::Static],
+    );
+    expect_modifiers_decl(
+        "public static ",
+        "property",
+        vec![Modifier::Public, Modifier::Static],
+    );
 }

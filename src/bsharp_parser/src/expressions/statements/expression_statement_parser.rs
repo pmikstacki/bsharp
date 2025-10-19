@@ -4,25 +4,25 @@ use crate::parser::expressions::assignment_expression_parser::parse_assignment_e
 use crate::syntax::comment_parser::ws;
 use crate::syntax::errors::BResult;
 use nom::combinator::cut;
-use nom::character::complete::char as nom_char;
 use nom::sequence::delimited;
 use nom::Parser;
 use nom_supreme::ParserExt;
 use syntax::statements::statement::Statement;
 
 // Parse an expression statement: expression;
-pub fn parse_expression_statement<'a>(input: Span<'a>) -> BResult<'a, Statement> {
+pub fn parse_expression_statement(input: Span) -> BResult<Statement> {
     (|input| {
         let (input, _) = ws(input)?;
         let (after_expr, expr) = parse_assignment_expression_or_higher
             .context("expression")
             .parse(input)?;
-        let (rest, _) = cut(delimited(ws, nom_char(';'), ws))
+        let (rest, _) = cut(delimited(ws, tok_semicolon(), ws))
             .context("semicolon after expression")
             .parse(after_expr)?;
         Ok((rest, Statement::Expression(expr)))
     })
-    .context("expression statement")
-    .parse(input)
+        .context("expression statement")
+        .parse(input)
 }
 use crate::syntax::span::Span;
+use crate::tokens::separators::tok_semicolon;

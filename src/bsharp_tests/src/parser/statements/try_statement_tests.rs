@@ -10,6 +10,6 @@ fn parse_try_statement(code: &str) -> Result<TryStatement, String> {
 fn test_parse_try_statement() {
     let code = "try { } catch { }";
     // let expected = ...;
-    // assert_eq!(parse_try_statement(code), Ok(expected));
-    assert!(parse_try_statement(code).is_err());
+    // assert_eq!(parse_try_statement(code.into()), Ok(expected));
+    assert!(parse_try_statement(code.into()).is_err());
 }

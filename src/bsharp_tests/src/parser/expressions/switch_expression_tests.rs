@@ -6,7 +6,7 @@ use syntax::expressions::expression::{Expression, SwitchExpression};
 #[test]
 fn basic_switch_expression() {
     let code = "x switch { 1 => 10, _ => 20 }";
-    let (rest, expr) = parse_expression(code).expect("parse ok");
+    let (rest, expr) = parse_expression(code.into()).expect("parse ok");
     assert!(rest.trim().is_empty());
     match expr {
         Expression::SwitchExpression(se) => {
@@ -22,7 +22,7 @@ fn basic_switch_expression() {
 #[test]
 fn switch_when_clause() {
     let code = "x switch { > 0 when (1 + 1) == 2 => 1, _ => 0 }";
-    let (rest, expr) = parse_expression(code).expect("parse ok");
+    let (rest, expr) = parse_expression(code.into()).expect("parse ok");
     assert!(rest.trim().is_empty());
     match expr {
         Expression::SwitchExpression(se) => {

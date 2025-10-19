@@ -1,6 +1,7 @@
+use std::fmt::Display;
 use serde::{Deserialize, Serialize};
 
-#[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(bsharp_syntax_derive::AstNode,Hash, Eq, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub enum BinaryOperator {
     // Arithmetic
     Add,      // +
@@ -51,6 +52,49 @@ pub enum BinaryOperator {
 
     // Range
     Range, // .. (New)
+}
+
+impl Display for BinaryOperator{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            BinaryOperator::Add => write!(f, "+"),
+            BinaryOperator::Subtract => write!(f, "-"),
+            BinaryOperator::Multiply => write!(f, "*"),
+            BinaryOperator::Divide => write!(f, "/"),
+            BinaryOperator::Modulo => write!(f, "%"),
+            BinaryOperator::Assign => write!(f, "="),
+            BinaryOperator::AddAssign => write!(f, "+="),
+            BinaryOperator::SubtractAssign => write!(f, "-="),
+            BinaryOperator::MultiplyAssign => write!(f, "*="),
+            BinaryOperator::DivideAssign => write!(f, "/="),
+            BinaryOperator::ModuloAssign => write!(f, "%="),
+            BinaryOperator::AndAssign => write!(f, "&="),
+            BinaryOperator::OrAssign => write!(f, "|="),
+            BinaryOperator::XorAssign => write!(f, "^="),
+            BinaryOperator::LeftShiftAssign => write!(f, "<<="),
+            BinaryOperator::RightShiftAssign => write!(f, ">>="),
+            BinaryOperator::UnsignedRightShiftAssign => write!(f, ">>>="),
+            BinaryOperator::NullCoalescingAssign => write!(f, "??="),
+            BinaryOperator::Equal => write!(f, "=="),
+            BinaryOperator::NotEqual => write!(f, "!="),
+            BinaryOperator::LessThan => write!(f, "<"),
+            BinaryOperator::GreaterThan => write!(f, ">"),
+            BinaryOperator::LessEqual => write!(f, "<="),
+            BinaryOperator::GreaterEqual => write!(f, ">="),
+            BinaryOperator::Is => write!(f, "is"),
+            BinaryOperator::As => write!(f, "as"),
+            BinaryOperator::LogicalAnd => write!(f, "&&"),
+            BinaryOperator::LogicalOr => write!(f, "||"),
+            BinaryOperator::BitwiseAnd => write!(f, "&"),
+            BinaryOperator::BitwiseOr => write!(f, "|"),
+            BinaryOperator::BitwiseXor => write!(f, "^"),
+            BinaryOperator::LeftShift => write!(f, "<<"),
+            BinaryOperator::RightShift => write!(f, ">>"),
+            BinaryOperator::UnsignedRightShift => write!(f, ">>>"),
+            BinaryOperator::NullCoalescing => write!(f, "??"),
+            BinaryOperator::Range => write!(f, ".."),
+        }   
+    }
 }
 
 impl BinaryOperator {

@@ -6,6 +6,14 @@ use bsharp_syntax::types::{PrimitiveType, Type};
 use crate::framework::NodeRef;
 use crate::{DiagnosticBuilder, DiagnosticCode};
 
+fn ident_text(id: &crate::syntax::Identifier) -> String {
+    match id {
+        crate::syntax::Identifier::Simple(s) => s.clone(),
+        crate::syntax::Identifier::QualifiedIdentifier(parts) => parts.join("."),
+        crate::syntax::Identifier::OperatorOverrideIdentifier(_) => "operator".to_string(),
+    }
+}
+
 fn find_ctor_span(session: &AnalysisSession, class_name: &str) -> Option<(usize, usize)> {
     for (k, range) in session.spans.iter() {
         if k.starts_with("ctor::") && k.ends_with(&format!("::{}", class_name)) {
@@ -37,14 +45,17 @@ impl Rule for CtorNoAsync {
         "Semantic"
     }
     fn visit(&self, node: &NodeRef, session: &mut AnalysisSession) {
-        let Some(cu) = node.of::<crate::syntax::ast::CompilationUnit>() else { return; };
+        let Some(cu) = node.of::<crate::syntax::ast::CompilationUnit>() else {
+            return;
+        };
         for decl in &cu.declarations {
             if let TopLevelDeclaration::Class(class) = decl {
                 for member in &class.body_declarations {
                     if let ClassBodyDeclaration::Constructor(ctor) = member {
                         if ctor.modifiers.contains(&Modifier::Async) {
                             let mut b = DiagnosticBuilder::new(DiagnosticCode::BSE01001);
-                            if let Some((start, len)) = find_ctor_span(session, &class.name.name) {
+                            let class_name = ident_text(&class.name);
+                            if let Some((start, len)) = find_ctor_span(session, &class_name) {
                                 b = b.at_span(session, start, len);
                             }
                             b.emit(session);
@@ -65,18 +76,22 @@ impl Rule for CtorNameMatchesClass {
         "Semantic"
     }
     fn visit(&self, node: &NodeRef, session: &mut AnalysisSession) {
-        let Some(cu) = node.of::<crate::syntax::ast::CompilationUnit>() else { return; };
+        let Some(cu) = node.of::<crate::syntax::ast::CompilationUnit>() else {
+            return;
+        };
         for decl in &cu.declarations {
             if let TopLevelDeclaration::Class(class) = decl {
                 for member in &class.body_declarations {
                     if let ClassBodyDeclaration::Constructor(ctor) = member {
-                        if ctor.name.name != class.name.name {
+                        let ctor_name = ident_text(&ctor.name);
+                        let class_name = ident_text(&class.name);
+                        if ctor_name != class_name {
                             let mut b = DiagnosticBuilder::new(DiagnosticCode::BSE01005)
                                 .with_message(format!(
                                     "Constructor name '{}' does not match class name '{}'",
-                                    ctor.name.name, class.name.name
+                                    ctor_name, class_name
                                 ));
-                            if let Some((start, len)) = find_ctor_span(session, &class.name.name) {
+                            if let Some((start, len)) = find_ctor_span(session, &class_name) {
                                 b = b.at_span(session, start, len);
                             }
                             b.emit(session);
@@ -97,7 +112,9 @@ impl Rule for CtorNoVirtualOrAbstract {
         "Semantic"
     }
     fn visit(&self, node: &NodeRef, session: &mut AnalysisSession) {
-        let Some(cu) = node.of::<crate::syntax::ast::CompilationUnit>() else { return; };
+        let Some(cu) = node.of::<crate::syntax::ast::CompilationUnit>() else {
+            return;
+        };
         for decl in &cu.declarations {
             if let TopLevelDeclaration::Class(class) = decl {
                 for member in &class.body_declarations {
@@ -106,7 +123,8 @@ impl Rule for CtorNoVirtualOrAbstract {
                             || ctor.modifiers.contains(&Modifier::Abstract)
                         {
                             let mut b = DiagnosticBuilder::new(DiagnosticCode::BSE01003);
-                            if let Some((start, len)) = find_ctor_span(session, &class.name.name) {
+                            let class_name = ident_text(&class.name);
+                            if let Some((start, len)) = find_ctor_span(session, &class_name) {
                                 b = b.at_span(session, start, len);
                             }
                             b.emit(session);
@@ -127,15 +145,19 @@ impl Rule for MethodNoAbstractBody {
         "Semantic"
     }
     fn visit(&self, node: &NodeRef, session: &mut AnalysisSession) {
-        let Some(cu) = node.of::<crate::syntax::ast::CompilationUnit>() else { return; };
+        let Some(cu) = node.of::<crate::syntax::ast::CompilationUnit>() else {
+            return;
+        };
         for decl in &cu.declarations {
             if let TopLevelDeclaration::Class(class) = decl {
                 for member in &class.body_declarations {
                     if let ClassBodyDeclaration::Method(m) = member {
                         if m.modifiers.contains(&Modifier::Abstract) && m.body.is_some() {
                             let mut b = DiagnosticBuilder::new(DiagnosticCode::BSE02001);
+                            let class_name = ident_text(&class.name);
+                            let method_name = ident_text(&m.name);
                             if let Some((start, len)) =
-                                find_method_span(session, &class.name.name, &m.name.name)
+                                find_method_span(session, &class_name, &method_name)
                             {
                                 b = b.at_span(session, start, len);
                             }
@@ -157,7 +179,9 @@ impl Rule for MethodNoStaticOverride {
         "Semantic"
     }
     fn visit(&self, node: &NodeRef, session: &mut AnalysisSession) {
-        let Some(cu) = node.of::<crate::syntax::ast::CompilationUnit>() else { return; };
+        let Some(cu) = node.of::<crate::syntax::ast::CompilationUnit>() else {
+            return;
+        };
         for decl in &cu.declarations {
             if let TopLevelDeclaration::Class(class) = decl {
                 for member in &class.body_declarations {
@@ -166,8 +190,10 @@ impl Rule for MethodNoStaticOverride {
                             && m.modifiers.contains(&Modifier::Override)
                         {
                             let mut b = DiagnosticBuilder::new(DiagnosticCode::BSE02006);
+                            let class_name = ident_text(&class.name);
+                            let method_name = ident_text(&m.name);
                             if let Some((start, len)) =
-                                find_method_span(session, &class.name.name, &m.name.name)
+                                find_method_span(session, &class_name, &method_name)
                             {
                                 b = b.at_span(session, start, len);
                             }
@@ -189,22 +215,26 @@ impl Rule for AsyncReturnsTask {
         "Semantic"
     }
     fn visit(&self, node: &NodeRef, session: &mut AnalysisSession) {
-        let Some(cu) = node.of::<crate::syntax::ast::CompilationUnit>() else { return; };
+        let Some(cu) = node.of::<crate::syntax::ast::CompilationUnit>() else {
+            return;
+        };
         for decl in &cu.declarations {
             if let TopLevelDeclaration::Class(class) = decl {
                 for member in &class.body_declarations {
                     if let ClassBodyDeclaration::Method(m) = member {
                         if m.modifiers.contains(&Modifier::Async) {
                             let valid = match &m.return_type {
-                                Type::Reference(rt) => rt.name == "Task",
-                                Type::Generic { base, .. } => base.name == "Task",
+                                Type::Reference(rt) => ident_text(rt) == "Task",
+                                Type::Generic { base, .. } => ident_text(base) == "Task",
                                 Type::Primitive(PrimitiveType::Void) => true, // allowed but discouraged
                                 _ => false,
                             };
                             if !valid {
                                 let mut b = DiagnosticBuilder::new(DiagnosticCode::BSE02009);
+                                let class_name = ident_text(&class.name);
+                                let method_name = ident_text(&m.name);
                                 if let Some((start, len)) =
-                                    find_method_span(session, &class.name.name, &m.name.name)
+                                    find_method_span(session, &class_name, &method_name)
                                 {
                                     b = b.at_span(session, start, len);
                                 }

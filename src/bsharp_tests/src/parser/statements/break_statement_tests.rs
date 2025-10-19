@@ -9,7 +9,7 @@ use syntax::statements::statement::Statement;
 #[test]
 fn test_parse_break_statement() {
     let input = "break;";
-    let result = parse_all(parse_break_statement, input);
+    let result = parse_all(parse_break_statement, input.into());
     assert!(result.is_ok());
     assert_eq!(result.unwrap().1, Statement::Break(BreakStatement {}));
 }

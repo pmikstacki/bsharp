@@ -21,7 +21,7 @@ cd bsharp
 
 #### Parser Testing Best Practices
 
-- Prefer `expect_ok(input, parse(input))` from `syntax::test_helpers` when asserting successful parses. It prints readable, rustc-like diagnostics on failure via `format_error_tree`.
+- Prefer `expect_ok(input, parse(input.into()))` from `syntax::test_helpers` when asserting successful parses. It prints readable, rustc-like diagnostics on failure via `format_error_tree`.
 - Keep tests focused and minimal; add a separate negative test when ambiguity is possible (e.g., ternary vs `?.` vs `??`, range vs dot vs float).
 - For lookahead/disambiguation boundaries, add cases to `tests/parser/expressions/lookahead_boundaries2_tests.rs`.
 - For complex constructs (e.g., `new` with object/collection initializers), add positive and negative cases near `tests/parser/expressions/new_expression_tests.rs` and `target_typed_new_tests.rs`.
@@ -91,7 +91,7 @@ use bsharp::parser::expressions::declarations::parse_class_declaration;
 #[test]
 fn test_parse_simple_class() {
     let input = "public class MyClass { }";
-    let class = expect_ok(input, parse_class_declaration(input));
+    let class = expect_ok(input, parse_class_declaration(input.into()));
     assert_eq!(class.identifier.name, "MyClass");
 }
 ```

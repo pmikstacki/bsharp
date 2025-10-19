@@ -6,7 +6,7 @@ use syntax::identifier::Identifier;
 use syntax::types::{PrimitiveType, Type};
 
 fn parse_operator_declaration_helper(code: &str) -> Result<OperatorDeclaration, String> {
-    match parse_operator_declaration(code) {
+    match parse_operator_declaration(code.into()) {
         Ok((remaining, declaration)) => {
             if remaining.trim().is_empty() {
                 Ok(declaration)
@@ -21,7 +21,7 @@ fn parse_operator_declaration_helper(code: &str) -> Result<OperatorDeclaration, 
 #[test]
 fn test_parse_binary_addition_operator() {
     let code = "public static MyType operator +(MyType a, MyType b) { }";
-    let result = parse_operator_declaration_helper(code);
+    let result = parse_operator_declaration_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse binary addition operator: {:?}",
@@ -40,7 +40,7 @@ fn test_parse_binary_addition_operator() {
 
     match declaration.operator {
         OperatorKind::Binary(symbol) => {
-            assert_eq!(symbol.name, "+");
+            assert_eq!(symbol.to_string(), "+");
         }
         _ => panic!("Expected binary operator, got {:?}", declaration.operator),
     }
@@ -52,7 +52,7 @@ fn test_parse_binary_addition_operator() {
 #[test]
 fn test_parse_binary_subtraction_operator() {
     let code = "public static MyType operator -(MyType a, MyType b) { }";
-    let result = parse_operator_declaration_helper(code);
+    let result = parse_operator_declaration_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse binary subtraction operator: {:?}",
@@ -62,7 +62,7 @@ fn test_parse_binary_subtraction_operator() {
     let declaration = result.unwrap();
     match declaration.operator {
         OperatorKind::Binary(symbol) => {
-            assert_eq!(symbol.name, "-");
+            assert_eq!(symbol.to_string(), "-");
         }
         _ => panic!("Expected binary operator, got {:?}", declaration.operator),
     }
@@ -88,7 +88,7 @@ fn test_parse_comparison_operators() {
         let declaration = result.unwrap();
         match declaration.operator {
             OperatorKind::Binary(symbol) => {
-                assert_eq!(symbol.name, op);
+                assert_eq!(symbol.to_string(), op);
             }
             _ => panic!(
                 "Expected binary operator for {}, got {:?}",
@@ -118,7 +118,7 @@ fn test_parse_arithmetic_operators() {
         let declaration = result.unwrap();
         match declaration.operator {
             OperatorKind::Binary(symbol) => {
-                assert_eq!(symbol.name, op);
+                assert_eq!(symbol.to_string(), op);
             }
             _ => panic!(
                 "Expected binary operator for {}, got {:?}",
@@ -147,7 +147,7 @@ fn test_parse_unary_operators() {
         // In a real implementation, we'd check parameter count to determine unary vs binary
         match declaration.operator {
             OperatorKind::Binary(symbol) => {
-                assert_eq!(symbol.name, op);
+                assert_eq!(symbol.to_string(), op);
             }
             _ => panic!(
                 "Expected operator for {}, got {:?}",
@@ -160,7 +160,7 @@ fn test_parse_unary_operators() {
 #[test]
 fn test_parse_implicit_conversion_operator() {
     let code = "public static implicit operator int(MyType value) { }";
-    let result = parse_operator_declaration_helper(code);
+    let result = parse_operator_declaration_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse implicit conversion operator: {:?}",
@@ -183,7 +183,7 @@ fn test_parse_implicit_conversion_operator() {
 #[test]
 fn test_parse_explicit_conversion_operator() {
     let code = "public static explicit operator string(MyType value) { }";
-    let result = parse_operator_declaration_helper(code);
+    let result = parse_operator_declaration_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse explicit conversion operator: {:?}",
@@ -206,7 +206,7 @@ fn test_parse_explicit_conversion_operator() {
 #[test]
 fn test_parse_operator_with_attributes() {
     let code = "[Obsolete] public static MyType operator +(MyType a, MyType b) { }";
-    let result = parse_operator_declaration_helper(code);
+    let result = parse_operator_declaration_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse operator with attributes: {:?}",
@@ -223,7 +223,7 @@ fn test_parse_operator_with_attributes() {
 #[test]
 fn test_parse_abstract_operator() {
     let code = "public static abstract MyType operator +(MyType a, MyType b);";
-    let result = parse_operator_declaration_helper(code);
+    let result = parse_operator_declaration_helper(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse abstract operator: {:?}",
@@ -252,7 +252,7 @@ fn test_parse_true_false_operators() {
         let declaration = result.unwrap();
         match declaration.operator {
             OperatorKind::Binary(symbol) => {
-                assert_eq!(symbol.name, op);
+                assert_eq!(symbol.to_string(), op);
             }
             _ => panic!(
                 "Expected operator for {}, got {:?}",

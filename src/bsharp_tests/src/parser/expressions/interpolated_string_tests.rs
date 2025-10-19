@@ -3,12 +3,12 @@ use syntax::expressions::expression::Expression;
 use syntax::expressions::literal::{InterpolatedStringPart, Literal};
 
 fn parse_interpolated_string_test(code: &str) -> Result<Literal, String> {
-    match parse_literal(code) {
+    match parse_literal(code.into()) {
         Ok((remaining, literal)) => {
-            if remaining.trim().is_empty() {
+            if remaining.fragment().trim().is_empty() {
                 Ok(literal)
             } else {
-                Err(format!("Unparsed input: {}", remaining))
+                Err(format!("Unparsed input: {}", remaining.fragment()))
             }
         }
         Err(e) => Err(format!("Parse error: {:?}", e)),
@@ -18,7 +18,7 @@ fn parse_interpolated_string_test(code: &str) -> Result<Literal, String> {
 #[test]
 fn test_parse_raw_interpolated_simple() {
     let code = r#"$"""Hello {name}""""#;
-    let result = parse_interpolated_string_test(code).expect("parse");
+    let result = parse_interpolated_string_test(code.into()).expect("parse");
     match result {
         Literal::InterpolatedString(s) => {
             assert!(s.is_verbatim);
@@ -30,7 +30,7 @@ fn test_parse_raw_interpolated_simple() {
             match &s.parts[1] {
                 InterpolatedStringPart::Interpolation { expression, .. } => {
                     if let Expression::Variable(id) = expression {
-                        assert_eq!(id.name, "name");
+                        assert_eq!(id.to_string(), "name");
                     } else {
                         panic!("expected variable");
                     }
@@ -47,7 +47,7 @@ fn test_parse_raw_interpolated_simple() {
 #[test]
 fn test_parse_verbatim_interpolated_string() {
     let code = r#"$@"Path: {path}""#;
-    let result = parse_interpolated_string_test(code);
+    let result = parse_interpolated_string_test(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse verbatim interpolated string: {:?}",
@@ -65,7 +65,7 @@ fn test_parse_verbatim_interpolated_string() {
 #[test]
 fn test_parse_alternative_verbatim_interpolated_string() {
     let code = r#"@$"Path: {path}""#;
-    let result = parse_interpolated_string_test(code);
+    let result = parse_interpolated_string_test(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse alternative verbatim interpolated string: {:?}",
@@ -83,7 +83,7 @@ fn test_parse_alternative_verbatim_interpolated_string() {
 #[test]
 fn test_parse_interpolated_string_with_multiple_expressions() {
     let code = r#"$"Hello {firstName} {lastName}!""#;
-    let result = parse_interpolated_string_test(code);
+    let result = parse_interpolated_string_test(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse interpolated string with multiple expressions: {:?}",
@@ -100,7 +100,7 @@ fn test_parse_interpolated_string_with_multiple_expressions() {
 #[test]
 fn test_parse_interpolated_string_with_format_specifier() {
     let code = r#"$"Price: {price:F2}""#;
-    let result = parse_interpolated_string_test(code);
+    let result = parse_interpolated_string_test(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse interpolated string with format specifier: {:?}",
@@ -124,7 +124,7 @@ fn test_parse_interpolated_string_with_format_specifier() {
 #[test]
 fn test_parse_interpolated_string_with_alignment() {
     let code = r#"$"Value: {value,10}""#;
-    let result = parse_interpolated_string_test(code);
+    let result = parse_interpolated_string_test(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse interpolated string with alignment: {:?}",
@@ -152,7 +152,7 @@ fn test_parse_interpolated_string_with_alignment() {
 #[test]
 fn test_parse_empty_interpolated_string() {
     let code = r#"$"""#;
-    let result = parse_interpolated_string_test(code);
+    let result = parse_interpolated_string_test(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse empty interpolated string: {:?}",
@@ -169,7 +169,7 @@ fn test_parse_empty_interpolated_string() {
 #[test]
 fn test_parse_verbatim_string() {
     let code = r#"@"C:\Path\To\File""#;
-    let result = parse_interpolated_string_test(code);
+    let result = parse_interpolated_string_test(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse verbatim string: {:?}",
@@ -186,7 +186,7 @@ fn test_parse_verbatim_string() {
 #[test]
 fn test_parse_raw_string() {
     let code = r#""""This is a raw string""""#;
-    let result = parse_interpolated_string_test(code);
+    let result = parse_interpolated_string_test(code.into());
     assert!(result.is_ok(), "Failed to parse raw string: {:?}", result);
 
     if let Ok(Literal::RawString(content)) = result {
@@ -199,7 +199,7 @@ fn test_parse_raw_string() {
 #[test]
 fn test_parse_regular_string_still_works() {
     let code = r#""Hello, World!""#;
-    let result = parse_interpolated_string_test(code);
+    let result = parse_interpolated_string_test(code.into());
     assert!(
         result.is_ok(),
         "Failed to parse regular string: {:?}",

@@ -9,7 +9,14 @@ use bsharp_syntax::statements::statement::Statement::{
     Block, DoWhile, For, If, Switch, Try, While,
 };
 use bsharp_syntax::types::Type;
-use bsharp_syntax::Identifier;
+
+fn ident_text(id: &bsharp_syntax::Identifier) -> String {
+    match id {
+        bsharp_syntax::Identifier::Simple(s) => s.clone(),
+        bsharp_syntax::Identifier::QualifiedIdentifier(parts) => parts.join("."),
+        bsharp_syntax::Identifier::OperatorOverrideIdentifier(_) => "operator".to_string(),
+    }
+}
 
 pub struct DependenciesPass;
 
@@ -40,7 +47,7 @@ fn add_class_dependencies(
     symbols: &SymbolIndex,
     graph: &mut DependencyGraph,
 ) {
-    let class_name = class.name.name.clone();
+    let class_name = ident_text(&class.name);
     let class_id = match resolve_first_id(symbols, &class_name) {
         Some(id) => id,
         None => return,
@@ -117,8 +124,8 @@ fn resolve_first_id(symbols: &SymbolIndex, name: &str) -> Option<SymbolId> {
 
 fn type_name(ty: &Type) -> Option<String> {
     match ty {
-        Type::Reference(id) => Some(id.name.clone()),
-        Type::Generic { base, .. } => Some(base.name.clone()),
+        Type::Reference(id) => Some(ident_text(id)),
+        Type::Generic { base, .. } => Some(ident_text(base)),
         _ => None,
     }
 }
@@ -236,23 +243,23 @@ fn invocation_target_name(inv: &InvocationExpression) -> Option<String> {
     // Try to produce a simple name for the callee (best-effort)
     match *inv.callee.as_ref() {
         Expression::MemberAccess(ref ma) => Some(member_access_path(ma)),
-        Expression::Variable(Identifier { ref name }) => Some(name.clone()),
+        Expression::Variable(ref id) => Some(ident_text(id)),
         _ => None,
     }
 }
 fn member_access_path(ma: &MemberAccessExpression) -> String {
     // Build a dotted path like obj.method
     let mut parts = Vec::new();
-    parts.push(ma.member.name.clone());
+    parts.push(ident_text(&ma.member));
     let mut current = &*ma.object;
     loop {
         match current {
             Expression::MemberAccess(inner) => {
-                parts.push(inner.member.name.clone());
+                parts.push(ident_text(&inner.member));
                 current = &inner.object;
             }
-            Expression::Variable(Identifier { name }) => {
-                parts.push(name.clone());
+            Expression::Variable(id) => {
+                parts.push(ident_text(id));
                 break;
             }
             _ => break,

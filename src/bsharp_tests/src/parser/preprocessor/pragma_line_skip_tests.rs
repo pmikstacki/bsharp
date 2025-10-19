@@ -31,7 +31,7 @@ class MyClass {
     let (_, cu) = result.unwrap();
     assert_eq!(cu.declarations.len(), 1);
     match &cu.declarations[0] {
-        TopLevelDeclaration::Class(c) => assert_eq!(c.name.name, "MyClass"),
+        TopLevelDeclaration::Class(c) => assert_eq!(c.name.to_string(), "MyClass"),
         _ => panic!("Expected class declaration"),
     }
 }
@@ -65,7 +65,7 @@ namespace Test {
     let (_, cu) = result.unwrap();
     assert_eq!(cu.declarations.len(), 1);
     match &cu.declarations[0] {
-        TopLevelDeclaration::Namespace(ns) => assert_eq!(ns.name.name, "Test"),
+        TopLevelDeclaration::Namespace(ns) => assert_eq!(ns.name.to_string(), "Test"),
         _ => panic!("Expected namespace declaration"),
     }
 }

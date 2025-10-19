@@ -10,6 +10,6 @@ fn parse_pattern(code: &str) -> Result<Pattern, String> {
 fn test_parse_pattern() {
     let code = "x is int";
     // let expected = ...;
-    // assert_eq!(parse_pattern(code), Ok(expected));
-    assert!(parse_pattern(code).is_err());
+    // assert_eq!(parse_pattern(code.into()), Ok(expected));
+    assert!(parse_pattern(code.into()).is_err());
 }

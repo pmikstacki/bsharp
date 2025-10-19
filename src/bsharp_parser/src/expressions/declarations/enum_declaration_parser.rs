@@ -7,24 +7,26 @@ use crate::parser::expressions::primary_expression_parser::parse_expression;
 use crate::parser::identifier_parser::parse_identifier;
 use crate::parser::types::type_parser::parse_type_expression;
 use crate::syntax::errors::BResult;
+use crate::syntax::span::Span;
 
-pub use syntax::declarations::*;
-pub use syntax::trivia::*;
 use crate::syntax::comment_parser::ws;
 use log::trace;
+use nom::sequence::delimited;
+use nom::Parser;
 use nom::{
     combinator::opt,
     multi::separated_list0,
-    sequence::{preceded, tuple},
+    sequence::preceded,
 };
-use nom::character::complete::satisfy;
 use nom_supreme::ParserExt;
-use nom_supreme::tag::complete::tag;
-use nom::sequence::delimited;
-use nom::Parser;
 use syntax::declarations::enum_declaration::EnumMember;
+pub use syntax::declarations::*;
 pub use syntax::expressions::expression::*;
 pub use syntax::statements::statement::*;
+pub use syntax::trivia::*;
+use crate::keywords::declaration_keywords::kw_enum;
+use crate::tokens::assignment::tok_assign;
+use crate::tokens::separators::{tok_colon, tok_comma};
 
 /// Parse a C# enum declaration.
 ///
@@ -41,43 +43,43 @@ pub use syntax::statements::statement::*;
 ///     Weekend = Saturday | Sunday
 /// }
 /// ```
-pub fn parse_enum_declaration<'a>(input: Span<'a>) -> BResult<'a, EnumDeclaration> {
+pub fn parse_enum_declaration(input: Span) -> BResult<EnumDeclaration> {
     trace!("parse_enum_declaration: input = \"{}\"", input);
     // Parse attributes and convert to the expected format
-    let (input, attribute_lists) = parse_attribute_lists(input)?;
+    let (input, attribute_lists) = parse_attribute_lists(input.into())?;
 
     // Parse modifiers (public, internal, etc.)
-    let (input, modifiers) = parse_modifiers(input)?;
+    let (input, modifiers) = parse_modifiers(input.into())?;
 
     // Parse "enum" keyword
-    let (input, _) = delimited(ws, tag("enum"), ws)
+    let (input, _) = delimited(ws, kw_enum(), ws)
         .context("enum keyword")
-        .parse(input)?;
+        .parse(input.into())?;
 
     // Parse enum name
     let (input, name) = delimited(ws, parse_identifier, ws)
         .context("enum name")
-        .parse(input)?;
+        .parse(input.into())?;
 
     // Parse optional underlying type (: byte, : int, etc.)
     let (input, underlying_type) = opt(
-        tuple((
-            delimited(ws, satisfy(|c| c == ':'), ws),
+        (
+            delimited(ws, tok_colon(), ws),
             delimited(ws, parse_type_expression, ws),
-        ))
-        .map(|(_, ty)| ty)
-        .context("enum underlying type"),
+        )
+            .map(|(_, ty)| ty)
+            .context("enum underlying type"),
     )
-    .parse(input)?;
+        .parse(input.into())?;
 
     // Parse the enum body
-    let (input, _) = parse_open_brace(input)?;
+    let (input, _) = parse_open_brace(input.into())?;
 
     // Parse enum members
-    let (input, members) = parse_enum_members(input)?;
+    let (input, members) = parse_enum_members(input.into())?;
 
     // Parse the closing brace
-    let (input, _) = parse_close_brace(input)?;
+    let (input, _) = parse_close_brace(input.into())?;
 
     Ok((
         input,
@@ -93,37 +95,37 @@ pub fn parse_enum_declaration<'a>(input: Span<'a>) -> BResult<'a, EnumDeclaratio
 
 /// Parse a list of enum members
 /// Example: "None = 0, Monday = 1, Tuesday = 2"
-fn parse_enum_members<'a>(input: Span<'a>) -> BResult<'a, Vec<EnumMember>> {
+fn parse_enum_members(input: Span) -> BResult<Vec<EnumMember>> {
     trace!("[DEBUG] parse_enum_members: input = {:?}", input);
     separated_list0(
-        |i| delimited(ws, satisfy(|c| c == ','), ws).parse(i),
+        |i| delimited(ws, tok_comma(), ws).parse(i),
         |i| delimited(ws, parse_enum_member, ws).parse(i),
     )
-    .context("enum members")
-    .parse(input)
+        .context("enum members")
+        .parse(input.into())
 }
 
 /// Parse a single enum member
 /// Example: "Monday = 1" or just "Monday"
-fn parse_enum_member<'a>(input: Span<'a>) -> BResult<'a, EnumMember> {
+fn parse_enum_member(input: Span) -> BResult<EnumMember> {
     trace!("[DEBUG] parse_enum_member: input = {:?}", input);
     // Parse attributes for enum member
-    let (input, attribute_lists) = parse_attribute_lists(input)?;
+    let (input, attribute_lists) = parse_attribute_lists(input.into())?;
     trace!("[DEBUG] parse_enum_member: parsed attributes");
 
     // Parse the member name
     let (input, name) = delimited(ws, parse_identifier, ws)
         .context("enum member name")
-        .parse(input)?;
-    trace!("[DEBUG] parse_enum_member: parsed name = {:?}", name.name);
+        .parse(input.into())?;
+    trace!("[DEBUG] parse_enum_member: parsed name = {:?}", name);
 
     // Parse optional value assignment
     let (input, value) = opt(preceded(
-        delimited(ws, satisfy(|c| c == '='), ws)
+        delimited(ws, tok_assign(), ws)
             .context("enum value assignment"),
         delimited(ws, parse_expression, ws),
     ))
-    .parse(input)?;
+        .parse(input.into())?;
 
     Ok((
         input,
@@ -134,4 +136,4 @@ fn parse_enum_member<'a>(input: Span<'a>) -> BResult<'a, EnumMember> {
         },
     ))
 }
-use crate::syntax::span::Span;
+
