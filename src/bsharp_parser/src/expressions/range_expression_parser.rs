@@ -11,8 +11,8 @@ use syntax::expressions::{Expression, RangeExpression};
 
 /// Helper for parse_range_expression_or_higher to specifically parse ranges starting with `..`
 fn parse_range_starting_with_dots(input: Span) -> BResult<Expression> {
-    let (input, _) = delimited(ws, (nom_char('.'), nom_char('.')), ws).parse(input.into())?;
-    let (input, end_operand) = opt(delimited(ws, parse_unary_expression_or_higher, ws)).parse(input.into())?;
+    let (input, _) = delimited(ws, (nom_char('.'), nom_char('.')), ws).parse(input)?;
+    let (input, end_operand) = opt(delimited(ws, parse_unary_expression_or_higher, ws)).parse(input)?;
     Ok((input, Expression::Range(Box::new(RangeExpression { start: None, end: end_operand.map(Box::new), is_inclusive: false }))))
 }
 
@@ -33,5 +33,5 @@ pub(crate) fn parse_range_expression_or_higher(input: Span) -> BResult<Expressio
             }
         }).context("range starting with operand or just operand"),
     ))
-        .parse(input.into())
+        .parse(input)
 }

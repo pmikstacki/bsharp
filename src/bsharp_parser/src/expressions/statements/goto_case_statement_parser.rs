@@ -35,7 +35,7 @@ pub fn parse_goto_case_statement(input: Span) -> BResult<Statement> {
         |(_, kind, _)| Statement::GotoCase(GotoCaseStatement { kind }),
     )
         .context("goto case statement")
-        .parse(input.into())
+        .parse(input)
 }
 use crate::syntax::span::Span;
 use crate::tokens::separators::tok_semicolon;

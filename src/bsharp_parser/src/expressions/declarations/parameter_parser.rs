@@ -20,7 +20,7 @@ use syntax::types::{Parameter, ParameterModifier};
 // Parse parameter modifiers (ref, out, in, params) and return the actual modifier
 fn parse_parameter_modifiers(input: Span) -> BResult<Option<ParameterModifier>> {
     // If 'scoped' is present, only ref/in/out are valid to follow for this feature set
-    if let Ok((after_scoped, _)) = delimited(ws, kw_scoped(), ws).parse(input.into()) {
+    if let Ok((after_scoped, _)) = delimited(ws, kw_scoped(), ws).parse(input) {
         let (rest, m) = alt((
             map(kw_ref(), |_| ParameterModifier::ScopedRef),
             map(kw_out(), |_| ParameterModifier::ScopedOut),
@@ -35,29 +35,29 @@ fn parse_parameter_modifiers(input: Span) -> BResult<Option<ParameterModifier>> 
         map(kw_in(), |_| ParameterModifier::In),
         map(kw_params(), |_| ParameterModifier::Params),
     )))
-        .parse(input.into())
+        .parse(input)
 }
 
 // Parse a single parameter
 pub fn parse_parameter(input: Span) -> BResult<Parameter> {
     // Optional attribute lists before modifiers
-    let (input, attribute_lists) = delimited(ws, parse_attribute_lists, ws).parse(input.into())?;
+    let (input, attribute_lists) = delimited(ws, parse_attribute_lists, ws).parse(input)?;
     let attributes = convert_attributes(attribute_lists);
 
     // Optional parameter modifier
-    let (input, modifier) = delimited(ws, parse_parameter_modifiers, ws).parse(input.into())?;
+    let (input, modifier) = delimited(ws, parse_parameter_modifiers, ws).parse(input)?;
     let (input, ty) = delimited(ws, parse_type_expression, ws)
         .context("parameter type")
-        .parse(input.into())?;
+        .parse(input)?;
     let (input, name) = delimited(ws, parse_identifier, ws)
         .context("parameter name")
-        .parse(input.into())?;
+        .parse(input)?;
     // Optional default value: = expression
     let (input, default_value) = opt(preceded(
         |i| delimited(ws, tok_assign(), ws).parse(i),
         |i| delimited(ws, parse_expression, ws).parse(i),
     ))
-        .parse(input.into())?;
+        .parse(input)?;
 
     Ok((
         input,
@@ -84,7 +84,7 @@ pub fn parse_parameter_list(input: Span) -> BResult<Vec<Parameter>> {
         true,
     )
         .context("parameter list")
-        .parse(input.into())
+        .parse(input)
 }
 use crate::syntax::span::Span;
 use crate::tokens::assignment::tok_assign;

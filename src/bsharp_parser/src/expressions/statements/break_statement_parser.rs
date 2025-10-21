@@ -22,7 +22,7 @@ pub fn parse_break_statement(input: Span) -> BResult<Statement> {
         |_| Statement::Break(BreakStatement),
     )
         .context("break statement")
-        .parse(input.into())
+        .parse(input)
 }
 use crate::syntax::span::Span;
 use crate::tokens::separators::tok_semicolon;

@@ -35,7 +35,7 @@ When encountering malformed syntax, the parser attempts to skip to recovery poin
 For type declarations (classes, structs, records, interfaces), malformed members are recovered using a lightweight, scope-aware helper:
 
 - Helper: `skip_to_member_boundary_top_level()`
-- Location: `src/parser/expressions/declarations/type_declaration_helpers.rs`
+- Location: `src/bsharp_parser/src/expressions/declarations/type_declaration_helpers.rs`
 
 Contract:
 - Only use from within a type body when a member parser fails.
@@ -117,7 +117,7 @@ context("method declaration", parse_method_body)(input.into())
 
 This provides clear error messages like "expected method body in method declaration context".
 
-**Helper Location:** `src/syntax/parser_helpers.rs`
+**Helper Location:** `src/bsharp_parser/src/helpers/`
 
 ### 3. Graceful Degradation
 

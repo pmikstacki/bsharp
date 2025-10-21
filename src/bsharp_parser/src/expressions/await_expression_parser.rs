@@ -27,24 +27,24 @@ pub fn parse_await_expression(input: Span) -> BResult<Expression> {
         },
     )
         .context("await expression")
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Parse various types of awaitable expressions with fallback
 fn parse_awaitable_expression(input: Span) -> BResult<Expression> {
-    if let Ok(r) = parse_complex_method_chain(input.into()) { return Ok(r); }
-    parse_simple_awaitable(input.into())
+    if let Ok(r) = parse_complex_method_chain(input) { return Ok(r); }
+    parse_simple_awaitable(input)
 }
 
 /// Parse complex method chains like _userRepository.GetByEmailAsync(email)
 fn parse_complex_method_chain(input: Span) -> BResult<Expression> {
     // Import the main expression syntax to handle the full complexity
-    parse_expression.parse(input.into())
+    parse_expression.parse(input)
 }
 
 /// Parse simple awaitable expressions as fallback
 fn parse_simple_awaitable(input: Span) -> BResult<Expression> {
     // Parse identifier or simple expressions
     use crate::parser::identifier_parser::parse_identifier;
-    map(parse_identifier, Expression::Variable).parse(input.into())
+    map(parse_identifier, Expression::Variable).parse(input)
 }

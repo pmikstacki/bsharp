@@ -23,11 +23,11 @@ where
 {
     move |mut input: Span<'a>| {
         // parse first operand
-        let (mut i, mut left) = next(input.into())?;
+        let (mut i, mut left) = next(input)?;
         // loop for (op next)*
         loop {
             match op(i) {
-                Ok((i_after_op, bop)) => match cut(|j| next(j)).parse(i_after_op) {
+                Ok((i_after_op, bop)) => match cut(&mut next).parse(i_after_op) {
                     Ok((i_after_rhs, right)) => {
                         left = Expression::Binary {
                             left: Box::new(left),

@@ -51,7 +51,7 @@ pub fn parse_top_level_statements(input: Span) -> BResult<Vec<Statement>> {
     }
     )
         .context("top-level statements")
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Parse a single top-level statement
@@ -59,6 +59,6 @@ pub fn parse_top_level_statements(input: Span) -> BResult<Vec<Statement>> {
 pub fn parse_top_level_statement(input: Span) -> BResult<Statement> {
     parse_statement_ws
         .context("top-level statement")
-        .parse(input.into())
+        .parse(input)
 }
 use crate::syntax::span::Span;

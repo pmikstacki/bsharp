@@ -27,7 +27,7 @@ pub fn parse_boolean(input: Span) -> BResult<Literal> {
         map(kw_false(), |_| Literal::Boolean(false)),
     ))
         .context("boolean literal (expected 'true' or 'false')")
-        .parse(input.into())
+        .parse(input)
 }
 
 // Parse a raw interpolated string literal: $""" ... {expr} ... """ or with multiple $ and N quotes
@@ -116,7 +116,7 @@ pub fn parse_raw_interpolated_string<'a>(input: Span<'a>) -> BResult<'a, Literal
         Err(nom::Err::Error(make_error(i, ErrorKind::Tag)))
     })
         .context("raw interpolated string literal (expected $\"\"\"...\"\"\" with {expr})")
-        .parse(input.into())
+        .parse(input)
 }
 
 fn parse_raw_interpolation_core(core: &str) -> Option<InterpolatedStringPart> {
@@ -314,7 +314,7 @@ pub fn parse_integer<'a>(input: Span<'a>) -> BResult<'a, Literal> {
         ),
     ))
         .context("integer literal (decimal, 0x..., or 0b..., underscores allowed)")
-        .parse(input.into())
+        .parse(input)
 }
 
 // Parse a floating-point literal with underscores and exponent: 1.23, .5, 1e10, 1_2.3_4e-5
@@ -363,7 +363,7 @@ pub fn parse_float<'a>(input: Span<'a>) -> BResult<'a, Literal> {
         }
     })
         .context("floating-point literal (decimal with optional exponent, underscores allowed)")
-        .parse(input.into())
+        .parse(input)
 }
 
 // Parse a decimal literal like 123m or 1.23m (no exponent). Returns Decimal with normalized content.
@@ -380,7 +380,7 @@ pub fn parse_decimal_literal<'a>(input: Span<'a>) -> BResult<'a, Literal> {
         Ok((rest, Literal::Decimal(strip_underscores(num))))
     })
         .context("decimal literal")
-        .parse(input.into())
+        .parse(input)
 }
 
 // Parse a string literal (e.g., "hello", "with \" escape")
@@ -418,7 +418,7 @@ pub fn parse_string<'a>(input: Span<'a>) -> BResult<'a, Literal> {
         Ok((rest_after_quote, Literal::String(content)))
     })
         .context("string literal")
-        .parse(input.into())
+        .parse(input)
 }
 
 // Parse a verbatim string literal (@"...")
@@ -450,7 +450,7 @@ pub fn parse_verbatim_string<'a>(input: Span<'a>) -> BResult<'a, Literal> {
         Err(nom::Err::Error(make_error(i, ErrorKind::Tag)))
     })
         .context("verbatim string literal")
-        .parse(input.into())
+        .parse(input)
 }
 
 // Parse a raw string literal ("""text""")
@@ -477,7 +477,7 @@ pub fn parse_raw_string<'a>(input: Span<'a>) -> BResult<'a, Literal> {
         Err(nom::Err::Error(make_error(i, ErrorKind::Tag)))
     })
         .context("raw string literal")
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Enhanced interpolated string syntax using robust Nom combinators
@@ -490,14 +490,14 @@ pub fn parse_interpolated_string<'a>(input: Span<'a>) -> BResult<'a, Literal> {
             map(tok_at_dollar(), |_| true),
             map(tok_dollar(), |_| false),
         ))
-            .parse(input.into())?;
+            .parse(input)?;
 
         let (input, parts) = delimited(
             tok_double_quote(),
             enhanced_interpolated_parts,
             cut(tok_double_quote()), // Use cut for better error reporting
         )
-            .parse(input.into())?;
+            .parse(input)?;
 
         Ok((
             input,
@@ -505,7 +505,7 @@ pub fn parse_interpolated_string<'a>(input: Span<'a>) -> BResult<'a, Literal> {
         ))
     })
         .context("interpolated string literal")
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Enhanced parsing of interpolated string parts with better error recovery
@@ -515,7 +515,7 @@ fn enhanced_interpolated_parts(input: Span) -> BResult<Vec<InterpolatedStringPar
         enhanced_interpolated_text(i)
     })
         .context("interpolated string parts")
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Enhanced text part parsing with better handling of edge cases
@@ -525,11 +525,11 @@ fn enhanced_interpolated_text<'a>(input: Span<'a>) -> BResult<'a, InterpolatedSt
         |s: Span<'a>| InterpolatedStringPart::Text(s.fragment().to_string()),
     )
         .context("interpolated string text")
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Enhanced interpolation parsing with graceful fallback
-fn enhanced_interpolation<'a>(input: Span<'a>) -> BResult<'a, InterpolatedStringPart> {
+fn enhanced_interpolation(input: Span<'_>) -> BResult<'_, InterpolatedStringPart> {
     map(
         delimited(
             tok_l_brace(),
@@ -543,19 +543,17 @@ fn enhanced_interpolation<'a>(input: Span<'a>) -> BResult<'a, InterpolatedString
         |(expression, alignment, format_string)| InterpolatedStringPart::Interpolation {
             expression,
             alignment,
-            format_string: format_string.map(|s: Span<'a>| s.fragment().to_string()),
+            format_string: format_string.map(|s| s.fragment().to_string()),
         },
     )
         .context("string interpolation")
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Robust expression parsing within interpolation with fallback
 fn robust_expression_in_interpolation(input: Span) -> BResult<Expression> {
-    let res = parse_expression(input.into()).or_else(|_| fallback_simple_expression(input.into()));
+    let res = parse_expression(input).or_else(|_| fallback_simple_expression(input));
     res
-        .map_err(|e| e)
-        .map(|r| r)
 }
 
 /// Fallback syntax for simple expressions when complex parsing fails
@@ -565,7 +563,7 @@ fn fallback_simple_expression(input: Span) -> BResult<Expression> {
 
     map(parse_identifier, Expression::Variable)
         .context("simple expression")
-        .parse(input.into())
+        .parse(input)
 }
 
 // Parse a char literal with escapes: '\\n', '\\t', '\\xFF', '\\u1234', '\\U0001F642'
@@ -627,7 +625,7 @@ pub fn parse_char_literal(input: Span) -> BResult<Literal> {
         Literal::Char,
     )
         .context("char literal")
-        .parse(input.into())
+        .parse(input)
 }
 
 // Main literal syntax: tries boolean, integer, float, string, then char
@@ -650,7 +648,7 @@ pub fn parse_literal(input: Span) -> BResult<Literal> {
         // Add other literal types here (null, etc.) if needed
     )), ws).parse(i))
         .context("literal")
-        .parse(input.into())
+        .parse(input)
 }
 
 // Helper: trim multi-line raw string content according to trailing indentation

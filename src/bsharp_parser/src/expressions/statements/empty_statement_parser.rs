@@ -10,7 +10,7 @@ use syntax::statements::statement::Statement;
 pub fn parse_empty_statement(input: Span) -> BResult<Statement> {
     map(delimited(ws, tok_semicolon(), ws), |_| Statement::Empty)
         .context("empty statement")
-        .parse(input.into())
+        .parse(input)
 }
 use crate::syntax::span::Span;
 use crate::tokens::separators::tok_semicolon;

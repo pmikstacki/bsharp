@@ -152,3 +152,9 @@ The parser uses a multi-layered error handling approach:
 4. **User-Friendly Messages**: Clear, actionable error messages for developers
 
 This design makes the parser robust and helpful for development and debugging. Code generation/compilation is out of scope for now; the parser and analysis crates form the current focus of the toolkit.
+
+---
+
+## See Also
+
+- [Keywords and Tokens](./keywords-and-tokens.md) – keyword helpers, word boundaries, trivia handling

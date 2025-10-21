@@ -33,7 +33,7 @@ fn parse_local_function_body(input: Span) -> BResult<Statement> {
         },
     ))
         .context("local function body")
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Parse a local function statement
@@ -86,7 +86,7 @@ pub fn parse_local_function_statement(input: Span) -> BResult<Statement> {
         },
     )
         .context("local function statement")
-        .parse(input.into())
+        .parse(input)
 }
 use crate::syntax::span::Span;
 use crate::tokens::lambda::tok_lambda;

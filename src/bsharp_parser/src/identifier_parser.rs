@@ -12,7 +12,7 @@ use nom::{
 use syntax::Identifier;
 
 // Parse a C# identifier (letters, digits, underscore, but must start with letter or underscore)
-pub fn parse_identifier<'a>(input: Span<'a>) -> BResult<'a, Identifier> {
+pub fn parse_identifier(input: Span<'_>) -> BResult<'_, Identifier> {
     (|input| {
         // C# identifiers can start with a letter or underscore, followed by letters, digits, or underscores.
         let identifier_start = alt((alpha1, recognize(nom_char('_'))));
@@ -22,7 +22,7 @@ pub fn parse_identifier<'a>(input: Span<'a>) -> BResult<'a, Identifier> {
         ));
         map_opt(
             nom::sequence::delimited(ws, identifier_chars, ws),
-            |span: Span<'a>| {
+            |span: Span<'_>| {
                 let s = span.fragment();
                 if !is_keyword(s) {
                     Some(Identifier::Simple(s.to_string()))

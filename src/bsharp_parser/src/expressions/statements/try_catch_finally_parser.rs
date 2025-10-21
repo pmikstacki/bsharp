@@ -68,7 +68,7 @@ pub fn parse_catch_clause(input: Span) -> BResult<CatchClause> {
         },
     )
         .context("catch clause")
-        .parse(input.into())
+        .parse(input)
 }
 
 // Helper syntax for the finally clause, following Roslyn's structure
@@ -82,7 +82,7 @@ pub fn parse_finally_clause(input: Span) -> BResult<FinallyClause> {
         |(_finally_kw, block_stmt)| FinallyClause { block: Box::new(block_stmt) },
     )
         .context("finally clause")
-        .parse(input.into())
+        .parse(input)
 }
 
 // Parse a try-catch-finally statement, following Roslyn's structure
@@ -106,7 +106,7 @@ pub fn parse_try_statement(input: Span) -> BResult<Statement> {
         },
     )
         .context("try statement")
-        .parse(input.into())
+        .parse(input)
 }
 use crate::syntax::span::Span;
 use crate::tokens::delimiters::{tok_l_paren, tok_r_paren};

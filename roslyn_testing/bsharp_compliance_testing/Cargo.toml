@@ -1,0 +1,10 @@
+[package]
+name = "bsharp_compliance_testing"
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+	bsharp_parser = { path = "../../src/bsharp_parser" }
+	bsharp_syntax = { path = "../../src/bsharp_syntax" }

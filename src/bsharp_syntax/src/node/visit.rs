@@ -15,7 +15,7 @@ impl<T: AstNode> FieldVisit for T {
 
 // No-op visitors for common scalar field types used in the AST
 impl FieldVisit for String {}
-impl<'a> FieldVisit for &'a str {}
+impl FieldVisit for &str {}
 impl FieldVisit for bool {}
 impl FieldVisit for char {}
 impl FieldVisit for u8 {}

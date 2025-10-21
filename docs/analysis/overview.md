@@ -86,7 +86,8 @@ Use the framework pipeline with registered passes. Per-file runs populate typed 
 ```rust
 use bsharp_analysis::framework::pipeline::AnalyzerPipeline;
 use bsharp_analysis::framework::session::AnalysisSession;
-use bsharp_analysis::{AnalysisContext, AnalysisReport};
+use bsharp_analysis::context::AnalysisContext;
+use bsharp_analysis::report::AnalysisReport;
 use bsharp_parser::facade::Parser;
 
 let parser = Parser::new();
@@ -120,39 +121,9 @@ for d in &report.diagnostics.diagnostics {
 }
 ```
 
-## Analysis Traits and Interfaces
+## Analysis Registry and Passes
 
-### Core Analysis Trait
-
-All analyzers implement a common interface:
-
-```rust
-pub trait Analyzer<T> {
-    type Output;
-    
-    fn analyze(&self, input: &T) -> Self::Output;
-    fn name(&self) -> &'static str;
-    fn version(&self) -> &'static str;
-}
-```
-
-### Specialized Analysis Traits
-
-Domain-specific traits for different analysis types:
-
-```rust
-pub trait MetricsAnalyzer {
-    fn calculate_complexity(&self, method: &MethodDeclaration) -> ComplexityMetrics;
-    fn calculate_size_metrics(&self, class: &ClassDeclaration) -> SizeMetrics;
-    fn calculate_maintainability(&self, compilation_unit: &CompilationUnit) -> MaintainabilityMetrics;
-}
-
-pub trait QualityAnalyzer {
-    fn detect_code_smells(&self, ast: &CompilationUnit) -> Vec<CodeSmell>;
-    fn validate_naming_conventions(&self, ast: &CompilationUnit) -> Vec<NamingViolation>;
-    fn check_best_practices(&self, ast: &CompilationUnit) -> Vec<BestPracticeViolation>;
-}
-```
+Analyses are implemented as `AnalyzerPass` implementations registered in an `AnalyzerRegistry` and executed by the `AnalyzerPipeline`. Local rulesets and semantic rulesets run alongside passes based on `Phase`.
 
 ## Configuration and Customization
 
@@ -202,38 +173,24 @@ let custom_report = analyzer.analyze(&ast).format_with(custom_formatter);
 
 ### CLI Integration
 
-Analysis capabilities are exposed through the CLI:
-
-```bash
-# Basic metrics
-bsharp analyze metrics input.cs
-
-# Quality analysis
-bsharp analyze quality input.cs --config quality-config.json
-
-# Dependency analysis
-bsharp analyze dependencies input.cs --output dependencies.json
-```
+Analysis capabilities are exposed through the `analyze` command and configured via options (format, config, include/exclude, enable/disable passes and rulesets, severity overrides). See `docs/cli/analyze.md` for details.
 
 ### Programmatic Usage
 
-Direct integration in other tools:
+Direct integration in tools typically runs the pipeline and pulls artifacts from the session:
 
 ```rust
-use bsharp::analysis::{MetricsAnalyzer, QualityAnalyzer};
+use bsharp_analysis::context::AnalysisContext;
+use bsharp_analysis::framework::{AnalyzerPipeline, AnalysisSession};
+use bsharp_analysis::metrics::AstAnalysis;
+use bsharp_parser::facade::Parser;
 
-fn analyze_project(files: Vec<&str>) -> AnalysisResults {
-    let mut results = AnalysisResults::new();
-    
-    for file in files {
-        let ast = parse_file(file)?;
-        let metrics = MetricsAnalyzer::new().analyze(&ast);
-        let quality = QualityAnalyzer::new().analyze(&ast);
-        
-        results.add_file_analysis(file, metrics, quality);
-    }
-    
-    results
+let source = fs::read_to_string(path)?;
+let (cu, spans) = Parser::new().parse_with_spans(&source)?;
+let mut session = AnalysisSession::new(AnalysisContext::new(path, &source), spans);
+AnalyzerPipeline::run_with_defaults(&cu, &mut session);
+if let Some(ast) = session.artifacts.get::<AstAnalysis>() {
+    println!("methods={} complexity={}", ast.total_methods, ast.cyclomatic_complexity);
 }
 ```
 

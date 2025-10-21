@@ -23,6 +23,6 @@ pub fn parse_unsafe_statement(input: Span) -> BResult<Statement> {
         },
     )
         .context("unsafe statement")
-        .parse(input.into())
+        .parse(input)
 }
 use crate::syntax::span::Span;

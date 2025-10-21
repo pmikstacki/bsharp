@@ -21,11 +21,11 @@ use syntax::declarations::GlobalAttribute;
 /// - `[module: System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0161")]`
 pub fn parse_global_attribute(input: Span) -> BResult<GlobalAttribute> {
     // [target: Attribute]
-    let (input, _) = delimited(ws, satisfy(|c| c == '['), ws).parse(input.into())?;
-    let (input, target) = parse_attribute_target(input.into())?;
-    let (input, _) = delimited(ws, tok_colon(), ws).parse(input.into())?;
-    let (input, attribute) = delimited(ws, parse_attribute, ws).parse(input.into())?;
-    let (input, _) = delimited(ws, satisfy(|c| c == ']'), ws).parse(input.into())?;
+    let (input, _) = delimited(ws, satisfy(|c| c == '['), ws).parse(input)?;
+    let (input, target) = parse_attribute_target(input)?;
+    let (input, _) = delimited(ws, tok_colon(), ws).parse(input)?;
+    let (input, attribute) = delimited(ws, parse_attribute, ws).parse(input)?;
+    let (input, _) = delimited(ws, satisfy(|c| c == ']'), ws).parse(input)?;
 
     Ok((input, GlobalAttribute { target, attribute }))
 }
@@ -44,7 +44,7 @@ fn parse_attribute_target(input: Span) -> BResult<Identifier> {
         delimited(ws, crate::parser::identifier_parser::parse_identifier, ws),
     ))
     .context("attribute target")
-    .parse(input.into())
+    .parse(input)
 }
 
 /// Parse multiple global attributes that might appear at the top of a file
@@ -57,7 +57,7 @@ fn parse_attribute_target(input: Span) -> BResult<Identifier> {
 pub fn parse_global_attributes(input: Span) -> BResult<Vec<GlobalAttribute>> {
     // According to Nom docs, many0 should handle failure gracefully
     // First skip any leading whitespace
-    let (mut remaining, _) = ws(input.into())?;
+    let (mut remaining, _) = ws(input)?;
 
     let mut attributes = Vec::new();
 

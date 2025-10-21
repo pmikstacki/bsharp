@@ -25,7 +25,7 @@ pub fn parse_sizeof_expression(input: Span) -> BResult<Expression> {
         |target_type| Expression::Sizeof(Box::new(SizeofExpression { target_type })),
     )
         .context("sizeof expression")
-        .parse(input.into())
+        .parse(input)
 }
 use crate::syntax::span::Span;
 use crate::tokens::delimiters::{tok_l_paren, tok_r_paren};

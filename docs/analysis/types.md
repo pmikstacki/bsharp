@@ -6,7 +6,7 @@ The type analysis system provides insights into type usage, inheritance hierarch
 
 ## Overview
 
-**Location:** `src/analysis/types/`
+**Status:** Planned (module not implemented yet)
 
 Type analysis tracks:
 - Type definitions and their relationships
@@ -316,19 +316,7 @@ warning[TYPE001]: Possible null reference
 
 ### Integration
 
-**Phase:** Semantic (after symbol indexing)
-
-```rust
-impl AnalyzerPass for TypeAnalysisPass {
-    fn id(&self) -> &'static str { "type_analysis" }
-    fn phase(&self) -> Phase { Phase::Semantic }
-    
-    fn run(&self, cu: &CompilationUnit, session: &mut AnalysisSession) {
-        let type_info = analyze_types(cu, &session.artifacts.symbols);
-        session.artifacts.type_info = Some(type_info);
-    }
-}
-```
+Type analysis is not part of the default registry yet. The intended phase is Semantic (after symbol indexing and global artifacts). This page outlines the planned scope.
 
 ---
 
@@ -336,37 +324,11 @@ impl AnalyzerPass for TypeAnalysisPass {
 
 ### Analyzing Type Hierarchy
 
-```rust
-use bsharp::analysis::types::InheritanceHierarchy;
-
-let hierarchy = InheritanceHierarchy::build(cu);
-
-// Get base type
-if let Some(base) = hierarchy.get_base_type(type_id) {
-    println!("Base type: {:?}", base);
-}
-
-// Get all derived types
-let derived = hierarchy.get_derived_types(type_id);
-println!("Derived types: {:?}", derived);
-
-// Calculate inheritance depth
-let depth = hierarchy.inheritance_depth(type_id);
-println!("Inheritance depth: {}", depth);
-```
+Planned APIs will expose hierarchy queries once implemented.
 
 ### Finding Generic Instantiations
 
-```rust
-use bsharp::analysis::types::find_generic_instantiations;
-
-let instantiations = find_generic_instantiations(cu);
-
-for inst in instantiations {
-    println!("Generic type: {:?}", inst.generic_type);
-    println!("Type arguments: {:?}", inst.type_arguments);
-}
-```
+Planned helper(s) to enumerate generic instantiations will be documented here after implementation.
 
 ---
 
@@ -424,6 +386,6 @@ for inst in instantiations {
 
 ## References
 
-- **Implementation:** `src/analysis/types/`
-- **Tests:** `tests/analysis/types/`
-- **Type System:** `src/syntax/nodes/types/`
+- **Implementation:** Planned
+- **Tests:** Planned (under `src/bsharp_tests/src/analysis/types/`)
+- **Related:** `docs/analysis/dependencies.md`, `docs/parser/ast-structure.md`

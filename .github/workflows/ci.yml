@@ -29,3 +29,42 @@ jobs:
 
       - name: Tests
         run: cargo test --all --all-features
+
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (full history for gitinfo)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Rust (stable)
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@v2
+        with:
+          cache-on-failure: true
+
+      - name: Install mdBook and plugins
+        run: |
+          cargo install mdbook --locked
+          cargo install mdbook-mermaid --locked
+          cargo install mdbook-linkcheck --locked
+          cargo install mdbook-admonish --locked
+          cargo install mdbook-pagetoc --locked
+          cargo install mdbook-gitinfo --locked
+
+      - name: Install admonish assets
+        run: mdbook-admonish install .
+        working-directory: docs
+
+      - name: Build docs (mdBook)
+        run: mdbook build
+        working-directory: docs
+
+      - name: Upload book artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: mdbook
+          path: docs/book

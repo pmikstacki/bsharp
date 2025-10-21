@@ -1,12 +1,12 @@
 use anyhow::{Context, Result};
-use log::{info, warn};
-use std::fs;
-use std::path::{Path, PathBuf};
-use clap::{arg, Args, ValueEnum};
 use bsharp_parser::bsharp::parse_csharp_source_strict;
 use bsharp_parser::syntax::span::Span;
 use bsharp_syntax::{FormatOptions, Formatter};
-use serde::ser;
+use clap::{arg, Args, ValueEnum};
+use log::{info, warn};
+use std::env;
+use std::fs;
+use std::path::{Path, PathBuf};
 
 #[derive(Args, Debug, Clone)]
 pub struct FormatArgs {
@@ -33,20 +33,29 @@ pub struct FormatArgs {
     ///Trim trailing whitespace
     #[arg(short, long)]
     pub trim_trailing_whitespace: Option<bool>,
+
+    /// Enable emission trace (JSONL)
+    #[arg(long, action=clap::ArgAction::SetTrue)]
+    pub emit_trace: bool,
+
+    /// Path to trace JSONL file (defaults to stdout if omitted)
+    #[arg(long)]
+    pub emit_trace_file: Option<PathBuf>,
+
+    /// Always print formatted output for a single file
+    #[arg(long, action=clap::ArgAction::SetTrue)]
+    pub print: bool,
 }
 
 #[derive(ValueEnum, Clone, Default, Debug)]
-#[clap(rename_all="lowercase")]
+#[clap(rename_all = "lowercase")]
 pub enum NewlineMode {
     #[default]
     LF,
-    CRLF
+    CRLF,
 }
 
-
-pub fn execute(
-    args: Box<FormatArgs>
-) -> Result<()> {
+pub fn execute(args: FormatArgs) -> Result<()> {
     let mut files = Vec::new();
     collect_cs_files(&args.input, &mut files)?;
 
@@ -73,22 +82,38 @@ pub fn execute(
         };
 
         // Build options per-file (newline preservation)
-        let mut opts = FormatOptions::default();
-        opts.max_consecutive_blank_lines = args.max_consecutive_blank_lines.unwrap_or(1);
-        opts.blank_line_between_members = args.blank_line_between_members.unwrap_or(true);
-        opts.trim_trailing_whitespace = args.trim_trailing_whitespace.unwrap_or(true);
-        let newline_mode =  &args.newline_mode.as_ref().unwrap_or(&NewlineMode::LF);
+        let mut opts = FormatOptions {
+            max_consecutive_blank_lines: args.max_consecutive_blank_lines.unwrap_or(1),
+            blank_line_between_members: args.blank_line_between_members.unwrap_or(true),
+            trim_trailing_whitespace: args.trim_trailing_whitespace.unwrap_or(true),
+            ..Default::default()
+        };
+        let newline_mode = &args.newline_mode.as_ref().unwrap_or(&NewlineMode::LF);
         opts.newline = match newline_mode {
             NewlineMode::LF => "\n",
             NewlineMode::CRLF => "\r\n",
-            _ => "\n"
         };
+
+        // Emission tracing toggles: CLI flag wins, else env var BSHARP_EMIT_TRACE
+        let env_trace = env::var("BSHARP_EMIT_TRACE")
+            .ok()
+            .map(|v| matches!(v.as_str(), "1" | "true" | "TRUE" | "yes"))
+            .unwrap_or(false);
+        let emit_trace = args.emit_trace || env_trace;
+        opts.instrument_emission = emit_trace;
+        opts.trace_file = args.emit_trace_file.clone();
+        opts.current_file = Some(file.clone());
 
         let fmt = Formatter::new(opts);
         // Format using syntax emitters + normalization
         let formatted = fmt
             .format_compilation_unit(&cu)
             .map_err(|_e| anyhow::anyhow!("Failed to format: {}", file.display()))?;
+
+        if args.print && is_single_file {
+            print!("{}", formatted);
+            return Ok(());
+        }
 
         if formatted != src {
             if args.write.unwrap_or(true) {
@@ -98,7 +123,7 @@ pub fn execute(
             } else {
                 // If input is a single file and write=false and not --check, print to stdout once then return
                 if is_single_file {
-                    println!("{}", formatted);
+                    print!("{}", formatted);
                     return Ok(());
                 }
             }
@@ -113,17 +138,23 @@ pub fn execute(
             "checked {} file(s), {} would change{}",
             processed,
             changed,
-            if parse_failed > 0 { format!(", {} parse failed", parse_failed) } else { String::new() }
+            if parse_failed > 0 {
+                format!(", {} parse failed", parse_failed)
+            } else {
+                String::new()
+            }
         );
-        if changed > 0 { std::process::exit(2); }
+        if changed > 0 {
+            std::process::exit(2);
+        }
     }
 
     Ok(())
 }
 
 fn collect_cs_files(path: &Path, out: &mut Vec<PathBuf>) -> Result<()> {
-    let meta = fs::metadata(path)
-        .with_context(|| format!("Failed to stat path: {}", path.display()))?;
+    let meta =
+        fs::metadata(path).with_context(|| format!("Failed to stat path: {}", path.display()))?;
     if meta.is_file() {
         if path
             .extension()
@@ -137,8 +168,8 @@ fn collect_cs_files(path: &Path, out: &mut Vec<PathBuf>) -> Result<()> {
     }
 
     // Directory: walk recursively
-    for entry in fs::read_dir(path)
-        .with_context(|| format!("Failed to read dir: {}", path.display()))?
+    for entry in
+        fs::read_dir(path).with_context(|| format!("Failed to read dir: {}", path.display()))?
     {
         let entry = entry?;
         let p = entry.path();

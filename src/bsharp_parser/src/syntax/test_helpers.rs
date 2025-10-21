@@ -8,8 +8,8 @@ pub fn parse_all<'a, O, P>(mut parser: P, input: Span<'a>) -> BResult<'a, O>
 where
     P: FnMut(Span<'a>) -> BResult<'a, O>,
 {
-    let guard = brace_tracker::install(input.into());
-    let parse_result = parser(input.into());
+    let guard = brace_tracker::install(input);
+    let parse_result = parser(input);
     let status = guard.finish();
 
     match parse_result {

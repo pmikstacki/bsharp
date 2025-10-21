@@ -63,7 +63,7 @@ fn parse_declaration_header_span<'a, P>(
 where
     P: nom::Parser<Span<'a>, Output = &'a str, Error = ErrorTree<Span<'a>>>,
 {
-    let (i, attributes) = parse_attribute_lists.parse(input.into())?;
+    let (i, attributes) = parse_attribute_lists.parse(input)?;
     let (i, modifiers) = parse_modifiers.parse(i)?;
     let (i, _) = delimited(ws, |j| keyword.parse(j), ws).parse(i)?;
     let (i, identifier) = parse_identifier.parse(i)?;
@@ -93,7 +93,7 @@ pub fn parse_struct_declaration_span<'a>(input: Span<'a>) -> BResult<'a, StructD
     // Optional where-clauses (for generic structs)
     let (input, constraints) =
         opt(|i| delimited(ws, parse_type_parameter_constraints_clauses, ws).parse(i))
-            .parse(input.into())?;
+            .parse(input)?;
     // Parse the struct body
     let (input, members) = parse_class_body_span(input, parse_struct_member)?;
 
@@ -123,7 +123,7 @@ pub fn parse_interface_declaration<'a>(input: Span<'a>) -> BResult<'a, Interface
     // Optional where-clauses
     let (input, constraints) =
         opt(|i| delimited(ws, parse_type_parameter_constraints_clauses, ws).parse(i))
-            .parse(input.into())?;
+            .parse(input)?;
     // Body members
     let (input, members) = parse_class_body_span(input, parse_interface_member)?;
 
@@ -147,19 +147,19 @@ pub fn parse_interface_declaration<'a>(input: Span<'a>) -> BResult<'a, Interface
 /// Public wrapper to allow span-aware tools to parse a single class member.
 /// This preserves the internal member parsing order and recovery behavior.
 pub fn parse_class_member_for_spans(input: Span) -> BResult<ClassBodyDeclaration> {
-    parse_class_member(input.into())
+    parse_class_member(input)
 }
 
 /// Public wrapper to allow span-aware tools to parse a single struct member.
 /// Mirrors `parse_struct_member` while keeping its internal visibility.
 pub fn parse_struct_member_for_spans(input: Span) -> BResult<StructBodyDeclaration> {
-    parse_struct_member(input.into())
+    parse_struct_member(input)
 }
 
 /// Public wrapper to allow span-aware tools to parse a single interface member.
 /// Mirrors `parse_interface_member` while keeping its internal visibility.
 pub fn parse_interface_member_for_spans(input: Span) -> BResult<InterfaceBodyDeclaration> {
-    parse_interface_member(input.into())
+    parse_interface_member(input)
 }
 
 /// Common structure holding the parts of a declaration header for any type
@@ -175,7 +175,6 @@ pub struct DeclarationHeader<'a> {
 
 /// Parse the common parts of a declaration header (attributes, modifiers, identifier, type params, base types)
 /// Removed legacy &str-based helper
-
 /// Parse a type declaration (class, struct, interface, record, enum)
 pub fn parse_type_declaration(input: Span) -> BResult<TypeDeclaration> {
     alt((
@@ -186,7 +185,7 @@ pub fn parse_type_declaration(input: Span) -> BResult<TypeDeclaration> {
         map(parse_enum_declaration, TypeDeclaration::Enum),
         map(parse_delegate_declaration, TypeDeclaration::Delegate),
     ))
-    .parse(input.into())
+    .parse(input)
 }
 
 /// Span-native class/struct body parser used by new Span-based declaration parsers
@@ -194,7 +193,7 @@ pub fn parse_class_body_span<F, M>(input: Span, mut member_parser: F) -> BResult
 where
     F: FnMut(Span) -> BResult<M>,
 {
-    let (mut cur, _) = delimited(ws, tok_l_brace(), ws).parse(input.into())?;
+    let (mut cur, _) = delimited(ws, tok_l_brace(), ws).parse(input)?;
     let mut members: Vec<M> = Vec::new();
     loop {
         // Skip trivia and preprocessor directives inside body
@@ -304,7 +303,7 @@ fn parse_class_member(input: Span) -> BResult<ClassBodyDeclaration> {
         // Fields should be last since they have the most generic parser
         map(parse_field_declaration, ClassBodyDeclaration::Field),
     ))
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Parse a member for a struct
@@ -359,7 +358,7 @@ fn parse_struct_member(input: Span) -> BResult<StructBodyDeclaration> {
         // Fields last (most generic)
         map(parse_field_declaration, StructBodyDeclaration::Field),
     ))
-    .parse(input.into())
+    .parse(input)
 }
 
 /// Parse a C# record class declaration
@@ -375,36 +374,36 @@ fn parse_struct_member(input: Span) -> BResult<StructBodyDeclaration> {
 /// ```
 pub fn parse_record_class_declaration(input: Span) -> BResult<RecordDeclaration> {
     // attributes, modifiers
-    let (input, attributes) = parse_attribute_lists.parse(input.into())?;
-    let (input, modifiers) = parse_modifiers.parse(input.into())?;
+    let (input, attributes) = parse_attribute_lists.parse(input)?;
+    let (input, modifiers) = parse_modifiers.parse(input)?;
     // 'record' keyword and identifier
-    let (input, _) = delimited(ws, kw_record(), ws).parse(input.into())?;
-    let (input, identifier) = parse_identifier.parse(input.into())?;
+    let (input, _) = delimited(ws, kw_record(), ws).parse(input)?;
+    let (input, identifier) = parse_identifier.parse(input)?;
     // Optional type parameters
     let (mut input, type_parameters_opt_opt) =
-        opt(|i| opt_parse_type_parameter_list.parse(i)).parse(input.into())?;
+        opt(|i| opt_parse_type_parameter_list.parse(i)).parse(input)?;
     let _type_parameters = type_parameters_opt_opt.and_then(|tp_opt| tp_opt);
     // Optional positional parameters
     let (i_after_params, params_opt) =
-        opt(|i| delimited(ws, parse_parameter_list, ws).parse(i)).parse(input.into())?;
+        opt(|i| delimited(ws, parse_parameter_list, ws).parse(i)).parse(input)?;
     input = i_after_params;
     let parameters = params_opt.unwrap_or_default();
     // Optional base types
     let (input2, base_opt) =
-        opt(|i| delimited(ws, parse_base_type_list, ws).parse(i)).parse(input.into())?;
+        opt(|i| delimited(ws, parse_base_type_list, ws).parse(i)).parse(input)?;
     input = input2;
     let base_types = base_opt.unwrap_or_default();
     // Optional where-clauses
     let (input3, constraints_opt) =
         opt(|i| delimited(ws, parse_type_parameter_constraints_clauses, ws).parse(i))
-            .parse(input.into())?;
+            .parse(input)?;
     input = input3;
     // Decide between ';' or body
     let (input, body_members) = if peek(delimited(ws, tok_semicolon(), ws))
-        .parse(input.into())
+        .parse(input)
         .is_ok()
     {
-        let (input, _) = delimited(ws, tok_semicolon(), ws).parse(input.into())?;
+        let (input, _) = delimited(ws, tok_semicolon(), ws).parse(input)?;
         (input, Vec::<ClassBodyDeclaration>::new())
     } else {
         parse_class_body_span(input, parse_class_member)?
@@ -443,35 +442,35 @@ pub fn parse_record_class_declaration(input: Span) -> BResult<RecordDeclaration>
 /// ```
 pub fn parse_record_struct_declaration(input: Span) -> BResult<RecordDeclaration> {
     // attributes, modifiers, keywords
-    let (input, attributes) = parse_attribute_lists.parse(input.into())?;
-    let (input, modifiers) = parse_modifiers.parse(input.into())?;
-    let (input, _) = delimited(ws, kw_record(), ws).parse(input.into())?;
-    let (input, _) = delimited(ws, kw_struct(), ws).parse(input.into())?;
+    let (input, attributes) = parse_attribute_lists.parse(input)?;
+    let (input, modifiers) = parse_modifiers.parse(input)?;
+    let (input, _) = delimited(ws, kw_record(), ws).parse(input)?;
+    let (input, _) = delimited(ws, kw_struct(), ws).parse(input)?;
     // name and optional type params
-    let (input, identifier) = parse_identifier.parse(input.into())?;
+    let (input, identifier) = parse_identifier.parse(input)?;
     let (mut input, _type_parameters_opt_opt) =
-        opt(|i| opt_parse_type_parameter_list.parse(i)).parse(input.into())?;
+        opt(|i| opt_parse_type_parameter_list.parse(i)).parse(input)?;
     // Optional positional parameters
     let (i_after_params, params_opt) =
-        opt(|i| delimited(ws, parse_parameter_list, ws).parse(i)).parse(input.into())?;
+        opt(|i| delimited(ws, parse_parameter_list, ws).parse(i)).parse(input)?;
     input = i_after_params;
     let parameters = params_opt.unwrap_or_default();
     // Optional base types
     let (input2, base_opt) =
-        opt(|i| delimited(ws, parse_base_type_list, ws).parse(i)).parse(input.into())?;
+        opt(|i| delimited(ws, parse_base_type_list, ws).parse(i)).parse(input)?;
     input = input2;
     let base_types = base_opt.unwrap_or_default();
     // Optional where-clauses
     let (input3, constraints_opt) =
         opt(|i| delimited(ws, parse_type_parameter_constraints_clauses, ws).parse(i))
-            .parse(input.into())?;
+            .parse(input)?;
     input = input3;
     // Decide terminator/body
     let (input, body_members) = if peek(delimited(ws, tok_semicolon(), ws))
-        .parse(input.into())
+        .parse(input)
         .is_ok()
     {
-        let (input, _) = delimited(ws, tok_semicolon(), ws).parse(input.into())?;
+        let (input, _) = delimited(ws, tok_semicolon(), ws).parse(input)?;
         (input, Vec::<ClassBodyDeclaration>::new())
     } else {
         parse_class_body_span(input, parse_class_member)?
@@ -502,12 +501,12 @@ pub fn parse_record_struct_declaration(input: Span) -> BResult<RecordDeclaration
 /// This function tries both forms and returns the first one that matches
 pub fn parse_record_declaration(input: Span) -> BResult<RecordDeclaration> {
     // Try parsing as record struct first (more specific)
-    if let Ok(result) = parse_record_struct_declaration(input.into()) {
+    if let Ok(result) = parse_record_struct_declaration(input) {
         return Ok(result);
     }
 
     // If that fails, try parsing as record class
-    parse_record_class_declaration(input.into())
+    parse_record_class_declaration(input)
 }
 
 /// Parse an interface property declaration
@@ -516,7 +515,7 @@ fn parse_interface_property(input: Span) -> BResult<PropertyDeclaration> {
     use crate::parser::expressions::declarations::property_declaration_parser::parse_property_declaration;
 
     // Parse property declaration
-    let (input, property_decl) = parse_property_declaration(input.into())?;
+    let (input, property_decl) = parse_property_declaration(input)?;
 
     // Interface properties cannot have a body implementation.
     // Check each accessor.
@@ -554,7 +553,7 @@ fn parse_interface_property(input: Span) -> BResult<PropertyDeclaration> {
 
 /// Parse an interface event declaration
 pub fn parse_interface_event(input: Span) -> BResult<EventDeclaration> {
-    let (input, event_decl) = parse_event_declaration(input.into())?;
+    let (input, event_decl) = parse_event_declaration(input)?;
 
     // Interface events are typically field-like and must not have accessor bodies.
     // For simplicity, we'll currently ensure no accessors are defined for interface events.
@@ -574,7 +573,7 @@ pub fn parse_interface_event(input: Span) -> BResult<EventDeclaration> {
 
 /// Parse an interface indexer declaration
 pub fn parse_interface_indexer(input: Span) -> BResult<IndexerDeclaration> {
-    let (input, indexer_decl) = parse_indexer_declaration(input.into())?;
+    let (input, indexer_decl) = parse_indexer_declaration(input)?;
 
     // Interface indexer accessors may be present, but cannot have bodies.
     if let Some(get_acc) = &indexer_decl.accessor_list.get_accessor {
@@ -674,7 +673,7 @@ fn parse_interface_member(input: Span) -> BResult<InterfaceBodyDeclaration> {
         map(parse_interface_indexer, InterfaceBodyDeclaration::Indexer),
     ))
         .context("interface member")
-        .parse(input.into())
+        .parse(input)
 }
 
 // Removed legacy &str interface wrapper; use `parse_interface_declaration_span`.
@@ -687,7 +686,7 @@ pub fn parse_class_declaration<'a>(input: Span<'a>) -> BResult<'a, ClassDeclarat
     // Optional where-clauses (for generic classes)
     let (input, constraints) =
         opt(|i| delimited(ws, parse_type_parameter_constraints_clauses, ws).parse(i))
-            .parse(input.into())?;
+            .parse(input)?;
     let (input, members) = parse_class_body_span(input, parse_class_member)?;
 
     Ok((

@@ -23,7 +23,7 @@ pub fn parse_continue_statement(input: Span) -> BResult<Statement> {
         |_| Statement::Continue(ContinueStatement),
     )
         .context("continue statement")
-        .parse(input.into())
+        .parse(input)
 }
 use crate::syntax::span::Span;
 use crate::tokens::separators::tok_semicolon;

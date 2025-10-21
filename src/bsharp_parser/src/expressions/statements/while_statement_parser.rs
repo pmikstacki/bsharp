@@ -37,7 +37,7 @@ pub fn parse_while_statement(input: Span) -> BResult<Statement> {
         },
     )
         .context("while statement")
-        .parse(input.into())
+        .parse(input)
 }
 use crate::syntax::span::Span;
 use crate::tokens::delimiters::{tok_l_paren, tok_r_paren};

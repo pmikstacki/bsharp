@@ -1,7 +1,4 @@
 use anyhow::{bail, Context, Result};
-use std::fs;
-use std::path::PathBuf;
-use clap::Args;
 use bsharp_analysis::context::AnalysisContext;
 use bsharp_analysis::framework::lookup::find_symbols_with_locations;
 use bsharp_analysis::framework::pipeline::AnalyzerPipeline;
@@ -10,8 +7,10 @@ use bsharp_analysis::report::AnalysisReport;
 use bsharp_analysis::workspace::WorkspaceLoader;
 use bsharp_parser::facade::Parser;
 use bsharp_parser::syntax::span::Span;
+use clap::Args;
 use serde_json;
-use crate::commands::analyze;
+use std::fs;
+use std::path::PathBuf;
 
 #[derive(Args, Debug, Clone)]
 pub struct AnalyzeArgs {
@@ -67,7 +66,6 @@ pub struct AnalyzeArgs {
     #[arg(long, value_name = "PAIR", num_args = 0..)]
     pub severity: Vec<String>,
 }
-
 
 pub fn execute(input: PathBuf, opts: AnalyzeArgs) -> Result<()> {
     let path_str = input

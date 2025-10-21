@@ -9,7 +9,7 @@ The BSharp CLI provides command-line tools for parsing, analyzing, and visualizi
 ### From Source
 
 ```bash
-git clone https://github.com/your-repo/bsharp.git
+git clone https://github.com/mikserek/bsharp.git
 cd bsharp
 cargo build --release
 ```
@@ -41,16 +41,26 @@ bsharp <COMMAND> [OPTIONS] <INPUT>
 --version, -V   Show version information
 ```
 
+### Argument Files (@file)
+
+All commands support argument files via `@file` syntax. Example:
+
+```bash
+bsharp @args.txt
+```
+
+Where `args.txt` contains one argument per line (comments and quoting follow standard shell parsing rules).
+
 ---
 
 ## Available Commands
 
 ### parse
 
-Parse C# source code and output JSON representation of the AST.
+Parse C# source code and print a textual AST tree to stdout.
 
 ```bash
-bsharp parse <INPUT> [--output <FILE>]
+bsharp parse <INPUT>
 ```
 
 **See:** [Parse Command](./parse.md)
@@ -80,6 +90,23 @@ bsharp analyze <INPUT> [OPTIONS]
 ```
 
 **See:** [Analysis Command](./analyze.md)
+
+### format
+
+Format C# files using the built-in formatter and syntax emitters.
+
+```bash
+bsharp format <INPUT> [--write] [--newline-mode lf|crlf] [--max-consecutive-blank-lines <N>] \
+  [--blank-line-between-members <BOOL>] [--trim-trailing-whitespace <BOOL>] \
+  [--emit-trace] [--emit-trace-file <FILE>]
+```
+
+Notes:
+- `<INPUT>` can be a file or directory (recursively formats .cs files; skips hidden/bin/obj/target).
+- `--write` defaults to true; when false and a single file is given, the formatted output is printed to stdout.
+- Emission tracing can be enabled by `--emit-trace` or environment variable `BSHARP_EMIT_TRACE=1`.
+
+**See:** [Format Command](./format.md)
 
 ---
 
@@ -394,29 +421,7 @@ bsharp analyze MyProject.csproj
 
 ## Shell Completion
 
-### Bash
-
-```bash
-# Generate completion script
-bsharp --generate-completion bash > ~/.local/share/bash-completion/completions/bsharp
-
-# Or add to .bashrc
-eval "$(bsharp --generate-completion bash)"
-```
-
-### Zsh
-
-```bash
-# Add to .zshrc
-eval "$(bsharp --generate-completion zsh)"
-```
-
-### Fish
-
-```bash
-# Add to config.fish
-bsharp --generate-completion fish | source
-```
+Shell completion generation is currently not available in the CLI.
 
 ---
 

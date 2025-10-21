@@ -14,14 +14,13 @@ Use `AstWalker` for single-pass traversal with the `Visit` trait, or the `Query`
 Example using `AstWalker` + `Visit` to count `if` statements:
 
 ```rust
-use bsharp_analysis::framework::{AstWalker, Visit, NodeRef};
-use bsharp_analysis::framework::AnalysisSession;
+use bsharp_analysis::framework::{AstWalker, Visit, NodeRef, AnalysisSession};
 
 struct CountIfs { pub ifs: usize }
 impl Visit for CountIfs {
     fn enter(&mut self, node: &NodeRef, _session: &mut AnalysisSession) {
         if let NodeRef::Statement(s) = node {
-            if matches!(s, bsharp_analysis::syntax::statements::statement::Statement::If(_)) {
+            if matches!(s, bsharp_syntax::statements::statement::Statement::If(_)) {
                 self.ifs += 1;
             }
         }
@@ -34,11 +33,11 @@ impl Visit for CountIfs {
 Use `Query` for typed expression searches:
 
 ```rust
-use bsharp_analysis::framework::Query;
-use bsharp_analysis::framework::NodeRef;
+use bsharp_analysis::framework::{NodeRef, Query};
+use bsharp_syntax::expressions::AwaitExpression;
 
 let await_count = Query::from(NodeRef::CompilationUnit(&cu))
-    .of::<bsharp_analysis::syntax::expressions::await_expression::AwaitExpression>()
+    .of::<AwaitExpression>()
     .count();
 ```
 
@@ -51,8 +50,8 @@ When analyzing methods, you typically:
 Example (from `ControlFlowPass` pattern):
 
 ```rust
-use bsharp::analysis::artifacts::cfg::{ControlFlowIndex, MethodControlFlowStats};
-use bsharp::syntax::statements::statement::Statement;
+use bsharp_analysis::artifacts::cfg::{ControlFlowIndex, MethodControlFlowStats};
+use bsharp_syntax::statements::statement::Statement;
 
 fn stats_for_method(body: Option<&Statement>) -> MethodControlFlowStats {
     let complexity = match body { Some(s) => 1 + decision_points(s), None => 1 };
@@ -64,6 +63,13 @@ fn stats_for_method(body: Option<&Statement>) -> MethodControlFlowStats {
 ```
 
 See `src/bsharp_analysis/src/metrics/shared.rs` for helpers like `decision_points`, `max_nesting_of`, `count_statements` and `src/bsharp_analysis/src/passes/control_flow.rs` for usage.
+
+---
+
+## See Also
+
+- [Cookbooks](../development/cookbooks.md)
+- [Query Cookbook](../development/query-cookbook.md)
 
 ## Tips
 

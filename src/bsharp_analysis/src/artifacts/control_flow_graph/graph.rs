@@ -35,7 +35,7 @@ impl ControlFlowGraph {
     /// Heuristics implemented:
     /// - Collapse diamonds: a block with two successors that reconverge at a join.
     /// - Collapse trivial multi-branch reconvergence (switch-like) when all branch nodes flow directly to a common join.
-    /// This is a conservative approximation; in well-structured code it commonly reduces to 1.
+    ///   This is a conservative approximation; in well-structured code it commonly reduces to 1.
     pub fn essential_complexity(&self) -> usize {
         use std::collections::{HashMap, HashSet};
 
@@ -96,12 +96,10 @@ impl ControlFlowGraph {
                         v_out[0].0
                     };
                     // Remove edges u->v, u->w, v->j, w->j
-                    edges.retain(|Edge(a, b, _)| {
-                        !((*a == u && *b == v)
-                            || (*a == u && *b == w)
-                            || (*a == v && *b == j)
-                            || (*a == w && *b == j))
-                    });
+                    edges.retain(|Edge(a, b, _)| !matches!((*a, *b), (x, y) if
+                        (x == u && (y == v || y == w)) ||
+                        ((x == v || x == w) && y == j)
+                    ));
                     // Remove nodes v and w
                     nodes.remove(&v);
                     nodes.remove(&w);

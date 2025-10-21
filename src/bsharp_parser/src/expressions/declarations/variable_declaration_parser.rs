@@ -28,7 +28,7 @@ pub fn parse_variable_declarator(input: Span) -> BResult<VariableDeclaration> {
         ),
         |(name, initializer)| VariableDeclaration { name, initializer },
     )
-    .parse(input.into())
+    .parse(input)
 }
 
 /// Parse a variable declaration
@@ -39,12 +39,12 @@ pub fn parse_variable_declaration(input: Span) -> BResult<LocalVariableDeclarati
         opt.is_some()
     })
     .context("optional const modifier")
-    .parse(input.into())?;
+    .parse(input)?;
 
     // Note: For variable declarations, we start with a type
     let (input, variable_type) = delimited(ws, parse_type_expression, ws)
         .context("variable type")
-        .parse(input.into())?;
+        .parse(input)?;
 
     // Parse one or more variable declarators separated by commas
     let (input, declarators) = separated_list1(
@@ -52,7 +52,7 @@ pub fn parse_variable_declaration(input: Span) -> BResult<LocalVariableDeclarati
         |i| delimited(ws, parse_variable_declarator, ws).parse(i),
     )
     .context("variable declarators")
-    .parse(input.into())?;
+    .parse(input)?;
 
     Ok((
         input,
@@ -68,11 +68,11 @@ pub fn parse_variable_declaration(input: Span) -> BResult<LocalVariableDeclarati
 /// Parse a local variable declaration statement (with semicolon)
 /// Example: "int x = 5;"
 pub fn parse_local_variable_declaration(input: Span) -> BResult<LocalVariableDeclaration> {
-    let (input, declaration) = parse_variable_declaration(input.into())?;
+    let (input, declaration) = parse_variable_declaration(input)?;
 
     let (input, _) = delimited(ws, tok_semicolon(), ws)
         .context("variable declaration terminator")
-        .parse(input.into())?;
+        .parse(input)?;
 
     Ok((input, declaration))
 }
@@ -82,7 +82,7 @@ pub fn parse_local_variable_declaration_statement(
     input: Span,
 ) -> BResult<syntax::statements::statement::Statement> {
     use crate::syntax::statements::statement::Statement;
-    map(parse_local_variable_declaration, Statement::Declaration).parse(input.into())
+    map(parse_local_variable_declaration, Statement::Declaration).parse(input)
 }
 use crate::syntax::span::Span;
 use crate::tokens::assignment::tok_assign;

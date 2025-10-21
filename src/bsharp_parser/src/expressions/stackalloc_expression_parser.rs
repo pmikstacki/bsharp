@@ -25,7 +25,7 @@ fn parse_collection_initializer(input: Span) -> BResult<Vec<Expression>> {
         false,
         true,
     )
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Parse a stackalloc expression
@@ -106,7 +106,7 @@ pub fn parse_stackalloc_expression(input: Span) -> BResult<Expression> {
         |(_, stackalloc)| Expression::StackAlloc(Box::new(stackalloc)),
     )
         .context("stackalloc expression")
-        .parse(input.into())
+        .parse(input)
 }
 use crate::syntax::span::Span;
 use crate::tokens::delimiters::{tok_l_brace, tok_l_brack, tok_r_brace, tok_r_brack};

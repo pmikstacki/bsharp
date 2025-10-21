@@ -20,7 +20,7 @@ impl Emit for StackAllocExpression {
         // Initializer form: stackalloc T[] { items }
         if let Some(items) = &self.initializer {
             // If no explicit type provided, C# allows: stackalloc[] { ... }
-            if self.target_type.is_some() { w.write_str("[]")?; } else { w.write_str("[]")?; }
+            w.write_str("[]")?;
             w.write_str(" { ")?;
             for (i, it) in items.iter().enumerate() {
                 if i != 0 { w.write_str(", ")?; }

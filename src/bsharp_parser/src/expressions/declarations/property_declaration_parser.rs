@@ -24,12 +24,12 @@ use syntax::statements::statement::Statement;
 // Parse get accessor
 fn parse_get_accessor(input: Span) -> BResult<PropertyAccessor> {
     // Optional attribute lists and modifiers
-    let (input, attributes) = delimited(ws, parse_attribute_lists, ws).parse(input.into())?;
-    let (input, modifiers) = delimited(ws, |i| parse_modifiers_for_decl_type(i, "property"), ws).parse(input.into())?;
+    let (input, attributes) = delimited(ws, parse_attribute_lists, ws).parse(input)?;
+    let (input, modifiers) = delimited(ws, |i| parse_modifiers_for_decl_type(i, "property"), ws).parse(input)?;
     // Parse "get" followed by optional body or semicolon
     let (input, _) = delimited(ws, tag_no_case("get"), ws)
         .context("get accessor keyword")
-        .parse(input.into())?;
+        .parse(input)?;
 
     // Parse body or just a semicolon
     let (input, body) = map(alt((
@@ -54,7 +54,7 @@ fn parse_get_accessor(input: Span) -> BResult<PropertyAccessor> {
             |_| None,
         ),
     )), |x| x)
-        .parse(input.into())?;
+        .parse(input)?;
 
     Ok((
         input,
@@ -69,12 +69,12 @@ fn parse_get_accessor(input: Span) -> BResult<PropertyAccessor> {
 // Parse set accessor
 fn parse_set_accessor(input: Span) -> BResult<PropertyAccessor> {
     // Optional attribute lists and modifiers
-    let (input, attributes) = delimited(ws, parse_attribute_lists, ws).parse(input.into())?;
-    let (input, modifiers) = delimited(ws, |i| parse_modifiers_for_decl_type(i, "property"), ws).parse(input.into())?;
+    let (input, attributes) = delimited(ws, parse_attribute_lists, ws).parse(input)?;
+    let (input, modifiers) = delimited(ws, |i| parse_modifiers_for_decl_type(i, "property"), ws).parse(input)?;
     // Parse "set" followed by optional body or semicolon
     let (input, _) = delimited(ws, tag_no_case("set"), ws)
         .context("set accessor keyword (expected 'set')")
-        .parse(input.into())?;
+        .parse(input)?;
 
     // Parse body or just a semicolon
     let (input, body) = map(alt((
@@ -97,7 +97,7 @@ fn parse_set_accessor(input: Span) -> BResult<PropertyAccessor> {
             |_| None,
         ),
     )), |x| x)
-        .parse(input.into())?;
+        .parse(input)?;
 
     Ok((
         input,
@@ -112,12 +112,12 @@ fn parse_set_accessor(input: Span) -> BResult<PropertyAccessor> {
 // Parse init accessor (C# 9+)
 fn parse_init_accessor(input: Span) -> BResult<PropertyAccessor> {
     // Optional attribute lists and modifiers
-    let (input, attributes) = delimited(ws, parse_attribute_lists, ws).parse(input.into())?;
-    let (input, modifiers) = delimited(ws, |i| parse_modifiers_for_decl_type(i, "property"), ws).parse(input.into())?;
+    let (input, attributes) = delimited(ws, parse_attribute_lists, ws).parse(input)?;
+    let (input, modifiers) = delimited(ws, |i| parse_modifiers_for_decl_type(i, "property"), ws).parse(input)?;
     // Parse "init" followed by optional body or semicolon
     let (input, _) = delimited(ws, tag_no_case("init"), ws)
         .context("init accessor keyword (expected 'init')")
-        .parse(input.into())?;
+        .parse(input)?;
 
     // Parse body or just a semicolon
     let (input, body) = map(alt((
@@ -140,7 +140,7 @@ fn parse_init_accessor(input: Span) -> BResult<PropertyAccessor> {
             |_| None,
         ),
     )), |x| x)
-        .parse(input.into())?;
+        .parse(input)?;
 
     Ok((
         input,
@@ -163,7 +163,7 @@ fn parse_property_accessors(input: Span) -> BResult<Vec<PropertyAccessor>> {
         }),
         cut(delimited(ws, satisfy(|c| c == '}'), ws)).context("property accessors closing"),
     )
-        .parse(input.into())
+        .parse(input)
 }
 
 // Parse optional property initializer: " = expression;"
@@ -178,26 +178,26 @@ fn parse_property_initializer(input: Span) -> BResult<Option<Expression>> {
                 .context("property initializer terminator"),
         ),
     ))
-        .parse(input.into())
+        .parse(input)
         .map(|(input, result)| (input, result.map(|(expr, _)| expr)))
 }
 
 // Parse a property declaration
 pub fn parse_property_declaration(input: Span) -> BResult<PropertyDeclaration> {
     // Parse attributes (zero or more groups)
-    let (input, attributes) = delimited(ws, parse_attribute_lists, ws).parse(input.into())?;
+    let (input, attributes) = delimited(ws, parse_attribute_lists, ws).parse(input)?;
     // Parse modifiers specifically for property declarations (they consume trailing space)
     let (input, modifiers) = (|i| parse_modifiers_for_decl_type(i, "property"))
         .context("property modifiers")
-        .parse(input.into())?;
+        .parse(input)?;
     // Consume any additional optional whitespace before the type
-    let (input, _) = ws(input.into())?;
+    let (input, _) = ws(input)?;
     let (input, ty) = parse_type_expression
         .context("property type")
-        .parse(input.into())?;
+        .parse(input)?;
     let (input, name) = delimited(ws, parse_identifier, ws)
         .context("property name")
-        .parse(input.into())?;
+        .parse(input)?;
     // Either an accessor block { ... } or an expression-bodied property => expr;
     let (input, (accessors, initializer)) = map(alt((
         // Expression-bodied property: `=> expr;`
@@ -226,7 +226,7 @@ pub fn parse_property_declaration(input: Span) -> BResult<PropertyDeclaration> {
             |(accessors, initializer)| (accessors, initializer),
         ),
     )), |x| x)
-        .parse(input.into())?;
+        .parse(input)?;
 
     Ok((
         input,

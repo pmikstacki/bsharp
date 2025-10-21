@@ -4,13 +4,13 @@ This document describes the analysis pipeline architecture, artifacts, rulesets,
 
 ## Phases
 
-The pipeline runs in deterministic phases (see `src/analysis/framework/pipeline.rs`):
+The pipeline runs in deterministic phases (see `src/bsharp_analysis/src/framework/pipeline.rs`):
 
 - **Index**
   - Runs early passes like `IndexingPass` to populate core artifacts (`SymbolIndex`, `NameIndex`, `FqnMap`).
 - **Local Rules**
   - Runs per-file passes such as `MetricsPass` (Query-based) to compute artifacts like `AstAnalysis`.
-  - Local rulesets run here as well; use `framework::query::Query` for AST enumeration.
+  - Local rulesets run here as well; use `bsharp_analysis::framework::Query` for AST enumeration.
 - **Global**
   - Passes that aggregate information across the file (or project) after initial indexing.
 - **Semantic**
@@ -24,13 +24,13 @@ Each phase is explicitly selected in `AnalyzerPipeline::run_for_file()` using `P
 
 Artifacts are stored in the per-file `AnalysisSession.artifacts` and summarized into an `AnalysisReport`:
 
-- **Symbols** (`src/analysis/artifacts/symbols.rs`)
+- **Symbols** (`src/bsharp_analysis/src/artifacts/symbols.rs`)
   - `SymbolIndex` (by id and name), `NameIndex` (name frequencies), `FqnMap` (local name → FQNs).
-- **Control Flow** (`src/analysis/artifacts/cfg.rs`)
+- **Control Flow** (`src/bsharp_analysis/src/artifacts/cfg.rs`)
   - `ControlFlowIndex` keyed per method; summarized to `CfgSummary` with total methods and smell counts.
-- **Dependencies** (`src/analysis/artifacts/dependencies.rs`)
+- **Dependencies** (`src/bsharp_analysis/src/artifacts/dependencies.rs`)
   - Graph keyed by symbols; summarized to node/edge counts.
-- **Metrics** (`src/analysis/artifacts/metrics.rs` → `AstAnalysis`)
+- **Metrics** (`src/bsharp_analysis/src/artifacts/metrics.rs` → `AstAnalysis`)
   - Basic metrics gathered during the local traversal.
 
 Artifacts are optional in the final report; missing artifacts simply result in `None` summaries.
@@ -45,7 +45,7 @@ Rules implement the `Rule` trait and are grouped into logical rulesets. Passes i
 
 ## Configuration
 
-`AnalysisConfig` (`src/analysis/context.rs`) controls thresholds and toggles:
+`AnalysisConfig` (`src/bsharp_analysis/src/context.rs`) controls thresholds and toggles:
 
 - **Control flow thresholds**
   - `cf_high_complexity_threshold` (default 10)
@@ -59,7 +59,7 @@ Rules implement the `Rule` trait and are grouped into logical rulesets. Passes i
   - `workspace.include: Vec<String>` (glob patterns)
   - `workspace.exclude: Vec<String>` (glob patterns)
 
-CLI maps flags to these fields in `src/cli/commands/analyze.rs` and supports TOML/JSON config files.
+CLI maps flags to these fields in `src/bsharp_cli/src/commands/analyze.rs` and supports TOML/JSON config files.
 
 ## Workspace Analysis and Determinism
 
@@ -73,7 +73,7 @@ CLI maps flags to these fields in `src/cli/commands/analyze.rs` and supports TOM
 
 ## Report Schema
 
-`AnalysisReport` (`src/analysis/report/mod.rs`) includes:
+`AnalysisReport` (`src/bsharp_analysis/src/report/mod.rs`) includes:
 
 - `schema_version: u32` (currently 1)
 - `diagnostics: DiagnosticCollection`

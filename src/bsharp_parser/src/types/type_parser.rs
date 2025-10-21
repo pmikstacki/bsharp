@@ -207,7 +207,7 @@ fn parse_pointer_suffix(input: Span) -> BResult<()> {
 }
 
 // Helper function for parsing ref keyword with word boundary
-fn parse_ref_keyword<'a>(input: Span<'a>) -> BResult<'a, &str> {
+fn parse_ref_keyword(input: Span<'_>) -> BResult<'_, &str> {
     use nom::Parser as _;
     kw_ref().parse(input)
 }

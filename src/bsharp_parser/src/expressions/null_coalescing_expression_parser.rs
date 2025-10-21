@@ -11,7 +11,7 @@ use crate::tokens::assignment::tok_assign;
 
 pub(crate) fn parse_null_coalescing_expression_or_higher(input: Span) -> BResult<Expression> {
     let (mut input, mut left) =
-        logical_expression_parser::parse_logical_or_expression_or_higher(input.into())?;
+        logical_expression_parser::parse_logical_or_expression_or_higher(input)?;
 
     // Handle ?? (null coalescing) - right associative, but avoid consuming if followed by =
     while let Ok((new_input, _)) = nom::sequence::delimited(
@@ -19,7 +19,7 @@ pub(crate) fn parse_null_coalescing_expression_or_higher(input: Span) -> BResult
         (nom_char('?'), nom_char('?'), not(tok_assign())),
         ws,
     )
-        .parse(input.into())
+        .parse(input)
     {
         let (new_input, right) = parse_null_coalescing_expression_or_higher(new_input)?;
         left = Expression::Binary {

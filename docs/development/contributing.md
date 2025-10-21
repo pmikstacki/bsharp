@@ -15,7 +15,7 @@ Thank you for your interest in contributing to BSharp! This document provides gu
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/your-repo/bsharp.git
+git clone https://github.com/mikserek/bsharp.git
 cd bsharp
 ```
 
@@ -79,7 +79,7 @@ All contributions should include appropriate tests:
 
 #### Parser Tests
 
-**IMPORTANT:** All tests must be in external files under `tests/` directory, NOT inline `#[cfg(test)]` modules.
+**IMPORTANT:** Parser tests must live in an external test crate under `src/bsharp_tests/src/`, NOT inline `#[cfg(test)]` modules.
 
 ```rust
 // ✅ CORRECT: External test file
@@ -141,7 +141,7 @@ When adding support for new C# language features:
 1. **Define AST Nodes**: Add node definitions in `src/syntax/nodes/`
 2. **Implement Parser**: Add parser in appropriate `src/parser/` subdirectory
 3. **Add Tests**: Include comprehensive tests in `tests/parser/` directory
-4. **Update Traversal**: Prefer the `framework::query::Query` API for AST enumeration; for statement/expression-heavy logic, use shared helpers or a focused walker.
+4. **Update Traversal**: Prefer the `bsharp_analysis::framework::Query` API for AST enumeration; for statement/expression-heavy logic, use shared helpers or a focused walker.
 5. **Document**: Add documentation for the new feature
 
 Example process for adding a new expression type:
@@ -245,10 +245,10 @@ Use these tools for debugging:
 # Test specific parser with debug output
 RUST_LOG=debug cargo test test_name -- --nocapture
 
-# Run parser on test file
-cargo run -- parse debug_cases/test.cs --output debug.json
+# Run parser on test file (prints textual AST tree)
+cargo run -- parse debug_cases/test.cs
 
-# Check parse tree structure
+# Check AST visualization
 cargo run -- tree debug_cases/test.cs --output debug.svg
 ```
 

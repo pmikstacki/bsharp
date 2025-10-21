@@ -37,96 +37,96 @@ use crate::parser::expressions::statements::yield_statement_parser::parse_yield_
 fn build_group1_parser<'a>(allow_block: bool) -> impl Fn(Span<'a>) -> BResult<'a, Statement> {
     move |input: Span<'a>| {
         if allow_block {
-            if let Ok(r) = (|i| parse_block_statement(i)).context("block statement").parse(input.into()) { return Ok(r); }
-            if let Ok(r) = (|i| parse_if_statement(i)).context("if statement").parse(input.into()) { return Ok(r); }
-            if let Ok(r) = (|i| parse_for_statement(i)).context("for statement").parse(input.into()) { return Ok(r); }
-            if let Ok(r) = (|i| parse_while_statement(i)).context("while statement").parse(input.into()) { return Ok(r); }
-            if let Ok(r) = (|i| parse_do_while_statement(i)).context("do-while statement").parse(input.into()) { return Ok(r); }
-            if let Ok(r) = (|i| parse_foreach_statement(i)).context("foreach statement").parse(input.into()) { return Ok(r); }
-            if let Ok(r) = (|i| parse_switch_statement(i)).context("switch statement").parse(input.into()) { return Ok(r); }
-            (|i| parse_try_statement(i)).context("try statement").parse(input.into())
+            if let Ok(r) = (|i| parse_block_statement(i)).context("block statement").parse(input) { return Ok(r); }
+            if let Ok(r) = (|i| parse_if_statement(i)).context("if statement").parse(input) { return Ok(r); }
+            if let Ok(r) = (|i| parse_for_statement(i)).context("for statement").parse(input) { return Ok(r); }
+            if let Ok(r) = (|i| parse_while_statement(i)).context("while statement").parse(input) { return Ok(r); }
+            if let Ok(r) = (|i| parse_do_while_statement(i)).context("do-while statement").parse(input) { return Ok(r); }
+            if let Ok(r) = (|i| parse_foreach_statement(i)).context("foreach statement").parse(input) { return Ok(r); }
+            if let Ok(r) = (|i| parse_switch_statement(i)).context("switch statement").parse(input) { return Ok(r); }
+            (|i| parse_try_statement(i)).context("try statement").parse(input)
         } else {
-            if let Ok(r) = (|i| parse_if_statement(i)).context("if statement inside block").parse(input.into()) { return Ok(r); }
-            if let Ok(r) = (|i| parse_for_statement(i)).context("for statement inside block").parse(input.into()) { return Ok(r); }
-            if let Ok(r) = (|i| parse_while_statement(i)).context("while statement inside block").parse(input.into()) { return Ok(r); }
-            if let Ok(r) = (|i| parse_do_while_statement(i)).context("do-while statement inside block").parse(input.into()) { return Ok(r); }
-            if let Ok(r) = (|i| parse_foreach_statement(i)).context("foreach statement inside block").parse(input.into()) { return Ok(r); }
-            if let Ok(r) = (|i| parse_switch_statement(i)).context("switch statement inside block").parse(input.into()) { return Ok(r); }
-            (|i| parse_try_statement(i)).context("try statement inside block").parse(input.into())
+            if let Ok(r) = (|i| parse_if_statement(i)).context("if statement inside block").parse(input) { return Ok(r); }
+            if let Ok(r) = (|i| parse_for_statement(i)).context("for statement inside block").parse(input) { return Ok(r); }
+            if let Ok(r) = (|i| parse_while_statement(i)).context("while statement inside block").parse(input) { return Ok(r); }
+            if let Ok(r) = (|i| parse_do_while_statement(i)).context("do-while statement inside block").parse(input) { return Ok(r); }
+            if let Ok(r) = (|i| parse_foreach_statement(i)).context("foreach statement inside block").parse(input) { return Ok(r); }
+            if let Ok(r) = (|i| parse_switch_statement(i)).context("switch statement inside block").parse(input) { return Ok(r); }
+            (|i| parse_try_statement(i)).context("try statement inside block").parse(input)
         }
     }
 }
 
 /// Group 1 with block statements allowed
 fn parse_group1_with_block(input: Span) -> BResult<Statement> {
-    build_group1_parser(true)(input.into())
+    build_group1_parser(true)(input)
 }
 
 /// Group 1 without block statements (for use inside blocks to prevent recursion)
 fn parse_group1_without_block(input: Span) -> BResult<Statement> {
-    build_group1_parser(false)(input.into())
+    build_group1_parser(false)(input)
 }
 
 /// Group 2: Special statements that need early parsing
 fn parse_group2_special(input: Span) -> BResult<Statement> {
-    if let Ok(r) = (|i| parse_checked_unchecked_statement(i)).context("checked/unchecked statement").parse(input.into()) { return Ok(r); }
-    if let Ok(r) = (|i| parse_lock_statement(i)).context("lock statement").parse(input.into()) { return Ok(r); }
-    if let Ok(r) = (|i| parse_unsafe_statement(i)).context("unsafe statement").parse(input.into()) { return Ok(r); }
-    if let Ok(r) = (|i| parse_fixed_statement(i)).context("fixed statement").parse(input.into()) { return Ok(r); }
-    if let Ok(r) = (|i| parse_using_statement(i)).context("using statement").parse(input.into()) { return Ok(r); }
-    if let Ok(r) = (|i| parse_local_function_statement(i)).context("local function statement").parse(input.into()) { return Ok(r); }
+    if let Ok(r) = (|i| parse_checked_unchecked_statement(i)).context("checked/unchecked statement").parse(input) { return Ok(r); }
+    if let Ok(r) = (|i| parse_lock_statement(i)).context("lock statement").parse(input) { return Ok(r); }
+    if let Ok(r) = (|i| parse_unsafe_statement(i)).context("unsafe statement").parse(input) { return Ok(r); }
+    if let Ok(r) = (|i| parse_fixed_statement(i)).context("fixed statement").parse(input) { return Ok(r); }
+    if let Ok(r) = (|i| parse_using_statement(i)).context("using statement").parse(input) { return Ok(r); }
+    if let Ok(r) = (|i| parse_local_function_statement(i)).context("local function statement").parse(input) { return Ok(r); }
     (|i| parse_local_variable_declaration_statement(i))
         .context("variable declaration (expected type followed by variable name and optional initializer)")
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Group 3: Jump statements
 fn parse_group3_jump(input: Span) -> BResult<Statement> {
-    if let Ok(r) = (|i| parse_return_statement(i)).context("return statement").parse(input.into()) { return Ok(r); }
-    if let Ok(r) = (|i| parse_throw_statement(i)).context("throw statement").parse(input.into()) { return Ok(r); }
-    if let Ok(r) = (|i| parse_break_statement(i)).context("break statement").parse(input.into()) { return Ok(r); }
-    if let Ok(r) = (|i| parse_continue_statement(i)).context("continue statement").parse(input.into()) { return Ok(r); }
-    if let Ok(r) = (|i| parse_goto_statement(i)).context("goto statement").parse(input.into()) { return Ok(r); }
-    if let Ok(r) = (|i| parse_goto_case_statement(i)).context("goto case statement").parse(input.into()) { return Ok(r); }
-    (|i| parse_yield_statement(i)).context("yield statement").parse(input.into())
+    if let Ok(r) = (|i| parse_return_statement(i)).context("return statement").parse(input) { return Ok(r); }
+    if let Ok(r) = (|i| parse_throw_statement(i)).context("throw statement").parse(input) { return Ok(r); }
+    if let Ok(r) = (|i| parse_break_statement(i)).context("break statement").parse(input) { return Ok(r); }
+    if let Ok(r) = (|i| parse_continue_statement(i)).context("continue statement").parse(input) { return Ok(r); }
+    if let Ok(r) = (|i| parse_goto_statement(i)).context("goto statement").parse(input) { return Ok(r); }
+    if let Ok(r) = (|i| parse_goto_case_statement(i)).context("goto case statement").parse(input) { return Ok(r); }
+    (|i| parse_yield_statement(i)).context("yield statement").parse(input)
 }
 
 /// Group 4: Label, empty, and expression statements
 fn parse_group4_misc(input: Span) -> BResult<Statement> {
-    if let Ok(r) = (|i| parse_label_statement(i)).context("label statement").parse(input.into()) { return Ok(r); }
-    if let Ok(r) = (|i| parse_empty_statement(i)).context("empty statement").parse(input.into()) { return Ok(r); }
-    (|i| parse_expression_statement(i)).context("expression statement").parse(input.into())
+    if let Ok(r) = (|i| parse_label_statement(i)).context("label statement").parse(input) { return Ok(r); }
+    if let Ok(r) = (|i| parse_empty_statement(i)).context("empty statement").parse(input) { return Ok(r); }
+    (|i| parse_expression_statement(i)).context("expression statement").parse(input)
 }
 
 /// Main statement syntax - Enhanced VerboseError with specific diagnostics
 /// Following Microsoft's Roslyn approach but using Nom's VerboseError for detailed error reporting
 pub fn parse_statement(input: Span) -> BResult<Statement> {
-    if let Ok(r) = parse_group1_with_block(input.into()) { return Ok(r); }
-    if let Ok(r) = parse_group2_special(input.into()) { return Ok(r); }
-    if let Ok(r) = parse_group3_jump(input.into()) { return Ok(r); }
-    parse_group4_misc(input.into())
+    if let Ok(r) = parse_group1_with_block(input) { return Ok(r); }
+    if let Ok(r) = parse_group2_special(input) { return Ok(r); }
+    if let Ok(r) = parse_group3_jump(input) { return Ok(r); }
+    parse_group4_misc(input)
 }
 
 /// Statement syntax for use inside blocks - EXCLUDES block statements to prevent recursion
 /// Enhanced with VerboseError diagnostics explaining the recursive exclusion
 pub fn parse_statement_for_block(input: Span) -> BResult<Statement> {
-    if let Ok(r) = parse_group1_without_block(input.into()) { return Ok(r); }
-    if let Ok(r) = parse_group2_special(input.into()) { return Ok(r); }
-    if let Ok(r) = parse_group3_jump(input.into()) { return Ok(r); }
-    parse_group4_misc(input.into())
+    if let Ok(r) = parse_group1_without_block(input) { return Ok(r); }
+    if let Ok(r) = parse_group2_special(input) { return Ok(r); }
+    if let Ok(r) = parse_group3_jump(input) { return Ok(r); }
+    parse_group4_misc(input)
 }
 
 /// Parse a statement for use inside blocks, consuming any leading whitespace or comments.
 /// This version excludes block statements to prevent recursion.
 pub fn parse_statement_for_block_ws(input: Span) -> BResult<Statement> {
-    let (input, _) = parse_whitespace_or_comments(input.into())?;
-    parse_statement_for_block(input.into())
+    let (input, _) = parse_whitespace_or_comments(input)?;
+    parse_statement_for_block(input)
 }
 
 /// Parse a statement, consuming any leading whitespace or comments.
 pub fn parse_statement_ws(input: Span) -> BResult<Statement> {
-    let (input, _) = parse_whitespace_or_comments(input.into())?;
-    parse_statement(input.into())
+    let (input, _) = parse_whitespace_or_comments(input)?;
+    parse_statement(input)
 }
 
 use crate::syntax::span::Span;

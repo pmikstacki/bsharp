@@ -23,7 +23,7 @@ pub fn parse_checked_statement(input: Span) -> BResult<Statement> {
         },
     )
         .context("checked statement")
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Parse an unchecked statement: unchecked { ... }
@@ -40,13 +40,13 @@ pub fn parse_unchecked_statement(input: Span) -> BResult<Statement> {
         },
     )
         .context("unchecked statement")
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Parse either a checked or unchecked statement
 pub fn parse_checked_unchecked_statement(input: Span) -> BResult<Statement> {
     alt((parse_checked_statement, parse_unchecked_statement))
         .context("checked or unchecked statement")
-        .parse(input.into())
+        .parse(input)
 }
 use crate::syntax::span::Span;

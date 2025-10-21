@@ -24,7 +24,7 @@ pub fn parse_base_types(input: Span) -> BResult<Vec<Type>> {
             .map(|opt_types| opt_types.unwrap_or_default())
             .context("base types"),
     )
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Alias for compatibility with existing code

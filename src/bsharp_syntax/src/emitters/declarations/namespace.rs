@@ -6,12 +6,14 @@ use crate::declarations::{
 impl Emit for NamespaceDeclaration {
     fn emit<W: std::fmt::Write>(&self, w: &mut W, cx: &mut EmitCtx) -> Result<(), EmitError> {
         use crate::emitters::emit_trait::Emit as _;
+        let _scope = cx.node_scope(format!("Namespace({})", self.name));
 
         // namespace <Name>
-        cx.write_indent(w)?;
         write!(w, "namespace {}", self.name)?;
+        cx.trace_event("header_done", &[("has_body", "true".to_string()), ("allman", "true".to_string())]);
         cx.nl(w)?;
         cx.write_indent(w)?;
+        cx.trace_event("before_open_brace", &[("has_body", "true".to_string()), ("allman", "true".to_string())]);
         cx.open_brace(w)?;
 
         // Usings inside namespace
@@ -30,6 +32,7 @@ impl Emit for NamespaceDeclaration {
         let mut first = true;
         for d in &self.declarations {
             if !first { cx.between_top_level_declarations(w)?; }
+            cx.write_indent(w)?;
             d.emit(w, cx)?;
             cx.nl(w)?;
             first = false;
@@ -59,7 +62,6 @@ impl Emit for NamespaceBodyDeclaration {
 impl Emit for FileScopedNamespaceDeclaration {
     fn emit<W: std::fmt::Write>(&self, w: &mut W, cx: &mut EmitCtx) -> Result<(), EmitError> {
         // Only emit the header here; the CompilationUnit emitter will emit inner content
-        cx.write_indent(w)?;
         write!(w, "namespace {};", self.name)?;
         Ok(())
     }

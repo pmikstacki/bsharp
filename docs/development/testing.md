@@ -8,44 +8,40 @@ This document provides comprehensive guidance on testing in the BSharp project, 
 
 ### External Test Structure
 
-**Critical Principle:** All parser tests are located in the `tests/` directory, **NOT** inline within parser modules.
+**Critical Principle:** Parser tests are external to implementation modules and live in a dedicated test crate.
 
 ```
-tests/
-├── lib.rs                    # Test crate root
-├── parser/
-│   ├── mod.rs               # Parser test module
-│   ├── expressions/
-│   │   ├── expression_tests.rs
-│   │   ├── lambda_expression_tests.rs
-│   │   ├── pattern_matching_tests.rs
-│   │   ├── ambiguity_tests.rs
-│   │   ├── lookahead_boundaries2_tests.rs
-│   │   └── ...
-│   ├── statements/
-│   │   ├── if_statement_tests.rs
-│   │   ├── for_statement_tests.rs
-│   │   ├── expression_statement_tests.rs
-│   │   └── ...
-│   ├── declarations/
-│   │   ├── class_declaration_tests.rs
-│   │   ├── interface_declaration_parser_tests.rs
-│   │   ├── recovery_tests.rs
-│   │   └── ...
-│   ├── types/
-│   │   ├── type_tests.rs
-│   │   ├── advanced_type_tests.rs
-│   │   └── ...
-│   ├── preprocessor/
-│   │   └── ...
-│   └── keyword_parsers_tests.rs
-└── fixtures/
-    ├── happy_path/
-    │   ├── testApplication/
-    │   └── testDependency/
-    └── complex/
-        ├── testApplication/
-        └── testDependency/
+src/bsharp_tests/
+├── cargo.toml               # Test crate manifest
+└── src/
+    ├── parser/
+    │   ├── expressions/
+    │   │   ├── expression_tests.rs
+    │   │   ├── lambda_expression_tests.rs
+    │   │   ├── pattern_matching_tests.rs
+    │   │   ├── ambiguity_tests.rs
+    │   │   ├── lookahead_boundaries2_tests.rs
+    │   │   └── ...
+    │   ├── statements/
+    │   │   ├── if_statement_tests.rs
+    │   │   ├── for_statement_tests.rs
+    │   │   ├── expression_statement_tests.rs
+    │   │   └── ...
+    │   ├── declarations/
+    │   │   ├── class_declaration_tests.rs
+    │   │   ├── interface_declaration_parser_tests.rs
+    │   │   ├── recovery_tests.rs
+    │   │   └── ...
+    │   ├── types/
+    │   │   ├── type_tests.rs
+    │   │   ├── advanced_type_tests.rs
+    │   │   └── ...
+    │   ├── preprocessor/
+    │   │   └── ...
+    │   └── keyword_parsers_tests.rs
+    └── fixtures/
+        ├── happy_path/
+        └── complex/
 ```
 
 **Rationale:**

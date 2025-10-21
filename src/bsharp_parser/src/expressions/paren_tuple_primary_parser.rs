@@ -50,7 +50,7 @@ pub fn parse_paren_or_tuple_primary(input: Span) -> BResult<Expression> {
         }
     })
         .context("parenthesized or tuple expression")
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Local tuple element syntax (named or unnamed): [name:] expression
@@ -61,7 +61,7 @@ fn parse_tuple_element_local(input: Span) -> BResult<TupleElement> {
         nom::sequence::delimited(ws, tok_colon(), ws),
         nom::sequence::delimited(ws, parse_expression, ws),
     )
-        .parse(input.into())
+        .parse(input)
     {
         return Ok((
             input,
@@ -77,7 +77,7 @@ fn parse_tuple_element_local(input: Span) -> BResult<TupleElement> {
         name: None,
         value,
     })
-        .parse(input.into())
+        .parse(input)
 }
 use crate::syntax::span::Span;
 use crate::tokens::delimiters::{tok_l_paren, tok_r_paren};

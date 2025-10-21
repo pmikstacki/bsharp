@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 use super::FormatOptions;
 
 /// Internal writer that normalizes newlines and blank lines, and trims trailing whitespace.
@@ -63,10 +64,10 @@ impl FmtWriter {
     }
 
     pub(crate) fn newline(&mut self) {
+        // Trim trailing whitespace and determine if current line is blank after trimming
         self.trim_trailing_ws_in_current_line();
+        let was_blank = self.buf.len() == self.last_line_start;
         self.buf.push_str(self.opts.newline);
-        // Determine if this was a blank line
-        let was_blank = self.at_line_start;
         self.after_newline_side_effects();
         if !was_blank { self.consecutive_blank_lines = 0; }
     }
@@ -91,13 +92,15 @@ impl FmtWriter {
         if self.opts.trim_trailing_whitespace {
             self.trim_trailing_ws_in_current_line();
         }
-        // Remove trailing blank lines beyond one line
+        // Strip all trailing whitespace (spaces, tabs, CR, LF) at EOF
+        while let Some(&b) = self.buf.as_bytes().last() {
+            if b == b' ' || b == b'\t' || b == b'\n' || b == b'\r' {
+                self.buf.pop();
+            } else { break; }
+        }
         if self.opts.ensure_final_newline {
-            // Ensure the buffer ends with a single newline only
             let nl = self.opts.newline;
-            if !self.buf.ends_with(nl) {
-                self.buf.push_str(nl);
-            }
+            self.buf.push_str(nl);
         }
         self.buf
     }

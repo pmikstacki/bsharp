@@ -70,7 +70,7 @@ pub(crate) fn parse_new_expression(input: Span) -> BResult<Expression> {
         |v| v,
     )
     .context("new expression")
-    .parse(input.into())
+    .parse(input)
 }
 
 /// Enhanced new expression with type and initializer
@@ -108,7 +108,7 @@ fn enhanced_new_with_type_and_initializer(input: Span) -> BResult<Expression> {
             }))
         },
     )
-    .parse(input.into())
+    .parse(input)
 }
 
 /// Simple new expression as fallback
@@ -139,7 +139,7 @@ fn simple_new_expression(input: Span) -> BResult<Expression> {
             }))
         },
     )
-    .parse(input.into())
+    .parse(input)
 }
 
 /// Target-typed new: new() [initializer]
@@ -178,7 +178,7 @@ fn target_typed_new_expression(input: Span) -> BResult<Expression> {
             }))
         },
     )
-    .parse(input.into())
+    .parse(input)
 }
 
 /// Enhanced initializer syntax with better error recovery
@@ -194,7 +194,7 @@ fn enhanced_initializer(input: Span) -> BResult<InitializerKind> {
         )),
         cut(delimited(ws, tok_r_brace(), ws)),
     )
-    .parse(input.into())
+    .parse(input)
 }
 
 /// Enhanced object initializer with graceful fallback
@@ -210,7 +210,7 @@ fn enhanced_object_initializer(input: Span) -> BResult<InitializerKind> {
         ),
         InitializerKind::Object,
     )
-    .parse(input.into())
+    .parse(input)
 }
 
 /// Lookahead guard to decide if we are parsing an object initializer.
@@ -230,7 +230,7 @@ fn object_initializer_guard(input: Span) -> BResult<()> {
         )),
         |_| (),
     )
-    .parse(input.into())
+    .parse(input)
 }
 
 /// Enhanced property assignment parsing
@@ -250,7 +250,7 @@ fn enhanced_property_assignment(input: Span) -> BResult<ObjectInitializerEntry> 
             ObjectInitializerEntry::Property { name, value: expr }
         },
     )
-    .parse(input.into())
+    .parse(input)
 }
 
 /// Fallback property assignment for simple cases
@@ -272,7 +272,7 @@ fn fallback_property_assignment(input: Span) -> BResult<ObjectInitializerEntry> 
             ObjectInitializerEntry::Property { name, value: expr }
         },
     )
-    .parse(input.into())
+    .parse(input)
 }
 
 /// Enhanced collection initializer
@@ -284,7 +284,7 @@ fn enhanced_collection_initializer(input: Span) -> BResult<InitializerKind> {
         ),
         InitializerKind::Collection,
     )
-    .parse(input.into())
+    .parse(input)
 }
 
 /// Indexer assignment: [expr (, expr)* ] = expr
@@ -302,7 +302,7 @@ fn parse_indexer_assignment(input: Span) -> BResult<ObjectInitializerEntry> {
         ),
         |(_, indices, _, _, value)| ObjectInitializerEntry::Indexer { indices, value },
     )
-    .parse(input.into())
+    .parse(input)
 }
 
 fn parse_anonymous_object_member(input: Span) -> BResult<AnonymousObjectMember> {
@@ -323,7 +323,7 @@ fn parse_anonymous_object_member(input: Span) -> BResult<AnonymousObjectMember> 
         // Implicit initializer: only identifiers allowed (e.g., new { Name, Age })
         parse_implicit_anon_member,
     ))
-    .parse(input.into())
+    .parse(input)
 }
 
 /// Implicit anonymous object member accepts only an identifier (C# inference).
@@ -331,17 +331,17 @@ fn parse_implicit_anon_member(input: Span) -> BResult<AnonymousObjectMember> {
     map(parse_dotted_member_expression, |value| {
         AnonymousObjectMember { name: None, value }
     })
-    .parse(input.into())
+    .parse(input)
 }
 
 /// Parse a dotted member expression like `x.Name` or `x.y.z` limited to identifiers only.
 fn parse_dotted_member_expression(input: Span) -> BResult<Expression> {
-    let (input, first) = delimited(ws, parse_identifier, ws).parse(input.into())?;
+    let (input, first) = delimited(ws, parse_identifier, ws).parse(input)?;
     let (input, rest) = nom::multi::many0(preceded(
         delimited(ws, nom_char('.'), ws),
         delimited(ws, parse_identifier, ws),
     ))
-    .parse(input.into())?;
+    .parse(input)?;
     if rest.is_empty() {
         Ok((input, Expression::Variable(first)))
     } else {

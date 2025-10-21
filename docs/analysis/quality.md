@@ -1,4 +1,4 @@
-# Code Quality Analysis (deprecated / future plan)
+# Code Quality Analysis (Conceptual / Future Plan)
 
 This document describes a future-facing design for quality analysis. The legacy `quality` module and `QualityPass` were removed from the codebase in the purge. Consider this document a proposal/reference for potential future work rather than current implementation.
 
@@ -6,7 +6,7 @@ This document describes a future-facing design for quality analysis. The legacy 
 
 ## Overview
 
-**Location:** (module removed)
+**Status:** Not implemented. The legacy module was removed; this page documents future direction.
 
 Quality analysis provides:
 - Code smell detection
@@ -626,7 +626,4 @@ analyzer.add_rule(Box::new(CustomRule));
 
 ## References
 
-- **Implementation:** `src/analysis/quality/`
-- **Rules:** `src/analysis/rules/`
-- **Tests:** `tests/analysis/quality/` (planned)
 - **Standards:** Clean Code (Robert C. Martin), Refactoring (Martin Fowler)

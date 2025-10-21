@@ -25,6 +25,6 @@ pub fn parse_ref_expression(input: Span) -> BResult<Expression> {
         |(_, expr)| Expression::Ref(Box::new(expr)),
     )
         .context("ref expression")
-        .parse(input.into())
+        .parse(input)
 }
 use crate::syntax::span::Span;

@@ -45,7 +45,7 @@ pub fn parse_switch_expression(input: Span) -> BResult<Expression> {
             Expression::SwitchExpression(Box::new(SwitchExpression { expression, arms }))
         },
     )
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Parse a single switch expression arm (pattern [when condition] => expression)
@@ -66,12 +66,12 @@ fn parse_switch_expression_arm(input: Span) -> BResult<SwitchExpressionArm> {
             expression,
         },
     )
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Parse relational expressions for when clauses
 fn parse_relational_basic_expression(input: Span) -> BResult<Expression> {
-    let (input, first) = parse_additive_basic_expression(input.into())?;
+    let (input, first) = parse_additive_basic_expression(input)?;
     let (input, rest) = nom::multi::many0((
         delimited(ws, alt((
             map(tok_ge(), |_| BinaryOperator::GreaterEqual),
@@ -83,7 +83,7 @@ fn parse_relational_basic_expression(input: Span) -> BResult<Expression> {
         )), ws),
         parse_additive_basic_expression,
     ))
-        .parse(input.into())?;
+        .parse(input)?;
 
     // Fold the results into a left-associative tree
     Ok((
@@ -100,11 +100,11 @@ fn parse_relational_basic_expression(input: Span) -> BResult<Expression> {
 /// Parse an "is" pattern expression (expression is pattern)
 pub fn parse_is_pattern_expression(input: Span) -> BResult<Expression> {
     // First try to parse a basic expression (no recursion here)
-    let (input, expr) = parse_basic_expression(input.into())?;
+    let (input, expr) = parse_basic_expression(input)?;
 
     // Then check for "is" keyword followed by pattern
-    if let Ok((input, _)) = delimited(ws, kw_is(), ws).parse(input.into()) {
-        let (input, pattern) = delimited(ws, parse_pattern, ws).parse(input.into())?;
+    if let Ok((input, _)) = delimited(ws, kw_is(), ws).parse(input) {
+        let (input, pattern) = delimited(ws, parse_pattern, ws).parse(input)?;
         Ok((
             input,
             Expression::IsPattern {
@@ -120,12 +120,12 @@ pub fn parse_is_pattern_expression(input: Span) -> BResult<Expression> {
 /// Parse basic expressions for switch/is patterns (NO RECURSION)
 /// This follows Nom's principle of small, specific parser
 fn parse_basic_expression(input: Span) -> BResult<Expression> {
-    parse_additive_basic_expression(input.into())
+    parse_additive_basic_expression(input)
 }
 
 /// Parse additive expressions (+ and -)
 fn parse_additive_basic_expression(input: Span) -> BResult<Expression> {
-    let (input, first) = parse_multiplicative_basic_expression(input.into())?;
+    let (input, first) = parse_multiplicative_basic_expression(input)?;
     let (input, rest) = nom::multi::many0((
         delimited(ws, alt((
             map(nom_char('+'), |_| BinaryOperator::Add),
@@ -133,7 +133,7 @@ fn parse_additive_basic_expression(input: Span) -> BResult<Expression> {
         )), ws),
         parse_multiplicative_basic_expression,
     ))
-        .parse(input.into())?;
+        .parse(input)?;
 
     // Fold the results into a left-associative tree
     Ok((
@@ -149,7 +149,7 @@ fn parse_additive_basic_expression(input: Span) -> BResult<Expression> {
 
 /// Parse multiplicative expressions (*, /, %)
 fn parse_multiplicative_basic_expression(input: Span) -> BResult<Expression> {
-    let (input, first) = parse_primary_basic_expression(input.into())?;
+    let (input, first) = parse_primary_basic_expression(input)?;
     let (input, rest) = nom::multi::many0((
         delimited(ws, alt((
             map(nom_char('*'), |_| BinaryOperator::Multiply),
@@ -158,7 +158,7 @@ fn parse_multiplicative_basic_expression(input: Span) -> BResult<Expression> {
         )), ws),
         parse_primary_basic_expression,
     ))
-        .parse(input.into())?;
+        .parse(input)?;
 
     // Fold the results into a left-associative tree
     Ok((
@@ -231,7 +231,7 @@ fn parse_primary_basic_expression(input: Span) -> BResult<Expression> {
             },
         ),
     )), |v| v)
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Parse switch statement cases for traditional switch statements
@@ -271,7 +271,7 @@ pub fn parse_switch_case(input: Span) -> BResult<PatternCase> {
             },
         ),
     )), |v| v)
-        .parse(input.into())
+        .parse(input)
 }
 use crate::syntax::span::Span;
 use crate::tokens::delimiters::{tok_l_brace, tok_l_paren, tok_r_brace, tok_r_paren};

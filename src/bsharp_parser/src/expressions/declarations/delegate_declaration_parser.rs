@@ -20,7 +20,7 @@ use crate::keywords::declaration_keywords::kw_delegate;
 /// Example: public delegate T MyGenericDelegate<T>(T input) where T : class;
 pub fn parse_delegate_declaration(input: Span) -> BResult<DelegateDeclaration> {
     // Attributes
-    let (input, attributes) = delimited(ws, parse_attribute_lists, ws).parse(input.into())?;
+    let (input, attributes) = delimited(ws, parse_attribute_lists, ws).parse(input)?;
 
     // Modifiers
     let (input, modifiers) = parse_modifiers_for_decl_type(input, "delegate")?;
@@ -28,35 +28,35 @@ pub fn parse_delegate_declaration(input: Span) -> BResult<DelegateDeclaration> {
     // 'delegate' keyword
     let (input, _) = delimited(ws, kw_delegate(), ws)
         .context("delegate keyword")
-        .parse(input.into())?;
+        .parse(input)?;
 
     // Return type
     let (input, return_type) = delimited(ws, parse_type_expression, ws)
         .context("delegate return type")
-        .parse(input.into())?;
+        .parse(input)?;
 
     // Name
     let (input, name) = delimited(ws, parse_identifier, ws)
         .context("delegate name")
-        .parse(input.into())?;
+        .parse(input)?;
 
     // Optional type parameters
     let (input, type_parameters) = opt(|i| delimited(ws, opt_parse_type_parameter_list, ws).parse(i))
-        .parse(input.into())?;
+        .parse(input)?;
 
     // Parameters
     let (input, parameters) = delimited(ws, parse_parameter_list, ws)
         .context("delegate parameter list")
-        .parse(input.into())?;
+        .parse(input)?;
 
     // Optional constraints
     let (input, constraints) = opt(|i| delimited(ws, parse_type_parameter_constraints_clauses, ws).parse(i))
-        .parse(input.into())?;
+        .parse(input)?;
 
     // Semicolon
     let (input, _) = delimited(ws, tok_semicolon(), ws)
         .context("semicolon")
-        .parse(input.into())?;
+        .parse(input)?;
 
     // Normalize empty Some([]) -> None
     let constraints = match constraints {

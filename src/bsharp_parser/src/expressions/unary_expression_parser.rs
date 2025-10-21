@@ -24,7 +24,7 @@ use crate::tokens::nullish::tok_not;
 /// Parse a unary expression or higher precedence constructs
 pub(crate) fn parse_unary_expression_or_higher(input: Span) -> BResult<Expression> {
     // checked(expr)
-    if let Ok((input_after_kw, _)) = delimited(ws, kw_checked(), ws).parse(input.into()) {
+    if let Ok((input_after_kw, _)) = delimited(ws, kw_checked(), ws).parse(input) {
         if let Ok((rest, _)) = delimited(ws, tok_l_paren(), ws).parse(input_after_kw) {
             let (rest, inner) = parse_expression(rest)?;
             let (rest, _) = delimited(ws, tok_r_paren(), ws).parse(rest)?;
@@ -40,7 +40,7 @@ pub(crate) fn parse_unary_expression_or_higher(input: Span) -> BResult<Expressio
     }
 
     // unchecked(expr)
-    if let Ok((input_after_kw, _)) = delimited(ws, kw_unchecked(), ws).parse(input.into()) {
+    if let Ok((input_after_kw, _)) = delimited(ws, kw_unchecked(), ws).parse(input) {
         if let Ok((rest, _)) = delimited(ws, tok_l_paren(), ws).parse(input_after_kw) {
             let (rest, inner) = parse_expression(rest)?;
             let (rest, _) = delimited(ws, tok_r_paren(), ws).parse(rest)?;
@@ -53,12 +53,12 @@ pub(crate) fn parse_unary_expression_or_higher(input: Span) -> BResult<Expressio
         }
     }
     // Try ref expression first
-    if let Ok((input, ref_expr)) = parse_ref_expression(input.into()) {
+    if let Ok((input, ref_expr)) = parse_ref_expression(input) {
         return Ok((input, ref_expr));
     }
 
     // Try enhanced await expression first (handles complex patterns)
-    if let Ok((input, await_expr)) = parse_await_expression(input.into()) {
+    if let Ok((input, await_expr)) = parse_await_expression(input) {
         return Ok((input, await_expr));
     }
 
@@ -76,9 +76,9 @@ pub(crate) fn parse_unary_expression_or_higher(input: Span) -> BResult<Expressio
         // ^ (index from end) operator as unary
         map(nom_char('^'), |_| UnaryOperator::IndexFromEnd),
     )), ws)
-        .parse(input.into())
+        .parse(input)
     {
-        let (input, operand) = parse_unary_expression_or_higher(input.into())?;
+        let (input, operand) = parse_unary_expression_or_higher(input)?;
         // If the operator is IndexFromEnd, wrap it in Expression::Index
         if op == UnaryOperator::IndexFromEnd {
             return Ok((
@@ -98,7 +98,7 @@ pub(crate) fn parse_unary_expression_or_higher(input: Span) -> BResult<Expressio
     }
 
     // Try cast expression: (Type)expression - but be more careful to avoid conflicts with parenthesized expressions
-    if let Ok((input_after_paren, _)) = delimited(ws, tok_l_paren(), ws).parse(input.into()) {
+    if let Ok((input_after_paren, _)) = delimited(ws, tok_l_paren(), ws).parse(input) {
         // Try to parse as a type, but only if it's followed by something that looks like an expression
         if let Ok((input_after_type, ty)) = parse_type_expression(input_after_paren) {
             if let Ok((input_after_close_paren, _)) = delimited(ws, tok_r_paren(), ws).parse(input_after_type) {
@@ -119,20 +119,20 @@ pub(crate) fn parse_unary_expression_or_higher(input: Span) -> BResult<Expressio
     }
 
     // Try stackalloc expression
-    if let Ok((input, stackalloc_expr)) = parse_stackalloc_expression(input.into()) {
+    if let Ok((input, stackalloc_expr)) = parse_stackalloc_expression(input) {
         return Ok((input, stackalloc_expr));
     }
 
     // Try sizeof expression
-    if let Ok((input, sizeof_expr)) = parse_sizeof_expression(input.into()) {
+    if let Ok((input, sizeof_expr)) = parse_sizeof_expression(input) {
         return Ok((input, sizeof_expr));
     }
 
     // Try typeof expression
-    if let Ok((input, typeof_expr)) = parse_typeof_expression(input.into()) {
+    if let Ok((input, typeof_expr)) = parse_typeof_expression(input) {
         return Ok((input, typeof_expr));
     }
 
     // If none of the above work, try postfix expressions
-    crate::parser::expressions::postfix_expression_parser::parse_postfix_expression_or_higher(input.into())
+    crate::parser::expressions::postfix_expression_parser::parse_postfix_expression_or_higher(input)
 }

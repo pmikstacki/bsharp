@@ -34,12 +34,12 @@ pub fn parse_file_scoped_namespace_declaration(
 
     let (input, _) = delimited(ws, kw_namespace(), ws)
         .context("namespace keyword")
-        .parse(input.into())?;
+        .parse(input)?;
     trace!("[DEBUG] parse_file_scoped_namespace_declaration: after namespace keyword");
 
     let (input, name) = delimited(ws, parse_qualified_name, ws)
         .context("namespace name")
-        .parse(input.into())?;
+        .parse(input)?;
     trace!(
         "[DEBUG] parse_file_scoped_namespace_declaration: parsed name = {:?}",
         name
@@ -48,7 +48,7 @@ pub fn parse_file_scoped_namespace_declaration(
     // Parse the semicolon (this is what makes it file-scoped)
     let (input, _) = delimited(ws, tok_semicolon(), ws)
         .context("file-scoped namespace semicolon")
-        .parse(input.into())?;
+        .parse(input)?;
     trace!("[DEBUG] parse_file_scoped_namespace_declaration: after semicolon");
 
     // Parse using directives and type declarations with a manual loop for precise control
@@ -161,7 +161,7 @@ pub fn parse_global_using(input: Span) -> BResult<GlobalUsing> {
         Ok((i, GlobalUsing { namespace }))
     })
     .context("global using declaration")
-    .parse(input.into())
+    .parse(input)
 }
 
 /// Simplified structure for global using

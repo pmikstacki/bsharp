@@ -33,7 +33,7 @@ fn parse_qualified_name(input: Span) -> BResult<Expression> {
             expr
         }
     })
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Parse a nameof expression: `nameof(identifier)` or `nameof(Class.Member)`
@@ -54,7 +54,7 @@ pub fn parse_nameof_expression(input: Span) -> BResult<Expression> {
         },
     )
         .context("nameof expression")
-        .parse(input.into())
+        .parse(input)
 }
 use crate::syntax::span::Span;
 use crate::tokens::delimiters::{tok_l_paren, tok_r_paren};

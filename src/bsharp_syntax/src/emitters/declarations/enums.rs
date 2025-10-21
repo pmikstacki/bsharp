@@ -6,9 +6,9 @@ impl Emit for EnumDeclaration {
     fn emit<W: std::fmt::Write>(&self, w: &mut W, cx: &mut EmitCtx) -> Result<(), EmitError> {
         use crate::emitters::emit_trait::Emit as _;
         // Attributes
-        for al in &self.attributes { cx.write_indent(w)?; al.emit(w, cx)?; cx.nl(w)?; }
+        for (i, al) in self.attributes.iter().enumerate() { if i != 0 { cx.write_indent(w)?; } al.emit(w, cx)?; cx.nl(w)?; }
         // Header
-        cx.write_indent(w)?;
+        if !self.attributes.is_empty() { cx.write_indent(w)?; }
         for (i, m) in self.modifiers.iter().enumerate(){ if i!=0 { w.write_char(' ')?; } m.emit(w, cx)?; }
         if !self.modifiers.is_empty() { w.write_char(' ')?; }
         w.write_str("enum ")?; write!(w, "{}", self.name)?;

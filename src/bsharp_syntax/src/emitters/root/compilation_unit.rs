@@ -4,6 +4,7 @@ use crate::ast::CompilationUnit;
 impl Emit for CompilationUnit {
     fn emit<W: std::fmt::Write>(&self, w: &mut W, cx: &mut EmitCtx) -> Result<(), EmitError> {
         use crate::emitters::emit_trait::Emit as _;
+        let _scope = cx.node_scope("CompilationUnit");
 
         let mut wrote_anything = false;
 

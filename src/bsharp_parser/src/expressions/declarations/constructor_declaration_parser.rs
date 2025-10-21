@@ -6,5 +6,5 @@ use syntax::declarations::MemberDeclaration;
 /// Parse any member declaration and let the analyzer handle semantic validation
 /// This is the pure structural approach - no semantic validation in syntax
 pub fn parse_any_member_declaration(input: Span) -> BResult<MemberDeclaration> {
-    parse_member_declaration(input.into())
+    parse_member_declaration(input)
 }

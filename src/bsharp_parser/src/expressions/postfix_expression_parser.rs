@@ -12,7 +12,6 @@ use crate::tokens::assignment::tok_assign;
 use crate::tokens::delimiters::{
     tok_l_brace, tok_l_brack, tok_l_paren, tok_r_brace, tok_r_brack, tok_r_paren,
 };
-use crate::tokens::nullish::tok_not;
 use crate::tokens::separators::{tok_colon, tok_comma};
 use nom::Parser;
 use nom::character::complete::char as nom_char;
@@ -61,11 +60,11 @@ fn parse_invocation_argument(input: Span) -> BResult<Argument> {
         ))),
         ws,
     )
-    .parse(input.into())?;
+    .parse(input)?;
 
     // Optional name label: identifier:
     let (input, name) = if let Ok((i2, (id, _))) =
-        delimited(ws, (parse_identifier, tok_colon()), ws).parse(input.into())
+        delimited(ws, (parse_identifier, tok_colon()), ws).parse(input)
     {
         (i2, Some(id))
     } else {
@@ -73,7 +72,7 @@ fn parse_invocation_argument(input: Span) -> BResult<Argument> {
     };
 
     // Expression
-    let (input, expr) = delimited(ws, parse_expression, ws).parse(input.into())?;
+    let (input, expr) = delimited(ws, parse_expression, ws).parse(input)?;
 
     Ok((
         input,
@@ -98,7 +97,7 @@ fn enhanced_method_invocation(input: Span) -> BResult<PostfixOpKind> {
         )
         .parse(i)
     }
-    map(parse_args, PostfixOpKind::Invocation).parse(input.into())
+    map(parse_args, PostfixOpKind::Invocation).parse(input)
 }
 
 /// Enhanced member access parsing
@@ -113,7 +112,7 @@ fn enhanced_member_access(input: Span) -> BResult<PostfixOpKind> {
         ),
         PostfixOpKind::MemberAccess,
     )
-    .parse(input.into())
+    .parse(input)
 }
 
 /// Enhanced indexing parsing
@@ -126,7 +125,7 @@ fn enhanced_indexing(input: Span) -> BResult<PostfixOpKind> {
         ),
         |expr| PostfixOpKind::Indexing(Box::new(expr)),
     )
-    .parse(input.into())
+    .parse(input)
 }
 
 /// Enhanced null conditional access parsing
@@ -153,7 +152,7 @@ fn enhanced_null_conditional_access(input: Span) -> BResult<PostfixOpKind> {
         )),
         |v| v,
     )
-    .parse(input.into())
+    .parse(input)
 }
 
 /// Simple postfix operations as fallback
@@ -180,7 +179,7 @@ fn simple_postfix_operations(input: Span) -> BResult<PostfixOpKind> {
         )),
         |v| v,
     )
-    .parse(input.into())
+    .parse(input)
 }
 
 /// Parse with-expression postfix: `with { Name = expr, ... }`
@@ -216,7 +215,7 @@ fn enhanced_with_expression(input: Span) -> BResult<PostfixOpKind> {
         ),
         |(_, _, inits, _)| PostfixOpKind::With(inits),
     )
-    .parse(input.into())
+    .parse(input)
 }
 
 /// Indexer assignment inside with-initializer: [expr (, expr)* ] = expr
@@ -236,7 +235,7 @@ fn parse_with_indexer_assignment(input: Span) -> BResult<WithInitializerEntry> {
         ),
         |(_, indices, _, _, value)| WithInitializerEntry::Indexer { indices, value },
     )
-    .parse(input.into())
+    .parse(input)
 }
 
 /// Enhanced postfix operation syntax with better error recovery
@@ -252,7 +251,7 @@ fn enhanced_postfix_operation(input: Span) -> BResult<PostfixOpKind> {
         )),
         |v| v,
     )
-    .parse(input.into())
+    .parse(input)
 }
 
 /// Apply a postfix operation to an expression
@@ -308,13 +307,14 @@ fn apply_postfix_operation(expr: Expression, op: PostfixOpKind) -> Expression {
 }
 
 /// Parse with-expression postfix: `with { Name = expr, ... }`
+#[allow(dead_code)]
 pub(crate) fn parse_dotted_member_expression(input: Span) -> BResult<Expression> {
-    let (input, first) = delimited(ws, parse_identifier, ws).parse(input.into())?;
+    let (input, first) = delimited(ws, parse_identifier, ws).parse(input)?;
     let (input, rest) = nom::multi::many0(preceded(
         delimited(ws, nom_char('.'), ws),
         delimited(ws, parse_identifier, ws),
     ))
-    .parse(input.into())?;
+    .parse(input)?;
     if rest.is_empty() {
         Ok((input, Expression::Variable(first)))
     } else {
@@ -328,7 +328,7 @@ pub(crate) fn parse_dotted_member_expression(input: Span) -> BResult<Expression>
 
 /// Parse a postfix-expression-or-higher: primary-expression followed by zero or more postfix operations
 pub(crate) fn parse_postfix_expression_or_higher(input: Span) -> BResult<Expression> {
-    let (mut cur, base) = delimited(ws, parse_primary_expression, ws).parse(input.into())?;
+    let (mut cur, base) = delimited(ws, parse_primary_expression, ws).parse(input)?;
     let mut expr = base;
     loop {
         // Detect if a postfix starter is present; if not, break.

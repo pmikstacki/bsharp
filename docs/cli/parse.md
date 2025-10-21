@@ -1,13 +1,13 @@
 # Parse Command
 
-The `parse` command parses C# source code and outputs a JSON representation of the Abstract Syntax Tree (AST).
+The `parse` command parses C# source code and prints a textual AST tree representation to stdout.
 
 ---
 
 ## Usage
 
 ```bash
-bsharp parse <INPUT> [--output <FILE>] [--errors-json] [--no-color] [--lenient]
+bsharp parse <INPUT> [--errors-json] [--no-color] [--lenient]
 ```
 
 ### Arguments
@@ -19,13 +19,11 @@ bsharp parse <INPUT> [--output <FILE>] [--errors-json] [--no-color] [--lenient]
 
 ### Options
 
-**`--output, -o <FILE>`** (optional)
-- Output file path for JSON
-- Default: `<input>.json`
-
 **`--errors-json`**
 - Print a machine-readable JSON error object to stdout on parse failure and exit non-zero
 - Disables pretty error output
+
+See: [Parse Errors JSON Output](./errors-json.md)
 
 **`--no-color`**
 - Disable ANSI colors in pretty error output
@@ -35,81 +33,31 @@ bsharp parse <INPUT> [--output <FILE>] [--errors-json] [--no-color] [--lenient]
 
 ---
 
+Note: The `--output` option is currently not used; the command writes the textual tree to stdout.
+
 ## Examples
 
 ### Basic Parsing
 
 ```bash
-# Parse and output to default file (Program.json)
-bsharp parse Program.cs
-
-# Parse and specify output file
-bsharp parse Program.cs --output ast.json
-
-# Parse and output to stdout (if no --output specified and stdout is not a TTY)
+# Parse and print textual AST tree to stdout
 bsharp parse Program.cs
 ```
 
 ### Batch Parsing
 
 ```bash
-# Parse all C# files in directory
+# Parse all C# files in a directory (prints textual trees)
 for file in src/**/*.cs; do
-    bsharp parse "$file" --output "parsed/$(basename $file .cs).json"
+    bsharp parse "$file"
 done
 ```
 
 ---
 
-## Output Format
+## Output
 
-### JSON Structure
-
-```json
-{
-  "global_attributes": [],
-  "using_directives": [
-    { "Namespace": { "namespace": { "name": "System" } } }
-  ],
-  "declarations": [
-    {
-      "Class": {
-        "attributes": [],
-        "modifiers": ["Public"],
-        "name": { "name": "Program" },
-        "type_parameters": null,
-        "base_types": [],
-        "body_declarations": [
-          {
-            "Method": {
-              "attributes": [],
-              "modifiers": ["Public", "Static"],
-              "return_type": { "Primitive": "Void" },
-              "name": { "name": "Main" },
-              "parameters": [],
-              "body": { "Block": [] }
-            }
-          }
-        ]
-      }
-    }
-  ],
-  "file_scoped_namespace": null,
-  "top_level_statements": []
-}
-```
-
-### AST Node Structure
-
-All AST nodes follow the naming convention:
-- **PascalCase** names
-- **No 'Syntax' suffix**
-- Descriptive names indicating C# construct
-
-Examples:
-- `ClassDeclaration` (not `ClassDeclarationSyntax`)
-- `MethodDeclaration` (not `MethodDeclarationSyntax`)
-- `IfStatement` (not `IfStatementSyntax`)
+The command prints a human-readable textual tree describing the AST. For visualization outputs (Mermaid/DOT), use the `tree` command.
 
 ---
 

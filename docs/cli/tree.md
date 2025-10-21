@@ -203,11 +203,18 @@ The class structure shows...
 **Location:** `src/bsharp_cli/src/commands/tree.rs`
 
 ```rust
-pub fn execute(input: PathBuf, output: Option<PathBuf>, format: String) -> Result<()> {
-    // Parses input with lenient mode, then writes Mermaid (.mmd) or DOT (.dot)
-    // via generate_mermaid_ast(&ast) or generate_dot_ast(&ast).
+pub fn execute(args: Box<TreeArgs>) -> Result<()> {
+    // Parses input in lenient mode, then writes Mermaid (.mmd) or DOT (.dot)
+    // using bsharp_syntax::node::render::{to_mermaid, to_dot}.
     # Ok(())
 }
+```
+
+Renderer functions live in `src/bsharp_syntax/src/node/render.rs`:
+
+```rust
+to_mermaid(&ast);
+to_dot(&ast);
 ```
 
 ---
@@ -271,7 +278,7 @@ pub fn execute(input: PathBuf, output: Option<PathBuf>, format: String) -> Resul
 ## Related Documentation
 
 - [CLI Overview](./overview.md) - General CLI usage
-- [Parse Command](./parse.md) - Parse to JSON
+- [Parse Command](./parse.md) - Parse textual AST tree
 - [AST Structure](../parser/ast-structure.md) - AST node reference
 
 ---

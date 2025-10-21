@@ -7,16 +7,16 @@ use crate::trivia::preprocessor_directive_parser::parse_preprocessor_directive;
 /// Returns the remaining slice after skipping zero or more directives and trailing whitespace.
 pub fn skip_preprocessor_directives(mut input: Span, ws_first: bool) -> Span {
     if ws_first {
-        if let Ok((r, _)) = ws(input.into()) {
+        if let Ok((r, _)) = ws(input) {
             input = r;
         }
     }
     loop {
         // Always consume whitespace/comments between attempts
-        if let Ok((r, _)) = ws(input.into()) {
+        if let Ok((r, _)) = ws(input) {
             input = r;
         }
-        match parse_preprocessor_directive(input.into()) {
+        match parse_preprocessor_directive(input) {
             Ok((rest, _dir)) => {
                 input = rest;
                 // Continue loop to consume subsequent directives

@@ -28,5 +28,5 @@ pub fn parse_typeof_expression(input: Span) -> BResult<Expression> {
         |target_type| Expression::Typeof(Box::new(TypeofExpression { target_type })),
     )
         .context("typeof expression")
-        .parse(input.into())
+        .parse(input)
 }

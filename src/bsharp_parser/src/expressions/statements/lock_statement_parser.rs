@@ -35,7 +35,7 @@ pub fn parse_lock_statement(input: Span) -> BResult<Statement> {
         },
     )
         .context("lock statement")
-        .parse(input.into())
+        .parse(input)
 }
 use crate::syntax::span::Span;
 use crate::tokens::delimiters::{tok_l_paren, tok_r_paren};

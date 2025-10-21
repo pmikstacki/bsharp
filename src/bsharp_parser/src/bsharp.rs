@@ -529,7 +529,7 @@ fn build_decl_key_with_prefix(
 
 /// Temporary no-op: member-level span collection will be implemented in Milestone B.
 fn collect_class_member_spans(
-    whole: &str,
+    _whole: &str,
     class_slice: &str,
     class_abs_start: usize,
     file_scoped_ns: Option<&str>,

@@ -6,8 +6,13 @@ impl Emit for DoWhileStatement {
         use crate::emitters::emit_trait::Emit as _;
         w.write_str("do")?;
         cx.nl(w)?; cx.write_indent(w)?;
+        let is_block = matches!(self.body.as_ref(), crate::statements::statement::Statement::Block(_));
         self.body.emit(w, cx)?;
-        cx.nl(w)?; cx.write_indent(w)?;
+        if is_block {
+            w.write_char(' ')?;
+        } else {
+            cx.nl(w)?; cx.write_indent(w)?;
+        }
         w.write_str("while (")?;
         self.condition.emit(w, cx)?;
         w.write_str(");")?;

@@ -33,8 +33,8 @@ BSharp is designed as a **modular, extensible C# parser and analysis toolkit** w
 - Error messages require additional work (addressed with nom-supreme)
 
 **Implementation:**
-- Core parsing infrastructure: `src/syntax/parser_helpers.rs`
-- Parser implementations: `src/parser/`
+- Core parsing infrastructure: `src/bsharp_parser/src/helpers/`
+- Parser implementations: `src/bsharp_parser/src/`
 - All parsers return `BResult<I, O>` type alias
 
 ### Error Handling Strategy
@@ -189,6 +189,22 @@ pub struct ClassDeclaration {
 - **Memory Efficiency**: Lower memory footprint
 - **Trade-off**: Some allocations necessary for AST lifetime
 
+### Spans and Location Tracking
+
+**Decision:** Track source locations via spans for precise diagnostics and tooling.
+
+**Implementation:**
+- `Span` type based on `nom_locate::LocatedSpan` lives in `src/bsharp_parser/src/syntax/span.rs` and is re-exported through the public parser API.
+- The parser facade supports `parse_with_spans()` which returns both the AST and span table for mapping nodes back to source locations.
+- Error reporting uses spans to include line/column, highlighting ranges via `format_error_tree()`.
+
+**Rationale:**
+- **Diagnostics:** Accurate error locations and ranges.
+- **Tooling:** Enables IDE features, navigation, and source mapping.
+- **Testing:** Stable, comparable locations for snapshot tests.
+
+**See also:** `docs/syntax/spans.md`.
+
 ---
 
 ## Analysis Framework
@@ -250,19 +266,43 @@ pub struct AstWalker {
 
 ### Query API
 
-**Decision:** Use a typed Query API over a minimal `NodeRef` to traverse the AST.
+**Decision:** Use a typed Query API over a minimal `NodeRef` to traverse the AST. This is the current traversal API; the term “legacy” only refers to older navigation traits that the Query API replaced.
 
 **Implementation:**
 - `NodeRef` enumerates coarse node categories (compilation unit, namespaces, declarations, methods, statements, expressions), and now includes top-level items like file-scoped namespaces, using directives, global using directives, and global attributes.
 - `Children` provides child enumeration for `NodeRef`.
 - `Extract<T>` enables `Query::of<T>()` to yield typed nodes without extending `NodeRef` for every concrete type.
 - Macro helpers `impl_extract_expr!` and `impl_extract_stmt!` simplify adding `Extract` impls for expression/statement variants.
+ - Location: `src/bsharp_syntax/src/query/` (re-exported as `bsharp_analysis::framework::Query`)
 
 **Rationale:**
 - **Composability**: Typed filters via `Query::filter_typed`.
 - **Maintainability**: Avoids wide trait surfaces and duplicated traversal.
 - **Performance**: Focused walkers remain available for hot paths.
 - **Determinism**: Traversal order and artifact hashing remain stable.
+
+**See also:**
+- `docs/parser/navigation.md` (Query API overview)
+- `docs/analysis/traversal-guide.md` (using Query in passes)
+- `docs/development/query-cookbook.md` (recipes)
+
+---
+
+## Formatting and Emitters
+
+**Decision:** Implement formatting via an `Emit` trait with per-node emitters in `bsharp_syntax`.
+
+**Implementation:**
+- `Emit` trait and emitters live under `src/bsharp_syntax/src/emitters/` (e.g., `emitters/declarations/*`, `emitters/expressions/*`, `emitters/statements/*`).
+- Formatting is separated from parsing; emitters reconstruct code from AST with consistent whitespace and trivia handling.
+- Trivia and XML doc emitters are under `emitters/trivia/`.
+
+**Rationale:**
+- **Separation of Concerns:** Parsing and formatting evolve independently.
+- **Consistency:** Centralized formatting rules for all nodes.
+- **Extensibility:** Adding a new node implies an `Emit` impl in a known location.
+
+**See also:** `docs/syntax/formatter.md`.
 
 ---
 

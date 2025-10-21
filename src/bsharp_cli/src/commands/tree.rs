@@ -1,20 +1,35 @@
 use anyhow::{anyhow, Context, Result};
+use clap::{arg, Args};
 use std::fs;
 use std::path::PathBuf;
 
 // Import from containing crate
 use bsharp_parser::bsharp::parse_csharp_source;
-use bsharp_parser::syntax::span::Span;
-use bsharp_parser::expressions::statements::UsingDirective;
 use bsharp_parser::parse_mode;
 use bsharp_parser::syntax::node::render;
+use bsharp_parser::syntax::span::Span;
 use std::sync::{Mutex, OnceLock};
 
+#[derive(Args, Debug, Clone)]
+pub struct TreeArgs {
+    /// The input C# file to parse
+    #[arg(required = true)]
+    pub input: PathBuf,
+
+    /// The output file (defaults to <input>.mmd for Mermaid or <input>.dot for Graphviz)
+    #[arg(short, long)]
+    pub output: Option<PathBuf>,
+
+    /// Output format: mermaid (default) or dot/graphviz
+    #[arg(long, value_parser = ["mermaid", "dot", "graphviz"], default_value = "mermaid")]
+    pub format: String,
+}
+
 /// Execute the tree command: generate a Mermaid (default) or Graphviz (DOT) visualization of the AST
-pub fn execute(input: PathBuf, output: Option<PathBuf>, format: String) -> Result<()> {
+pub fn execute(args: TreeArgs) -> Result<()> {
     // Read the source code
-    let source_code = fs::read_to_string(&input)
-        .with_context(|| format!("Failed to read file: {}", input.display()))?;
+    let source_code = fs::read_to_string(&args.input)
+        .with_context(|| format!("Failed to read file: {}", args.input.display()))?;
 
     // Parse the source code using lenient parser to maximize visualization coverage.
     // Guard global parse_mode with a process-wide mutex to avoid races in parallel tests.
@@ -28,9 +43,9 @@ pub fn execute(input: PathBuf, output: Option<PathBuf>, format: String) -> Resul
     let (_remaining, ast) = parse_result.map_err(|e| anyhow!("Parse error: {:?}", e))?;
 
     // Determine output path based on requested format
-    let fmt = format.to_lowercase();
-    let output_path = output.unwrap_or_else(|| {
-        let mut path = input.clone();
+    let fmt = args.format.to_lowercase();
+    let output_path = args.output.clone().unwrap_or_else(|| {
+        let mut path = args.input.clone();
         match fmt.as_str() {
             "dot" | "graphviz" => path.set_extension("dot"),
             _ => path.set_extension("mmd"), // default to Mermaid extension
@@ -62,15 +77,4 @@ pub fn execute(input: PathBuf, output: Option<PathBuf>, format: String) -> Resul
     Ok(())
 }
 
-// Legacy helpers retained only for format_using_directive
-
-fn format_using_directive(using: &UsingDirective) -> String {
-    match using {
-        UsingDirective::Namespace { namespace } => format!("using {};", namespace.to_string()),
-        UsingDirective::Alias {
-            alias,
-            namespace_or_type,
-        } => format!("using {} = {};", alias.to_string(), namespace_or_type.to_string()),
-        UsingDirective::Static { type_name } => format!("using static {};", type_name.to_string()),
-    }
-}
+// (removed unused legacy helper)

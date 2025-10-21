@@ -13,7 +13,7 @@ use crate::tokens::assignment::{tok_add_assign, tok_and_assign, tok_assign, tok_
 pub(crate) fn parse_assignment_expression_or_higher(input: Span) -> BResult<Expression> {
     // Try to parse a conditional expression first
     let (input, left) =
-        conditional_expression_parser::parse_conditional_expression_or_higher(input.into())?;
+        conditional_expression_parser::parse_conditional_expression_or_higher(input)?;
 
     // Check for assignment operators - order matters, longer operators first
     let (input, assignment_op) = opt(
@@ -56,11 +56,11 @@ pub(crate) fn parse_assignment_expression_or_higher(input: Span) -> BResult<Expr
             // Simple assignment last
             map(tok_assign(), |_| BinaryOperator::Assign),
         )), ws))
-        .parse(input.into())?;
+        .parse(input)?;
 
     if let Some(op) = assignment_op {
         // Parse the right side of the assignment (right-associative)
-        let (input, right) = parse_assignment_expression_or_higher(input.into())?;
+        let (input, right) = parse_assignment_expression_or_higher(input)?;
 
         // If the left is a bitwise binary and op is the corresponding compound assignment,
         // restructure to preserve precedence: a & b &= c => a & (b &= c)

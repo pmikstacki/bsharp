@@ -128,6 +128,6 @@ pub fn parse_preprocessor_directive(input: Span) -> BResult<PreprocessorDirectiv
         Ok((i, directive))
     })
         .context("preprocessor directive")
-        .parse(input.into())
+        .parse(input)
 }
 use crate::syntax::span::Span;

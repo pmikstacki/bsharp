@@ -16,7 +16,7 @@ use syntax::expressions::Expression;
 /// Parse a collection expression: [elem1, ..spread, elem2]
 /// Elements can be regular expressions or spread elements starting with `..` followed by an expression
 pub fn parse_collection_expression(input: Span) -> BResult<Expression> {
-    parse_collection_expression_or_brackets(input.into())
+    parse_collection_expression_or_brackets(input)
 }
 
 /// Actual entry point with proper bracket handling
@@ -32,17 +32,17 @@ pub fn parse_collection_expression_or_brackets(input: Span) -> BResult<Expressio
         )
             .parse(i)
     }
-    map(parse_elements, Expression::Collection).parse(input.into())
+    map(parse_elements, Expression::Collection).parse(input)
 }
 
 fn parse_collection_element(input: Span) -> BResult<CollectionElement> {
     // Try spread element: `.. expr`
-    if let Ok((rest, _)) = delimited(ws, preceded(nom_char('.'), nom_char('.')), ws).parse(input.into()) {
+    if let Ok((rest, _)) = delimited(ws, preceded(nom_char('.'), nom_char('.')), ws).parse(input) {
         let (rest, expr) = delimited(ws, parse_expression, ws).parse(rest)?;
         return Ok((rest, CollectionElement::Spread(expr)));
     }
     // Otherwise a normal expression
-    map(delimited(ws, parse_expression, ws), CollectionElement::Expr).parse(input.into())
+    map(delimited(ws, parse_expression, ws), CollectionElement::Expr).parse(input)
 }
 use crate::syntax::span::Span;
 use crate::tokens::delimiters::{tok_l_brack, tok_r_brack};

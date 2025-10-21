@@ -5,16 +5,16 @@
 - Deterministic interpreter with clear errors for unsupported opcodes.
 
 ## Detailed tasks
-- **[runtime-values]** Define runtime types
+- **runtime-values** Define runtime types
   - `Value`: bool, i32/i64, f32/f64, (opaque) object ref, (opaque) string handle (planned), Null.
   - Numeric conversions (implicit in MVP avoided; explicit `conv.*` deferred to Phase 4).
-- **[frames]** Implement frames and call stack
+- **frames** Implement frames and call stack
   - Frame: args, locals, evaluation stack (Vec<Value>), instruction pointer (u32 offset), method handle.
   - Stack discipline: push/pop per opcode; underflow/overflow checks with good diagnostics (offset, opcode).
-- **[loader]** Load IL and metadata with dotscope
+- **loader** Load IL and metadata with dotscope
   - Use `CilAssemblyView::from_file(path)` to load DLLs.
   - For a `MethodDef`, obtain method body bytes + header; optionally disassemble via `assembly` module for debugging.
-- **[decoder]** Instruction decoding
+- **decoder** Instruction decoding
   - Implement a minimal decoder (or iterate via dotscope disassembly) for:
     - `ldc.i4`, `ldc.i8`, `ldc.r4`, `ldc.r8`, short forms where convenient.
     - `ldloc.*`/`stloc.*`, `ldarg.*`/`starg.*` (including short forms `_0`..`_3`).
@@ -23,10 +23,10 @@
     - Branching: `br`/`br.s`, `brtrue`/`brfalse` with signed relative offsets.
     - `ret`.
     - `call` (static) within same module.
-- **[calls]** Static calls
+- **calls** Static calls
   - Resolve `MethodDef`/`MemberRef` to a method body within the same `CilAssemblyView`.
   - Create new frame with provided args; return pushes result if any.
-- **[host-intrinsics]** Minimal IO
+- **host-intrinsics** Minimal IO
   - Register a small set of host intrinsics (e.g., `Console.WriteLine(int)` equivalent) mapped by token to Rust closures.
   - MVP: avoid strings; provide `print_i32` style helper.
 

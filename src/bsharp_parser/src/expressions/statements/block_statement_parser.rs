@@ -39,7 +39,7 @@ pub fn parse_block_statement(input: Span) -> BResult<Statement> {
         Statement::Block,
     )
         .context("block statement")
-        .parse(input.into())
+        .parse(input)
 }
 use crate::syntax::span::Span;
 use crate::tokens::delimiters::{tok_l_brace, tok_r_brace};

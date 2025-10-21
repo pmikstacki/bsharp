@@ -21,24 +21,24 @@ fn parse_field_initializer(input: Span) -> BResult<Option<Expression>> {
         delimited(ws, parse_expression, ws)
             .context("field initializer expression"),
     ))
-        .parse(input.into())
+        .parse(input)
 }
 
 // Parse a field declaration
 // Format: [Modifiers] TypeSyntax Identifier [= Initializer];
 pub fn parse_field_declaration(input: Span) -> BResult<FieldDeclaration> {
     // Parse modifiers (private, readonly, etc.)
-    let (input, modifiers) = parse_modifiers(input.into())?;
+    let (input, modifiers) = parse_modifiers(input)?;
     let (input, ty) = delimited(ws, parse_type_expression, ws)
         .context("field type")
-        .parse(input.into())?;
+        .parse(input)?;
     let (input, name) = delimited(ws, parse_identifier, ws)
         .context("field name")
-        .parse(input.into())?;
-    let (input, initializer) = parse_field_initializer(input.into())?;
+        .parse(input)?;
+    let (input, initializer) = parse_field_initializer(input)?;
     let (input, _) = delimited(ws, tok_semicolon(), ws)
         .context("field declaration terminator")
-        .parse(input.into())?;
+        .parse(input)?;
 
     Ok((
         input,

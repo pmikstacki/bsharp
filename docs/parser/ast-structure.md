@@ -104,40 +104,79 @@ The expression system covers all C# expression types with proper precedence:
 
 ```rust
 pub enum Expression {
-    // Primary expressions
+    // Primary and names
     Literal(Literal),
-    Identifier(Identifier),
-    Parenthesized(Box<Expression>),
-    
-    // Member access
-    MemberAccess { object: Box<Expression>, member: Identifier },
-    ElementAccess { object: Box<Expression>, arguments: Vec<Expression> },
-    
-    // Method calls
-    Invocation { expression: Box<Expression>, arguments: Vec<Expression> },
-    
+    Variable(Identifier),
+
+    // Object and member operations
+    New(Box<NewExpression>),
+    MemberAccess(Box<MemberAccessExpression>),
+    Invocation(Box<InvocationExpression>),
+    Indexing(Box<IndexingExpression>),
+    Index(Box<IndexExpression>),
+    Range(Box<RangeExpression>),
+
+    // Lambda and anonymous methods
+    Lambda(Box<LambdaExpression>),
+    AnonymousMethod(Box<AnonymousMethodExpression>),
+
+    // Keywords
+    This,
+    Base,
+
     // Operators
-    Unary { operator: UnaryOperator, operand: Box<Expression> },
-    Binary { left: Box<Expression>, operator: BinaryOperator, right: Box<Expression> },
-    
-    // Assignment
-    Assignment { left: Box<Expression>, operator: AssignmentOperator, right: Box<Expression> },
-    
-    // Object creation
-    ObjectCreation { type_: Type, arguments: Vec<Expression> },
-    ArrayCreation { type_: Type, dimensions: Vec<Expression> },
-    
-    // Modern features
-    Lambda(LambdaExpression),
-    Query(QueryExpression),
-    Await(Box<AwaitExpression>),
-    Switch(SwitchExpression),
-    
-    // Type operations
+    Unary { op: UnaryOperator, expr: Box<Expression> },
+    Binary { left: Box<Expression>, op: BinaryOperator, right: Box<Expression> },
+    PostfixUnary { op: UnaryOperator, expr: Box<Expression> },
+    Assignment(Box<AssignmentExpression>),
+
+    // Patterns and type ops
+    Pattern(Box<Pattern>),
+    IsPattern { expression: Box<Expression>, pattern: Box<Pattern> },
+    As { expression: Box<Expression>, target_type: Type },
     Cast { expression: Box<Expression>, target_type: Type },
-    TypeCheck { expression: Box<Expression>, target_type: Type },
-    
-    // And many more...
+
+    // Misc language features
+    Conditional(Box<ConditionalExpression>),
+    Query(Box<QueryExpression>),
+    Await(Box<AwaitExpression>),
+    Throw(Box<ThrowExpression>),
+    Nameof(Box<NameofExpression>),
+    Typeof(Box<TypeofExpression>),
+    Sizeof(Box<SizeofExpression>),
+    Default(Box<DefaultExpression>),
+    StackAlloc(Box<StackAllocExpression>),
+    Ref(Box<Expression>),
+    Checked(Box<CheckedExpression>),
+    Unchecked(Box<UncheckedExpression>),
+
+    // With/collection expressions
+    With { target: Box<Expression>, initializers: Vec<WithInitializerEntry> },
+    Collection(Vec<CollectionElement>),
+
+    // Composite forms
+    AnonymousObject(AnonymousObjectCreationExpression),
+    Tuple(TupleExpression),
+    SwitchExpression(Box<SwitchExpression>),
+}
+```
+
+Key helper structs:
+
+```rust
+pub struct SwitchExpression {
+    pub expression: Expression,
+    pub arms: Vec<SwitchExpressionArm>,
+}
+
+pub enum WithInitializerEntry {
+    Property { name: String, value: Expression },
+    Indexer { indices: Vec<Expression>, value: Expression },
+}
+
+pub enum CollectionElement {
+    Expr(Expression),
+    Spread(Expression),
 }
 ```
 

@@ -26,7 +26,7 @@ pub fn parse_throw_statement(input: Span) -> BResult<Statement> {
         |(_, expr_opt, _)| Statement::Throw(expr_opt.map(Box::new)),
     )
         .context("throw statement")
-        .parse(input.into())
+        .parse(input)
 }
 use crate::syntax::span::Span;
 use crate::tokens::separators::tok_semicolon;

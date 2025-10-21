@@ -25,7 +25,7 @@ BSharp consists of several key components:
 
 - **Robust Error Handling**: Custom error types with context information for debugging parse failures
 
-- **Query API**: Typed, ergonomic traversal of the AST via `framework::query::Query`
+- **Query API**: Typed, ergonomic traversal of the AST via `bsharp_analysis::framework::Query`
 
 - **Code Analysis**: Built-in analyzers for:
   - Control flow analysis
@@ -76,23 +76,27 @@ src/
 <!-- Code generation/compilation is currently out of scope and intentionally omitted. -->
 
 **CLI Tools (`src/bsharp_cli/`)**
-- `parse` - Parse C# to JSON
+- `parse` - Parse C# and print textual AST tree
 - `tree` - Generate AST visualization (Mermaid/DOT)
 - `analyze` - Comprehensive code analysis
+- `format` - Format C# code using syntax emitters
 
 ## Getting Started
 
 The easiest way to get started is using the CLI tools:
 
 ```bash
-# Parse a C# file and output JSON
-bsharp parse input.cs --output output.json
+# Parse a C# file and print textual AST tree
+bsharp parse input.cs
 
 # Generate AST visualization
 bsharp tree input.cs --output ast.svg
 
 # Analyze a project or solution
 bsharp analyze MyProject.csproj --out report.json
+
+# Format a file in-place (or a directory recursively)
+bsharp format input.cs --write true
 ```
 
 ## Use Cases

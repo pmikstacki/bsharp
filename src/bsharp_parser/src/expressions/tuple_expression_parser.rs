@@ -37,7 +37,7 @@ pub fn parse_tuple_expression(input: Span) -> BResult<Expression> {
         },
     )
         .context("tuple expression")
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Parse a tuple element: [name:] expression
@@ -48,7 +48,7 @@ fn parse_tuple_element(input: Span) -> BResult<TupleElement> {
         delimited(ws, tok_colon(), ws),
         delimited(ws, parse_expression, ws),
     )
-        .parse(input.into())
+        .parse(input)
     {
         return Ok((
             input,
@@ -64,7 +64,7 @@ fn parse_tuple_element(input: Span) -> BResult<TupleElement> {
         name: None,
         value,
     })
-        .parse(input.into())
+        .parse(input)
 }
 use crate::syntax::span::Span;
 use crate::tokens::delimiters::{tok_l_paren, tok_r_paren};

@@ -387,14 +387,14 @@ impl HalsteadMetrics {
 
 ## Metrics Collection in the Pipeline
 
-`MetricsPass` is registered in the analyzer registry and runs during `Phase::LocalRules`. It enumerates classes/structs/methods via `Query` and uses helpers from `metrics::shared` to compute statement counts, decision points (cyclomatic complexity), and nesting.
+`MetricsPass` is registered in the analyzer registry and runs during `Phase::LocalRules`. It enumerates classes/structs/methods via `Query` and uses helpers from `bsharp_analysis::metrics::shared` to compute statement counts, decision points (cyclomatic complexity), and nesting.
 
 ```rust
-use analysis::context::AnalysisContext;
-use analysis::framework::pipeline::AnalyzerPipeline;
-use analysis::framework::session::AnalysisSession;
-use analysis::metrics::AstAnalysis;
-use parser::facade::Parser;
+use bsharp_analysis::context::AnalysisContext;
+use bsharp_analysis::framework::pipeline::AnalyzerPipeline;
+use bsharp_analysis::framework::session::AnalysisSession;
+use bsharp_analysis::metrics::AstAnalysis;
+use bsharp_parser::facade::Parser;
 
 let source = r#"public class C { public void M() { if (true) { } } }"#;
 let (cu, spans) = Parser::new().parse_with_spans(source)?;
@@ -524,7 +524,7 @@ println!("Cyclomatic Complexity: {}", metrics.cyclomatic_complexity);
 
 ## References
 
-- **Implementation:** `src/analysis/metrics/`
-- **Visitor:** `src/analysis/metrics/visitor.rs`
-- **Tests:** `tests/analysis/metrics/` (planned)
+- **Implementation:** `src/bsharp_analysis/src/metrics/`
+- **Pass:** `src/bsharp_analysis/src/passes/metrics.rs`
+- **Tests:** `src/bsharp_tests/src/analysis/metrics/` (planned)
 - **Standards:** ISO/IEC 25023 (Software Quality Metrics)

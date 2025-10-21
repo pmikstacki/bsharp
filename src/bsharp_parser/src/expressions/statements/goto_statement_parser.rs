@@ -21,7 +21,7 @@ pub fn parse_goto_statement(input: Span) -> BResult<Statement> {
         |(_, label, _)| Statement::Goto(GotoStatement { label }),
     )
         .context("goto statement")
-        .parse(input.into())
+        .parse(input)
 }
 use crate::syntax::span::Span;
 use crate::tokens::separators::tok_semicolon;

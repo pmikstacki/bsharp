@@ -1,17 +1,17 @@
 
 # Query API for AST traversal
 
-The analysis framework provides a typed, composable Query API for traversing the AST. It replaces legacy navigation traits.
+The Query API is provided by the `bsharp_syntax` crate and re-exported by `bsharp_analysis` for convenience. It replaces older navigation traits, but the Query API itself is current and not deprecated.
 
 ## Core types
 
-- `NodeRef<'a>`: a thin enum over AST nodes (`CompilationUnit`, `Namespace`, `Class`, `Struct`, `Interface`, `Enum`, `Record`, `Delegate`, `Method`, `Statement`, `Expression`, plus top-level items). See `framework/node_ref.rs`.
-- `Query<'a>`: a fluent helper to enumerate descendants and select typed nodes. See `framework/query/`.
+- `NodeRef<'a>`: a thin enum over AST nodes (`CompilationUnit`, `Namespace`, `Class`, `Struct`, `Interface`, `Enum`, `Record`, `Delegate`, `Method`, `Statement`, `Expression`, plus top-level items). Origin: `bsharp_syntax::node::ast_node::NodeRef` (re-exported as `bsharp_analysis::framework::NodeRef`).
+- `Query<'a>`: a fluent helper to enumerate descendants and select typed nodes. Origin: `bsharp_syntax::query::Query` (re-exported as `bsharp_analysis::framework::Query`).
 
 ```rust
-use analysis::framework::{NodeRef, Query};
-use analysis::syntax::ast::CompilationUnit;
-use analysis::syntax::declarations::{ClassDeclaration, MethodDeclaration};
+use bsharp_analysis::framework::{NodeRef, Query};
+use bsharp_syntax::CompilationUnit;
+use bsharp_syntax::{ClassDeclaration, MethodDeclaration};
 
 fn all_classes<'a>(cu: &'a CompilationUnit) -> Vec<&'a ClassDeclaration> {
     Query::from(NodeRef::CompilationUnit(cu))
@@ -31,8 +31,8 @@ fn all_methods<'a>(cu: &'a CompilationUnit) -> Vec<&'a MethodDeclaration> {
 `Query::descendants()` walks the tree using `Children` implemented for `NodeRef`.
 
 ```rust
-use analysis::framework::{NodeRef, Query};
-use analysis::syntax::statements::statement::Statement;
+use bsharp_analysis::framework::{NodeRef, Query};
+use bsharp_syntax::statements::Statement;
 
 fn all_statements<'a>(cu: &'a CompilationUnit) -> Vec<&'a Statement> {
     Query::from(NodeRef::CompilationUnit(cu))
@@ -63,7 +63,7 @@ let public_classes: Vec<&ClassDeclaration> =
 ## Implementation notes
 
 The `Children`/`Extract` traits are implemented for common AST nodes, enabling `Query::of<T>()` to return strong types. See:
-- `framework/query/` for `Children`, `Extract`, `Query`.
-- `framework/node_ref.rs` for `NodeRef`.
+- `src/bsharp_syntax/src/query/` for `Children`, `Extract`, `Query`.
+- `src/bsharp_syntax/src/node/ast_node.rs` for `NodeRef`.
 
 <!-- Legacy sections removed; this page documents the current Query API only. -->

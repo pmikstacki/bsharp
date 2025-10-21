@@ -33,6 +33,6 @@ namespace N {
     assert!(deps.edges >= 1);
 
     // High complexity / deep nesting methods should be counted relative to thresholds
-    assert!(cfg.high_complexity_methods >= 0);
-    assert!(cfg.deep_nesting_methods >= 0);
+    assert!(cfg.high_complexity_methods <= cfg.total_methods);
+    assert!(cfg.deep_nesting_methods <= cfg.total_methods);
 }

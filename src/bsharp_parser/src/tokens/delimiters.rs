@@ -17,7 +17,7 @@ pub fn tok_l_brace() -> impl FnMut(Span) -> BResult<char> {
 }
 
 pub fn tok_peek_l_brace() -> impl FnMut(Span) -> BResult<char> {
-    move |input: Span| nom::combinator::peek(tok_l_brace()).parse(input.into())
+    move |input: Span| nom::combinator::peek(tok_l_brace()).parse(input)
 }
 
 pub fn tok_r_brace() -> impl FnMut(Span) -> BResult<char> {
@@ -29,6 +29,6 @@ pub fn tok_r_brace() -> impl FnMut(Span) -> BResult<char> {
 }
 
 pub fn tok_peek_r_brace() -> impl FnMut(Span) -> BResult<char> {
-    move |input: Span| nom::combinator::peek(tok_r_brace()).parse(input.into())
+    move |input: Span| nom::combinator::peek(tok_r_brace()).parse(input)
 }
 

@@ -17,3 +17,4 @@ mod integration;
 // Workspace readers/loader tests
 mod il;
 mod workspace;
+mod formatter;

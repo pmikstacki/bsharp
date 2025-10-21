@@ -26,7 +26,7 @@ fn type_to_string(t: &syntax::types::Type) -> String {
         syntax::types::Type::Reference(id) => id.to_string(),
         syntax::types::Type::Generic { base, args } => {
             let args_s = args.iter().map(type_to_string).collect::<Vec<_>>().join(", ");
-            format!("{}<{}>", base.to_string(), args_s)
+            format!("{}<{}>", base, args_s)
         }
         syntax::types::Type::Array { element_type, rank } => {
             let mut s = type_to_string(element_type);
@@ -55,7 +55,7 @@ fn parse_attribute_group(input: Span) -> BResult<AttributeList> {
         |attributes| AttributeList { attributes },
     )
     .context("attribute group")
-    .parse(input.into())
+    .parse(input)
 }
 
 /// Parses multiple attribute lists that might appear before a declaration
@@ -67,7 +67,7 @@ pub fn parse_attribute_lists(input: Span) -> BResult<Vec<AttributeList>> {
         Ok((rest, lists))
     })
     .context("attribute  lists")
-    .parse(input.into())
+    .parse(input)
 }
 
 // Parse a single attribute: MyAttribute or MyAttribute(arg1, arg2)
@@ -156,7 +156,7 @@ pub fn parse_attribute(input: Span) -> BResult<Attribute> {
         ))
     })
     .context("attribute")
-    .parse(input.into())
+    .parse(input)
 }
 
 // Parse a single attribute list: [Attr1, Attr2]
@@ -173,12 +173,12 @@ pub fn parse_attribute_list(input: Span) -> BResult<AttributeList> {
         |attributes| AttributeList { attributes },
     )
     .context("attribute list")
-    .parse(input.into())
+    .parse(input)
 }
 
 // Parse multiple attribute lists: [Attr1] [Attr2] [Attr3, Attr4]
 pub fn parse_attribute_lists_new(input: Span) -> BResult<Vec<AttributeList>> {
     many0(|i| delimited(ws, parse_attribute_list, ws).parse(i))
         .context("attribute lists")
-        .parse(input.into())
+        .parse(input)
 }

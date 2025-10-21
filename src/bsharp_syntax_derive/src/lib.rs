@@ -70,6 +70,7 @@ pub fn derive_ast_node(input: TokenStream) -> TokenStream {
     };
 
     let expanded = quote! {
+        #[allow(unused_variables)]
         impl crate::node::ast_node::AstNode for #name {
             fn as_any(&self) -> &dyn ::core::any::Any { self }
             fn children<'a>(&'a self, push: &mut dyn FnMut(crate::node::ast_node::NodeRef<'a>)) {
@@ -135,12 +136,13 @@ fn gen_push_for_type(ty: &Type, access: proc_macro2::TokenStream) -> proc_macro2
 }
 
 fn is_primitive_like(ident: &syn::Ident) -> bool {
-    match ident.to_string().as_str() {
-        "bool" | "char" |
-        "i8" | "i16" | "i32" | "i64" | "isize" |
-        "u8" | "u16" | "u32" | "u64" | "usize" |
-        "f32" | "f64" |
-        "String" | "PrimitiveType" => true,
-        _ => false,
-    }
+    let s = ident.to_string();
+    matches!(
+        s.as_str(),
+        "bool" | "char"
+            | "i8" | "i16" | "i32" | "i64" | "isize"
+            | "u8" | "u16" | "u32" | "u64" | "usize"
+            | "f32" | "f64"
+            | "String" | "PrimitiveType"
+    )
 }

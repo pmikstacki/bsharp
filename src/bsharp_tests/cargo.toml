@@ -24,3 +24,5 @@ parser_recovery_trace = []
 [dev-dependencies]
 insta = { version = "1.39.0", features = ["json"] }
 assert_cmd = "2"
+tempfile = "3"
+similar = { version = "2", features = ["text"] }

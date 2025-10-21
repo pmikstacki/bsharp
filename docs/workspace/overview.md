@@ -6,7 +6,7 @@ The BSharp workspace loading system provides comprehensive support for loading C
 
 ## Overview
 
-**Location:** `src/workspace/`
+**Location:** `src/bsharp_analysis/src/workspace/`
 
 The workspace loader:
 - Parses Visual Studio solution files (.sln)
@@ -75,7 +75,7 @@ pub struct WorkspaceLoadOptions {
 ### Loading from Solution File
 
 ```rust
-use bsharp::workspace::WorkspaceLoader;
+use bsharp_analysis::workspace::WorkspaceLoader;
 
 let workspace = WorkspaceLoader::from_path(Path::new("MySolution.sln"))?;
 
@@ -119,7 +119,7 @@ EndProject
 
 ### Parsing Implementation
 
-**Location:** `src/workspace/sln.rs`
+**Location:** `src/bsharp_analysis/src/workspace/sln/reader.rs`
 
 ```rust
 pub struct SolutionReader;
@@ -186,7 +186,7 @@ pub struct SolutionProject {
 
 ### Parsing Implementation
 
-**Location:** `src/workspace/csproj.rs`
+**Location:** `src/bsharp_analysis/src/workspace/csproj/reader.rs`
 
 ```rust
 pub struct CsprojReader;
@@ -468,8 +468,8 @@ for project in &mut projects {
 ### Example 1: Load and Analyze
 
 ```rust
-use bsharp::workspace::WorkspaceLoader;
-use bsharp::syntax::Parser;
+use bsharp_analysis::workspace::WorkspaceLoader;
+use bsharp_parser::facade::Parser;
 
 let workspace = WorkspaceLoader::from_path(Path::new("MySolution.sln"))?;
 
@@ -599,9 +599,10 @@ fn test_follow_references() {
 
 ## References
 
-- **Implementation:** `src/workspace/`
-- **Loader:** `src/workspace/loader.rs`
-- **Solution Parser:** `src/workspace/sln.rs`
-- **Project Parser:** `src/workspace/csproj.rs`
-- **Model:** `src/workspace/model.rs`
-- **Tests:** `tests/workspace/` (planned)
+- **Implementation:** `src/bsharp_analysis/src/workspace/`
+- **Loader:** `src/bsharp_analysis/src/workspace/loader.rs`
+- **Solution Reader:** `src/bsharp_analysis/src/workspace/sln/reader.rs`
+- **Project Reader:** `src/bsharp_analysis/src/workspace/csproj/reader.rs`
+- **Model:** `src/bsharp_analysis/src/workspace/model.rs`
+- **Source Map:** `src/bsharp_analysis/src/workspace/source_map.rs`
+- **Tests:** `src/bsharp_tests/src/workspace/` and `src/bsharp_tests/src/integration/`

@@ -14,7 +14,7 @@ use syntax::declarations::Modifier;
 /// Helper for consuming optional whitespace
 pub fn optional_whitespace(input: Span) -> BResult<&str> {
     // Consume whitespace and comments without returning the slice (consistent with ws signature)
-    let (input, consumed) = ws(input.into())?;
+    let (input, consumed) = ws(input)?;
     Ok((input, consumed))
 }
 
@@ -39,10 +39,10 @@ where
 
     move |input: Span<'a>| {
         // Parse modifiers (which might be empty)
-        let (input, modifiers) = modifiers_parser(input.into())?;
+        let (input, modifiers) = modifiers_parser(input)?;
 
         // Parse the keyword (struct, interface, etc.)
-        let (input, keyword_result) = delimited(ws, &mut kw_parser, ws).parse(input.into())?;
+        let (input, keyword_result) = delimited(ws, &mut kw_parser, ws).parse(input)?;
 
         Ok((input, (modifiers, keyword_result)))
     }

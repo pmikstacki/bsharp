@@ -6,7 +6,7 @@ The control flow analysis system analyzes method control flow to calculate compl
 
 ## Overview
 
-**Location:** `src/analysis/passes/control_flow.rs`, `src/analysis/artifacts/cfg.rs`
+**Location:** `src/bsharp_analysis/src/passes/control_flow.rs`, `src/bsharp_analysis/src/artifacts/cfg.rs`
 
 Control flow analysis provides:
 - Cyclomatic complexity calculation
@@ -198,7 +198,7 @@ warning[CF003]: Deep nesting detected
 
 ### Analysis Pass
 
-**Location:** `src/analysis/passes/control_flow.rs`
+**Location:** `src/bsharp_analysis/src/passes/control_flow.rs`
 
 ```rust
 pub struct ControlFlowPass;
@@ -331,6 +331,6 @@ report.cfg = Some(CfgSummary {
 
 ## References
 
-- **Implementation:** `src/analysis/passes/control_flow.rs`
-- **Artifacts:** `src/analysis/artifacts/cfg.rs`
-- **Tests:** `tests/analysis/types/basic_tests.rs`
+- **Implementation:** `src/bsharp_analysis/src/passes/control_flow.rs`
+- **Artifacts:** `src/bsharp_analysis/src/artifacts/cfg.rs`
+- **Tests:** `src/bsharp_tests/src/analysis/control_flow/` (planned)

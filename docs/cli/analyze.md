@@ -40,6 +40,8 @@ bsharp analyze <INPUT> [OPTIONS]
 - Overrides default settings
 - CLI flags override config file settings
 
+See: [Configuration Overview](../configuration/overview.md)
+
 ### Workspace Options
 
 **`--follow-refs <BOOL>`**
@@ -603,6 +605,8 @@ Error: memory allocation failed
 - [Analysis Pipeline](../analysis/pipeline.md) - Analysis internals
 - [Metrics Collection](../analysis/metrics.md) - Metrics details
 - [Code Quality](../analysis/quality.md) - Quality rules
+- [Report Schema](../analysis/report-schema.md) - Output JSON layout
+- [Configuration Overview](../configuration/overview.md) - Config fields and examples
 
 ---
 

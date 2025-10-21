@@ -27,7 +27,7 @@ pub fn parse_return_statement(input: Span) -> BResult<Statement> {
         |(_, expr_opt, _)| Statement::Return(expr_opt.map(Box::new)),
     )
         .context("return statement")
-        .parse(input.into())
+        .parse(input)
 }
 use crate::syntax::span::Span;
 use crate::tokens::separators::tok_semicolon;

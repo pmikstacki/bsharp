@@ -1,3 +1,14 @@
+### Wrapper Expression Variants
+
+For clarity, several operations are modeled as distinct expression variants in the AST:
+
+- `New(NewExpression)` for object creation
+- `MemberAccess(MemberAccessExpression)` for `obj.Member`
+- `Invocation(InvocationExpression)` for calls `expr(args)`
+- `Indexing(IndexingExpression)` and `Index(IndexExpression)`
+- `Range(RangeExpression)` for `start..end`
+- `With { target, initializers }` for record-like with-expressions
+- `Collection(Vec<CollectionElement>)` for collection expressions
 
 # Expression Parsing
 
@@ -41,6 +52,8 @@ obj.property      // Member access
 obj.method()      // Method invocation
 obj[index]        // Indexer access
 ```
+
+Note: In the AST, simple identifiers are represented by the `Expression::Variable(Identifier)` variant. Member access, invocation, and indexing are represented by dedicated wrapper variants (`MemberAccess`, `Invocation`, `Indexing`).
 
 #### Object Creation
 ```csharp
@@ -162,3 +175,9 @@ person with { Name = "Updated" }
 ```
 
 The expression parser is designed to be extensible, allowing for easy addition of new expression types as the C# language evolves.
+
+---
+
+## See Also
+
+- [Keywords and Tokens](./keywords-and-tokens.md) – keyword helpers, word boundaries, trivia handling for tokens used in expressions

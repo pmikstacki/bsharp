@@ -13,14 +13,14 @@ use syntax::expressions::{ConditionalExpression, Expression};
 pub(crate) fn parse_conditional_expression_or_higher<'a>(input: Span<'a>) -> BResult<'a, Expression> {
     // Parse the condition (left side)
     let (input, condition) =
-        null_coalescing_expression_parser::parse_null_coalescing_expression_or_higher(input.into())?;
+        null_coalescing_expression_parser::parse_null_coalescing_expression_or_higher(input)?;
 
     // Check for ternary operator: condition ? true_expr : false_expr
     // We need to be careful not to consume ?. or ?[ (null-conditional operators)
     // or ?? (null-coalescing operators)
 
     // First, try to parse whitespace and then ?
-    let (after_ws, _) = ws(input.into())?;
+    let (after_ws, _) = ws(input)?;
 
     // Check if we have a ? that's not followed by . or [ or ?
     if let Ok((after_q, _)) = nom_char::<Span<'a>, nom_supreme::error::ErrorTree<Span<'a>>>('?').parse(after_ws) {
@@ -33,14 +33,14 @@ pub(crate) fn parse_conditional_expression_or_higher<'a>(input: Span<'a>) -> BRe
             .is_ok()
         {
             // It's a ternary operator, not null-conditional or null-coalescing
-            let (input, _) = nom::sequence::delimited(ws, nom_char::<Span<'a>, nom_supreme::error::ErrorTree<Span<'a>>>('?'), ws).parse(input.into())?;
+            let (input, _) = nom::sequence::delimited(ws, nom_char::<Span<'a>, nom_supreme::error::ErrorTree<Span<'a>>>('?'), ws).parse(input)?;
             let (input, true_expr) = (|i| expressions::parse_expression(i))
                 .context("conditional expression: true branch")
-                .parse(input.into())?;
+                .parse(input)?;
             let (input, _) = nom::combinator::cut(nom::sequence::delimited(ws, nom_char::<Span<'a>, nom_supreme::error::ErrorTree<Span<'a>>>(':'), ws))
-                .parse(input.into())?;
+                .parse(input)?;
             let (input, false_expr) = nom::sequence::delimited(ws, parse_conditional_expression_or_higher, ws)
-                .parse(input.into())?;
+                .parse(input)?;
 
             return Ok((
                 input,

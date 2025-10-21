@@ -6,27 +6,26 @@ impl Emit for OperatorDeclaration {
     fn emit<W: Write>(&self, w: &mut W, cx: &mut EmitCtx) -> Result<(), EmitError> {
         use crate::emitters::emit_trait::Emit as _;
         use crate::declarations::operator_declaration::{OperatorKind, ConversionKind};
+        let _scope = cx.node_scope("Operator".to_string());
         // Attributes (Attribute, wrap with [])
-        for a in &self.attributes { cx.write_indent(w)?; w.write_char('[')?; a.emit(w, cx)?; w.write_char(']')?; cx.nl(w)?; }
+        for a in &self.attributes { cx.write_indent(w)?; cx.token(w, "[")?; a.emit(w, cx)?; cx.token(w, "]")?; cx.nl(w)?; }
         // Modifiers and signature
-        cx.write_indent(w)?;
-        for (i, m) in self.modifiers.iter().enumerate(){ if i!=0 { w.write_char(' ')?; } m.emit(w, cx)?; }
-        if !self.modifiers.is_empty() { w.write_char(' ')?; }
-        self.return_type.emit(w, cx)?; w.write_str(" operator ")?;
+        for (i, m) in self.modifiers.iter().enumerate(){ if i!=0 { cx.space(w)?; } m.emit(w, cx)?; }
+        if !self.modifiers.is_empty() { cx.space(w)?; }
         match &self.operator {
-            OperatorKind::Unary(op) => { write!(w, "{}", op)?; }
-            OperatorKind::Binary(op) => { write!(w, "{}", op)?; }
+            OperatorKind::Unary(op) => { self.return_type.emit(w, cx)?; cx.token(w, " operator ")?; write!(w, "{}", op)?; }
+            OperatorKind::Binary(op) => { self.return_type.emit(w, cx)?; cx.token(w, " operator ")?; write!(w, "{}", op)?; }
             OperatorKind::Conversion { kind, target_type } => {
-                match kind { ConversionKind::Implicit => w.write_str("implicit")?, ConversionKind::Explicit => w.write_str("explicit")?, };
-                w.write_str(" operator ")?; target_type.emit(w, cx)?;
+                match kind { ConversionKind::Implicit => cx.token(w, "implicit")?, ConversionKind::Explicit => cx.token(w, "explicit")?, };
+                cx.token(w, " operator ")?; target_type.emit(w, cx)?;
             }
         }
-        w.write_char('(')?;
+        cx.token(w, "(")?;
         // Parameters
-        for (i, p) in self.parameters.iter().enumerate(){ if i!=0 { w.write_str(", ")?; } p.emit(w, cx)?; }
-        w.write_char(')')?;
+        for (i, p) in self.parameters.iter().enumerate(){ if i!=0 { cx.token(w, ", ")?; } p.emit(w, cx)?; }
+        cx.token(w, ")")?;
         // Body string (already includes braces/semicolon per AST design)
-        w.write_char(' ')?; w.write_str(&self.body)?;
+        cx.space(w)?; cx.token(w, &self.body)?;
         Ok(())
     }
 }

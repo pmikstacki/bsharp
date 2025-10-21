@@ -17,27 +17,27 @@ use syntax::types::{TypeParameter, Variance};
 fn parse_variance(input: Span) -> BResult<Variance> {
     nom::combinator::map(alt((value(Variance::In, kw_in()), value(Variance::Out, kw_out()))), |v| v)
         .context("variance modifier")
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Public wrapper to parse a single type parameter node
 pub fn parse_type_parameter_node(input: Span) -> BResult<TypeParameter> {
-    parse_single_type_parameter(input.into())
+    parse_single_type_parameter(input)
 }
 
 /// Public wrapper to parse a single type parameter for trait impls
 pub fn parse_type_parameter_for_trait_impl(input: Span) -> BResult<TypeParameter> {
-    parse_single_type_parameter(input.into())
+    parse_single_type_parameter(input)
 }
 
 // Parse a single type parameter, e.g., "T", "in T", "out T"
 fn parse_single_type_parameter(input: Span) -> BResult<TypeParameter> {
     // Try parsing optional variance keyword first
     let (input, variance) = nom::combinator::opt(|i| delimited(ws, parse_variance, ws).parse(i))
-        .parse(input.into())?;
+        .parse(input)?;
     let (input, name) = delimited(ws, parse_identifier, ws)
         .context("type parameter name")
-        .parse(input.into())?;
+        .parse(input)?;
 
     Ok((
         input,
@@ -61,13 +61,13 @@ pub fn parse_type_parameter_list(input: Span) -> BResult<Vec<TypeParameter>> {
         true,
     )
         .context("type parameter list opening")
-        .parse(input.into())
+        .parse(input)
 }
 
 // Optional type parameter list (returns None if no list, Some(Vec) otherwise)
 pub fn opt_parse_type_parameter_list(input: Span) -> BResult<Option<Vec<TypeParameter>>> {
     // First use the opt combinator to try parsing type parameters
-    let (rest, opt_params) = nom::combinator::opt(parse_type_parameter_list).parse(input.into())?;
+    let (rest, opt_params) = nom::combinator::opt(parse_type_parameter_list).parse(input)?;
 
     // Convert Some([]) to None, matching test expectations
     let result = match opt_params {
@@ -83,35 +83,35 @@ fn parse_type_parameter_constraint(input: Span) -> BResult<TypeParameterConstrai
     // Try each constraint type individually
 
     // Try "class" keyword
-    if let Ok((rest, _)) = kw_class().parse(input.into()) {
+    if let Ok((rest, _)) = kw_class().parse(input) {
         return Ok((rest, TypeParameterConstraint::ReferenceType));
     }
 
     // Try "struct" keyword
-    if let Ok((rest, _)) = kw_struct().parse(input.into()) {
+    if let Ok((rest, _)) = kw_struct().parse(input) {
         return Ok((rest, TypeParameterConstraint::ValueType));
     }
 
     // Try "unmanaged" keyword
-    if let Ok((rest, _)) = kw_unmanaged().parse(input.into()) {
+    if let Ok((rest, _)) = kw_unmanaged().parse(input) {
         return Ok((rest, TypeParameterConstraint::Unmanaged));
     }
 
     // Try "notnull" keyword
-    if let Ok((rest, _)) = delimited(ws, kw_not(), kw_null()).parse(input.into()) {
+    if let Ok((rest, _)) = delimited(ws, kw_not(), kw_null()).parse(input) {
         return Ok((rest, TypeParameterConstraint::NotNull));
     }
 
     // Try "new()" - must consume the parentheses fully
     if let Ok((rest, _)) = nom::combinator::map(
-        nom::sequence::tuple((
+        (
             delimited(ws, kw_new(), ws),
             delimited(ws, crate::tokens::delimiters::tok_l_paren(), ws),
             delimited(ws, crate::tokens::delimiters::tok_r_paren(), ws),
-        )),
+        ),
         |_| (),
     )
-    .parse(input.into())
+    .parse(input)
     {
         return Ok((rest, TypeParameterConstraint::Constructor));
     }
@@ -119,32 +119,32 @@ fn parse_type_parameter_constraint(input: Span) -> BResult<TypeParameterConstrai
     // Finally try parsing as a type expression
     let (rest, ty) = (|i| parse_type_expression(i))
         .context("type constraint")
-        .parse(input.into())?;
+        .parse(input)?;
     Ok((rest, TypeParameterConstraint::SpecificType(ty)))
 }
 
 /// Public wrapper to parse a single type parameter constraint node
 pub fn parse_type_parameter_constraint_node(input: Span) -> BResult<TypeParameterConstraint> {
-    parse_type_parameter_constraint(input.into())
+    parse_type_parameter_constraint(input)
 }
 
 // Parse a 'where' clause for a specific type parameter
 fn parse_where_clause(input: Span) -> BResult<TypeParameterConstraintClause> {
     let (input, _) = delimited(ws, kw_where(), ws)
         .context("where clause keyword")
-        .parse(input.into())?;
+        .parse(input)?;
     let (input, name) = delimited(ws, parse_identifier, ws)
         .context("constrained type parameter name")
-        .parse(input.into())?;
+        .parse(input)?;
     let (input, _) = delimited(ws, tok_colon(), ws)
         .context("constraint separator  ")
-        .parse(input.into())?;
+        .parse(input)?;
     let (input, constraints) = parse_list0(
         |i| delimited(ws, parse_type_parameter_constraint, ws)
             .context("type parameter constraint")
             .parse(i),
         |i| delimited(ws, tok_comma(), ws).parse(i),
-    )(input.into())?;
+    )(input)?;
 
     Ok((
         input,
@@ -159,7 +159,7 @@ fn parse_where_clause(input: Span) -> BResult<TypeParameterConstraintClause> {
 pub fn parse_type_parameter_where_clause(
     input: Span,
 ) -> BResult<TypeParameterConstraintClause> {
-    parse_where_clause(input.into())
+    parse_where_clause(input)
 }
 
 // Parse zero or more 'where' clauses

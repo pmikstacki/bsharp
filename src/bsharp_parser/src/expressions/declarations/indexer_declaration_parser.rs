@@ -29,22 +29,22 @@ use syntax::types::Parameter;
 pub fn parse_indexer_declaration(input: Span) -> BResult<IndexerDeclaration> {
     // Parse attributes, modifiers, type, 'this', parameters, and accessor list
     // Attributes
-    let (input, attribute_lists) = parse_attribute_lists(input.into())?;
+    let (input, attribute_lists) = parse_attribute_lists(input)?;
     let attributes = convert_attributes(attribute_lists);
     // Modifiers
-    let (input, modifiers) = parse_modifiers(input.into())?;
+    let (input, modifiers) = parse_modifiers(input)?;
     // Return type
     let (input, ty) = delimited(ws, parse_type_expression, ws)
         .context("indexer return type")
-        .parse(input.into())?;
+        .parse(input)?;
     // 'this'
     let (input, _) = delimited(ws, kw_this(), ws)
         .context("this keyword")
-        .parse(input.into())?;
+        .parse(input)?;
     // Parameters
-    let (input, parameters) = parse_indexer_parameters(input.into())?;
+    let (input, parameters) = parse_indexer_parameters(input)?;
     // Accessor list
-    let (input, accessor_list) = parse_indexer_accessor_list(input.into())?;
+    let (input, accessor_list) = parse_indexer_accessor_list(input)?;
 
     let indexer_declaration = IndexerDeclaration {
         attributes,
@@ -70,7 +70,7 @@ fn parse_indexer_parameters(input: Span) -> BResult<Vec<Parameter>> {
         true,
     )
         .context("indexer parameters")
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Parse the indexer accessor list
@@ -78,15 +78,15 @@ fn parse_indexer_accessor_list(input: Span) -> BResult<IndexerAccessorList> {
     // Parse opening brace
     let (input, _) = delimited(ws, satisfy(|c| c == '{'), ws)
         .context("accessor list opening brace")
-        .parse(input.into())?;
+        .parse(input)?;
 
     // Parse accessors (get and/or set)
-    let (input, (get_accessor, set_accessor)) = parse_accessors(input.into())?;
+    let (input, (get_accessor, set_accessor)) = parse_accessors(input)?;
 
     // Parse closing brace
     let (input, _) = cut(delimited(ws, satisfy(|c| c == '}'), ws))
         .context("accessor list closing brace")
-        .parse(input.into())?;
+        .parse(input)?;
 
     Ok((
         input,
@@ -129,7 +129,7 @@ fn parse_accessors(
             .parse(i)
     };
 
-    let (cur, pairs) = many0(one_accessor).parse(input.into())?;
+    let (cur, pairs) = many0(one_accessor).parse(input)?;
     let mut get_accessor: Option<IndexerAccessor> = None;
     let mut set_accessor: Option<IndexerAccessor> = None;
     for (is_get, accessor) in pairs {
@@ -146,14 +146,14 @@ fn parse_accessors(
 /// Parse a get accessor declaration
 fn parse_get_accessor_declaration(input: Span) -> BResult<IndexerAccessor> {
     // Optional attribute lists and modifiers
-    let (input, attribute_lists) = delimited(ws, parse_attribute_lists, ws).parse(input.into())?;
+    let (input, attribute_lists) = delimited(ws, parse_attribute_lists, ws).parse(input)?;
     let attributes = convert_attributes(attribute_lists);
-    let (input, modifiers) = delimited(ws, parse_modifiers, ws).parse(input.into())?;
+    let (input, modifiers) = delimited(ws, parse_modifiers, ws).parse(input)?;
 
     // Parse the get keyword
     let (input, _) = delimited(ws, kw_get(), ws)
         .context("get keyword")
-        .parse(input.into())?;
+        .parse(input)?;
 
     // Parse the body (either block or semicolon)
     let (input, body) = alt((
@@ -169,7 +169,7 @@ fn parse_get_accessor_declaration(input: Span) -> BResult<IndexerAccessor> {
             Some,
         ),
     ))
-        .parse(input.into())?;
+        .parse(input)?;
 
     Ok((
         input,
@@ -184,14 +184,14 @@ fn parse_get_accessor_declaration(input: Span) -> BResult<IndexerAccessor> {
 /// Parse a set accessor declaration  
 fn parse_set_accessor_declaration(input: Span) -> BResult<IndexerAccessor> {
     // Optional attribute lists and modifiers
-    let (input, attribute_lists) = delimited(ws, parse_attribute_lists, ws).parse(input.into())?;
+    let (input, attribute_lists) = delimited(ws, parse_attribute_lists, ws).parse(input)?;
     let attributes = convert_attributes(attribute_lists);
-    let (input, modifiers) = delimited(ws, parse_modifiers, ws).parse(input.into())?;
+    let (input, modifiers) = delimited(ws, parse_modifiers, ws).parse(input)?;
 
     // Parse the set keyword
     let (input, _) = delimited(ws, kw_set(), ws)
         .context("set keyword")
-        .parse(input.into())?;
+        .parse(input)?;
 
     // Parse the body (either block or semicolon)
     let (input, body) = alt((
@@ -207,7 +207,7 @@ fn parse_set_accessor_declaration(input: Span) -> BResult<IndexerAccessor> {
             Some,
         ),
     ))
-        .parse(input.into())?;
+        .parse(input)?;
 
     Ok((
         input,

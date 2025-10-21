@@ -6,7 +6,7 @@ The dependency analysis system tracks relationships between types, methods, and 
 
 ## Overview
 
-**Location:** `src/analysis/artifacts/dependencies.rs`
+**Location:** `src/bsharp_analysis/src/artifacts/dependencies.rs`
 
 The dependency analysis builds a directed graph of symbol relationships, where:
 - **Nodes** represent symbols (classes, interfaces, methods, etc.)
@@ -422,6 +422,6 @@ bsharp analyze MyProject.sln --out deps.json --format pretty-json
 
 ## References
 
-- **Implementation:** `src/analysis/artifacts/dependencies.rs`
-- **Tests:** `tests/analysis/dependencies/` (planned)
-- **Related Passes:** `src/analysis/passes/` (when implemented)
+- **Implementation:** `src/bsharp_analysis/src/artifacts/dependencies.rs`
+- **Tests:** `src/bsharp_tests/src/analysis/dependencies/` (planned)
+- **Related Passes:** `src/bsharp_analysis/src/passes/` (when implemented)

@@ -19,7 +19,7 @@ pub fn parse_deconstruction_statement(input: Span) -> BResult<Statement> {
         |deconstruction| Statement::Deconstruction(Box::new(deconstruction)),
     )
         .context("deconstruction statement")
-        .parse(input.into())
+        .parse(input)
 }
 use crate::syntax::span::Span;
 use crate::tokens::separators::tok_semicolon;

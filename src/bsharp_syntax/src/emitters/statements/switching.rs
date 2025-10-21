@@ -9,12 +9,14 @@ impl Emit for SwitchStatement {
         w.write_str(")")?;
         cx.nl(w)?; cx.write_indent(w)?;
         cx.open_brace(w)?;
-        for sec in &self.sections {
-            cx.write_indent(w)?;
+        for (i, sec) in self.sections.iter().enumerate() {
             sec.emit(w, cx)?;
-            cx.nl(w)?;
+            // Do not add an extra blank line; sections already end with a newline after their last statement.
+            // If a section has no statements, its labels end with a newline, which is sufficient separation.
+            if i + 1 < self.sections.len() { /* no-op: separation handled by section content */ }
         }
-        cx.close_brace(w)
+        cx.close_brace(w)?;
+        cx.nl(w)
     }
 }
 
@@ -22,10 +24,10 @@ impl Emit for SwitchSection {
     fn emit<W: std::fmt::Write>(&self, w:&mut W, cx:&mut EmitCtx)->Result<(),EmitError>{
         use crate::emitters::emit_trait::Emit as _;
         for (i, label) in self.labels.iter().enumerate() {
-            if i != 0 { cx.nl(w)?; cx.write_indent(w)?; }
-            label.emit(w, cx)?; w.write_char(':')?;
+            if i != 0 { cx.nl(w)?; }
+            cx.write_indent(w)?;
+            label.emit(w, cx)?; w.write_char(':')?; cx.nl(w)?;
         }
-        cx.nl(w)?;
         cx.push_indent();
         for stmt in &self.statements {
             cx.write_indent(w)?; stmt.emit(w, cx)?; cx.nl(w)?;

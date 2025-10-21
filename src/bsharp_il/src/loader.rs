@@ -126,9 +126,7 @@ impl IlProvider for DotscopeProvider {
     }
 
     fn method_name(&self, method: &MethodHandle) -> Option<String> {
-        let Some(entry) = self.assemblies.get(method.assembly.0) else {
-            return None;
-        };
+        let entry = self.assemblies.get(method.assembly.0)?;
         let types = entry.obj.types();
         for tentry in types.iter() {
             let t = tentry.value();

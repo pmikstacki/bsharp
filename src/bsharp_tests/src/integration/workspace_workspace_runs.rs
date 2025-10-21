@@ -86,5 +86,4 @@ fn workspace_fixture_runs_pipeline_and_reports_mergeable_summaries() {
         "expected at least one file to produce control-flow summary"
     );
     // Depending on fixtures, deps may be empty; allow either
-    assert!(total_diags >= 0);
 }

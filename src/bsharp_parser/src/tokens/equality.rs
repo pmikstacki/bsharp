@@ -13,5 +13,5 @@ pub fn parse_equality_op(input: Span) -> BResult<BinaryOperator> {
         map(tok_equal(), |_| BinaryOperator::Equal),
         map(tok_not_equal(), |_| BinaryOperator::NotEqual),
     ))
-    .parse(input.into())
+    .parse(input)
 }

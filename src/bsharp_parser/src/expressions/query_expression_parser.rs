@@ -50,7 +50,7 @@ fn parse_primitive_type_identifier(input: Span) -> BResult<Identifier> {
         )),
         Identifier::new,
     )
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Parse a complete LINQ query expression
@@ -71,7 +71,7 @@ pub fn parse_query_expression(input: Span) -> BResult<Expression> {
             }))
         },
     )
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Parse the initial 'from' clause
@@ -100,21 +100,21 @@ fn parse_from_clause(input: Span) -> BResult<FromClause> {
             expression,
         },
     )
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Parse various query clauses (from, let, where, join, orderby)
 fn parse_query_clause(input: Span) -> BResult<QueryClause> {
-    if let Ok(r) = map(parse_additional_from_clause, QueryClause::From).parse(input.into()) { return Ok(r); }
-    if let Ok(r) = map(parse_let_clause, QueryClause::Let).parse(input.into()) { return Ok(r); }
-    if let Ok(r) = map(parse_where_clause, QueryClause::Where).parse(input.into()) { return Ok(r); }
-    if let Ok(r) = map(parse_join_clause, QueryClause::Join).parse(input.into()) { return Ok(r); }
-    map(parse_orderby_clause, QueryClause::OrderBy).parse(input.into())
+    if let Ok(r) = map(parse_additional_from_clause, QueryClause::From).parse(input) { return Ok(r); }
+    if let Ok(r) = map(parse_let_clause, QueryClause::Let).parse(input) { return Ok(r); }
+    if let Ok(r) = map(parse_where_clause, QueryClause::Where).parse(input) { return Ok(r); }
+    if let Ok(r) = map(parse_join_clause, QueryClause::Join).parse(input) { return Ok(r); }
+    map(parse_orderby_clause, QueryClause::OrderBy).parse(input)
 }
 
 /// Parse additional 'from' clauses in the query body
 fn parse_additional_from_clause(input: Span) -> BResult<FromClause> {
-    parse_from_clause(input.into())
+    parse_from_clause(input)
 }
 
 /// Parse 'let' clause for introducing new variables
@@ -131,7 +131,7 @@ fn parse_let_clause(input: Span) -> BResult<LetClause> {
             expression,
         },
     )
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Parse 'where' clause for filtering
@@ -139,7 +139,7 @@ fn parse_where_clause(input: Span) -> BResult<QueryWhereClause> {
     map(preceded(kw_where(), delimited(ws, parse_expression, ws)), |condition| {
         QueryWhereClause { condition }
     })
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Parse 'join' clause for joining data sources
@@ -188,7 +188,7 @@ fn parse_join_clause(input: Span) -> BResult<JoinClause> {
             }
         },
     )
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Parse 'orderby' clause for sorting
@@ -197,7 +197,7 @@ fn parse_orderby_clause(input: Span) -> BResult<QueryOrderByClause> {
         preceded(kw_orderby(), separated_list1(delimited(ws, tok_comma(), ws), parse_ordering)),
         |orderings| QueryOrderByClause { orderings },
     )
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Parse a single ordering expression
@@ -216,13 +216,13 @@ fn parse_ordering(input: Span) -> BResult<OrderByOrdering> {
             identifier: Identifier::new(""),
         },
     )
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Parse 'select' or 'group' clause
 fn parse_select_or_group_clause(input: Span) -> BResult<QuerySelectOrGroup> {
-    if let Ok(r) = parse_select_clause(input.into()) { return Ok(r); }
-    parse_group_clause(input.into())
+    if let Ok(r) = parse_select_clause(input) { return Ok(r); }
+    parse_group_clause(input)
 }
 
 /// Parse 'select' clause
@@ -231,7 +231,7 @@ fn parse_select_clause(input: Span) -> BResult<QuerySelectOrGroup> {
         preceded(kw_select(), delimited(ws, parse_expression, ws)),
         QuerySelectOrGroup::Select,
     )
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Parse 'group' clause
@@ -245,7 +245,7 @@ fn parse_group_clause(input: Span) -> BResult<QuerySelectOrGroup> {
         ),
         |(_, element, _, by)| QuerySelectOrGroup::Group { element, by },
     )
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Parse query continuation ('into' clause)
@@ -263,7 +263,7 @@ fn parse_query_continuation(input: Span) -> BResult<QueryContinuation> {
             select_or_group,
         },
     )
-        .parse(input.into())
+        .parse(input)
 }
 use crate::syntax::span::Span;
 use crate::tokens::assignment::tok_assign;

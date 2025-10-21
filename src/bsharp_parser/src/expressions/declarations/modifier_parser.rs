@@ -57,7 +57,7 @@ fn parse_single_modifier(input: Span) -> BResult<Modifier> {
         )),
     ))
         .context("modifier (expected access modifier, static, abstract, sealed, virtual, override, extern, unsafe, readonly, volatile, new, partial, ref, out, in, params, async, const, or fixed)")
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Parse modifiers specifically for a given declaration type (e.g., "method", "class", etc.)
@@ -68,12 +68,12 @@ pub fn parse_modifiers_for_decl_type<'a>(
 ) -> BResult<'a, Vec<Modifier>> {
     parse_modifiers
         .context("declaration modifiers (expected zero or more valid C# modifiers)")
-        .parse(input.into())
+        .parse(input)
 }
 
 // Parse zero or more modifiers (for backward compatibility or general use)
 pub fn parse_modifiers(input: Span) -> BResult<Vec<Modifier>> {
-    let (input, modifiers) = many0(delimited(ws, parse_single_modifier, ws)).parse(input.into())?;
+    let (input, modifiers) = many0(delimited(ws, parse_single_modifier, ws)).parse(input)?;
     // Preserve input order to match expectations in tests and downstream consumers
     Ok((input, modifiers))
 }

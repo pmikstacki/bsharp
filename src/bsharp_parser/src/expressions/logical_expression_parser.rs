@@ -24,7 +24,7 @@ pub(crate) fn parse_logical_or_expression_or_higher(input: Span) -> BResult<Expr
             |_| BinaryOperator::LogicalOr,
         )
             .parse(i)
-    })(input.into())
+    })(input)
 }
 
 fn parse_logical_and_expression_or_higher(input: Span) -> BResult<Expression> {
@@ -34,7 +34,7 @@ fn parse_logical_and_expression_or_higher(input: Span) -> BResult<Expression> {
             |_| BinaryOperator::LogicalAnd,
         )
             .parse(i)
-    })(input.into())
+    })(input)
 }
 
 fn parse_bitwise_or_expression_or_higher(input: Span) -> BResult<Expression> {
@@ -48,7 +48,7 @@ fn parse_bitwise_or_expression_or_higher(input: Span) -> BResult<Expression> {
             |_| BinaryOperator::BitwiseOr,
         )
             .parse(i)
-    })(input.into())
+    })(input)
 }
 
 fn parse_bitwise_xor_expression_or_higher(input: Span) -> BResult<Expression> {
@@ -58,7 +58,7 @@ fn parse_bitwise_xor_expression_or_higher(input: Span) -> BResult<Expression> {
             |_| BinaryOperator::BitwiseXor,
         )
             .parse(i)
-    })(input.into())
+    })(input)
 }
 
 fn parse_bitwise_and_expression_or_higher(input: Span) -> BResult<Expression> {
@@ -72,7 +72,7 @@ fn parse_bitwise_and_expression_or_higher(input: Span) -> BResult<Expression> {
             |_| BinaryOperator::BitwiseAnd,
         )
             .parse(i)
-    })(input.into())
+    })(input)
 }
 
 fn parse_equality_expression_or_higher(input: Span) -> BResult<Expression> {
@@ -86,7 +86,7 @@ fn parse_equality_expression_or_higher(input: Span) -> BResult<Expression> {
             ws,
         )
             .parse(i)
-    })(input.into())
+    })(input)
 }
 
 fn parse_relational_expression_or_higher(input: Span) -> BResult<Expression> {
@@ -119,17 +119,17 @@ fn parse_relational_expression_or_higher(input: Span) -> BResult<Expression> {
             ws,
         )
             .parse(i)
-    })(input.into())
+    })(input)
 }
 
 /// Relational and type-testing stage: handles is-pattern and as-operator at same precedence as relational
 fn parse_type_test_expression_or_higher(input: Span) -> BResult<Expression> {
     // Start with relational expression
-    let (mut input, mut left) = parse_relational_expression_or_higher(input.into())?;
+    let (mut input, mut left) = parse_relational_expression_or_higher(input)?;
 
     loop {
         // Try 'is' pattern first
-        if let Ok((after_is, _)) = nom::sequence::delimited(ws, kw_is(), ws).parse(input.into()) {
+        if let Ok((after_is, _)) = nom::sequence::delimited(ws, kw_is(), ws).parse(input) {
             let (after_pat, pat) = nom::sequence::delimited(ws, parse_pattern, ws).parse(after_is)?;
             left = Expression::IsPattern {
                 expression: Box::new(left),
@@ -140,7 +140,7 @@ fn parse_type_test_expression_or_higher(input: Span) -> BResult<Expression> {
         }
 
         // Try 'as' type cast-like operator
-        if let Ok((after_as, _)) = nom::sequence::delimited(ws, kw_as(), ws).parse(input.into()) {
+        if let Ok((after_as, _)) = nom::sequence::delimited(ws, kw_as(), ws).parse(input) {
             let (after_ty, ty) = nom::sequence::delimited(ws, parse_type_expression, ws).parse(after_as)?;
             left = Expression::As {
                 expression: Box::new(left),
@@ -174,7 +174,7 @@ fn parse_shift_expression_or_higher(input: Span) -> BResult<Expression> {
             ),
         )), ws)
             .parse(i)
-    })(input.into())
+    })(input)
 }
 
 fn parse_additive_expression_or_higher(input: Span) -> BResult<Expression> {
@@ -190,7 +190,7 @@ fn parse_additive_expression_or_higher(input: Span) -> BResult<Expression> {
             ),
         )), ws)
             .parse(i)
-    })(input.into())
+    })(input)
 }
 
 fn parse_multiplicative_expression_or_higher(input: Span) -> BResult<Expression> {
@@ -211,5 +211,5 @@ fn parse_multiplicative_expression_or_higher(input: Span) -> BResult<Expression>
             ),
         )), ws)
             .parse(i)
-    })(input.into())
+    })(input)
 }

@@ -16,7 +16,7 @@ impl Display for Identifier {
         match self {
             Identifier::Simple(name) => write!(f, "{}", name),
             Identifier::QualifiedIdentifier(segments) => write!(f, "{}", segments.join(".")),
-            Identifier::OperatorOverrideIdentifier(operatorType) => match operatorType {
+            Identifier::OperatorOverrideIdentifier(operator_type) => match operator_type {
                 OverrideOperatorType::Unary(operator) => write!(f, "{}", operator),
                 OverrideOperatorType::Binary(operator) => write!(f, "{}", operator),
                 OverrideOperatorType::Boolean(value) => write!(f, "bool ({})", value),

@@ -3,7 +3,6 @@ use crate::expressions::{DeconstructionExpression, DeconstructionTarget};
 
 impl Emit for DeconstructionExpression {
     fn emit<W: std::fmt::Write>(&self, w:&mut W, cx:&mut EmitCtx)->Result<(),EmitError>{
-        use crate::emitters::emit_trait::Emit as _;
         w.write_char('(')?;
         for (i, t) in self.targets.iter().enumerate() {
             if i != 0 { w.write_str(", ")?; }
@@ -25,10 +24,10 @@ impl Emit for DeconstructionTarget {
             DeconstructionTarget::Discard => { w.write_str("_")?; }
             DeconstructionTarget::Nested(inner) => {
                 w.write_char('(')?;
-                for (i, t) in inner.iter().enumerate() { if i != 0 { w.write_str(", ")?; } match t { _ => { /* recursion via Display below not possible, write directly */ } } }
-                // Simpler: reuse this impl by formatting each via this same match
-                // but Rust doesn't allow recursive call here; leave minimal marker
-                // For now, print as commas only to avoid recursion complexity
+                for (i, t) in inner.iter().enumerate() {
+                    if i != 0 { w.write_str(", ")?; }
+                    t.emit(w, _cx)?;
+                }
                 w.write_char(')')?;
             }
         }

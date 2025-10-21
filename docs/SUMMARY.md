@@ -17,12 +17,20 @@
 - [Declaration Parsing](./parser/declarations.md)
 - [Type System](./parser/types.md)
 - [Feature Completeness](./parser/feature-completeness.md)
+- [Keywords and Tokens](./parser/keywords-and-tokens.md)
 
 # Advanced Features
 
 - [Query API](./parser/navigation.md)
 - [Comment Parsing](./parser/comments.md)
 - [Preprocessor Directives](./parser/preprocessor.md)
+
+# Syntax
+
+- [Spans](./syntax/spans.md)
+- [Traits](./syntax/traits.md)
+- [Derive Macros](./syntax/derive-macros.md)
+- [Formatter and Emitters](./syntax/formatter.md)
 
 # Analysis Framework
 
@@ -34,6 +42,10 @@
 - [Metrics Collection](./analysis/metrics.md)
 - [Type Analysis](./analysis/types.md)
 - [Code Quality](./analysis/quality.md)
+- [Passes and Rules](./analysis/passes-and-rules.md)
+- [Report Schema](./analysis/report-schema.md)
+- [Writing a Pass](./analysis/writing-a-pass.md)
+- [Writing a Ruleset](./analysis/writing-a-ruleset.md)
 
 # CLI Tools
 
@@ -41,12 +53,31 @@
 - [Parse Command](./cli/parse.md)
 - [Tree Visualization](./cli/tree.md)
 - [Analysis Command](./cli/analyze.md)
+- [Format Command](./cli/format.md)
+- [Parse Errors JSON](./cli/errors-json.md)
 
 # Workspace
 
 - [Workspace Loading](./workspace/overview.md)
 
-# Conceptual Docs
+# Configuration
+
+- [Configuration Overview](./configuration/overview.md)
+
+# Development
+
+- [Contributing](./development/contributing.md)
+- [Testing](./development/testing.md)
+- [Architecture Decisions](./development/architecture.md)
+- [Cookbooks](./development/cookbooks.md)
+  - [Query Cookbook](./development/query-cookbook.md)
+  - [Parser Cookbook](./development/parser-cookbook.md)
+- [Writing Tests](./development/writing-tests.md)
+- [bsharp_tests Overview](./development/bsharp_tests.md)
+- [Extending Syntax (New Nodes)](./development/extending-syntax.md)
+- [Writing Parsers](./development/writing-parsers.md)
+
+# Research & Development
 
 ## CIL Runtime 
 
@@ -68,9 +99,3 @@
   - [Open Questions](./cil-runtime/open-questions.md)
   - [Glossary](./cil-runtime/glossary.md)
 
-
-# Development
-
-- [Contributing](./development/contributing.md)
-- [Testing](./development/testing.md)
-- [Architecture Decisions](./development/architecture.md)

@@ -7,6 +7,8 @@ use crate::parser::expressions::declarations::modifier_parser::parse_modifiers_f
 use crate::parser::expressions::declarations::type_parameter_parser::opt_parse_type_parameter_list;
 use crate::parser::identifier_parser::parse_identifier;
 use crate::syntax::errors::BResult;
+#[cfg(feature = "parser_recovery_trace")]
+use log::trace;
 
 use crate::syntax::comment_parser::ws;
 use nom::bytes::complete::tag;
@@ -35,16 +37,16 @@ pub fn parse_type_declaration_header_span<'a>(
     declaration_type: &'static str,
     keyword: &'static str,
 ) -> BResult<'a, BaseTypeDeclaration> {
-    let (input, attributes) = parse_attribute_lists(input.into())?;
+    let (input, attributes) = parse_attribute_lists(input)?;
     let (input, modifiers) = parse_modifiers_for_decl_type(input, declaration_type)?;
     let (input, _) = delimited(ws, tag(keyword), ws)
         .context("declaration keyword")
-        .parse(input.into())?;
+        .parse(input)?;
     let (input, name) = delimited(ws, parse_identifier, ws)
         .context("type name")
-        .parse(input.into())?;
-    let (input, type_parameters) = opt_parse_type_parameter_list.parse(input.into())?;
-    let (input, base_types) = parse_base_types.parse(input.into())?;
+        .parse(input)?;
+    let (input, type_parameters) = opt_parse_type_parameter_list.parse(input)?;
+    let (input, base_types) = parse_base_types.parse(input)?;
 
     Ok((
         input,
@@ -64,7 +66,7 @@ pub fn parse_type_declaration_header_span<'a>(
 pub fn parse_open_brace(input: Span) -> BResult<()> {
     let (input, _) = delimited(ws, satisfy(|c| c == '{'), ws)
         .context("opening brace")
-        .parse(input.into())?;
+        .parse(input)?;
     Ok((input, ()))
 }
 
@@ -72,14 +74,14 @@ pub fn parse_open_brace(input: Span) -> BResult<()> {
 pub fn parse_close_brace(input: Span) -> BResult<()> {
     let (input, _) = cut(delimited(ws, satisfy(|c| c == '}'), ws))
         .context("closing brace")
-        .parse(input.into())?;
+        .parse(input)?;
     Ok((input, ()))
 }
 
 /// Skip whitespace and check if we've reached the end of a body (closing brace)
 pub fn at_end_of_body(input: Span) -> bool {
     // Non-consuming lookahead for '}' after whitespace/comments
-    peek(delimited(ws, satisfy(|c| c == '}'), ws)).parse(input.into()).is_ok()
+    peek(delimited(ws, satisfy(|c| c == '}'), ws)).parse(input).is_ok()
 }
 
 /// Skip malformed input within a type body until a safe, top-level recovery boundary.
@@ -114,7 +116,7 @@ pub fn skip_to_member_boundary_top_level(input: Span) -> &str {
     // Guardrails: discourage calling when already at a closing brace for the current body.
     // This is not a hard error in release builds, but it helps surface misuse during development.
     debug_assert!(
-        peek(delimited(ws, satisfy(|c| c == '}'), ws)).parse(input.into()).is_err(),
+        peek(delimited(ws, satisfy(|c| c == '}'), ws)).parse(input).is_err(),
         "skip_to_member_boundary_top_level called at a top-level closing brace; caller should handle '}}'"
     );
 

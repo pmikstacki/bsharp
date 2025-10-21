@@ -55,12 +55,12 @@ fn parse_namespace_member_safe(input: Span) -> BResult<NamespaceBodyDeclaration>
         ),
     ))
     .context("namespace member")
-    .parse(input.into())
+    .parse(input)
 }
 
 /// Public wrapper to allow tools and traits to parse a single namespace body declaration.
 pub fn parse_namespace_member_for_spans(input: Span) -> BResult<NamespaceBodyDeclaration> {
-    parse_namespace_member_safe(input.into())
+    parse_namespace_member_safe(input)
 }
 
 /// Parse a C# namespace declaration using proper Nom combinators
@@ -80,12 +80,12 @@ pub fn parse_namespace_declaration(input: Span) -> BResult<NamespaceDeclaration>
     // Parse the "namespace" keyword
     let (input, _) = delimited(ws, kw_namespace(), ws)
         .context("namespace keyword")
-        .parse(input.into())?;
+        .parse(input)?;
 
     // Parse qualified name (e.g., "System.Collections")
     let (input, name_parts) = delimited(ws, parse_qualified_name, ws)
         .context("namespace name")
-        .parse(input.into())?;
+        .parse(input)?;
     let name_segments: Vec<String> = name_parts
         .iter()
         .map(|id| match id {
@@ -98,7 +98,7 @@ pub fn parse_namespace_declaration(input: Span) -> BResult<NamespaceDeclaration>
     // Parse opening brace
     let (input, _) = delimited(ws, satisfy(|c| c == '{'), ws)
         .context("namespace body opening")
-        .parse(input.into())?;
+        .parse(input)?;
     trace!("[DEBUG] parse_namespace_declaration: after open brace");
 
     // Parse using directives inside namespace body (namespace-scoped usings)

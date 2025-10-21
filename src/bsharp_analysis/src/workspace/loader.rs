@@ -155,7 +155,7 @@ impl WorkspaceLoader {
         )))
     }
 
-    fn follow_project_references(root: &Path, projects: &mut Vec<Project>) {
+    fn follow_project_references(_root: &Path, projects: &mut Vec<Project>) {
         let mut seen: HashSet<PathBuf> = projects.iter().map(|p| p.path.clone()).collect();
         let mut queue: VecDeque<PathBuf> = projects
             .iter()

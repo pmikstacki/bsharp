@@ -6,7 +6,9 @@ members = [
     "src/bsharp_syntax",
     "src/bsharp_syntax_derive",
     "src/bsharp_tests",
-    "src/bsharp_il"
+    "src/bsharp_il",
+    "roslyn_testing/bsharp_compliance",
+    "roslyn_testing/bsharp_compliance_testing"
 ]
 resolver = "2"
 
@@ -14,4 +16,4 @@ resolver = "2"
 edition = "2024"
 version = "0.1.0"
 license = "MPL-2.0"
-authors = ["Piotr Mikstacki", "BSharp Contributors"]
+authors = ["Piotr Mikstacki", "Apokryf",  "BSharp Contributors"]

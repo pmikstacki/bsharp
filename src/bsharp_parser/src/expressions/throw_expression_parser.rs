@@ -25,6 +25,6 @@ pub fn parse_throw_expression(input: Span) -> BResult<Expression> {
         },
     )
         .context("throw expression")
-        .parse(input.into())
+        .parse(input)
 }
 use crate::syntax::span::Span;

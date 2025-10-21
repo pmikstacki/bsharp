@@ -1,3 +1,4 @@
+#![allow(unused_imports)]
 mod declarations;
 mod expressions;
 mod root;

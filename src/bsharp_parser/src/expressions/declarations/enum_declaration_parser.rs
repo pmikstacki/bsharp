@@ -46,20 +46,20 @@ use crate::tokens::separators::{tok_colon, tok_comma};
 pub fn parse_enum_declaration(input: Span) -> BResult<EnumDeclaration> {
     trace!("parse_enum_declaration: input = \"{}\"", input);
     // Parse attributes and convert to the expected format
-    let (input, attribute_lists) = parse_attribute_lists(input.into())?;
+    let (input, attribute_lists) = parse_attribute_lists(input)?;
 
     // Parse modifiers (public, internal, etc.)
-    let (input, modifiers) = parse_modifiers(input.into())?;
+    let (input, modifiers) = parse_modifiers(input)?;
 
     // Parse "enum" keyword
     let (input, _) = delimited(ws, kw_enum(), ws)
         .context("enum keyword")
-        .parse(input.into())?;
+        .parse(input)?;
 
     // Parse enum name
     let (input, name) = delimited(ws, parse_identifier, ws)
         .context("enum name")
-        .parse(input.into())?;
+        .parse(input)?;
 
     // Parse optional underlying type (: byte, : int, etc.)
     let (input, underlying_type) = opt(
@@ -70,16 +70,16 @@ pub fn parse_enum_declaration(input: Span) -> BResult<EnumDeclaration> {
             .map(|(_, ty)| ty)
             .context("enum underlying type"),
     )
-        .parse(input.into())?;
+        .parse(input)?;
 
     // Parse the enum body
-    let (input, _) = parse_open_brace(input.into())?;
+    let (input, _) = parse_open_brace(input)?;
 
     // Parse enum members
-    let (input, members) = parse_enum_members(input.into())?;
+    let (input, members) = parse_enum_members(input)?;
 
     // Parse the closing brace
-    let (input, _) = parse_close_brace(input.into())?;
+    let (input, _) = parse_close_brace(input)?;
 
     Ok((
         input,
@@ -102,7 +102,7 @@ fn parse_enum_members(input: Span) -> BResult<Vec<EnumMember>> {
         |i| delimited(ws, parse_enum_member, ws).parse(i),
     )
         .context("enum members")
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Parse a single enum member
@@ -110,13 +110,13 @@ fn parse_enum_members(input: Span) -> BResult<Vec<EnumMember>> {
 fn parse_enum_member(input: Span) -> BResult<EnumMember> {
     trace!("[DEBUG] parse_enum_member: input = {:?}", input);
     // Parse attributes for enum member
-    let (input, attribute_lists) = parse_attribute_lists(input.into())?;
+    let (input, attribute_lists) = parse_attribute_lists(input)?;
     trace!("[DEBUG] parse_enum_member: parsed attributes");
 
     // Parse the member name
     let (input, name) = delimited(ws, parse_identifier, ws)
         .context("enum member name")
-        .parse(input.into())?;
+        .parse(input)?;
     trace!("[DEBUG] parse_enum_member: parsed name = {:?}", name);
 
     // Parse optional value assignment
@@ -125,7 +125,7 @@ fn parse_enum_member(input: Span) -> BResult<EnumMember> {
             .context("enum value assignment"),
         delimited(ws, parse_expression, ws),
     ))
-        .parse(input.into())?;
+        .parse(input)?;
 
     Ok((
         input,

@@ -35,7 +35,7 @@ use crate::tokens::separators::tok_comma;
 pub fn parse_expression(input: Span) -> BResult<Expression> {
     delimited(ws, assignment_expression_parser::parse_assignment_expression_or_higher, ws)
         .context("expression")
-        .parse(input.into())
+        .parse(input)
 }
 
 pub fn parse_primary_expression(input: Span) -> BResult<Expression> {
@@ -73,7 +73,7 @@ pub fn parse_primary_expression(input: Span) -> BResult<Expression> {
         parse_stackalloc_expression,
     )), |v| v)
         .context("primary expression")
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Parse a generic type name as a primary expression for static member access.
@@ -98,5 +98,5 @@ fn parse_generic_name_primary(input: Span) -> BResult<Expression> {
         ),
         |(id, _, _)| Expression::Variable(id),
     )
-    .parse(input.into())
+    .parse(input)
 }

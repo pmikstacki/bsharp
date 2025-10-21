@@ -31,7 +31,7 @@ pub fn parse_deconstruction_expression(input: Span) -> BResult<DeconstructionExp
         },
     )
         .context("deconstruction expression")
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Parse deconstruction targets: (var x, var y) or (int a, string b)
@@ -52,7 +52,7 @@ fn parse_deconstruction_targets(input: Span) -> BResult<Vec<DeconstructionTarget
         ws,
     )
         .context("deconstruction targets")
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Parse a single deconstruction target
@@ -87,7 +87,7 @@ fn parse_deconstruction_target(input: Span) -> BResult<DeconstructionTarget> {
         }),
     ))
         .context("deconstruction target")
-        .parse(input.into())
+        .parse(input)
 }
 use crate::syntax::span::Span;
 use crate::tokens::assignment::tok_assign;

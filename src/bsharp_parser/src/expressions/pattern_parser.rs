@@ -22,15 +22,15 @@ use syntax::expressions::{
 
 /// Parse any pattern - entry point for pattern parsing
 pub fn parse_pattern(input: Span) -> BResult<Pattern> {
-    parse_logical_or_pattern(input.into())
+    parse_logical_or_pattern(input)
 }
 
 /// Parse logical OR patterns (pattern1 or pattern2)
 fn parse_logical_or_pattern(input: Span) -> BResult<Pattern> {
     // Use fold_many0 approach from Nom docs for left-associative parsing
-    let (input, first) = parse_logical_and_pattern(input.into())?;
+    let (input, first) = parse_logical_and_pattern(input)?;
     let (input, rest) =
-        nom::multi::many0(preceded(delimited(ws, kw_or(), ws), parse_logical_and_pattern)).parse(input.into())?;
+        nom::multi::many0(preceded(delimited(ws, kw_or(), ws), parse_logical_and_pattern)).parse(input)?;
 
     // Fold the results into a left-associative tree
     Ok((
@@ -44,8 +44,8 @@ fn parse_logical_or_pattern(input: Span) -> BResult<Pattern> {
 /// Parse logical AND patterns (pattern1 and pattern2)
 fn parse_logical_and_pattern(input: Span) -> BResult<Pattern> {
     // Use fold_many0 approach from Nom docs for left-associative parsing
-    let (input, first) = parse_not_pattern(input.into())?;
-    let (input, rest) = nom::multi::many0(preceded(delimited(ws, kw_and(), ws), parse_not_pattern)).parse(input.into())?;
+    let (input, first) = parse_not_pattern(input)?;
+    let (input, rest) = nom::multi::many0(preceded(delimited(ws, kw_and(), ws), parse_not_pattern)).parse(input)?;
 
     // Fold the results into a left-associative tree
     Ok((
@@ -62,11 +62,11 @@ fn parse_not_pattern(input: Span) -> BResult<Pattern> {
         preceded(kw_not(), delimited(ws, parse_relational_pattern, ws)),
         |pattern| Pattern::Not(Box::new(pattern)),
     )
-        .parse(input.into())
+        .parse(input)
     {
         return Ok((i2, pat));
     }
-    parse_relational_pattern(input.into())
+    parse_relational_pattern(input)
 }
 
 /// Parse relational patterns (> value, < value, etc.)
@@ -85,24 +85,24 @@ fn parse_relational_pattern(input: Span) -> BResult<Pattern> {
         ),
         |(op, value)| Pattern::Relational { op, value },
     )
-        .parse(input.into())
+        .parse(input)
     {
         return Ok((i2, out));
     }
-    parse_primary_pattern(input.into())
+    parse_primary_pattern(input)
 }
 
 /// Parse simple expressions for use in patterns (NO RECURSION)
 /// This follows Nom's principle of small, specific parser
 fn parse_pattern_expression(input: Span) -> BResult<Expression> {
-    if let Ok(r) = map(parse_literal, Expression::Literal).parse(input.into()) { return Ok(r); }
-    if let Ok(r) = map(parse_identifier, Expression::Variable).parse(input.into()) { return Ok(r); }
+    if let Ok(r) = map(parse_literal, Expression::Literal).parse(input) { return Ok(r); }
+    if let Ok(r) = map(parse_identifier, Expression::Variable).parse(input) { return Ok(r); }
     if let Ok(r) = delimited(
         delimited(ws, tok_l_paren(), ws),
         parse_pattern_expression,
         cut(delimited(ws, tok_r_paren(), ws)),
     )
-        .parse(input.into())
+        .parse(input)
     { return Ok(r); }
     map(
         (
@@ -116,38 +116,38 @@ fn parse_pattern_expression(input: Span) -> BResult<Expression> {
             }))
         },
     )
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Parse primary patterns (leaf patterns)
 fn parse_primary_pattern(input: Span) -> BResult<Pattern> {
-    if let Ok(r) = parse_discard_pattern(input.into()) { return Ok(r); }
-    if let Ok(r) = parse_var_pattern(input.into()) { return Ok(r); }
-    if let Ok(r) = parse_list_pattern(input.into()) { return Ok(r); }
-    if let Ok(r) = parse_property_pattern(input.into()) { return Ok(r); }
-    if let Ok(r) = parse_positional_pattern(input.into()) { return Ok(r); }
-    if let Ok(r) = parse_tuple_pattern(input.into()) { return Ok(r); }
-    if let Ok(r) = parse_type_pattern(input.into()) { return Ok(r); }
-    if let Ok(r) = parse_parenthesized_pattern(input.into()) { return Ok(r); }
-    parse_constant_pattern(input.into())
+    if let Ok(r) = parse_discard_pattern(input) { return Ok(r); }
+    if let Ok(r) = parse_var_pattern(input) { return Ok(r); }
+    if let Ok(r) = parse_list_pattern(input) { return Ok(r); }
+    if let Ok(r) = parse_property_pattern(input) { return Ok(r); }
+    if let Ok(r) = parse_positional_pattern(input) { return Ok(r); }
+    if let Ok(r) = parse_tuple_pattern(input) { return Ok(r); }
+    if let Ok(r) = parse_type_pattern(input) { return Ok(r); }
+    if let Ok(r) = parse_parenthesized_pattern(input) { return Ok(r); }
+    parse_constant_pattern(input)
 }
 
 /// Parse discard pattern (_)
 fn parse_discard_pattern(input: Span) -> BResult<Pattern> {
     map(delimited(ws, nom_char('_'), ws), |_| Pattern::Discard)
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Parse var pattern (var identifier)
 fn parse_var_pattern(input: Span) -> BResult<Pattern> {
     map(preceded(kw_var(), delimited(ws, parse_identifier, ws)), Pattern::Var)
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Parse type pattern (Type or Type designation)
 fn parse_type_pattern(input: Span) -> BResult<Pattern> {
     let (input, target_type) = parse_type_expression(input)?;
-    let (input, designation) = opt(|i| delimited(ws, parse_pattern_designation, ws).parse(i)).parse(input.into())?;
+    let (input, designation) = opt(|i| delimited(ws, parse_pattern_designation, ws).parse(i)).parse(input)?;
 
     Ok((
         input,
@@ -160,8 +160,8 @@ fn parse_type_pattern(input: Span) -> BResult<Pattern> {
 
 /// Parse pattern designation (variable or discard)
 fn parse_pattern_designation(input: Span) -> BResult<PatternDesignation> {
-    if let Ok(r) = map(delimited(ws, nom_char('_'), ws), |_| PatternDesignation::Discard).parse(input.into()) { return Ok(r); }
-    if let Ok(r) = map(parse_identifier, PatternDesignation::Variable).parse(input.into()) { return Ok(r); }
+    if let Ok(r) = map(delimited(ws, nom_char('_'), ws), |_| PatternDesignation::Discard).parse(input) { return Ok(r); }
+    if let Ok(r) = map(parse_identifier, PatternDesignation::Variable).parse(input) { return Ok(r); }
     map(
         delimited(
             delimited(ws, tok_l_paren(), ws),
@@ -170,7 +170,7 @@ fn parse_pattern_designation(input: Span) -> BResult<PatternDesignation> {
         ),
         |des| PatternDesignation::Parenthesized(Box::new(des)),
     )
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Parse list pattern [pattern1, pattern2, ..]
@@ -186,7 +186,7 @@ fn parse_list_pattern(input: Span) -> BResult<Pattern> {
         ),
         |patterns| Pattern::List { patterns },
     )
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Parse list pattern element (pattern or slice)
@@ -200,7 +200,7 @@ fn parse_list_pattern_element(input: Span) -> BResult<ListPatternElement> {
         // Regular pattern
         map(parse_pattern, ListPatternElement::Pattern),
     ))
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Parse tuple pattern - handle carefully to avoid conflicts
@@ -221,7 +221,7 @@ fn parse_tuple_pattern(input: Span) -> BResult<Pattern> {
             Pattern::Tuple(rest)
         },
     )
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Parse property pattern { Property1: pattern1, Property2: pattern2 }
@@ -252,7 +252,7 @@ fn parse_property_pattern(input: Span) -> BResult<Pattern> {
             subpatterns,
         },
     )
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Parse property subpattern (PropertyName: pattern)
@@ -268,7 +268,7 @@ fn parse_property_subpattern(input: Span) -> BResult<PropertySubpattern> {
             pattern,
         },
     )
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Parse positional pattern Type(pattern1, pattern2, ...)
@@ -290,7 +290,7 @@ fn parse_positional_pattern(input: Span) -> BResult<Pattern> {
             subpatterns,
         },
     )
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Parse parenthesized pattern ((pattern))
@@ -300,12 +300,12 @@ fn parse_parenthesized_pattern(input: Span) -> BResult<Pattern> {
         delimited(delimited(ws, tok_l_paren(), ws), parse_pattern, cut(delimited(ws, tok_r_paren(), ws))),
         |pattern| Pattern::Parenthesized(Box::new(pattern)),
     )
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Parse constant pattern (literal value) - NO RECURSION
 fn parse_constant_pattern(input: Span) -> BResult<Pattern> {
-    map(parse_pattern_expression, Pattern::Constant).parse(input.into())
+    map(parse_pattern_expression, Pattern::Constant).parse(input)
 }
 use crate::syntax::span::Span;
 use crate::tokens::delimiters::{tok_l_brace, tok_l_brack, tok_l_paren, tok_r_brace, tok_r_brack, tok_r_paren};

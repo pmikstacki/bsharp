@@ -57,7 +57,7 @@ pub fn format_error_tree(input: &str, error: &ErrorTree<Span<'_>>) -> String {
             ErrorTree::Stack { base, .. } => max_error_offset(base),
             ErrorTree::Alt(list) => list
                 .iter()
-                .map(|alt| max_error_offset(alt))
+                .map(max_error_offset)
                 .max()
                 .unwrap_or(0),
         }

@@ -57,13 +57,13 @@ fn parse_constructor_initializer(input: Span) -> BResult<ConstructorInitializer>
         |(_, init)| init,
     )
         .context("constructor initializer")
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Parse a pure method declaration, erroring if the unified parser determines constructor syntax.
 pub fn parse_pure_method_declaration(input: Span) -> BResult<MethodDeclaration> {
     use nom_supreme::error::{BaseErrorKind, ErrorTree, Expectation};
-    let (rest, member) = parse_member_declaration(input.into())?;
+    let (rest, member) = parse_member_declaration(input)?;
     if member.has_constructor_syntax() {
         return Err(nom::Err::Failure(ErrorTree::Base {
             location: input,
@@ -89,7 +89,7 @@ pub fn parse_pure_method_declaration(input: Span) -> BResult<MethodDeclaration> 
 /// Parse a pure constructor declaration, erroring if the unified parser determines method syntax.
 pub fn parse_constructor_declaration(input: Span) -> BResult<ConstructorDeclaration> {
     use nom_supreme::error::{BaseErrorKind, ErrorTree, Expectation};
-    let (rest, member) = parse_member_declaration(input.into())?;
+    let (rest, member) = parse_member_declaration(input)?;
     if !member.has_constructor_syntax() {
         return Err(nom::Err::Failure(ErrorTree::Base {
             location: input,
@@ -135,7 +135,7 @@ fn parse_member_body(input: Span) -> BResult<Option<Statement>> {
         },
     ))
         .context("member body (expected block '{...}', expression body '=> expr;', or ';')")
-        .parse(input.into())
+        .parse(input)
 }
 
 /// **Pure Structural Parser**
@@ -144,14 +144,14 @@ fn parse_member_body(input: Span) -> BResult<Option<Statement>> {
 /// The analyzer determines semantic meaning and validates semantic rules.
 pub fn parse_member_declaration(input: Span) -> BResult<MemberDeclaration> {
     // 1. Parse modifiers (ALL modifiers allowed syntactically - no semantic checks here)
-    let (input, modifiers) = parse_modifiers(input.into())?;
+    let (input, modifiers) = parse_modifiers(input)?;
 
     // 2. We need to determine if this is a method (has return type) or constructor (no return type).
     // The challenge: `Type Name()` vs `Name()` - both start with an identifier.
     // Strategy: Try to parse as method first, if that fails, try as constructor.
 
     // Try method parsing first (Type Name(...))
-    if let Ok((after_type, return_type)) = delimited(ws, parse_type_expression, ws).parse(input.into()) {
+    if let Ok((after_type, return_type)) = delimited(ws, parse_type_expression, ws).parse(input) {
         // Successfully parsed a type, now try to parse an identifier after it
         if let Ok((after_name_candidate, name)) = delimited(ws, parse_identifier, ws).parse(after_type) {
             // Attempt to parse optional type parameters <T, U> for the method itself
@@ -201,7 +201,7 @@ pub fn parse_member_declaration(input: Span) -> BResult<MemberDeclaration> {
 
     // If method parsing failed, try constructor parsing: Name(...)
     // This path is also taken if the structure doesn't match Type Name<...>(...) pattern
-    let (input_after_mods, name) = delimited(ws, parse_identifier, ws).parse(input.into())?;
+    let (input_after_mods, name) = delimited(ws, parse_identifier, ws).parse(input)?;
     // 4. Parse type parameters (for generic constructors - though rare, syntactically possible)
     let (input_after_type_params, type_parameters) =
         opt(|i| delimited(ws, parse_type_parameter_list, ws).parse(i))

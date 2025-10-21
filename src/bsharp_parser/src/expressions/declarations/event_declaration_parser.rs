@@ -63,7 +63,7 @@ fn parse_event_accessor(input: Span) -> BResult<(String, EventAccessor)> {
         ),
     ))
         .context("event accessor")
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Parse event accessor list: { add; remove; } or { add { ... } remove { ... } }
@@ -108,7 +108,7 @@ fn parse_event_accessor_list(input: Span) -> BResult<EventAccessorList> {
         },
     )
         .context("event accessor list")
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Parse an event declaration
@@ -146,7 +146,7 @@ pub fn parse_event_declaration(input: Span) -> BResult<EventDeclaration> {
         },
     )
         .context("event declaration")
-        .parse(input.into())
+        .parse(input)
 }
 use crate::syntax::span::Span;
 use crate::tokens::separators::tok_semicolon;

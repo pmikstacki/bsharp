@@ -50,10 +50,10 @@ Utility functions for enhanced error handling:
 
 ### Pretty Error Formatting
 
-**Location:** `src/bsharp_analysis/src/diagnostics/parse.rs`
+**Location:** `src/bsharp_parser/src/syntax/errors.rs`
 
 ```rust
-pub fn format_error_tree(input: &str, error: &ErrorTree<&str>) -> String;
+pub fn format_error_tree(input: &str, error: &ErrorTree<Span<'_>>) -> String;
 ```
 
 Produces rustc-like error messages with:

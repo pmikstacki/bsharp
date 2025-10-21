@@ -29,40 +29,40 @@ use nom_supreme::ParserExt;
 /// ```
 pub fn parse_operator_declaration(input: Span) -> BResult<OperatorDeclaration> {
     // Parse attributes
-    let (input, attribute_lists) = parse_attribute_lists(input.into())?;
+    let (input, attribute_lists) = parse_attribute_lists(input)?;
     let attributes = convert_attributes(attribute_lists);
 
     // Parse modifiers (typically public static)
-    let (input, modifiers) = parse_modifiers(input.into())?;
+    let (input, modifiers) = parse_modifiers(input)?;
 
     // Check if this is a conversion operator (implicit/explicit operator)
     // If so, we parse differently
-    if let Ok((_, _)) = delimited(ws, kw_implicit(), ws).parse(input.into()) {
+    if let Ok((_, _)) = delimited(ws, kw_implicit(), ws).parse(input) {
         return parse_conversion_operator(input, attributes, modifiers, ConversionKind::Implicit);
-    } else if let Ok((_, _)) = delimited(ws, kw_explicit(), ws).parse(input.into()) {
+    } else if let Ok((_, _)) = delimited(ws, kw_explicit(), ws).parse(input) {
         return parse_conversion_operator(input, attributes, modifiers, ConversionKind::Explicit);
     }
 
     // Regular operator with return type
     let (input, return_type) = delimited(ws, parse_type_expression, ws)
         .context("operator return type")
-        .parse(input.into())?;
+        .parse(input)?;
 
     // Parse the "operator" keyword
     let (input, _) = delimited(ws, kw_operator(), ws)
         .context("operator keyword")
-        .parse(input.into())?;
+        .parse(input)?;
 
     // Parse the operator symbol
-    let (input, operator_symbol) = parse_operator_symbol(input.into())?;
+    let (input, operator_symbol) = parse_operator_symbol(input)?;
 
     // Parse parameters
     let (input, parameters) = delimited(ws, parse_parameter_list, ws)
         .context("operator parameter list")
-        .parse(input.into())?;
+        .parse(input)?;
 
     // Parse body
-    let (input, body) = parse_operator_body(input.into())?;
+    let (input, body) = parse_operator_body(input)?;
 
     let operator_declaration = OperatorDeclaration {
         attributes,
@@ -87,29 +87,29 @@ fn parse_conversion_operator(
     let (input, _) = match kind {
         ConversionKind::Implicit => delimited(ws, kw_implicit(), ws)
             .context("implicit keyword")
-            .parse(input.into())?,
+            .parse(input)?,
         ConversionKind::Explicit => delimited(ws, kw_explicit(), ws)
             .context("explicit keyword")
-            .parse(input.into())?,
+            .parse(input)?,
     };
 
     // Parse the "operator" keyword
     let (input, _) = delimited(ws, kw_operator(), ws)
         .context("operator keyword")
-        .parse(input.into())?;
+        .parse(input)?;
 
     // Parse the target type
     let (input, target_type) = delimited(ws, parse_type_expression, ws)
         .context("conversion target type")
-        .parse(input.into())?;
+        .parse(input)?;
 
     // Parse parameters
     let (input, parameters) = delimited(ws, parse_parameter_list, ws)
         .context("conversion operator parameter list")
-        .parse(input.into())?;
+        .parse(input)?;
 
     // Parse body
-    let (input, body) = parse_operator_body(input.into())?;
+    let (input, body) = parse_operator_body(input)?;
 
     let operator_declaration = OperatorDeclaration {
         attributes,
@@ -148,7 +148,7 @@ fn parse_operator_symbol(input: Span) -> BResult<Identifier> {
         map(delimited(ws, tok_tilde(), ws), |_| Identifier::new("~")),
     ))
         .context("operator symbol")
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Parse the operator body (either a block statement or semicolon)
@@ -163,7 +163,7 @@ fn parse_operator_body(input: Span) -> BResult<String> {
         map(delimited(ws, tok_semicolon(), ws), |_| "".to_string()),
     ))
         .context("operator body")
-        .parse(input.into())
+        .parse(input)
 }
 use crate::syntax::span::Span;
 use crate::tokens::arithmetic::{tok_decrement, tok_divide, tok_increment, tok_minus, tok_mod, tok_multiply, tok_plus};

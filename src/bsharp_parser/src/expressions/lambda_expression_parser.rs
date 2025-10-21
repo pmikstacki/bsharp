@@ -48,7 +48,7 @@ fn parse_lambda_parameter_modifier(input: Span) -> BResult<LambdaParameterModifi
         |v| v,
     )
         .context("lambda parameter modifier")
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Parse a lambda parameter: [modifier] [type] name
@@ -93,7 +93,7 @@ fn parse_lambda_parameter(input: Span) -> BResult<LambdaParameter> {
         }),
     )), |v| v)
         .context("lambda parameter")
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Parse lambda parameters - either single parameter or parenthesized list
@@ -112,12 +112,12 @@ fn parse_lambda_parameters(input: Span) -> BResult<Vec<LambdaParameter>> {
         }),
     )), |v| v)
         .context("lambda parameters")
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Parse lambda body block statements (for lambda { ... } bodies)
 fn parse_lambda_block_body(input: Span) -> BResult<Vec<Statement>> {
-    let (input, block_statement) = parse_block_statement(input.into())?;
+    let (input, block_statement) = parse_block_statement(input)?;
     let statements = extract_statements_from_block(block_statement);
     Ok((input, statements))
 }
@@ -133,7 +133,7 @@ fn parse_lambda_body(input: Span) -> BResult<LambdaBody> {
         map(parse_expression, LambdaBody::ExpressionSyntax),
     )), |v| v)
         .context("lambda body")
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Parse a lambda expression: \[async] parameters => body
@@ -155,7 +155,7 @@ pub fn parse_lambda_expression(input: Span) -> BResult<Expression> {
         },
     )
         .context("lambda expression")
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Parse an anonymous method expression: async delegate [parameters] body
@@ -176,14 +176,14 @@ pub fn parse_anonymous_method_expression(input: Span) -> BResult<Expression> {
         },
     )
         .context("anonymous method expression")
-        .parse(input.into())
+        .parse(input)
 }
 
 /// Parse any lambda-like expression (lambda or anonymous method)
 pub fn parse_lambda_or_anonymous_method(input: Span) -> BResult<Expression> {
     map(alt((parse_lambda_expression, parse_anonymous_method_expression)), |v| v)
         .context("lambda or anonymous method")
-        .parse(input.into())
+        .parse(input)
 }
 use crate::syntax::span::Span;
 use crate::tokens::assignment::tok_assign;

@@ -18,7 +18,7 @@ pub fn parse_label_statement(input: Span) -> BResult<Statement> {
         |(label, _)| Statement::Label(LabelStatement { label }),
     )
     .context("label statement")
-    .parse(input.into())
+    .parse(input)
 }
 use crate::syntax::span::Span;
 use crate::tokens::separators::tok_colon;

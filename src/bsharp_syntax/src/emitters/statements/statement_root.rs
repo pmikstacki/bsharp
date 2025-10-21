@@ -39,6 +39,7 @@ impl Emit for Statement {
                 w.write_char(';')?; Ok(())
             }
             Statement::Block(stmts) => {
+                if stmts.is_empty() { w.write_str("{ }")?; return Ok(()); }
                 w.write_char('{')?; cx.nl(w)?; cx.push_indent();
                 for s in stmts { cx.write_indent(w)?; s.emit(w, cx)?; cx.nl(w)?; }
                 cx.pop_indent(); cx.write_indent(w)?; w.write_char('}')?; Ok(())

@@ -31,7 +31,7 @@ pub fn parse_yield_statement(input: Span) -> BResult<Statement> {
         |(_, yield_kind, _)| Statement::Yield(yield_kind),
     )
         .context("yield statement")
-        .parse(input.into())
+        .parse(input)
 }
 use crate::syntax::span::Span;
 use crate::tokens::separators::tok_semicolon;
