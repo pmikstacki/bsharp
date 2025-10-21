@@ -101,6 +101,13 @@ impl FmtWriter {
         if self.opts.ensure_final_newline {
             let nl = self.opts.newline;
             self.buf.push_str(nl);
+            // Collapse any extra blank line before EOF: ensure there is only a single final newline
+            // If we ended up with two consecutive newlines at the end, remove the extra one(s).
+            while self.buf.as_bytes().len() >= 2 {
+                let bytes = self.buf.as_bytes();
+                let len = bytes.len();
+                if bytes[len - 1] == b'\n' && bytes[len - 2] == b'\n' { self.buf.pop(); } else { break; }
+            }
         }
         self.buf
     }

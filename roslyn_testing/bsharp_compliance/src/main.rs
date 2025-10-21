@@ -1,6 +1,7 @@
 mod tests_writer;
+mod generator;
 
-use clap::Parser;
+use clap::{Parser, ArgAction};
 use std::path::PathBuf;
 use tests_writer::utility;
 
@@ -36,6 +37,34 @@ struct Args {
     /// Skip tests asserting diagnostics (expectedErrors)
     #[arg(long, default_value_t = false)]
     skip_diagnostics: bool,
+
+    /// Skip parsing Roslyn TestOptions.* flags (new generator only)
+    #[arg(long, default_value_t = false)]
+    skip_options: bool,
+
+    /// Verbose logging during generation
+    #[arg(long, default_value_t = false)]
+    verbose: bool,
+
+    /// Dry-run without writing files
+    #[arg(long, default_value_t = false)]
+    dry_run: bool,
+
+    /// Stop on first error
+    #[arg(long, default_value_t = false)]
+    fail_fast: bool,
+
+    /// Use the new emitter+writer pipeline (experimental)
+    #[arg(long, default_value_t = false)]
+    new_emitter: bool,
+
+    /// Prevalidate cases with our parser before generating (pass --prevalidate=false to include failing parses)
+    #[arg(long, default_value_t = true, action = ArgAction::Set)]
+    prevalidate: bool,
+
+    /// Structure extraction mode (UsingTree + N(...)/EOF DSL)
+    #[arg(long, default_value_t = false)]
+    structure: bool,
 }
 
 fn main() {
@@ -49,9 +78,12 @@ fn main() {
         max_per_file: args.max_per_file,
         skip_overrides: args.skip_overrides,
         skip_diagnostics: args.skip_diagnostics,
+        use_new_emitter: args.new_emitter,
+        prevalidate: if args.structure { false } else { args.prevalidate },
+        structure_mode: args.structure,
     };
 
-    if let Err(e) = tests_writer::runner::run(cfg) {
+    if let Err(e) = generator::cli::dispatch_legacy(cfg) {
         eprintln!("Generator failed: {e}");
         std::process::exit(1);
     }

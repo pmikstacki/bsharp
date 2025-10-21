@@ -1,5 +1,5 @@
 use bsharp_syntax::statements::statement::Statement;
-use crate::custom_asserts::roslyn_asserts::{ExpectedDiagnostics, assert_diagnostics_unimplemented};
+use crate::custom_asserts::roslyn_asserts::{ExpectedDiagnostics, assert_diagnostics_unimplemented, assert_diagnostics_count};
 
 pub enum CaseData<'a> {
     Statement {
@@ -81,10 +81,37 @@ pub fn after_parse_with_expected(
     expected: Option<ExpectedDiagnostics>,
     case: CaseData<'_>,
 ) {
+    // Compute actual diagnostics count (when available) before moving `case`.
+    let mut actual_count: Option<usize> = None;
+    {
+        use bsharp_parser::syntax::span::Span;
+        use bsharp_parser::test_diagnostics::exposed as diag;
+        if diag::diagnostics_supported() {
+            actual_count = match &case {
+                CaseData::File { src, .. } => {
+                    let span = Span::new(*src);
+                    let (_r, diags) = diag::parse_csharp_source_with_diags(span);
+                    Some(diags.len())
+                }
+                CaseData::Statement { src, .. } => {
+                    let span = Span::new(*src);
+                    let (_r, diags) = diag::parse_statement_with_diags(span);
+                    Some(diags.len())
+                }
+                CaseData::Empty => None,
+            };
+        }
+    }
+
     // First, run any custom per-case asserts (kept for developer convenience)
     after_parse(module, roslyn_file, roslyn_method, idx, case);
-    // Then handle diagnostics expectation (stub for now)
+    // Then handle diagnostics expectation
     if let Some(exp) = expected.as_ref() {
-        assert_diagnostics_unimplemented(exp);
+        if actual_count.is_some() {
+            assert_diagnostics_count(exp, actual_count);
+        } else {
+            // Fallback when feature is disabled or diagnostics not yet supported
+            assert_diagnostics_unimplemented(exp);
+        }
     }
 }

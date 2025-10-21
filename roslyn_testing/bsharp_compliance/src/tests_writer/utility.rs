@@ -114,4 +114,7 @@ pub struct Config {
     pub max_per_file: usize,
     pub skip_overrides: bool,
     pub skip_diagnostics: bool,
+    pub use_new_emitter: bool,
+    pub prevalidate: bool,
+    pub structure_mode: bool,
 }

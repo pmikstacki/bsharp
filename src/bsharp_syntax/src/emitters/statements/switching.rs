@@ -15,8 +15,7 @@ impl Emit for SwitchStatement {
             // If a section has no statements, its labels end with a newline, which is sufficient separation.
             if i + 1 < self.sections.len() { /* no-op: separation handled by section content */ }
         }
-        cx.close_brace(w)?;
-        cx.nl(w)
+        cx.close_brace(w)
     }
 }
 

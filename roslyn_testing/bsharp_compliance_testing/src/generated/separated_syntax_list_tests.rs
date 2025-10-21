@@ -1,9 +1,8 @@
 // Auto-generated from Roslyn: SeparatedSyntaxListTests
-use bsharp_parser::bsharp::parse_csharp_source_strict;
-use bsharp_parser::statement_parser::parse_statement_ws;
 use bsharp_parser::syntax::span::Span;
 use crate::custom_asserts::after_parse;
 use crate::custom_asserts::after_parse::CaseData;
+use bsharp_parser::bsharp::parse_csharp_source_strict;
 /// Roslyn: SeparatedSyntaxListTests.TestSeparatedListInsert (case 1)
 #[test]
 fn separated_list_insert() {
@@ -12,9 +11,12 @@ fn separated_list_insert() {
     let src2 = r#"class C { void M() { x; } }"#;
     let span2 = Span::new(src2);
     let r = parse_csharp_source_strict(span2);
-    assert!(r.is_ok(), "parse failed: {:?}", r.err());
-    let (_rest, unit) = r.unwrap();
-    after_parse::after_parse("separated_syntax_list_tests", "SeparatedSyntaxListTests", "TestSeparatedListInsert", 1, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+    match r {
+        Ok((_rest, unit)) => {
+            after_parse::after_parse_with_expected("separated_syntax_list_tests", "SeparatedSyntaxListTests", "TestSeparatedListInsert", 1, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        }
+        Err(e) => panic!("parse failed: {:?}", e),
+    }
 }
 
 /// Roslyn: SeparatedSyntaxListTests.TestSeparatedListInsert (case 2)
@@ -25,9 +27,12 @@ fn separated_list_insert_case_2() {
     let src2 = r#"class C { void M() { y; } }"#;
     let span2 = Span::new(src2);
     let r = parse_csharp_source_strict(span2);
-    assert!(r.is_ok(), "parse failed: {:?}", r.err());
-    let (_rest, unit) = r.unwrap();
-    after_parse::after_parse("separated_syntax_list_tests", "SeparatedSyntaxListTests", "TestSeparatedListInsert", 2, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+    match r {
+        Ok((_rest, unit)) => {
+            after_parse::after_parse_with_expected("separated_syntax_list_tests", "SeparatedSyntaxListTests", "TestSeparatedListInsert", 2, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        }
+        Err(e) => panic!("parse failed: {:?}", e),
+    }
 }
 
 /// Roslyn: SeparatedSyntaxListTests.TestSeparatedListInsert (case 3)
@@ -38,9 +43,12 @@ fn separated_list_insert_case_3() {
     let src2 = r#"class C { void M() { y; } }"#;
     let span2 = Span::new(src2);
     let r = parse_csharp_source_strict(span2);
-    assert!(r.is_ok(), "parse failed: {:?}", r.err());
-    let (_rest, unit) = r.unwrap();
-    after_parse::after_parse("separated_syntax_list_tests", "SeparatedSyntaxListTests", "TestSeparatedListInsert", 3, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+    match r {
+        Ok((_rest, unit)) => {
+            after_parse::after_parse_with_expected("separated_syntax_list_tests", "SeparatedSyntaxListTests", "TestSeparatedListInsert", 3, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        }
+        Err(e) => panic!("parse failed: {:?}", e),
+    }
 }
 
 /// Roslyn: SeparatedSyntaxListTests.TestSeparatedListInsert (case 4)
@@ -51,9 +59,12 @@ fn separated_list_insert_case_4() {
     let src2 = r#"class C { void M() { a; } }"#;
     let span2 = Span::new(src2);
     let r = parse_csharp_source_strict(span2);
-    assert!(r.is_ok(), "parse failed: {:?}", r.err());
-    let (_rest, unit) = r.unwrap();
-    after_parse::after_parse("separated_syntax_list_tests", "SeparatedSyntaxListTests", "TestSeparatedListInsert", 4, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+    match r {
+        Ok((_rest, unit)) => {
+            after_parse::after_parse_with_expected("separated_syntax_list_tests", "SeparatedSyntaxListTests", "TestSeparatedListInsert", 4, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        }
+        Err(e) => panic!("parse failed: {:?}", e),
+    }
 }
 
 /// Roslyn: SeparatedSyntaxListTests.TestSeparatedListInsert (case 5)
@@ -64,9 +75,12 @@ fn separated_list_insert_case_5() {
     let src2 = r#"class C { void M() { b; } }"#;
     let span2 = Span::new(src2);
     let r = parse_csharp_source_strict(span2);
-    assert!(r.is_ok(), "parse failed: {:?}", r.err());
-    let (_rest, unit) = r.unwrap();
-    after_parse::after_parse("separated_syntax_list_tests", "SeparatedSyntaxListTests", "TestSeparatedListInsert", 5, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+    match r {
+        Ok((_rest, unit)) => {
+            after_parse::after_parse_with_expected("separated_syntax_list_tests", "SeparatedSyntaxListTests", "TestSeparatedListInsert", 5, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        }
+        Err(e) => panic!("parse failed: {:?}", e),
+    }
 }
 
 /// Roslyn: SeparatedSyntaxListTests.TestSeparatedListInsert (case 6)
@@ -77,9 +91,12 @@ fn separated_list_insert_case_6() {
     let src2 = r#"class C { void M() { c; } }"#;
     let span2 = Span::new(src2);
     let r = parse_csharp_source_strict(span2);
-    assert!(r.is_ok(), "parse failed: {:?}", r.err());
-    let (_rest, unit) = r.unwrap();
-    after_parse::after_parse("separated_syntax_list_tests", "SeparatedSyntaxListTests", "TestSeparatedListInsert", 6, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+    match r {
+        Ok((_rest, unit)) => {
+            after_parse::after_parse_with_expected("separated_syntax_list_tests", "SeparatedSyntaxListTests", "TestSeparatedListInsert", 6, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        }
+        Err(e) => panic!("parse failed: {:?}", e),
+    }
 }
 
 /// Roslyn: SeparatedSyntaxListTests.TestSeparatedListInsert (case 7)
@@ -90,9 +107,12 @@ fn separated_list_insert_case_7() {
     let src2 = r#"class C { void M() { c; } }"#;
     let span2 = Span::new(src2);
     let r = parse_csharp_source_strict(span2);
-    assert!(r.is_ok(), "parse failed: {:?}", r.err());
-    let (_rest, unit) = r.unwrap();
-    after_parse::after_parse("separated_syntax_list_tests", "SeparatedSyntaxListTests", "TestSeparatedListInsert", 7, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+    match r {
+        Ok((_rest, unit)) => {
+            after_parse::after_parse_with_expected("separated_syntax_list_tests", "SeparatedSyntaxListTests", "TestSeparatedListInsert", 7, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        }
+        Err(e) => panic!("parse failed: {:?}", e),
+    }
 }
 
 /// Roslyn: SeparatedSyntaxListTests.TestSeparatedListInsert (case 8)
@@ -103,9 +123,12 @@ fn separated_list_insert_case_8() {
     let src2 = r#"class C { void M() { c; } }"#;
     let span2 = Span::new(src2);
     let r = parse_csharp_source_strict(span2);
-    assert!(r.is_ok(), "parse failed: {:?}", r.err());
-    let (_rest, unit) = r.unwrap();
-    after_parse::after_parse("separated_syntax_list_tests", "SeparatedSyntaxListTests", "TestSeparatedListInsert", 8, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+    match r {
+        Ok((_rest, unit)) => {
+            after_parse::after_parse_with_expected("separated_syntax_list_tests", "SeparatedSyntaxListTests", "TestSeparatedListInsert", 8, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        }
+        Err(e) => panic!("parse failed: {:?}", e),
+    }
 }
 
 /// Roslyn: SeparatedSyntaxListTests.TestSeparatedListInsert (case 9)
@@ -116,9 +139,12 @@ fn separated_list_insert_case_9() {
     let src2 = r#"class C { void M() { c; } }"#;
     let span2 = Span::new(src2);
     let r = parse_csharp_source_strict(span2);
-    assert!(r.is_ok(), "parse failed: {:?}", r.err());
-    let (_rest, unit) = r.unwrap();
-    after_parse::after_parse("separated_syntax_list_tests", "SeparatedSyntaxListTests", "TestSeparatedListInsert", 9, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+    match r {
+        Ok((_rest, unit)) => {
+            after_parse::after_parse_with_expected("separated_syntax_list_tests", "SeparatedSyntaxListTests", "TestSeparatedListInsert", 9, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        }
+        Err(e) => panic!("parse failed: {:?}", e),
+    }
 }
 
 /// Roslyn: SeparatedSyntaxListTests.TestAddInsertRemove (case 10)
@@ -129,9 +155,12 @@ fn add_insert_remove() {
     let src2 = r#"class C { void M() { A; } }"#;
     let span2 = Span::new(src2);
     let r = parse_csharp_source_strict(span2);
-    assert!(r.is_ok(), "parse failed: {:?}", r.err());
-    let (_rest, unit) = r.unwrap();
-    after_parse::after_parse("separated_syntax_list_tests", "SeparatedSyntaxListTests", "TestAddInsertRemove", 10, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+    match r {
+        Ok((_rest, unit)) => {
+            after_parse::after_parse_with_expected("separated_syntax_list_tests", "SeparatedSyntaxListTests", "TestAddInsertRemove", 10, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        }
+        Err(e) => panic!("parse failed: {:?}", e),
+    }
 }
 
 /// Roslyn: SeparatedSyntaxListTests.TestAddInsertRemove (case 11)
@@ -142,9 +171,12 @@ fn add_insert_remove_case_2() {
     let src2 = r#"class C { void M() { B; } }"#;
     let span2 = Span::new(src2);
     let r = parse_csharp_source_strict(span2);
-    assert!(r.is_ok(), "parse failed: {:?}", r.err());
-    let (_rest, unit) = r.unwrap();
-    after_parse::after_parse("separated_syntax_list_tests", "SeparatedSyntaxListTests", "TestAddInsertRemove", 11, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+    match r {
+        Ok((_rest, unit)) => {
+            after_parse::after_parse_with_expected("separated_syntax_list_tests", "SeparatedSyntaxListTests", "TestAddInsertRemove", 11, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        }
+        Err(e) => panic!("parse failed: {:?}", e),
+    }
 }
 
 /// Roslyn: SeparatedSyntaxListTests.TestAddInsertRemove (case 12)
@@ -155,9 +187,12 @@ fn add_insert_remove_case_3() {
     let src2 = r#"class C { void M() { C; } }"#;
     let span2 = Span::new(src2);
     let r = parse_csharp_source_strict(span2);
-    assert!(r.is_ok(), "parse failed: {:?}", r.err());
-    let (_rest, unit) = r.unwrap();
-    after_parse::after_parse("separated_syntax_list_tests", "SeparatedSyntaxListTests", "TestAddInsertRemove", 12, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+    match r {
+        Ok((_rest, unit)) => {
+            after_parse::after_parse_with_expected("separated_syntax_list_tests", "SeparatedSyntaxListTests", "TestAddInsertRemove", 12, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        }
+        Err(e) => panic!("parse failed: {:?}", e),
+    }
 }
 
 /// Roslyn: SeparatedSyntaxListTests.TestAddInsertRemove (case 13)
@@ -168,9 +203,12 @@ fn add_insert_remove_case_4() {
     let src2 = r#"class C { void M() { A; } }"#;
     let span2 = Span::new(src2);
     let r = parse_csharp_source_strict(span2);
-    assert!(r.is_ok(), "parse failed: {:?}", r.err());
-    let (_rest, unit) = r.unwrap();
-    after_parse::after_parse("separated_syntax_list_tests", "SeparatedSyntaxListTests", "TestAddInsertRemove", 13, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+    match r {
+        Ok((_rest, unit)) => {
+            after_parse::after_parse_with_expected("separated_syntax_list_tests", "SeparatedSyntaxListTests", "TestAddInsertRemove", 13, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        }
+        Err(e) => panic!("parse failed: {:?}", e),
+    }
 }
 
 /// Roslyn: SeparatedSyntaxListTests.TestAddInsertRemove (case 14)
@@ -181,9 +219,12 @@ fn add_insert_remove_case_5() {
     let src2 = r#"class C { void M() { B; } }"#;
     let span2 = Span::new(src2);
     let r = parse_csharp_source_strict(span2);
-    assert!(r.is_ok(), "parse failed: {:?}", r.err());
-    let (_rest, unit) = r.unwrap();
-    after_parse::after_parse("separated_syntax_list_tests", "SeparatedSyntaxListTests", "TestAddInsertRemove", 14, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+    match r {
+        Ok((_rest, unit)) => {
+            after_parse::after_parse_with_expected("separated_syntax_list_tests", "SeparatedSyntaxListTests", "TestAddInsertRemove", 14, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        }
+        Err(e) => panic!("parse failed: {:?}", e),
+    }
 }
 
 /// Roslyn: SeparatedSyntaxListTests.TestAddInsertRemove (case 15)
@@ -194,9 +235,12 @@ fn add_insert_remove_case_6() {
     let src2 = r#"class C { void M() { C; } }"#;
     let span2 = Span::new(src2);
     let r = parse_csharp_source_strict(span2);
-    assert!(r.is_ok(), "parse failed: {:?}", r.err());
-    let (_rest, unit) = r.unwrap();
-    after_parse::after_parse("separated_syntax_list_tests", "SeparatedSyntaxListTests", "TestAddInsertRemove", 15, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+    match r {
+        Ok((_rest, unit)) => {
+            after_parse::after_parse_with_expected("separated_syntax_list_tests", "SeparatedSyntaxListTests", "TestAddInsertRemove", 15, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        }
+        Err(e) => panic!("parse failed: {:?}", e),
+    }
 }
 
 /// Roslyn: SeparatedSyntaxListTests.TestAddInsertRemove (case 16)
@@ -207,9 +251,12 @@ fn add_insert_remove_case_7() {
     let src2 = r#"class C { void M() { D; } }"#;
     let span2 = Span::new(src2);
     let r = parse_csharp_source_strict(span2);
-    assert!(r.is_ok(), "parse failed: {:?}", r.err());
-    let (_rest, unit) = r.unwrap();
-    after_parse::after_parse("separated_syntax_list_tests", "SeparatedSyntaxListTests", "TestAddInsertRemove", 16, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+    match r {
+        Ok((_rest, unit)) => {
+            after_parse::after_parse_with_expected("separated_syntax_list_tests", "SeparatedSyntaxListTests", "TestAddInsertRemove", 16, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        }
+        Err(e) => panic!("parse failed: {:?}", e),
+    }
 }
 
 /// Roslyn: SeparatedSyntaxListTests.TestAddInsertRemove (case 17)
@@ -220,9 +267,12 @@ fn add_insert_remove_case_8() {
     let src2 = r#"class C { void M() { E; } }"#;
     let span2 = Span::new(src2);
     let r = parse_csharp_source_strict(span2);
-    assert!(r.is_ok(), "parse failed: {:?}", r.err());
-    let (_rest, unit) = r.unwrap();
-    after_parse::after_parse("separated_syntax_list_tests", "SeparatedSyntaxListTests", "TestAddInsertRemove", 17, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+    match r {
+        Ok((_rest, unit)) => {
+            after_parse::after_parse_with_expected("separated_syntax_list_tests", "SeparatedSyntaxListTests", "TestAddInsertRemove", 17, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        }
+        Err(e) => panic!("parse failed: {:?}", e),
+    }
 }
 
 /// Roslyn: SeparatedSyntaxListTests.DoTestAddInsertRemoveOnEmptyList (case 18)
@@ -233,9 +283,12 @@ fn do_test_add_insert_remove_on_empty_list() {
     let src2 = r#"class C { void M() { D; } }"#;
     let span2 = Span::new(src2);
     let r = parse_csharp_source_strict(span2);
-    assert!(r.is_ok(), "parse failed: {:?}", r.err());
-    let (_rest, unit) = r.unwrap();
-    after_parse::after_parse("separated_syntax_list_tests", "SeparatedSyntaxListTests", "DoTestAddInsertRemoveOnEmptyList", 18, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+    match r {
+        Ok((_rest, unit)) => {
+            after_parse::after_parse_with_expected("separated_syntax_list_tests", "SeparatedSyntaxListTests", "DoTestAddInsertRemoveOnEmptyList", 18, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        }
+        Err(e) => panic!("parse failed: {:?}", e),
+    }
 }
 
 /// Roslyn: SeparatedSyntaxListTests.DoTestAddInsertRemoveOnEmptyList (case 19)
@@ -246,9 +299,12 @@ fn do_test_add_insert_remove_on_empty_list_case_2() {
     let src2 = r#"class C { void M() { E; } }"#;
     let span2 = Span::new(src2);
     let r = parse_csharp_source_strict(span2);
-    assert!(r.is_ok(), "parse failed: {:?}", r.err());
-    let (_rest, unit) = r.unwrap();
-    after_parse::after_parse("separated_syntax_list_tests", "SeparatedSyntaxListTests", "DoTestAddInsertRemoveOnEmptyList", 19, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+    match r {
+        Ok((_rest, unit)) => {
+            after_parse::after_parse_with_expected("separated_syntax_list_tests", "SeparatedSyntaxListTests", "DoTestAddInsertRemoveOnEmptyList", 19, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        }
+        Err(e) => panic!("parse failed: {:?}", e),
+    }
 }
 
 /// Roslyn: SeparatedSyntaxListTests.Extensions (case 20)
@@ -259,9 +315,12 @@ fn extensions() {
     let src2 = r#"class C { void M() { A+B; } }"#;
     let span2 = Span::new(src2);
     let r = parse_csharp_source_strict(span2);
-    assert!(r.is_ok(), "parse failed: {:?}", r.err());
-    let (_rest, unit) = r.unwrap();
-    after_parse::after_parse("separated_syntax_list_tests", "SeparatedSyntaxListTests", "Extensions", 20, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+    match r {
+        Ok((_rest, unit)) => {
+            after_parse::after_parse_with_expected("separated_syntax_list_tests", "SeparatedSyntaxListTests", "Extensions", 20, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        }
+        Err(e) => panic!("parse failed: {:?}", e),
+    }
 }
 
 /// Roslyn: SeparatedSyntaxListTests.Extensions (case 21)
@@ -272,8 +331,11 @@ fn extensions_case_2() {
     let src2 = r#"class C { void M() { 1; } }"#;
     let span2 = Span::new(src2);
     let r = parse_csharp_source_strict(span2);
-    assert!(r.is_ok(), "parse failed: {:?}", r.err());
-    let (_rest, unit) = r.unwrap();
-    after_parse::after_parse("separated_syntax_list_tests", "SeparatedSyntaxListTests", "Extensions", 21, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+    match r {
+        Ok((_rest, unit)) => {
+            after_parse::after_parse_with_expected("separated_syntax_list_tests", "SeparatedSyntaxListTests", "Extensions", 21, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        }
+        Err(e) => panic!("parse failed: {:?}", e),
+    }
 }
 

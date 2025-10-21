@@ -13,6 +13,9 @@ pub mod trivia;
 pub mod types;
 pub mod tokens;
 
+// Test-only diagnostics exposure (behind feature)
+pub mod test_diagnostics;
+
 
 use std::collections::HashMap;
 

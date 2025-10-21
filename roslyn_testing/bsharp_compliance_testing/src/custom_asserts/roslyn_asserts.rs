@@ -31,3 +31,24 @@ pub fn assert_diagnostics_unimplemented(expected: &ExpectedDiagnostics) {
         expected.count
     );
 }
+
+/// Count-based assertion that integrates with optional parser diagnostics exposure.
+///
+/// If `actual_count` is `Some(n)`, assert equality with `expected.count`.
+/// If `None`, behave like the stub and only log when `expected.count > 0`.
+pub fn assert_diagnostics_count(expected: &ExpectedDiagnostics, actual_count: Option<usize>) {
+    match actual_count {
+        Some(n) => {
+            assert_eq!(
+                n,
+                expected.count,
+                "Expected {} diagnostic(s) but got {}",
+                expected.count,
+                n
+            );
+        }
+        None => {
+            assert_diagnostics_unimplemented(expected);
+        }
+    }
+}

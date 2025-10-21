@@ -1,9 +1,8 @@
 // Auto-generated from Roslyn: SyntaxListTests
-use bsharp_parser::bsharp::parse_csharp_source_strict;
-use bsharp_parser::statement_parser::parse_statement_ws;
 use bsharp_parser::syntax::span::Span;
 use crate::custom_asserts::after_parse;
 use crate::custom_asserts::after_parse::CaseData;
+use bsharp_parser::bsharp::parse_csharp_source_strict;
 /// Roslyn: SyntaxListTests.TestAddInsertRemoveReplace (case 1)
 #[test]
 fn add_insert_remove_replace() {
@@ -12,9 +11,12 @@ fn add_insert_remove_replace() {
     let src2 = r#"class C { void M() { A ; } }"#;
     let span2 = Span::new(src2);
     let r = parse_csharp_source_strict(span2);
-    assert!(r.is_ok(), "parse failed: {:?}", r.err());
-    let (_rest, unit) = r.unwrap();
-    after_parse::after_parse("syntax_list_tests", "SyntaxListTests", "TestAddInsertRemoveReplace", 1, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+    match r {
+        Ok((_rest, unit)) => {
+            after_parse::after_parse_with_expected("syntax_list_tests", "SyntaxListTests", "TestAddInsertRemoveReplace", 1, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        }
+        Err(e) => panic!("parse failed: {:?}", e),
+    }
 }
 
 /// Roslyn: SyntaxListTests.TestAddInsertRemoveReplace (case 2)
@@ -25,9 +27,12 @@ fn add_insert_remove_replace_case_2() {
     let src2 = r#"class C { void M() { B ; } }"#;
     let span2 = Span::new(src2);
     let r = parse_csharp_source_strict(span2);
-    assert!(r.is_ok(), "parse failed: {:?}", r.err());
-    let (_rest, unit) = r.unwrap();
-    after_parse::after_parse("syntax_list_tests", "SyntaxListTests", "TestAddInsertRemoveReplace", 2, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+    match r {
+        Ok((_rest, unit)) => {
+            after_parse::after_parse_with_expected("syntax_list_tests", "SyntaxListTests", "TestAddInsertRemoveReplace", 2, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        }
+        Err(e) => panic!("parse failed: {:?}", e),
+    }
 }
 
 /// Roslyn: SyntaxListTests.TestAddInsertRemoveReplace (case 3)
@@ -38,9 +43,12 @@ fn add_insert_remove_replace_case_3() {
     let src2 = r#"class C { void M() { C ; } }"#;
     let span2 = Span::new(src2);
     let r = parse_csharp_source_strict(span2);
-    assert!(r.is_ok(), "parse failed: {:?}", r.err());
-    let (_rest, unit) = r.unwrap();
-    after_parse::after_parse("syntax_list_tests", "SyntaxListTests", "TestAddInsertRemoveReplace", 3, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+    match r {
+        Ok((_rest, unit)) => {
+            after_parse::after_parse_with_expected("syntax_list_tests", "SyntaxListTests", "TestAddInsertRemoveReplace", 3, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        }
+        Err(e) => panic!("parse failed: {:?}", e),
+    }
 }
 
 /// Roslyn: SyntaxListTests.TestAddInsertRemoveReplace (case 4)
@@ -51,9 +59,12 @@ fn add_insert_remove_replace_case_4() {
     let src2 = r#"class C { void M() { A ; } }"#;
     let span2 = Span::new(src2);
     let r = parse_csharp_source_strict(span2);
-    assert!(r.is_ok(), "parse failed: {:?}", r.err());
-    let (_rest, unit) = r.unwrap();
-    after_parse::after_parse("syntax_list_tests", "SyntaxListTests", "TestAddInsertRemoveReplace", 4, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+    match r {
+        Ok((_rest, unit)) => {
+            after_parse::after_parse_with_expected("syntax_list_tests", "SyntaxListTests", "TestAddInsertRemoveReplace", 4, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        }
+        Err(e) => panic!("parse failed: {:?}", e),
+    }
 }
 
 /// Roslyn: SyntaxListTests.TestAddInsertRemoveReplace (case 5)
@@ -64,9 +75,12 @@ fn add_insert_remove_replace_case_5() {
     let src2 = r#"class C { void M() { B ; } }"#;
     let span2 = Span::new(src2);
     let r = parse_csharp_source_strict(span2);
-    assert!(r.is_ok(), "parse failed: {:?}", r.err());
-    let (_rest, unit) = r.unwrap();
-    after_parse::after_parse("syntax_list_tests", "SyntaxListTests", "TestAddInsertRemoveReplace", 5, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+    match r {
+        Ok((_rest, unit)) => {
+            after_parse::after_parse_with_expected("syntax_list_tests", "SyntaxListTests", "TestAddInsertRemoveReplace", 5, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        }
+        Err(e) => panic!("parse failed: {:?}", e),
+    }
 }
 
 /// Roslyn: SyntaxListTests.TestAddInsertRemoveReplace (case 6)
@@ -77,9 +91,12 @@ fn add_insert_remove_replace_case_6() {
     let src2 = r#"class C { void M() { C ; } }"#;
     let span2 = Span::new(src2);
     let r = parse_csharp_source_strict(span2);
-    assert!(r.is_ok(), "parse failed: {:?}", r.err());
-    let (_rest, unit) = r.unwrap();
-    after_parse::after_parse("syntax_list_tests", "SyntaxListTests", "TestAddInsertRemoveReplace", 6, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+    match r {
+        Ok((_rest, unit)) => {
+            after_parse::after_parse_with_expected("syntax_list_tests", "SyntaxListTests", "TestAddInsertRemoveReplace", 6, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        }
+        Err(e) => panic!("parse failed: {:?}", e),
+    }
 }
 
 /// Roslyn: SyntaxListTests.TestAddInsertRemoveReplace (case 7)
@@ -90,9 +107,12 @@ fn add_insert_remove_replace_case_7() {
     let src2 = r#"class C { void M() { D ; } }"#;
     let span2 = Span::new(src2);
     let r = parse_csharp_source_strict(span2);
-    assert!(r.is_ok(), "parse failed: {:?}", r.err());
-    let (_rest, unit) = r.unwrap();
-    after_parse::after_parse("syntax_list_tests", "SyntaxListTests", "TestAddInsertRemoveReplace", 7, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+    match r {
+        Ok((_rest, unit)) => {
+            after_parse::after_parse_with_expected("syntax_list_tests", "SyntaxListTests", "TestAddInsertRemoveReplace", 7, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        }
+        Err(e) => panic!("parse failed: {:?}", e),
+    }
 }
 
 /// Roslyn: SyntaxListTests.TestAddInsertRemoveReplace (case 8)
@@ -103,9 +123,12 @@ fn add_insert_remove_replace_case_8() {
     let src2 = r#"class C { void M() { E ; } }"#;
     let span2 = Span::new(src2);
     let r = parse_csharp_source_strict(span2);
-    assert!(r.is_ok(), "parse failed: {:?}", r.err());
-    let (_rest, unit) = r.unwrap();
-    after_parse::after_parse("syntax_list_tests", "SyntaxListTests", "TestAddInsertRemoveReplace", 8, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+    match r {
+        Ok((_rest, unit)) => {
+            after_parse::after_parse_with_expected("syntax_list_tests", "SyntaxListTests", "TestAddInsertRemoveReplace", 8, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        }
+        Err(e) => panic!("parse failed: {:?}", e),
+    }
 }
 
 /// Roslyn: SyntaxListTests.DoTestAddInsertRemoveReplaceOnEmptyList (case 9)
@@ -116,9 +139,12 @@ fn do_test_add_insert_remove_replace_on_empty_list() {
     let src2 = r#"class C { void M() { D ; } }"#;
     let span2 = Span::new(src2);
     let r = parse_csharp_source_strict(span2);
-    assert!(r.is_ok(), "parse failed: {:?}", r.err());
-    let (_rest, unit) = r.unwrap();
-    after_parse::after_parse("syntax_list_tests", "SyntaxListTests", "DoTestAddInsertRemoveReplaceOnEmptyList", 9, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+    match r {
+        Ok((_rest, unit)) => {
+            after_parse::after_parse_with_expected("syntax_list_tests", "SyntaxListTests", "DoTestAddInsertRemoveReplaceOnEmptyList", 9, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        }
+        Err(e) => panic!("parse failed: {:?}", e),
+    }
 }
 
 /// Roslyn: SyntaxListTests.DoTestAddInsertRemoveReplaceOnEmptyList (case 10)
@@ -129,12 +155,79 @@ fn do_test_add_insert_remove_replace_on_empty_list_case_2() {
     let src2 = r#"class C { void M() { E ; } }"#;
     let span2 = Span::new(src2);
     let r = parse_csharp_source_strict(span2);
-    assert!(r.is_ok(), "parse failed: {:?}", r.err());
-    let (_rest, unit) = r.unwrap();
-    after_parse::after_parse("syntax_list_tests", "SyntaxListTests", "DoTestAddInsertRemoveReplaceOnEmptyList", 10, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+    match r {
+        Ok((_rest, unit)) => {
+            after_parse::after_parse_with_expected("syntax_list_tests", "SyntaxListTests", "DoTestAddInsertRemoveReplaceOnEmptyList", 10, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        }
+        Err(e) => panic!("parse failed: {:?}", e),
+    }
 }
 
-/// Roslyn: SyntaxListTests.Extensions (case 11)
+/// Roslyn: SyntaxListTests.AddEmptySyntaxList (case 11)
+#[test]
+fn add_empty_syntax_list() {
+    let src = r#"void"#;
+    let span = Span::new(src);
+    let src2 = r#"class C { void }"#;
+    let span2 = Span::new(src2);
+    let r = parse_csharp_source_strict(span2);
+    match r {
+        Ok((_rest, unit)) => {
+            after_parse::after_parse_with_expected("syntax_list_tests", "SyntaxListTests", "AddEmptySyntaxList", 11, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        }
+        Err(e) => panic!("parse failed: {:?}", e),
+    }
+}
+
+/// Roslyn: SyntaxListTests.AddNamespaceAttributeListsAndModifiers (case 12)
+#[test]
+fn add_namespace_attribute_lists_and_modifiers() {
+    let src = r#"M"#;
+    let span = Span::new(src);
+    let src2 = r#"class C { M }"#;
+    let span2 = Span::new(src2);
+    let r = parse_csharp_source_strict(span2);
+    match r {
+        Ok((_rest, unit)) => {
+            after_parse::after_parse_with_expected("syntax_list_tests", "SyntaxListTests", "AddNamespaceAttributeListsAndModifiers", 12, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        }
+        Err(e) => panic!("parse failed: {:?}", e),
+    }
+}
+
+/// Roslyn: SyntaxListTests.AddNamespaceAttributeListsAndModifiers (case 13)
+#[test]
+fn add_namespace_attribute_lists_and_modifiers_case_2() {
+    let src = r#"Attr"#;
+    let span = Span::new(src);
+    let src2 = r#"class C { Attr }"#;
+    let span2 = Span::new(src2);
+    let r = parse_csharp_source_strict(span2);
+    match r {
+        Ok((_rest, unit)) => {
+            after_parse::after_parse_with_expected("syntax_list_tests", "SyntaxListTests", "AddNamespaceAttributeListsAndModifiers", 13, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        }
+        Err(e) => panic!("parse failed: {:?}", e),
+    }
+}
+
+/// Roslyn: SyntaxListTests.AddNamespaceAttributeListsAndModifiers (case 14)
+#[test]
+fn add_namespace_attribute_lists_and_modifiers_case_3() {
+    let src = r#"Attr"#;
+    let span = Span::new(src);
+    let src2 = r#"class C { Attr }"#;
+    let span2 = Span::new(src2);
+    let r = parse_csharp_source_strict(span2);
+    match r {
+        Ok((_rest, unit)) => {
+            after_parse::after_parse_with_expected("syntax_list_tests", "SyntaxListTests", "AddNamespaceAttributeListsAndModifiers", 14, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        }
+        Err(e) => panic!("parse failed: {:?}", e),
+    }
+}
+
+/// Roslyn: SyntaxListTests.Extensions (case 15)
 #[test]
 fn extensions() {
     let src = r#"A+B"#;
@@ -142,12 +235,15 @@ fn extensions() {
     let src2 = r#"class C { void M() { A+B; } }"#;
     let span2 = Span::new(src2);
     let r = parse_csharp_source_strict(span2);
-    assert!(r.is_ok(), "parse failed: {:?}", r.err());
-    let (_rest, unit) = r.unwrap();
-    after_parse::after_parse("syntax_list_tests", "SyntaxListTests", "Extensions", 11, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+    match r {
+        Ok((_rest, unit)) => {
+            after_parse::after_parse_with_expected("syntax_list_tests", "SyntaxListTests", "Extensions", 15, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        }
+        Err(e) => panic!("parse failed: {:?}", e),
+    }
 }
 
-/// Roslyn: SyntaxListTests.Extensions (case 12)
+/// Roslyn: SyntaxListTests.Extensions (case 16)
 #[test]
 fn extensions_case_2() {
     let src = r#"1"#;
@@ -155,8 +251,11 @@ fn extensions_case_2() {
     let src2 = r#"class C { void M() { 1; } }"#;
     let span2 = Span::new(src2);
     let r = parse_csharp_source_strict(span2);
-    assert!(r.is_ok(), "parse failed: {:?}", r.err());
-    let (_rest, unit) = r.unwrap();
-    after_parse::after_parse("syntax_list_tests", "SyntaxListTests", "Extensions", 12, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+    match r {
+        Ok((_rest, unit)) => {
+            after_parse::after_parse_with_expected("syntax_list_tests", "SyntaxListTests", "Extensions", 16, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        }
+        Err(e) => panic!("parse failed: {:?}", e),
+    }
 }
 

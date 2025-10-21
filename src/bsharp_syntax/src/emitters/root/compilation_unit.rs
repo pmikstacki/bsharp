@@ -64,7 +64,6 @@ impl Emit for CompilationUnit {
                 if !first { cx.between_top_level_declarations(w)?; }
                 cx.write_indent(w)?;
                 d.emit(w, cx)?;
-                cx.nl(w)?;
                 first = false;
             }
             wrote_anything = true;
@@ -82,7 +81,6 @@ impl Emit for CompilationUnit {
             }
             cx.write_indent(w)?;
             d.emit(w, cx)?;
-            cx.nl(w)?;
             first_decl = false;
             wrote_anything = true;
         }

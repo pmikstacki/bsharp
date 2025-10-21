@@ -432,8 +432,8 @@ pub fn write_group(dst_dir: &Path, module_name: &str, source_stem: &str, tests: 
                     writeln!(f, "    let span2 = Span::new(src2);")?;
                     writeln!(f, "    let r = parse_csharp_source_strict(span2);")?;
                 }
-                writeln!(f, "    if let Some(expected) = expected {")?;
-                writeln!(f, "        match r {")?;
+                writeln!(f, "    if let Some(expected) = expected {{")?;
+                writeln!(f, "        match r {{")?;
                 writeln!(f, "            Ok((_rest, unit)) => {{")?;
                 if matches!(t.category, Category::Tree) {
                     writeln!(f, "                after_parse::after_parse_with_expected(\"{}\", \"{}\", \"{}\", {}, expected.clone(), CaseData::File {{ unit: &unit, src, original: None }});",
@@ -462,14 +462,15 @@ pub fn write_group(dst_dir: &Path, module_name: &str, source_stem: &str, tests: 
             }
             Category::Statement => {
                 writeln!(f, "    let r = parse_statement_ws(span);")?;
-                writeln!(f, "    if let Some(expected) = expected {")?;
-                writeln!(f, "        match r {")?;
+                writeln!(f, "    if let Some(expected) = expected {{")?;
+                writeln!(f, "        match r {{")?;
                 writeln!(f, "            Ok((rest, ast)) => {{")?;
                 writeln!(f, "                after_parse::after_parse_with_expected(\"{}\", \"{}\", \"{}\", {}, expected.clone(), CaseData::Statement {{ ast: &ast, src }});",
                          module_name, source_stem, roslyn_method, idx1)?;
                 writeln!(f, "            }}")?;
                 writeln!(f, "            Err(_) => {{")?;
-                writeln!(f, "                after_parse::after_parse_with_expected(\"{}\", \"{}\", \"{}\", {}, expected.clone(), CaseData::Empty);")?;
+                writeln!(f, "                after_parse::after_parse_with_expected(\"{}\", \"{}\", \"{}\", {}, expected.clone(), CaseData::Empty);",
+                         module_name, source_stem, roslyn_method, idx1)?;
                 writeln!(f, "            }}")?;
                 writeln!(f, "        }}")?;
                 writeln!(f, "    }} else {{")?;
@@ -511,3 +512,4 @@ fn to_rust_raw_string(s: &str) -> String {
     }
     let delim = "#".repeat(hashes);
     format!("r{d}\"{s}\"{d}", d=delim, s=s)
+}

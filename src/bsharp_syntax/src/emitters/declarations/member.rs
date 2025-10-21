@@ -1,6 +1,7 @@
 use std::fmt::Write;
 use crate::declarations::{MemberBody, MemberDeclaration};
 use crate::emitters::emit_trait::{Emit, EmitCtx, EmitError};
+use crate::statements::statement::Statement;
 
 impl Emit for MemberBody{
     fn emit<W: Write>(&self, w: &mut W, cx: &mut EmitCtx) -> Result<(), EmitError> {
@@ -32,8 +33,13 @@ impl Emit for MemberDeclaration {
         if is_ctor { if let Some(init) = &self.initializer { w.write_char(' ')?; init.emit(w, cx)?; } }
         // Constraints
         if let Some(cs) = &self.constraints { for c in cs { w.write_char(' ')?; c.emit(w, cx)?; } }
-        // Body or semicolon
-        if let Some(body) = &self.body { w.write_char(' ')?; body.emit(w, cx) } else { w.write_char(';')?; Ok(()) }
+        // Body or semicolon (Allman for block bodies)
+        if let Some(body) = &self.body {
+            match body {
+                Statement::Block(_) => { cx.nl(w)?; cx.write_indent(w)?; body.emit(w, cx) }
+                _ => { w.write_char(' ')?; body.emit(w, cx) }
+            }
+        } else { w.write_char(';')?; Ok(()) }
     }
 }
 

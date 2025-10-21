@@ -37,7 +37,7 @@ impl Emit for NamespaceDeclaration {
             cx.nl(w)?;
             first = false;
         }
-
+        // Ensure the closing brace of the namespace is on its own line
         cx.close_brace(w)?;
         Ok(())
     }

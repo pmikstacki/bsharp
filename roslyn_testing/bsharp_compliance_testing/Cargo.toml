@@ -6,5 +6,5 @@ license.workspace = true
 authors.workspace = true
 
 [dependencies]
-	bsharp_parser = { path = "../../src/bsharp_parser" }
+	bsharp_parser = { path = "../../src/bsharp_parser", features = ["expose_parser_diagnostics"] }
 	bsharp_syntax = { path = "../../src/bsharp_syntax" }
