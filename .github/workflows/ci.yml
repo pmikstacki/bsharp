@@ -21,7 +21,7 @@ jobs:
 
       - name: Configure sparse-checkout for roslyn submodule (C# Syntax tests only)
         run: |
-          if [ -d roslyn_testing/roslyn_repo/.git ]; then
+          if [ -e roslyn_testing/roslyn_repo/.git ]; then
             git -C roslyn_testing/roslyn_repo sparse-checkout init --cone
             git -C roslyn_testing/roslyn_repo sparse-checkout set src/Compilers/CSharp/Test/Syntax
           fi
@@ -57,7 +57,7 @@ jobs:
 
       - name: Configure sparse-checkout for roslyn submodule (C# Syntax tests only)
         run: |
-          if [ -d roslyn_testing/roslyn_repo/.git ]; then
+          if [ -e roslyn_testing/roslyn_repo/.git ]; then
             git -C roslyn_testing/roslyn_repo sparse-checkout init --cone
             git -C roslyn_testing/roslyn_repo sparse-checkout set src/Compilers/CSharp/Test/Syntax
           fi
