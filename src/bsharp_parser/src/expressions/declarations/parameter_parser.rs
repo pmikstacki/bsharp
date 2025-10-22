@@ -10,10 +10,10 @@ use crate::syntax::errors::BResult;
 
 use crate::syntax::comment_parser::ws;
 use crate::syntax::list_parser::parse_delimited_list0;
+use nom::Parser;
 use nom::branch::alt;
 use nom::combinator::{map, opt};
 use nom::sequence::{delimited, preceded};
-use nom::Parser;
 use nom_supreme::ParserExt;
 use syntax::types::{Parameter, ParameterModifier};
 
@@ -26,7 +26,7 @@ fn parse_parameter_modifiers(input: Span) -> BResult<Option<ParameterModifier>> 
             map(kw_out(), |_| ParameterModifier::ScopedOut),
             map(kw_in(), |_| ParameterModifier::ScopedIn),
         ))
-            .parse(after_scoped)?;
+        .parse(after_scoped)?;
         return Ok((rest, Some(m)));
     }
     opt(alt((
@@ -35,7 +35,7 @@ fn parse_parameter_modifiers(input: Span) -> BResult<Option<ParameterModifier>> 
         map(kw_in(), |_| ParameterModifier::In),
         map(kw_params(), |_| ParameterModifier::Params),
     )))
-        .parse(input)
+    .parse(input)
 }
 
 // Parse a single parameter
@@ -57,7 +57,7 @@ pub fn parse_parameter(input: Span) -> BResult<Parameter> {
         |i| delimited(ws, tok_assign(), ws).parse(i),
         |i| delimited(ws, parse_expression, ws).parse(i),
     ))
-        .parse(input)?;
+    .parse(input)?;
 
     Ok((
         input,
@@ -75,16 +75,18 @@ pub fn parse_parameter(input: Span) -> BResult<Parameter> {
 pub fn parse_parameter_list(input: Span) -> BResult<Vec<Parameter>> {
     parse_delimited_list0::<_, _, _, _, char, char, char, Parameter>(
         |i| delimited(ws, tok_l_paren(), ws).parse(i),
-        |i| delimited(ws, parse_parameter, ws)
-            .context("parameter")
-            .parse(i),
+        |i| {
+            delimited(ws, parse_parameter, ws)
+                .context("parameter")
+                .parse(i)
+        },
         |i| delimited(ws, tok_comma(), ws).parse(i),
         |i| delimited(ws, tok_r_paren(), ws).parse(i),
         false,
         true,
     )
-        .context("parameter list")
-        .parse(input)
+    .context("parameter list")
+    .parse(input)
 }
 use crate::syntax::span::Span;
 use crate::tokens::assignment::tok_assign;

@@ -1,6 +1,6 @@
-use std::fmt::Display;
-use serde::{Deserialize, Serialize};
 use bsharp_syntax_derive::AstNode;
+use serde::{Deserialize, Serialize};
+use std::fmt::Display;
 
 #[derive(AstNode, Debug, PartialEq, Hash, Eq, Clone, Copy, Serialize, Deserialize)]
 pub enum UnaryOperator {
@@ -38,6 +38,6 @@ impl Display for UnaryOperator {
             UnaryOperator::PointerIndirection => write!(f, "*"),
             UnaryOperator::IndexFromEnd => write!(f, "^"),
             UnaryOperator::NullForgiving => write!(f, "!"),
-        }    
+        }
     }
 }

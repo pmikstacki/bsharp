@@ -19,14 +19,17 @@
 #[macro_export]
 macro_rules! define_keyword_pair {
     ($kw_fn:ident, $peek_fn:ident, $lit:literal) => {
-        pub fn $kw_fn() -> impl FnMut($crate::syntax::span::Span) -> $crate::syntax::errors::BResult<&str> {
+        pub fn $kw_fn()
+        -> impl FnMut($crate::syntax::span::Span) -> $crate::syntax::errors::BResult<&str> {
             use nom::Parser as _;
             (|i: $crate::syntax::span::Span| {
                 nom::combinator::map(
                     nom::sequence::terminated(
                         nom_supreme::tag::complete::tag($lit),
                         nom::combinator::peek(nom::combinator::not(
-                            nom::character::complete::satisfy(|c: char| c.is_alphanumeric() || c == '_'),
+                            nom::character::complete::satisfy(|c: char| {
+                                c.is_alphanumeric() || c == '_'
+                            }),
                         )),
                     ),
                     |s: $crate::syntax::span::Span| *s.fragment(),
@@ -34,26 +37,27 @@ macro_rules! define_keyword_pair {
                 .parse(i)
             })
         }
-        pub fn $peek_fn() -> impl FnMut($crate::syntax::span::Span) -> $crate::syntax::errors::BResult<&str> {
+        pub fn $peek_fn()
+        -> impl FnMut($crate::syntax::span::Span) -> $crate::syntax::errors::BResult<&str> {
             use nom::Parser as _;
             (|i: $crate::syntax::span::Span| {
                 // Peek keyword with word boundary, tolerating surrounding whitespace/comments.
                 // Non-consuming due to peek.
-                nom::combinator::peek(
-                    nom::sequence::delimited(
-                        $crate::syntax::comment_parser::ws,
-                        nom::combinator::map(
-                            nom::sequence::terminated(
-                                nom_supreme::tag::complete::tag($lit),
-                                nom::combinator::peek(nom::combinator::not(
-                                    nom::character::complete::satisfy(|c: char| c.is_alphanumeric() || c == '_'),
-                                )),
-                            ),
-                            |_| $lit,
+                nom::combinator::peek(nom::sequence::delimited(
+                    $crate::syntax::comment_parser::ws,
+                    nom::combinator::map(
+                        nom::sequence::terminated(
+                            nom_supreme::tag::complete::tag($lit),
+                            nom::combinator::peek(nom::combinator::not(
+                                nom::character::complete::satisfy(|c: char| {
+                                    c.is_alphanumeric() || c == '_'
+                                }),
+                            )),
                         ),
-                        $crate::syntax::comment_parser::ws,
+                        |_| $lit,
                     ),
-                )
+                    $crate::syntax::comment_parser::ws,
+                ))
                 .parse(i)
             })
         }
@@ -62,11 +66,13 @@ macro_rules! define_keyword_pair {
 
 pub mod access_keywords;
 pub mod accessor_keywords;
+pub mod constraint_keywords;
 pub mod contextual_misc_keywords;
 pub mod declaration_keywords;
 pub mod exception_and_safety_keywords;
 pub mod expression_keywords;
 pub mod flow_control_keywords;
+pub mod global_keywords;
 pub mod iteration_keywords;
 pub mod linq_query_keywords;
 pub mod literal_keywords;
@@ -76,8 +82,6 @@ pub mod pattern_keywords;
 pub mod preprocessor_keywords;
 pub mod selection_and_switch_keywords;
 pub mod type_keywords;
-pub mod global_keywords;
-pub mod constraint_keywords;
 
 // Centralized keyword membership check for identifier filtering
 static KEYWORDS: phf::Set<&'static str> = phf::phf_set! {

@@ -6,8 +6,8 @@ use nom::sequence::preceded;
 use syntax::expressions::{AwaitExpression, Expression};
 
 use crate::syntax::comment_parser::ws;
-use nom::sequence::delimited;
 use nom::Parser;
+use nom::sequence::delimited;
 use nom_supreme::ParserExt;
 
 use crate::syntax::span::Span;
@@ -26,13 +26,15 @@ pub fn parse_await_expression(input: Span) -> BResult<Expression> {
             }))
         },
     )
-        .context("await expression")
-        .parse(input)
+    .context("await expression")
+    .parse(input)
 }
 
 /// Parse various types of awaitable expressions with fallback
 fn parse_awaitable_expression(input: Span) -> BResult<Expression> {
-    if let Ok(r) = parse_complex_method_chain(input) { return Ok(r); }
+    if let Ok(r) = parse_complex_method_chain(input) {
+        return Ok(r);
+    }
     parse_simple_awaitable(input)
 }
 

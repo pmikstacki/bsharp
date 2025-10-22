@@ -1,9 +1,9 @@
 use super::{
-    attribute::AttributeList, modifier::Modifier, InterfaceBodyDeclaration,
-    TypeParameterConstraintClause,
+    InterfaceBodyDeclaration, TypeParameterConstraintClause, attribute::AttributeList,
+    modifier::Modifier,
 };
-use crate::types::{Type, TypeParameter};
 use crate::Identifier;
+use crate::types::{Type, TypeParameter};
 use serde::{Deserialize, Serialize};
 // Changed Attribute to AttributeList
 

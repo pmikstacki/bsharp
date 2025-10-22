@@ -1,7 +1,7 @@
 use crate::syntax::errors::BResult;
 use crate::syntax::span::Span;
-use nom::character::complete::char as nom_char;
 use nom::Parser;
+use nom::character::complete::char as nom_char;
 
 define_token_pair_chr!(tok_l_paren, tok_peek_l_paren, '(');
 define_token_pair_chr!(tok_r_paren, tok_peek_r_paren, ')');
@@ -31,4 +31,3 @@ pub fn tok_r_brace() -> impl FnMut(Span) -> BResult<char> {
 pub fn tok_peek_r_brace() -> impl FnMut(Span) -> BResult<char> {
     move |input: Span| nom::combinator::peek(tok_r_brace()).parse(input)
 }
-

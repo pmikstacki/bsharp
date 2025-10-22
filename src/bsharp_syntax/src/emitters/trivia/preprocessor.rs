@@ -2,7 +2,7 @@ use crate::emitters::emit_trait::{Emit, EmitCtx, EmitError};
 use crate::trivia::preprocessor::PreprocessorDirective;
 
 impl Emit for PreprocessorDirective {
-    fn emit<W: std::fmt::Write>(&self, w:&mut W, _cx:&mut EmitCtx)->Result<(),EmitError>{
+    fn emit<W: std::fmt::Write>(&self, w: &mut W, _cx: &mut EmitCtx) -> Result<(), EmitError> {
         match self {
             PreprocessorDirective::Define { symbol } => write!(w, "#define {}", symbol)?,
             PreprocessorDirective::Undef { symbol } => write!(w, "#undef {}", symbol)?,
@@ -11,7 +11,11 @@ impl Emit for PreprocessorDirective {
             PreprocessorDirective::Else => w.write_str("#else")?,
             PreprocessorDirective::Endif => w.write_str("#endif")?,
             PreprocessorDirective::Region { name } => {
-                if let Some(n) = name { write!(w, "#region {}", n)?; } else { w.write_str("#region")?; }
+                if let Some(n) = name {
+                    write!(w, "#region {}", n)?;
+                } else {
+                    w.write_str("#region")?;
+                }
             }
             PreprocessorDirective::EndRegion => w.write_str("#endregion")?,
             PreprocessorDirective::Error { message } => write!(w, "#error {}", message)?,

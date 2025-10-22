@@ -1,6 +1,6 @@
+use crate::framework::AnalysisSession;
 use crate::framework::NodeRef;
 use crate::framework::visit::Visit;
-use crate::framework::AnalysisSession;
 use crate::syntax::ast::{CompilationUnit, TopLevelDeclaration};
 use bsharp_syntax::declarations::{
     ClassBodyDeclaration, ClassDeclaration, MethodDeclaration, NamespaceBodyDeclaration,

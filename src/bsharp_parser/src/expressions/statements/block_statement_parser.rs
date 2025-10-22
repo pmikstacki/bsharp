@@ -1,11 +1,11 @@
 use crate::parser::statement_parser::parse_statement_ws;
 use crate::syntax::comment_parser::ws;
 use crate::syntax::errors::BResult;
+use nom::Parser;
 use nom::combinator::map;
 use nom::combinator::{cut, not, peek};
 use nom::multi::many0;
 use nom::sequence::delimited;
-use nom::Parser;
 use nom_supreme::ParserExt;
 use syntax::statements::statement::Statement;
 
@@ -24,22 +24,20 @@ pub fn extract_statements_from_block(statement: Statement) -> Vec<Statement> {
 pub fn parse_block_statement(input: Span) -> BResult<Statement> {
     map(
         delimited(
-            delimited(ws, tok_l_brace(), ws)
-                .context("opening brace for block statement"),
+            delimited(ws, tok_l_brace(), ws).context("opening brace for block statement"),
             many0(|i| {
                 // Do not attempt a statement if next non-ws is '}'
-                let guard = map(delimited(ws,tok_r_brace(), ws), |_| ());
+                let guard = map(delimited(ws, tok_r_brace(), ws), |_| ());
                 peek(not(guard)).parse(i)?;
                 parse_statement_ws(i)
             })
-                .context("statement in block"),
-            cut(delimited(ws,tok_r_brace(), ws))
-                .context("closing brace for block statement"),
+            .context("statement in block"),
+            cut(delimited(ws, tok_r_brace(), ws)).context("closing brace for block statement"),
         ),
         Statement::Block,
     )
-        .context("block statement")
-        .parse(input)
+    .context("block statement")
+    .parse(input)
 }
 use crate::syntax::span::Span;
 use crate::tokens::delimiters::{tok_l_brace, tok_r_brace};

@@ -1,9 +1,9 @@
 // Auto-generated from Roslyn: StatementAttributeParsingTests
-use bsharp_parser::syntax::span::Span;
 use crate::custom_asserts::after_parse;
 use crate::custom_asserts::after_parse::CaseData;
-use bsharp_parser::bsharp::parse_csharp_source_strict;
 use crate::custom_asserts::roslyn_asserts::ExpectedDiagnostics;
+use bsharp_parser::bsharp::parse_csharp_source_strict;
+use bsharp_parser::syntax::span::Span;
 /// Roslyn: StatementAttributeParsingTests.AttributeOnBlock (case 1)
 #[test]
 fn attribute_on_block() {
@@ -15,22 +15,51 @@ class C
         [A]{}
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnBlock", 1, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnBlock",
+                    1,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnBlock", 1, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnBlock",
+                    1,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnBlock", 1, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnBlock",
+            1,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -45,22 +74,51 @@ class C
         [A];
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnEmptyStatement", 2, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnEmptyStatement",
+                    2,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnEmptyStatement", 2, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnEmptyStatement",
+                    2,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnEmptyStatement", 2, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnEmptyStatement",
+            2,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -77,22 +135,51 @@ class C
             Goo();
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnLabeledStatement", 3, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnLabeledStatement",
+                    3,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnLabeledStatement", 3, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnLabeledStatement",
+                    3,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnLabeledStatement", 3, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnLabeledStatement",
+            3,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -110,22 +197,51 @@ class C
             Goo();
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnGotoStatement", 4, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnGotoStatement",
+                    4,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnGotoStatement", 4, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnGotoStatement",
+                    4,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnGotoStatement", 4, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnGotoStatement",
+            4,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -144,22 +260,51 @@ class C
         }
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnBreakStatement", 5, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnBreakStatement",
+                    5,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnBreakStatement", 5, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnBreakStatement",
+                    5,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnBreakStatement", 5, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnBreakStatement",
+            5,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -178,22 +323,51 @@ class C
         }
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnContinueStatement", 6, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnContinueStatement",
+                    6,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnContinueStatement", 6, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnContinueStatement",
+                    6,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnContinueStatement", 6, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnContinueStatement",
+            6,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -208,22 +382,51 @@ class C
         [A]return;
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnReturn", 7, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnReturn",
+                    7,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnReturn", 7, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnReturn",
+                    7,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnReturn", 7, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnReturn",
+            7,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -238,22 +441,51 @@ class C
         [A]throw;
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnThrow", 8, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnThrow",
+                    8,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnThrow", 8, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnThrow",
+                    8,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnThrow", 8, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnThrow",
+            8,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -268,22 +500,51 @@ class C
         [A]yield return 0;
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnYieldReturn", 9, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnYieldReturn",
+                    9,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnYieldReturn", 9, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnYieldReturn",
+                    9,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnYieldReturn", 9, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnYieldReturn",
+            9,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -298,22 +559,51 @@ class C
         [A]yield return 0;
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnYieldBreak", 10, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnYieldBreak",
+                    10,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnYieldBreak", 10, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnYieldBreak",
+                    10,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnYieldBreak", 10, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnYieldBreak",
+            10,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -328,22 +618,54 @@ class C
         [A]yield
     }
 }"#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnNakedYield", 11, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnNakedYield",
+                    11,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnNakedYield", 11, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnNakedYield",
+                    11,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnNakedYield", 11, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnNakedYield",
+            11,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -358,22 +680,51 @@ class C
         [A]while (true);
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnWhileStatement", 12, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnWhileStatement",
+                    12,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnWhileStatement", 12, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnWhileStatement",
+                    12,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnWhileStatement", 12, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnWhileStatement",
+            12,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -388,22 +739,51 @@ class C
         [A]do { } while (true);
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnDoStatement", 13, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnDoStatement",
+                    13,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnDoStatement", 13, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnDoStatement",
+                    13,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnDoStatement", 13, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnDoStatement",
+            13,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -418,22 +798,51 @@ class C
         [A]for (;;) { }
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnForStatement", 14, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnForStatement",
+                    14,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnForStatement", 14, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnForStatement",
+                    14,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnForStatement", 14, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnForStatement",
+            14,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -448,22 +857,51 @@ class C
         [A]foreach (var v in vals) { }
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnNormalForEachStatement", 15, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnNormalForEachStatement",
+                    15,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnNormalForEachStatement", 15, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnNormalForEachStatement",
+                    15,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnNormalForEachStatement", 15, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnNormalForEachStatement",
+            15,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -478,22 +916,51 @@ class C
         [A]foreach (var (i, s) in vals) { }
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnForEachVariableStatement", 16, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnForEachVariableStatement",
+                    16,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnForEachVariableStatement", 16, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnForEachVariableStatement",
+                    16,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnForEachVariableStatement", 16, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnForEachVariableStatement",
+            16,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -508,22 +975,51 @@ class C
         [A]using (null) { }
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnUsingStatement", 17, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnUsingStatement",
+                    17,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnUsingStatement", 17, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnUsingStatement",
+                    17,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnUsingStatement", 17, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnUsingStatement",
+            17,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -538,22 +1034,51 @@ class C
         [A]await using (null) { }
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnAwaitUsingStatement1", 18, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnAwaitUsingStatement1",
+                    18,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnAwaitUsingStatement1", 18, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnAwaitUsingStatement1",
+                    18,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnAwaitUsingStatement1", 18, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnAwaitUsingStatement1",
+            18,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -568,22 +1093,51 @@ class C
         [A]await using (null) { }
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnAwaitUsingStatement2", 19, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnAwaitUsingStatement2",
+                    19,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnAwaitUsingStatement2", 19, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnAwaitUsingStatement2",
+                    19,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnAwaitUsingStatement2", 19, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnAwaitUsingStatement2",
+            19,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -598,22 +1152,51 @@ class C
         [A]fixed (int* p = vals) { }
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnFixedStatement", 20, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnFixedStatement",
+                    20,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnFixedStatement", 20, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnFixedStatement",
+                    20,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnFixedStatement", 20, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnFixedStatement",
+            20,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -628,22 +1211,51 @@ class C
         [A]checked { }
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnCheckedStatement", 21, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnCheckedStatement",
+                    21,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnCheckedStatement", 21, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnCheckedStatement",
+                    21,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnCheckedStatement", 21, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnCheckedStatement",
+            21,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -658,22 +1270,51 @@ class C
         checked [A]{ }
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnCheckedBlock", 22, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnCheckedBlock",
+                    22,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnCheckedBlock", 22, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnCheckedBlock",
+                    22,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnCheckedBlock", 22, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnCheckedBlock",
+            22,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -688,22 +1329,51 @@ class C
         [A]unchecked { }
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnUncheckedStatement", 23, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnUncheckedStatement",
+                    23,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnUncheckedStatement", 23, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnUncheckedStatement",
+                    23,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnUncheckedStatement", 23, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnUncheckedStatement",
+            23,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -718,22 +1388,51 @@ class C
         [A]unsafe { }
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnUnsafeStatement", 24, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnUnsafeStatement",
+                    24,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnUnsafeStatement", 24, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnUnsafeStatement",
+                    24,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnUnsafeStatement", 24, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnUnsafeStatement",
+            24,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -748,22 +1447,54 @@ class C
         unsafe [A]{ }
     }
 }"#;
-    let expected = Some(ExpectedDiagnostics { count: 4, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 4,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnUnsafeBlock", 25, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnUnsafeBlock",
+                    25,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnUnsafeBlock", 25, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnUnsafeBlock",
+                    25,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnUnsafeBlock", 25, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnUnsafeBlock",
+            25,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -778,22 +1509,51 @@ class C
         [A]lock (null) { }
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnLockStatement", 26, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnLockStatement",
+                    26,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnLockStatement", 26, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnLockStatement",
+                    26,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnLockStatement", 26, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnLockStatement",
+            26,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -808,22 +1568,51 @@ class C
         [A]if (true) { }
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnIfStatement", 27, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnIfStatement",
+                    27,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnIfStatement", 27, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnIfStatement",
+                    27,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnIfStatement", 27, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnIfStatement",
+            27,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -838,22 +1627,51 @@ class C
         [A]switch (0) { }
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnSwitchStatement", 28, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnSwitchStatement",
+                    28,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnSwitchStatement", 28, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnSwitchStatement",
+                    28,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnSwitchStatement", 28, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnSwitchStatement",
+            28,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -872,22 +1690,51 @@ class C
         }
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnStatementInSwitchSection", 29, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnStatementInSwitchSection",
+                    29,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnStatementInSwitchSection", 29, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnStatementInSwitchSection",
+                    29,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnStatementInSwitchSection", 29, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnStatementInSwitchSection",
+            29,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -907,22 +1754,54 @@ class C
         }
     }
 }"#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnStatementAboveCase", 30, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnStatementAboveCase",
+                    30,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnStatementAboveCase", 30, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnStatementAboveCase",
+                    30,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnStatementAboveCase", 30, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnStatementAboveCase",
+            30,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -942,22 +1821,54 @@ class C
         }
     }
 }"#;
-    let expected = Some(ExpectedDiagnostics { count: 4, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 4,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnStatementAboveDefaultCase", 31, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnStatementAboveDefaultCase",
+                    31,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnStatementAboveDefaultCase", 31, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnStatementAboveDefaultCase",
+                    31,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnStatementAboveDefaultCase", 31, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnStatementAboveDefaultCase",
+            31,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -972,22 +1883,51 @@ class C
         [A]try { } finally { }
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnTryStatement", 32, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnTryStatement",
+                    32,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnTryStatement", 32, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnTryStatement",
+                    32,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnTryStatement", 32, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnTryStatement",
+            32,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -1002,22 +1942,51 @@ class C
         try [A] { } finally { }
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnTryBlock", 33, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnTryBlock",
+                    33,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnTryBlock", 33, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnTryBlock",
+                    33,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnTryBlock", 33, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnTryBlock",
+            33,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -1032,22 +2001,54 @@ class C
         try { } [A] finally { }
     }
 }"#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnFinally", 34, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnFinally",
+                    34,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnFinally", 34, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnFinally",
+                    34,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnFinally", 34, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnFinally",
+            34,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -1062,22 +2063,51 @@ class C
         try { } finally [A] { }
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnFinallyBlock", 35, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnFinallyBlock",
+                    35,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnFinallyBlock", 35, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnFinallyBlock",
+                    35,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnFinallyBlock", 35, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnFinallyBlock",
+            35,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -1092,22 +2122,54 @@ class C
         try { } [A] catch { }
     }
 }"#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnCatch", 36, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnCatch",
+                    36,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnCatch", 36, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnCatch",
+                    36,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnCatch", 36, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnCatch",
+            36,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -1122,22 +2184,51 @@ class C
         try { } catch [A] { }
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnCatchBlock", 37, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnCatchBlock",
+                    37,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnCatchBlock", 37, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnCatchBlock",
+                    37,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnCatchBlock", 37, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnCatchBlock",
+            37,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -1152,22 +2243,51 @@ class C
         if (true) [A]return;
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnEmbeddedStatement", 38, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnEmbeddedStatement",
+                    38,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnEmbeddedStatement", 38, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnEmbeddedStatement",
+                    38,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnEmbeddedStatement", 38, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnEmbeddedStatement",
+            38,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -1182,22 +2302,54 @@ class C
         [A]delegate { }
     }
 }"#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_AnonymousMethod_NoParameters", 39, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_AnonymousMethod_NoParameters",
+                    39,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_AnonymousMethod_NoParameters", 39, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_AnonymousMethod_NoParameters",
+                    39,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_AnonymousMethod_NoParameters", 39, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnExpressionStatement_AnonymousMethod_NoParameters",
+            39,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -1212,22 +2364,54 @@ class C
         [A]delegate
     }
 }"#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_AnonymousMethod_NoBody", 40, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_AnonymousMethod_NoBody",
+                    40,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_AnonymousMethod_NoBody", 40, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_AnonymousMethod_NoBody",
+                    40,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_AnonymousMethod_NoBody", 40, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnExpressionStatement_AnonymousMethod_NoBody",
+            40,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -1242,22 +2426,51 @@ class C
         [A]delegate () { };
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_AnonymousMethod_Parameters", 41, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_AnonymousMethod_Parameters",
+                    41,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_AnonymousMethod_Parameters", 41, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_AnonymousMethod_Parameters",
+                    41,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_AnonymousMethod_Parameters", 41, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnExpressionStatement_AnonymousMethod_Parameters",
+            41,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -1272,22 +2485,51 @@ class C
         [A]() => { };
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_Lambda_NoParameters", 42, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_Lambda_NoParameters",
+                    42,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_Lambda_NoParameters", 42, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_Lambda_NoParameters",
+                    42,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_Lambda_NoParameters", 42, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnExpressionStatement_Lambda_NoParameters",
+            42,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -1302,22 +2544,51 @@ class C
         [A](int i) => { };
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_Lambda_Parameters1", 43, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_Lambda_Parameters1",
+                    43,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_Lambda_Parameters1", 43, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_Lambda_Parameters1",
+                    43,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_Lambda_Parameters1", 43, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnExpressionStatement_Lambda_Parameters1",
+            43,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -1332,22 +2603,51 @@ class C
         [A]i => { };
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_Lambda_Parameters2", 44, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_Lambda_Parameters2",
+                    44,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_Lambda_Parameters2", 44, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_Lambda_Parameters2",
+                    44,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_Lambda_Parameters2", 44, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnExpressionStatement_Lambda_Parameters2",
+            44,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -1362,22 +2662,51 @@ class C
         [A]new { };
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_AnonymousObject", 45, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_AnonymousObject",
+                    45,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_AnonymousObject", 45, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_AnonymousObject",
+                    45,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_AnonymousObject", 45, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnExpressionStatement_AnonymousObject",
+            45,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -1392,22 +2721,51 @@ class C
         [A]new int[] { };
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_ArrayCreation", 46, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_ArrayCreation",
+                    46,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_ArrayCreation", 46, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_ArrayCreation",
+                    46,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_ArrayCreation", 46, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnExpressionStatement_ArrayCreation",
+            46,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -1422,22 +2780,51 @@ class C
         [A]new [] { 0 };
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_AnonymousArrayCreation", 47, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_AnonymousArrayCreation",
+                    47,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_AnonymousArrayCreation", 47, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_AnonymousArrayCreation",
+                    47,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_AnonymousArrayCreation", 47, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnExpressionStatement_AnonymousArrayCreation",
+            47,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -1452,22 +2839,51 @@ class C
         [A]a = 0;
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_Assignment", 48, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_Assignment",
+                    48,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_Assignment", 48, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_Assignment",
+                    48,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_Assignment", 48, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnExpressionStatement_Assignment",
+            48,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -1482,22 +2898,51 @@ class C
         [A]a += 0;
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_CompoundAssignment", 49, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_CompoundAssignment",
+                    49,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_CompoundAssignment", 49, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_CompoundAssignment",
+                    49,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_CompoundAssignment", 49, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnExpressionStatement_CompoundAssignment",
+            49,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -1512,22 +2957,51 @@ class C
         [A]await a;
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_AwaitExpression_NonAsyncContext", 50, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_AwaitExpression_NonAsyncContext",
+                    50,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_AwaitExpression_NonAsyncContext", 50, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_AwaitExpression_NonAsyncContext",
+                    50,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_AwaitExpression_NonAsyncContext", 50, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnExpressionStatement_AwaitExpression_NonAsyncContext",
+            50,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -1542,22 +3016,51 @@ class C
         [A]await a;
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_AwaitExpression_AsyncContext", 51, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_AwaitExpression_AsyncContext",
+                    51,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_AwaitExpression_AsyncContext", 51, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_AwaitExpression_AsyncContext",
+                    51,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_AwaitExpression_AsyncContext", 51, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnExpressionStatement_AwaitExpression_AsyncContext",
+            51,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -1572,22 +3075,51 @@ class C
         [A]a + a;
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_BinaryExpression", 52, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_BinaryExpression",
+                    52,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_BinaryExpression", 52, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_BinaryExpression",
+                    52,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_BinaryExpression", 52, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnExpressionStatement_BinaryExpression",
+            52,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -1602,22 +3134,51 @@ class C
         [A](object)a;
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_CastExpression", 53, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_CastExpression",
+                    53,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_CastExpression", 53, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_CastExpression",
+                    53,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_CastExpression", 53, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnExpressionStatement_CastExpression",
+            53,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -1632,22 +3193,51 @@ class C
         [A]a?.ToString();
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_ConditionalAccess", 54, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_ConditionalAccess",
+                    54,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_ConditionalAccess", 54, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_ConditionalAccess",
+                    54,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_ConditionalAccess", 54, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnExpressionStatement_ConditionalAccess",
+            54,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -1662,22 +3252,51 @@ class C
         [A]default(int);
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_DefaultExpression", 55, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_DefaultExpression",
+                    55,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_DefaultExpression", 55, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_DefaultExpression",
+                    55,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_DefaultExpression", 55, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnExpressionStatement_DefaultExpression",
+            55,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -1692,22 +3311,51 @@ class C
         [A]default;
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_DefaultLiteral", 56, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_DefaultLiteral",
+                    56,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_DefaultLiteral", 56, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_DefaultLiteral",
+                    56,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_DefaultLiteral", 56, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnExpressionStatement_DefaultLiteral",
+            56,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -1722,22 +3370,51 @@ class C
         [A]s[0];
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_ElementAccess", 57, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_ElementAccess",
+                    57,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_ElementAccess", 57, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_ElementAccess",
+                    57,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_ElementAccess", 57, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnExpressionStatement_ElementAccess",
+            57,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -1752,22 +3429,51 @@ class C
         [A]s?[0];
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_ElementBinding", 58, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_ElementBinding",
+                    58,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_ElementBinding", 58, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_ElementBinding",
+                    58,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_ElementBinding", 58, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnExpressionStatement_ElementBinding",
+            58,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -1782,22 +3488,51 @@ class C
         [A]Goo();
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_Invocation", 59, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_Invocation",
+                    59,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_Invocation", 59, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_Invocation",
+                    59,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_Invocation", 59, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnExpressionStatement_Invocation",
+            59,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -1812,22 +3547,51 @@ class C
         [A]0;
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_Literal", 60, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_Literal",
+                    60,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_Literal", 60, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_Literal",
+                    60,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_Literal", 60, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnExpressionStatement_Literal",
+            60,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -1842,22 +3606,51 @@ class C
         [A]i.ToString;
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_MemberAccess", 61, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_MemberAccess",
+                    61,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_MemberAccess", 61, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_MemberAccess",
+                    61,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_MemberAccess", 61, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnExpressionStatement_MemberAccess",
+            61,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -1872,22 +3665,51 @@ class C
         [A]new int();
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_ObjectCreation_Builtin", 62, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_ObjectCreation_Builtin",
+                    62,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_ObjectCreation_Builtin", 62, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_ObjectCreation_Builtin",
+                    62,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_ObjectCreation_Builtin", 62, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnExpressionStatement_ObjectCreation_Builtin",
+            62,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -1902,22 +3724,51 @@ class C
         [A]new System.Int32();
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_ObjectCreation_TypeName", 63, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_ObjectCreation_TypeName",
+                    63,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_ObjectCreation_TypeName", 63, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_ObjectCreation_TypeName",
+                    63,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_ObjectCreation_TypeName", 63, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnExpressionStatement_ObjectCreation_TypeName",
+            63,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -1932,22 +3783,51 @@ class C
         [A](1);
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_Parenthesized", 64, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_Parenthesized",
+                    64,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_Parenthesized", 64, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_Parenthesized",
+                    64,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_Parenthesized", 64, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnExpressionStatement_Parenthesized",
+            64,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -1962,22 +3842,51 @@ class C
         [A]i++;
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_PostfixUnary", 65, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_PostfixUnary",
+                    65,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_PostfixUnary", 65, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_PostfixUnary",
+                    65,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_PostfixUnary", 65, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnExpressionStatement_PostfixUnary",
+            65,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -1993,22 +3902,54 @@ fn attribute_on_expression_statement_prefix_unary() {
                     }
                 }
                 "#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_PrefixUnary", 66, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_PrefixUnary",
+                    66,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_PrefixUnary", 66, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_PrefixUnary",
+                    66,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_PrefixUnary", 66, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnExpressionStatement_PrefixUnary",
+            66,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -2024,22 +3965,51 @@ class C
         [A]from c in s select c;
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_Query", 67, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_Query",
+                    67,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_Query", 67, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_Query",
+                    67,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_Query", 67, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnExpressionStatement_Query",
+            67,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -2054,22 +4024,51 @@ class C
         [A]a..b;
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_Range1", 68, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_Range1",
+                    68,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_Range1", 68, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_Range1",
+                    68,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_Range1", 68, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnExpressionStatement_Range1",
+            68,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -2084,22 +4083,51 @@ class C
         [A]a..;
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_Range2", 69, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_Range2",
+                    69,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_Range2", 69, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_Range2",
+                    69,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_Range2", 69, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnExpressionStatement_Range2",
+            69,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -2114,22 +4142,51 @@ class C
         [A]..b;
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_Range3", 70, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_Range3",
+                    70,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_Range3", 70, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_Range3",
+                    70,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_Range3", 70, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnExpressionStatement_Range3",
+            70,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -2144,22 +4201,51 @@ class C
         [A]..;
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_Range4", 71, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_Range4",
+                    71,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_Range4", 71, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_Range4",
+                    71,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_Range4", 71, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnExpressionStatement_Range4",
+            71,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -2174,22 +4260,51 @@ class C
         [A]sizeof(int);
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_Sizeof", 72, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_Sizeof",
+                    72,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_Sizeof", 72, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_Sizeof",
+                    72,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_Sizeof", 72, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnExpressionStatement_Sizeof",
+            72,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -2204,22 +4319,51 @@ class C
         [A]a switch { };
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_SwitchExpression", 73, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_SwitchExpression",
+                    73,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_SwitchExpression", 73, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_SwitchExpression",
+                    73,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_SwitchExpression", 73, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnExpressionStatement_SwitchExpression",
+            73,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -2234,22 +4378,51 @@ class C
         [A]typeof(int);
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_TypeOf", 74, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_TypeOf",
+                    74,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_TypeOf", 74, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnExpressionStatement_TypeOf",
+                    74,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnExpressionStatement_TypeOf", 74, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnExpressionStatement_TypeOf",
+            74,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -2264,22 +4437,51 @@ class C
         [A]int i;
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnLocalDeclOrMember1", 75, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnLocalDeclOrMember1",
+                    75,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnLocalDeclOrMember1", 75, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnLocalDeclOrMember1",
+                    75,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnLocalDeclOrMember1", 75, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnLocalDeclOrMember1",
+            75,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -2294,22 +4496,51 @@ class C
         [A]int i, j;
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnLocalDeclOrMember2", 76, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnLocalDeclOrMember2",
+                    76,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnLocalDeclOrMember2", 76, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnLocalDeclOrMember2",
+                    76,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnLocalDeclOrMember2", 76, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnLocalDeclOrMember2",
+            76,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -2324,22 +4555,51 @@ class C
         [A]int i = 0;
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnLocalDeclOrMember3", 77, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnLocalDeclOrMember3",
+                    77,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnLocalDeclOrMember3", 77, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnLocalDeclOrMember3",
+                    77,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnLocalDeclOrMember3", 77, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnLocalDeclOrMember3",
+            77,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -2354,22 +4614,54 @@ class C
         [A]int this[int i] => 0;
     }
 }"#;
-    let expected = Some(ExpectedDiagnostics { count: 6, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 6,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnLocalDeclOrMember4", 78, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnLocalDeclOrMember4",
+                    78,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnLocalDeclOrMember4", 78, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnLocalDeclOrMember4",
+                    78,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnLocalDeclOrMember4", 78, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnLocalDeclOrMember4",
+            78,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -2384,22 +4676,51 @@ class C
         [A]const int i = 0;
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnLocalDeclOrMember5", 79, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnLocalDeclOrMember5",
+                    79,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnLocalDeclOrMember5", 79, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnLocalDeclOrMember5",
+                    79,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnLocalDeclOrMember5", 79, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnLocalDeclOrMember5",
+            79,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -2414,22 +4735,54 @@ class C
         public extern int i = 1;
     }
 }"#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AccessModOnLocalDeclOrMember_01", 80, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AccessModOnLocalDeclOrMember_01",
+                    80,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AccessModOnLocalDeclOrMember_01", 80, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AccessModOnLocalDeclOrMember_01",
+                    80,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AccessModOnLocalDeclOrMember_01", 80, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AccessModOnLocalDeclOrMember_01",
+            80,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -2444,22 +4797,54 @@ class C
         extern public int i = 1;
     }
 }"#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AccessModOnLocalDeclOrMember_02", 81, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AccessModOnLocalDeclOrMember_02",
+                    81,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AccessModOnLocalDeclOrMember_02", 81, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AccessModOnLocalDeclOrMember_02",
+                    81,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AccessModOnLocalDeclOrMember_02", 81, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AccessModOnLocalDeclOrMember_02",
+            81,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -2474,22 +4859,54 @@ class C
         [A]public int i = 0;
     }
 }"#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnLocalDeclOrMember6", 82, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnLocalDeclOrMember6",
+                    82,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnLocalDeclOrMember6", 82, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnLocalDeclOrMember6",
+                    82,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnLocalDeclOrMember6", 82, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnLocalDeclOrMember6",
+            82,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -2504,22 +4921,51 @@ class C
         [A]using var i = d;
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnLocalDeclOrMember7", 83, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnLocalDeclOrMember7",
+                    83,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnLocalDeclOrMember7", 83, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnLocalDeclOrMember7",
+                    83,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnLocalDeclOrMember7", 83, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnLocalDeclOrMember7",
+            83,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -2534,22 +4980,51 @@ class C
         [A]await using var i = d;
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnLocalDeclOrMember8", 84, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnLocalDeclOrMember8",
+                    84,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnLocalDeclOrMember8", 84, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnLocalDeclOrMember8",
+                    84,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnLocalDeclOrMember8", 84, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnLocalDeclOrMember8",
+            84,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -2564,22 +5039,51 @@ class C
         [A]await using var i = d;
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnLocalDeclOrMember9", 85, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnLocalDeclOrMember9",
+                    85,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnLocalDeclOrMember9", 85, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttributeOnLocalDeclOrMember9",
+                    85,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttributeOnLocalDeclOrMember9", 85, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttributeOnLocalDeclOrMember9",
+            85,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -2592,22 +5096,50 @@ class C
     [Attr] x.y();
 }
 "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttrDeclOnStatementWhereMemberExpected", 86, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttrDeclOnStatementWhereMemberExpected",
+                    86,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttrDeclOnStatementWhereMemberExpected", 86, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_attribute_parsing_tests",
+                    "StatementAttributeParsingTests",
+                    "AttrDeclOnStatementWhereMemberExpected",
+                    86,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_attribute_parsing_tests", "StatementAttributeParsingTests", "AttrDeclOnStatementWhereMemberExpected", 86, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_attribute_parsing_tests",
+            "StatementAttributeParsingTests",
+            "AttrDeclOnStatementWhereMemberExpected",
+            86,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
-

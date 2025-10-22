@@ -5,7 +5,11 @@ use syntax::identifier::Identifier;
 
 fn parse_ok(input: &str) -> Expression {
     let (rest, expr) = parse_expression(input.into()).expect("parse ok");
-    assert!(rest.fragment().trim().is_empty(), "unparsed: {}", rest.fragment());
+    assert!(
+        rest.fragment().trim().is_empty(),
+        "unparsed: {}",
+        rest.fragment()
+    );
     expr
 }
 

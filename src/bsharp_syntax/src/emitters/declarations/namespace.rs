@@ -1,7 +1,7 @@
-use crate::emitters::emit_trait::{Emit, EmitCtx, EmitError};
 use crate::declarations::{
     FileScopedNamespaceDeclaration, NamespaceBodyDeclaration, NamespaceDeclaration,
 };
+use crate::emitters::emit_trait::{Emit, EmitCtx, EmitError};
 
 impl Emit for NamespaceDeclaration {
     fn emit<W: std::fmt::Write>(&self, w: &mut W, cx: &mut EmitCtx) -> Result<(), EmitError> {
@@ -10,10 +10,22 @@ impl Emit for NamespaceDeclaration {
 
         // namespace <Name>
         write!(w, "namespace {}", self.name)?;
-        cx.trace_event("header_done", &[("has_body", "true".to_string()), ("allman", "true".to_string())]);
+        cx.trace_event(
+            "header_done",
+            &[
+                ("has_body", "true".to_string()),
+                ("allman", "true".to_string()),
+            ],
+        );
         cx.nl(w)?;
         cx.write_indent(w)?;
-        cx.trace_event("before_open_brace", &[("has_body", "true".to_string()), ("allman", "true".to_string())]);
+        cx.trace_event(
+            "before_open_brace",
+            &[
+                ("has_body", "true".to_string()),
+                ("allman", "true".to_string()),
+            ],
+        );
         cx.open_brace(w)?;
 
         // Usings inside namespace
@@ -31,7 +43,9 @@ impl Emit for NamespaceDeclaration {
         // Declarations inside namespace
         let mut first = true;
         for d in &self.declarations {
-            if !first { cx.between_top_level_declarations(w)?; }
+            if !first {
+                cx.between_top_level_declarations(w)?;
+            }
             cx.write_indent(w)?;
             d.emit(w, cx)?;
             cx.nl(w)?;

@@ -1,7 +1,9 @@
-use std::fmt::Display;
 use serde::{Deserialize, Serialize};
+use std::fmt::Display;
 
-#[derive(bsharp_syntax_derive::AstNode,Hash, Eq, Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(
+    bsharp_syntax_derive::AstNode, Hash, Eq, Debug, PartialEq, Clone, Serialize, Deserialize,
+)]
 pub enum BinaryOperator {
     // Arithmetic
     Add,      // +
@@ -54,7 +56,7 @@ pub enum BinaryOperator {
     Range, // .. (New)
 }
 
-impl Display for BinaryOperator{
+impl Display for BinaryOperator {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             BinaryOperator::Add => write!(f, "+"),
@@ -93,7 +95,7 @@ impl Display for BinaryOperator{
             BinaryOperator::UnsignedRightShift => write!(f, ">>>"),
             BinaryOperator::NullCoalescing => write!(f, "??"),
             BinaryOperator::Range => write!(f, ".."),
-        }   
+        }
     }
 }
 

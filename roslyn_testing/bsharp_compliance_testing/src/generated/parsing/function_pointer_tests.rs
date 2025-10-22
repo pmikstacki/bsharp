@@ -1,7 +1,7 @@
 // Auto-generated STRUCTURE tests from Roslyn: FunctionPointerTests
-use bsharp_parser::syntax::span::Span;
-use bsharp_parser::bsharp::parse_csharp_source_strict;
 use crate::custom_asserts::structure_assert;
+use bsharp_parser::bsharp::parse_csharp_source_strict;
+use bsharp_parser::syntax::span::Span;
 #[test]
 fn method_types() {
     let src = r#"delegate* unmanaged[cdecl]<string, Goo, int> ptr;"#;
@@ -12,4 +12,3 @@ fn method_types() {
         structure_assert::assert_tree(&expected, &unit);
     }
 }
-

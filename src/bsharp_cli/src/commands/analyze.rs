@@ -1,4 +1,4 @@
-use anyhow::{bail, Context, Result};
+use anyhow::{Context, Result, bail};
 use bsharp_analysis::context::AnalysisContext;
 use bsharp_analysis::framework::lookup::find_symbols_with_locations;
 use bsharp_analysis::framework::pipeline::AnalyzerPipeline;

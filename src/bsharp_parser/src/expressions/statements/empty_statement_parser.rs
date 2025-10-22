@@ -1,8 +1,8 @@
 use crate::syntax::comment_parser::ws;
 use crate::syntax::errors::BResult;
+use nom::Parser;
 use nom::combinator::map;
 use nom::sequence::delimited;
-use nom::Parser;
 use nom_supreme::ParserExt;
 use syntax::statements::statement::Statement;
 

@@ -1,5 +1,5 @@
-use std::any::Any;
 use crate::node::dyn_node_ref::DynNodeRef;
+use std::any::Any;
 
 /// Trait implemented by all AST node types to support dynamic traversal and extraction.
 pub trait AstNode: Any {

@@ -25,13 +25,22 @@ fn type_to_string(t: &syntax::types::Type) -> String {
         syntax::types::Type::Primitive(p) => p.to_string(),
         syntax::types::Type::Reference(id) => id.to_string(),
         syntax::types::Type::Generic { base, args } => {
-            let args_s = args.iter().map(type_to_string).collect::<Vec<_>>().join(", ");
+            let args_s = args
+                .iter()
+                .map(type_to_string)
+                .collect::<Vec<_>>()
+                .join(", ");
             format!("{}<{}>", base, args_s)
         }
         syntax::types::Type::Array { element_type, rank } => {
             let mut s = type_to_string(element_type);
-            if *rank == 1 { s.push_str("[]"); }
-            else { s.push('['); s.push_str(&",".repeat(rank.saturating_sub(1))); s.push(']'); }
+            if *rank == 1 {
+                s.push_str("[]");
+            } else {
+                s.push('[');
+                s.push_str(&",".repeat(rank.saturating_sub(1)));
+                s.push(']');
+            }
             s
         }
         syntax::types::Type::Pointer(inner) => format!("{}*", type_to_string(inner)),
@@ -119,12 +128,13 @@ pub fn parse_attribute(input: Span) -> BResult<Attribute> {
             .collect();
         if let Some(type_args) = &type_args_opt {
             if let Some(last) = name_segments.last_mut() {
-                
                 let mut appended = String::new();
                 appended.push_str(last);
                 appended.push('<');
                 for (i, t) in type_args.iter().enumerate() {
-                    if i > 0 { appended.push_str(", "); }
+                    if i > 0 {
+                        appended.push_str(", ");
+                    }
                     appended.push_str(&type_to_string(t));
                 }
                 appended.push('>');

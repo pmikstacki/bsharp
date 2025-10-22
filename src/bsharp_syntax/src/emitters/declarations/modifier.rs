@@ -1,7 +1,7 @@
-use std::fmt::Write;
 use crate::declarations::Modifier;
 use crate::declarations::modifier::{ModifierCategory, ModifierInfo};
 use crate::emitters::emit_trait::{Emit, EmitCtx, EmitError};
+use std::fmt::Write;
 
 impl Emit for Modifier {
     fn emit<W: Write>(&self, w: &mut W, _cx: &mut EmitCtx) -> Result<(), EmitError> {
@@ -31,14 +31,19 @@ impl Emit for Modifier {
             Modifier::Params => "params",
             Modifier::Fixed => "fixed",
         };
-        w.write_str(s)?; Ok(())
+        w.write_str(s)?;
+        Ok(())
     }
 }
 
-impl Emit for ModifierCategory{
-    fn emit<W: Write>(&self, _w: &mut W, _cx: &mut EmitCtx) -> Result<(), EmitError> { Ok(()) }
+impl Emit for ModifierCategory {
+    fn emit<W: Write>(&self, _w: &mut W, _cx: &mut EmitCtx) -> Result<(), EmitError> {
+        Ok(())
+    }
 }
 
-impl Emit for ModifierInfo{
-    fn emit<W: Write>(&self, _w: &mut W, _cx: &mut EmitCtx) -> Result<(), EmitError> { Ok(()) }
+impl Emit for ModifierInfo {
+    fn emit<W: Write>(&self, _w: &mut W, _cx: &mut EmitCtx) -> Result<(), EmitError> {
+        Ok(())
+    }
 }

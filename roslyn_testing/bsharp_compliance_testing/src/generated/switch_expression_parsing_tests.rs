@@ -1,10 +1,10 @@
 // Auto-generated from Roslyn: SwitchExpressionParsingTests
-use bsharp_parser::syntax::span::Span;
 use crate::custom_asserts::after_parse;
 use crate::custom_asserts::after_parse::CaseData;
+use crate::custom_asserts::roslyn_asserts::ExpectedDiagnostics;
 use bsharp_parser::bsharp::parse_csharp_source_strict;
 use bsharp_parser::statement_parser::parse_statement_ws;
-use crate::custom_asserts::roslyn_asserts::ExpectedDiagnostics;
+use bsharp_parser::syntax::span::Span;
 /// Roslyn: SwitchExpressionParsingTests.TestErrantCaseInSwitchExpression1 (case 1)
 #[test]
 fn errant_case_in_switch_expression_1() {
@@ -15,7 +15,10 @@ fn errant_case_in_switch_expression_1() {
                 case 1 => 2,
             }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { 
             x switch
@@ -29,16 +32,45 @@ fn errant_case_in_switch_expression_1() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantCaseInSwitchExpression1", 1, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantCaseInSwitchExpression1",
+                    1,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantCaseInSwitchExpression1", 1, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantCaseInSwitchExpression1",
+                    1,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantCaseInSwitchExpression1", 1, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestErrantCaseInSwitchExpression1",
+            1,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -52,7 +84,10 @@ fn errant_case_in_switch_expression_1_semicolons() {
                 case 1 => 2;
             }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 4, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 4,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { 
             x switch
@@ -66,16 +101,45 @@ fn errant_case_in_switch_expression_1_semicolons() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantCaseInSwitchExpression1_Semicolons", 2, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantCaseInSwitchExpression1_Semicolons",
+                    2,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantCaseInSwitchExpression1_Semicolons", 2, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantCaseInSwitchExpression1_Semicolons",
+                    2,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantCaseInSwitchExpression1_Semicolons", 2, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestErrantCaseInSwitchExpression1_Semicolons",
+            2,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -89,7 +153,10 @@ fn errant_case_in_switch_expression_2() {
                 case 1: 2,
             }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 4, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 4,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { 
             x switch
@@ -103,16 +170,45 @@ fn errant_case_in_switch_expression_2() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantCaseInSwitchExpression2", 3, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantCaseInSwitchExpression2",
+                    3,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantCaseInSwitchExpression2", 3, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantCaseInSwitchExpression2",
+                    3,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantCaseInSwitchExpression2", 3, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestErrantCaseInSwitchExpression2",
+            3,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -126,7 +222,10 @@ fn errant_case_in_switch_expression_2_semicolons() {
                 case 1: 2;
             }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 6, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 6,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { 
             x switch
@@ -140,16 +239,45 @@ fn errant_case_in_switch_expression_2_semicolons() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantCaseInSwitchExpression2_Semicolons", 4, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantCaseInSwitchExpression2_Semicolons",
+                    4,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantCaseInSwitchExpression2_Semicolons", 4, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantCaseInSwitchExpression2_Semicolons",
+                    4,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantCaseInSwitchExpression2_Semicolons", 4, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestErrantCaseInSwitchExpression2_Semicolons",
+            4,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -171,23 +299,51 @@ fn errant_case_in_switch_expression_3() {
                 };
             }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 6, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 6,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantCaseInSwitchExpression3", 5, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantCaseInSwitchExpression3",
+                    5,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantCaseInSwitchExpression3", 5, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantCaseInSwitchExpression3",
+                    5,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantCaseInSwitchExpression3", 5, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestErrantCaseInSwitchExpression3",
+            5,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -204,22 +360,54 @@ fn errant_case_in_switch_expression_5() {
                     };
             }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 4, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 4,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantCaseInSwitchExpression5", 6, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantCaseInSwitchExpression5",
+                    6,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantCaseInSwitchExpression5", 6, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantCaseInSwitchExpression5",
+                    6,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantCaseInSwitchExpression5", 6, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestErrantCaseInSwitchExpression5",
+            6,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -236,22 +424,54 @@ fn errant_case_in_switch_expression_6() {
                     };
             }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 5, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 5,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantCaseInSwitchExpression6", 7, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantCaseInSwitchExpression6",
+                    7,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantCaseInSwitchExpression6", 7, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantCaseInSwitchExpression6",
+                    7,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantCaseInSwitchExpression6", 7, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestErrantCaseInSwitchExpression6",
+            7,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -268,22 +488,54 @@ fn errant_case_in_switch_expression_7() {
                     };
             }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 3, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 3,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantCaseInSwitchExpression7", 8, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantCaseInSwitchExpression7",
+                    8,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantCaseInSwitchExpression7", 8, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantCaseInSwitchExpression7",
+                    8,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantCaseInSwitchExpression7", 8, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestErrantCaseInSwitchExpression7",
+            8,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -300,22 +552,54 @@ fn errant_case_in_switch_expression_8() {
                     };
             }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantCaseInSwitchExpression8", 9, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantCaseInSwitchExpression8",
+                    9,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantCaseInSwitchExpression8", 9, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantCaseInSwitchExpression8",
+                    9,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantCaseInSwitchExpression8", 9, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestErrantCaseInSwitchExpression8",
+            9,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -332,22 +616,54 @@ fn errant_case_in_switch_expression_9() {
                     };
             }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 5, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 5,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantCaseInSwitchExpression9", 10, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantCaseInSwitchExpression9",
+                    10,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantCaseInSwitchExpression9", 10, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantCaseInSwitchExpression9",
+                    10,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantCaseInSwitchExpression9", 10, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestErrantCaseInSwitchExpression9",
+            10,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -364,22 +680,54 @@ fn errant_case_in_switch_expression_10() {
                     };
             }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantCaseInSwitchExpression10", 11, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantCaseInSwitchExpression10",
+                    11,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantCaseInSwitchExpression10", 11, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantCaseInSwitchExpression10",
+                    11,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantCaseInSwitchExpression10", 11, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestErrantCaseInSwitchExpression10",
+            11,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -396,22 +744,54 @@ fn errant_case_in_switch_expression_11() {
                     };
             }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 3, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 3,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantCaseInSwitchExpression11", 12, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantCaseInSwitchExpression11",
+                    12,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantCaseInSwitchExpression11", 12, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantCaseInSwitchExpression11",
+                    12,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantCaseInSwitchExpression11", 12, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestErrantCaseInSwitchExpression11",
+            12,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -428,22 +808,54 @@ fn errant_case_in_switch_expression_12() {
                     };
             }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantCaseInSwitchExpression12", 13, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantCaseInSwitchExpression12",
+                    13,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantCaseInSwitchExpression12", 13, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantCaseInSwitchExpression12",
+                    13,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantCaseInSwitchExpression12", 13, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestErrantCaseInSwitchExpression12",
+            13,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -460,22 +872,54 @@ fn errant_case_in_switch_expression_13() {
                     };
             }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 7, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 7,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantCaseInSwitchExpression13", 14, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantCaseInSwitchExpression13",
+                    14,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantCaseInSwitchExpression13", 14, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantCaseInSwitchExpression13",
+                    14,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantCaseInSwitchExpression13", 14, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestErrantCaseInSwitchExpression13",
+            14,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -492,22 +936,54 @@ fn errant_case_in_switch_expression_14() {
                     };
             }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 6, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 6,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantCaseInSwitchExpression14", 15, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantCaseInSwitchExpression14",
+                    15,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantCaseInSwitchExpression14", 15, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantCaseInSwitchExpression14",
+                    15,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantCaseInSwitchExpression14", 15, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestErrantCaseInSwitchExpression14",
+            15,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -524,22 +1000,54 @@ fn errant_when_in_switch_expression_1() {
                     };
             }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantWhenInSwitchExpression1", 16, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantWhenInSwitchExpression1",
+                    16,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantWhenInSwitchExpression1", 16, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantWhenInSwitchExpression1",
+                    16,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantWhenInSwitchExpression1", 16, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestErrantWhenInSwitchExpression1",
+            16,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -556,22 +1064,54 @@ fn errant_when_in_switch_expression_2() {
                     };
             }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantWhenInSwitchExpression2", 17, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantWhenInSwitchExpression2",
+                    17,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantWhenInSwitchExpression2", 17, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantWhenInSwitchExpression2",
+                    17,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantWhenInSwitchExpression2", 17, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestErrantWhenInSwitchExpression2",
+            17,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -588,22 +1128,54 @@ fn errant_when_in_switch_expression_3() {
                     };
             }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 3, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 3,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantWhenInSwitchExpression3", 18, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantWhenInSwitchExpression3",
+                    18,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantWhenInSwitchExpression3", 18, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantWhenInSwitchExpression3",
+                    18,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantWhenInSwitchExpression3", 18, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestErrantWhenInSwitchExpression3",
+            18,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -620,22 +1192,54 @@ fn errant_when_in_switch_expression_4() {
                     };
             }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantWhenInSwitchExpression4", 19, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantWhenInSwitchExpression4",
+                    19,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantWhenInSwitchExpression4", 19, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantWhenInSwitchExpression4",
+                    19,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantWhenInSwitchExpression4", 19, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestErrantWhenInSwitchExpression4",
+            19,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -652,22 +1256,51 @@ fn errant_when_in_switch_expression_5() {
                     };
             }
             "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantWhenInSwitchExpression5", 20, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantWhenInSwitchExpression5",
+                    20,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantWhenInSwitchExpression5", 20, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantWhenInSwitchExpression5",
+                    20,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantWhenInSwitchExpression5", 20, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestErrantWhenInSwitchExpression5",
+            20,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -684,22 +1317,54 @@ fn errant_when_in_switch_expression_6() {
                     };
             }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantWhenInSwitchExpression6", 21, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantWhenInSwitchExpression6",
+                    21,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantWhenInSwitchExpression6", 21, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantWhenInSwitchExpression6",
+                    21,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantWhenInSwitchExpression6", 21, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestErrantWhenInSwitchExpression6",
+            21,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -716,22 +1381,54 @@ fn errant_when_in_switch_expression_7() {
                     };
             }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantWhenInSwitchExpression7", 22, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantWhenInSwitchExpression7",
+                    22,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantWhenInSwitchExpression7", 22, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantWhenInSwitchExpression7",
+                    22,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantWhenInSwitchExpression7", 22, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestErrantWhenInSwitchExpression7",
+            22,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -748,22 +1445,54 @@ fn errant_when_in_switch_expression_8() {
                     };
             }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantWhenInSwitchExpression8", 23, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantWhenInSwitchExpression8",
+                    23,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantWhenInSwitchExpression8", 23, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantWhenInSwitchExpression8",
+                    23,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantWhenInSwitchExpression8", 23, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestErrantWhenInSwitchExpression8",
+            23,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -780,22 +1509,54 @@ fn errant_when_in_switch_expression_9() {
                     };
             }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 4, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 4,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantWhenInSwitchExpression9", 24, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantWhenInSwitchExpression9",
+                    24,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantWhenInSwitchExpression9", 24, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantWhenInSwitchExpression9",
+                    24,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantWhenInSwitchExpression9", 24, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestErrantWhenInSwitchExpression9",
+            24,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -809,7 +1570,10 @@ fn errant_colons_in_switch_expression_1() {
                 1: 2,
             }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { 
             x switch
@@ -823,16 +1587,45 @@ fn errant_colons_in_switch_expression_1() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantColonsInSwitchExpression1", 25, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantColonsInSwitchExpression1",
+                    25,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantColonsInSwitchExpression1", 25, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantColonsInSwitchExpression1",
+                    25,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantColonsInSwitchExpression1", 25, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestErrantColonsInSwitchExpression1",
+            25,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -846,7 +1639,10 @@ fn errant_colons_in_switch_expression_1_semicolons() {
                 1: 2;
             }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 4, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 4,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { 
             x switch
@@ -860,16 +1656,45 @@ fn errant_colons_in_switch_expression_1_semicolons() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantColonsInSwitchExpression1_Semicolons", 26, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantColonsInSwitchExpression1_Semicolons",
+                    26,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantColonsInSwitchExpression1_Semicolons", 26, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantColonsInSwitchExpression1_Semicolons",
+                    26,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantColonsInSwitchExpression1_Semicolons", 26, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestErrantColonsInSwitchExpression1_Semicolons",
+            26,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -883,7 +1708,10 @@ fn errant_default_in_switch_expression_1() {
                 default: 2,
             }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { 
             x switch
@@ -897,16 +1725,45 @@ fn errant_default_in_switch_expression_1() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantDefaultInSwitchExpression1", 27, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantDefaultInSwitchExpression1",
+                    27,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantDefaultInSwitchExpression1", 27, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantDefaultInSwitchExpression1",
+                    27,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantDefaultInSwitchExpression1", 27, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestErrantDefaultInSwitchExpression1",
+            27,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -920,7 +1777,10 @@ fn errant_default_in_switch_expression_1_semicolons() {
                 default: 2;
             }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 3, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 3,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { 
             x switch
@@ -934,16 +1794,45 @@ fn errant_default_in_switch_expression_1_semicolons() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantDefaultInSwitchExpression1_Semicolons", 28, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantDefaultInSwitchExpression1_Semicolons",
+                    28,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantDefaultInSwitchExpression1_Semicolons", 28, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantDefaultInSwitchExpression1_Semicolons",
+                    28,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantDefaultInSwitchExpression1_Semicolons", 28, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestErrantDefaultInSwitchExpression1_Semicolons",
+            28,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -957,7 +1846,10 @@ fn errant_default_in_switch_expression_2() {
                 default(int): 2,
             }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { 
             x switch
@@ -971,16 +1863,45 @@ fn errant_default_in_switch_expression_2() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantDefaultInSwitchExpression2", 29, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantDefaultInSwitchExpression2",
+                    29,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantDefaultInSwitchExpression2", 29, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantDefaultInSwitchExpression2",
+                    29,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantDefaultInSwitchExpression2", 29, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestErrantDefaultInSwitchExpression2",
+            29,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -994,7 +1915,10 @@ fn errant_default_in_switch_expression_2_semicolons() {
                 default(int): 2;
             }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 3, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 3,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { 
             x switch
@@ -1008,16 +1932,45 @@ fn errant_default_in_switch_expression_2_semicolons() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantDefaultInSwitchExpression2_Semicolons", 30, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantDefaultInSwitchExpression2_Semicolons",
+                    30,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantDefaultInSwitchExpression2_Semicolons", 30, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestErrantDefaultInSwitchExpression2_Semicolons",
+                    30,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestErrantDefaultInSwitchExpression2_Semicolons", 30, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestErrantDefaultInSwitchExpression2_Semicolons",
+            30,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1031,7 +1984,7 @@ fn normal_default_in_switch_expression_2() {
                 default(int) => 2,
             }
             "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { 
             x switch
@@ -1045,16 +1998,45 @@ fn normal_default_in_switch_expression_2() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestNormalDefaultInSwitchExpression2", 31, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestNormalDefaultInSwitchExpression2",
+                    31,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestNormalDefaultInSwitchExpression2", 31, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestNormalDefaultInSwitchExpression2",
+                    31,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestNormalDefaultInSwitchExpression2", 31, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestNormalDefaultInSwitchExpression2",
+            31,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1068,7 +2050,10 @@ fn normal_default_in_switch_expression_2_semicolons() {
                 default(int) => 2;
             }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { 
             x switch
@@ -1082,16 +2067,45 @@ fn normal_default_in_switch_expression_2_semicolons() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestNormalDefaultInSwitchExpression2_Semicolons", 32, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestNormalDefaultInSwitchExpression2_Semicolons",
+                    32,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestNormalDefaultInSwitchExpression2_Semicolons", 32, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestNormalDefaultInSwitchExpression2_Semicolons",
+                    32,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestNormalDefaultInSwitchExpression2_Semicolons", 32, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestNormalDefaultInSwitchExpression2_Semicolons",
+            32,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1105,7 +2119,10 @@ fn unclosed_recursive_pattern_1() {
                 Type { Prop: Type { } => 2
             }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { 
             obj switch
@@ -1119,16 +2136,45 @@ fn unclosed_recursive_pattern_1() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestUnclosedRecursivePattern1", 33, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestUnclosedRecursivePattern1",
+                    33,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestUnclosedRecursivePattern1", 33, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestUnclosedRecursivePattern1",
+                    33,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestUnclosedRecursivePattern1", 33, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestUnclosedRecursivePattern1",
+            33,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1142,7 +2188,10 @@ fn unclosed_recursive_pattern_1_colon() {
                 Type { Prop: Type { } : 2
             }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 4, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 4,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { 
             obj switch
@@ -1156,16 +2205,45 @@ fn unclosed_recursive_pattern_1_colon() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestUnclosedRecursivePattern1_Colon", 34, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestUnclosedRecursivePattern1_Colon",
+                    34,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestUnclosedRecursivePattern1_Colon", 34, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestUnclosedRecursivePattern1_Colon",
+                    34,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestUnclosedRecursivePattern1_Colon", 34, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestUnclosedRecursivePattern1_Colon",
+            34,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1179,7 +2257,10 @@ fn unclosed_recursive_pattern_2() {
                 Type { Prop: Type { => 2
             }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 4, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 4,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { 
             obj switch
@@ -1193,16 +2274,45 @@ fn unclosed_recursive_pattern_2() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestUnclosedRecursivePattern2", 35, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestUnclosedRecursivePattern2",
+                    35,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestUnclosedRecursivePattern2", 35, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestUnclosedRecursivePattern2",
+                    35,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestUnclosedRecursivePattern2", 35, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestUnclosedRecursivePattern2",
+            35,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1216,7 +2326,10 @@ fn unclosed_recursive_pattern_2_colon() {
                 Type { Prop: Type { : 2
             }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 6, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 6,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { 
             obj switch
@@ -1230,16 +2343,45 @@ fn unclosed_recursive_pattern_2_colon() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestUnclosedRecursivePattern2_Colon", 36, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestUnclosedRecursivePattern2_Colon",
+                    36,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestUnclosedRecursivePattern2_Colon", 36, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestUnclosedRecursivePattern2_Colon",
+                    36,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestUnclosedRecursivePattern2_Colon", 36, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestUnclosedRecursivePattern2_Colon",
+            36,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1253,7 +2395,10 @@ fn unclosed_recursive_pattern_3() {
                 Type { Prop: { Prop: { => 2
             }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 6, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 6,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { 
             obj switch
@@ -1267,16 +2412,45 @@ fn unclosed_recursive_pattern_3() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestUnclosedRecursivePattern3", 37, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestUnclosedRecursivePattern3",
+                    37,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestUnclosedRecursivePattern3", 37, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestUnclosedRecursivePattern3",
+                    37,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestUnclosedRecursivePattern3", 37, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestUnclosedRecursivePattern3",
+            37,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1290,7 +2464,10 @@ fn unclosed_recursive_pattern_3_colon() {
                 Type { Prop: { Prop: { : 2
             }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 8, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 8,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { 
             obj switch
@@ -1304,16 +2481,45 @@ fn unclosed_recursive_pattern_3_colon() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestUnclosedRecursivePattern3_Colon", 38, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestUnclosedRecursivePattern3_Colon",
+                    38,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestUnclosedRecursivePattern3_Colon", 38, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestUnclosedRecursivePattern3_Colon",
+                    38,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestUnclosedRecursivePattern3_Colon", 38, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestUnclosedRecursivePattern3_Colon",
+            38,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1327,7 +2533,10 @@ fn unclosed_list_pattern_1() {
                 [ => 2
             }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { 
             obj switch
@@ -1341,16 +2550,45 @@ fn unclosed_list_pattern_1() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestUnclosedListPattern1", 39, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestUnclosedListPattern1",
+                    39,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestUnclosedListPattern1", 39, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestUnclosedListPattern1",
+                    39,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestUnclosedListPattern1", 39, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestUnclosedListPattern1",
+            39,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1364,7 +2602,10 @@ fn unclosed_list_pattern_1_colon() {
                 [ : 2
             }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 4, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 4,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { 
             obj switch
@@ -1378,16 +2619,45 @@ fn unclosed_list_pattern_1_colon() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestUnclosedListPattern1_Colon", 40, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestUnclosedListPattern1_Colon",
+                    40,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestUnclosedListPattern1_Colon", 40, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestUnclosedListPattern1_Colon",
+                    40,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestUnclosedListPattern1_Colon", 40, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestUnclosedListPattern1_Colon",
+            40,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1401,7 +2671,10 @@ fn unclosed_list_pattern_2() {
                 [[ => 2
             }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 4, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 4,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { 
             obj switch
@@ -1415,16 +2688,45 @@ fn unclosed_list_pattern_2() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestUnclosedListPattern2", 41, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestUnclosedListPattern2",
+                    41,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestUnclosedListPattern2", 41, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestUnclosedListPattern2",
+                    41,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestUnclosedListPattern2", 41, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestUnclosedListPattern2",
+            41,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1438,7 +2740,10 @@ fn unclosed_list_pattern_2_colon() {
                 [[ : 2
             }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 6, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 6,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { 
             obj switch
@@ -1452,16 +2757,45 @@ fn unclosed_list_pattern_2_colon() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestUnclosedListPattern2_Colon", 42, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestUnclosedListPattern2_Colon",
+                    42,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestUnclosedListPattern2_Colon", 42, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestUnclosedListPattern2_Colon",
+                    42,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestUnclosedListPattern2_Colon", 42, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestUnclosedListPattern2_Colon",
+            42,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1475,7 +2809,10 @@ fn unclosed_list_pattern_3() {
                 [[[ => 2
             }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 6, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 6,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { 
             obj switch
@@ -1489,16 +2826,45 @@ fn unclosed_list_pattern_3() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestUnclosedListPattern3", 43, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestUnclosedListPattern3",
+                    43,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestUnclosedListPattern3", 43, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestUnclosedListPattern3",
+                    43,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestUnclosedListPattern3", 43, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestUnclosedListPattern3",
+            43,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1512,7 +2878,10 @@ fn unclosed_list_pattern_3_colon() {
                 [[[ : 2
             }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 8, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 8,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { 
             obj switch
@@ -1526,16 +2895,45 @@ fn unclosed_list_pattern_3_colon() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestUnclosedListPattern3_Colon", 44, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestUnclosedListPattern3_Colon",
+                    44,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestUnclosedListPattern3_Colon", 44, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestUnclosedListPattern3_Colon",
+                    44,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestUnclosedListPattern3_Colon", 44, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestUnclosedListPattern3_Colon",
+            44,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1547,7 +2945,10 @@ fn incomplete_switch_expression() {
             {
                 { Prop: 1, { Prop: 2 }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 5, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 5,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { 
             obj switch
@@ -1559,16 +2960,45 @@ fn incomplete_switch_expression() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestIncompleteSwitchExpression", 45, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestIncompleteSwitchExpression",
+                    45,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestIncompleteSwitchExpression", 45, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestIncompleteSwitchExpression",
+                    45,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestIncompleteSwitchExpression", 45, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestIncompleteSwitchExpression",
+            45,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1581,7 +3011,7 @@ fn nullable_type_in_pattern_1() {
                 Type? => 1
             }
             "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { 
             obj switch
@@ -1594,16 +3024,45 @@ fn nullable_type_in_pattern_1() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestNullableTypeInPattern1", 46, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestNullableTypeInPattern1",
+                    46,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestNullableTypeInPattern1", 46, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestNullableTypeInPattern1",
+                    46,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestNullableTypeInPattern1", 46, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestNullableTypeInPattern1",
+            46,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1616,7 +3075,10 @@ fn nullable_type_in_pattern_1_colon() {
                 Type? : 1
             }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { 
             obj switch
@@ -1629,16 +3091,45 @@ fn nullable_type_in_pattern_1_colon() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestNullableTypeInPattern1_Colon", 47, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestNullableTypeInPattern1_Colon",
+                    47,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestNullableTypeInPattern1_Colon", 47, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestNullableTypeInPattern1_Colon",
+                    47,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestNullableTypeInPattern1_Colon", 47, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestNullableTypeInPattern1_Colon",
+            47,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1651,7 +3142,10 @@ fn nullable_type_in_pattern_2() {
                 Type? varName => 1
             }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 4, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 4,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { 
             obj switch
@@ -1664,16 +3158,45 @@ fn nullable_type_in_pattern_2() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestNullableTypeInPattern2", 48, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestNullableTypeInPattern2",
+                    48,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestNullableTypeInPattern2", 48, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestNullableTypeInPattern2",
+                    48,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestNullableTypeInPattern2", 48, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestNullableTypeInPattern2",
+            48,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1686,7 +3209,10 @@ fn nullable_type_in_pattern_2_colon() {
                 Type? varName : 1
             }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { 
             obj switch
@@ -1699,16 +3225,45 @@ fn nullable_type_in_pattern_2_colon() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestNullableTypeInPattern2_Colon", 49, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestNullableTypeInPattern2_Colon",
+                    49,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestNullableTypeInPattern2_Colon", 49, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestNullableTypeInPattern2_Colon",
+                    49,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestNullableTypeInPattern2_Colon", 49, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestNullableTypeInPattern2_Colon",
+            49,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1721,7 +3276,7 @@ fn nullable_type_in_pattern_3() {
                 Type? when x > 0 => 1
             }
             "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { 
             obj switch
@@ -1734,16 +3289,45 @@ fn nullable_type_in_pattern_3() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestNullableTypeInPattern3", 50, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestNullableTypeInPattern3",
+                    50,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestNullableTypeInPattern3", 50, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestNullableTypeInPattern3",
+                    50,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestNullableTypeInPattern3", 50, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestNullableTypeInPattern3",
+            50,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1756,7 +3340,10 @@ fn nullable_type_in_pattern_3_colon() {
                 Type? when x > 0 : 1
             }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { 
             obj switch
@@ -1769,16 +3356,45 @@ fn nullable_type_in_pattern_3_colon() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestNullableTypeInPattern3_Colon", 51, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestNullableTypeInPattern3_Colon",
+                    51,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestNullableTypeInPattern3_Colon", 51, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestNullableTypeInPattern3_Colon",
+                    51,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestNullableTypeInPattern3_Colon", 51, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestNullableTypeInPattern3_Colon",
+            51,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1791,7 +3407,7 @@ fn nullable_type_in_pattern_4() {
                 Type? varName when x > 0 => 1
             }
             "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { 
             obj switch
@@ -1804,16 +3420,45 @@ fn nullable_type_in_pattern_4() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestNullableTypeInPattern4", 52, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestNullableTypeInPattern4",
+                    52,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestNullableTypeInPattern4", 52, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestNullableTypeInPattern4",
+                    52,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestNullableTypeInPattern4", 52, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestNullableTypeInPattern4",
+            52,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1826,7 +3471,10 @@ fn nullable_type_in_pattern_4_colon() {
                 Type? varName when x > 0 : 1
             }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { 
             obj switch
@@ -1839,16 +3487,45 @@ fn nullable_type_in_pattern_4_colon() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestNullableTypeInPattern4_Colon", 53, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestNullableTypeInPattern4_Colon",
+                    53,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestNullableTypeInPattern4_Colon", 53, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestNullableTypeInPattern4_Colon",
+                    53,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestNullableTypeInPattern4_Colon", 53, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestNullableTypeInPattern4_Colon",
+            53,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1861,7 +3538,7 @@ fn nullable_type_in_pattern_5() {
                 (Type? when) when x > 0 => 1
             }
             "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { 
             obj switch
@@ -1874,16 +3551,45 @@ fn nullable_type_in_pattern_5() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestNullableTypeInPattern5", 54, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestNullableTypeInPattern5",
+                    54,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestNullableTypeInPattern5", 54, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestNullableTypeInPattern5",
+                    54,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestNullableTypeInPattern5", 54, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestNullableTypeInPattern5",
+            54,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1896,7 +3602,10 @@ fn nullable_type_in_pattern_5_colon() {
                 (Type? when) when x > 0 : 1
             }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { 
             obj switch
@@ -1909,16 +3618,45 @@ fn nullable_type_in_pattern_5_colon() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestNullableTypeInPattern5_Colon", 55, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestNullableTypeInPattern5_Colon",
+                    55,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestNullableTypeInPattern5_Colon", 55, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestNullableTypeInPattern5_Colon",
+                    55,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestNullableTypeInPattern5_Colon", 55, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestNullableTypeInPattern5_Colon",
+            55,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1931,7 +3669,7 @@ fn conditional_expression_as_pattern() {
                 (flag ? a : b) => 1
             }
             "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { 
             obj switch
@@ -1944,16 +3682,44 @@ fn conditional_expression_as_pattern() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestConditionalExpressionAsPattern", 56, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestConditionalExpressionAsPattern",
+                    56,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestConditionalExpressionAsPattern", 56, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "switch_expression_parsing_tests",
+                    "SwitchExpressionParsingTests",
+                    "TestConditionalExpressionAsPattern",
+                    56,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("switch_expression_parsing_tests", "SwitchExpressionParsingTests", "TestConditionalExpressionAsPattern", 56, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "switch_expression_parsing_tests",
+            "SwitchExpressionParsingTests",
+            "TestConditionalExpressionAsPattern",
+            56,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
-

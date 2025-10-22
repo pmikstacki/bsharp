@@ -1,5 +1,7 @@
+use crate::custom_asserts::roslyn_asserts::{
+    ExpectedDiagnostics, assert_diagnostics_count, assert_diagnostics_unimplemented,
+};
 use bsharp_syntax::statements::statement::Statement;
-use crate::custom_asserts::roslyn_asserts::{ExpectedDiagnostics, assert_diagnostics_unimplemented, assert_diagnostics_count};
 
 pub enum CaseData<'a> {
     Statement {

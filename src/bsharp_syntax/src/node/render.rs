@@ -2,7 +2,11 @@ use crate::node::ast_node::AstNode;
 use crate::node::dyn_node_ref::DynNodeRef;
 use std::collections::HashMap;
 
-fn traverse<'a>(root: DynNodeRef<'a>, mut on_edge: impl FnMut(usize, usize), mut on_node: impl FnMut(usize, &'a dyn AstNode)) {
+fn traverse<'a>(
+    root: DynNodeRef<'a>,
+    mut on_edge: impl FnMut(usize, usize),
+    mut on_node: impl FnMut(usize, &'a dyn AstNode),
+) {
     let mut stack: Vec<DynNodeRef<'a>> = vec![root];
     let mut ids: HashMap<*const (), usize> = HashMap::new();
     let mut next_id: usize = 0;
@@ -35,9 +39,13 @@ pub fn to_mermaid(root: &impl AstNode) -> String {
     let mut nodes: HashMap<usize, String> = HashMap::new();
     let mut edges: Vec<(usize, usize)> = Vec::new();
 
-    traverse(DynNodeRef(root), |a, b| edges.push((a, b)), |i, n| {
-        nodes.entry(i).or_insert_with(|| n.node_label());
-    });
+    traverse(
+        DynNodeRef(root),
+        |a, b| edges.push((a, b)),
+        |i, n| {
+            nodes.entry(i).or_insert_with(|| n.node_label());
+        },
+    );
 
     // Emit nodes
     let mut ids: Vec<_> = nodes.keys().cloned().collect();
@@ -61,15 +69,23 @@ pub fn to_dot(root: &impl AstNode) -> String {
     let mut nodes: HashMap<usize, String> = HashMap::new();
     let mut edges: Vec<(usize, usize)> = Vec::new();
 
-    traverse(DynNodeRef(root), |a, b| edges.push((a, b)), |i, n| {
-        nodes.entry(i).or_insert_with(|| n.node_label());
-    });
+    traverse(
+        DynNodeRef(root),
+        |a, b| edges.push((a, b)),
+        |i, n| {
+            nodes.entry(i).or_insert_with(|| n.node_label());
+        },
+    );
 
     let mut ids: Vec<_> = nodes.keys().cloned().collect();
     ids.sort_unstable();
     for i in ids {
         let label = nodes.get(&i).cloned().unwrap_or_else(|| format!("n{}", i));
-        out.push_str(&format!("  n{} [label=\"{}\"];\n", i, label.replace('"', "\\\"")));
+        out.push_str(&format!(
+            "  n{} [label=\"{}\"];\n",
+            i,
+            label.replace('"', "\\\"")
+        ));
     }
     for (a, b) in edges {
         out.push_str(&format!("  n{} -> n{};\n", a, b));

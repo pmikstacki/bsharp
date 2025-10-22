@@ -3,16 +3,12 @@
 use crate::parser::keywords::iteration_keywords::kw_while;
 use crate::syntax::comment_parser::ws;
 use crate::syntax::errors::BResult;
-use nom::combinator::cut;
 use nom::Parser;
-use nom::{
-    combinator::map,
-    sequence::delimited,
-};
+use nom::combinator::cut;
+use nom::{combinator::map, sequence::delimited};
 use nom_supreme::ParserExt;
-use syntax::statements::statement::Statement;
 use syntax::statements::WhileStatement;
-
+use syntax::statements::statement::Statement;
 
 // Parse a while statement
 pub fn parse_while_statement(input: Span) -> BResult<Statement> {
@@ -26,8 +22,12 @@ pub fn parse_while_statement(input: Span) -> BResult<Statement> {
                 cut(delimited(ws, tok_r_paren(), ws))
                     .context("closing parenthesis for while condition"),
             ),
-            cut(delimited(ws, |i| crate::parser::statement_parser::parse_statement_ws(i), ws))
-                .context("while loop body"),
+            cut(delimited(
+                ws,
+                |i| crate::parser::statement_parser::parse_statement_ws(i),
+                ws,
+            ))
+            .context("while loop body"),
         ),
         |(_, condition, body_statement)| {
             Statement::While(Box::new(WhileStatement {
@@ -36,8 +36,8 @@ pub fn parse_while_statement(input: Span) -> BResult<Statement> {
             }))
         },
     )
-        .context("while statement")
-        .parse(input)
+    .context("while statement")
+    .parse(input)
 }
 use crate::syntax::span::Span;
 use crate::tokens::delimiters::{tok_l_paren, tok_r_paren};

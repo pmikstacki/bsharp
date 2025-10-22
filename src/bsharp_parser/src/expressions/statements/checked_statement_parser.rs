@@ -2,8 +2,8 @@ use crate::parser::keywords::exception_and_safety_keywords::{kw_checked, kw_unch
 use crate::parser::statement_parser::parse_statement_ws;
 use crate::syntax::comment_parser::ws;
 use crate::syntax::errors::BResult;
-use nom::sequence::delimited;
 use nom::Parser;
+use nom::sequence::delimited;
 use nom::{branch::alt, combinator::map};
 use nom_supreme::ParserExt;
 use syntax::statements::statement::Statement;
@@ -22,8 +22,8 @@ pub fn parse_checked_statement(input: Span) -> BResult<Statement> {
             }))
         },
     )
-        .context("checked statement")
-        .parse(input)
+    .context("checked statement")
+    .parse(input)
 }
 
 /// Parse an unchecked statement: unchecked { ... }
@@ -39,8 +39,8 @@ pub fn parse_unchecked_statement(input: Span) -> BResult<Statement> {
             }))
         },
     )
-        .context("unchecked statement")
-        .parse(input)
+    .context("unchecked statement")
+    .parse(input)
 }
 
 /// Parse either a checked or unchecked statement

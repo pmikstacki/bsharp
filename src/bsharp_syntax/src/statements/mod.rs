@@ -1,3 +1,4 @@
+pub mod block_statement;
 pub mod break_statement;
 pub mod catch_clause;
 pub mod checked_statement;
@@ -23,7 +24,6 @@ pub mod unsafe_statement;
 pub mod using_statement;
 pub mod while_statement;
 pub mod yield_statement;
-pub mod block_statement;
 
 pub use break_statement::BreakStatement;
 pub use catch_clause::CatchClause;

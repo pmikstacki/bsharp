@@ -1,8 +1,8 @@
+use crate::ast::CompilationUnit;
+use crate::emitters::emit_trait::{EmitCtx, EmitError, Emitter};
 use std::fs::OpenOptions;
 use std::io::BufWriter;
 use std::path::PathBuf;
-use crate::ast::CompilationUnit;
-use crate::emitters::emit_trait::{EmitCtx, EmitError, Emitter};
 
 #[derive(Clone, Debug)]
 pub struct FormatOptions {
@@ -39,7 +39,9 @@ pub struct Formatter {
 }
 
 impl Formatter {
-    pub fn new(opts: FormatOptions) -> Self { Self { opts } }
+    pub fn new(opts: FormatOptions) -> Self {
+        Self { opts }
+    }
 
     pub fn format_compilation_unit(&self, cu: &CompilationUnit) -> Result<String, EmitError> {
         let emitter = Emitter::new();

@@ -19,14 +19,13 @@ use syntax::statements::statement::Statement;
 
 // use nom_supreme::ParserExt for .context()
 use crate::syntax::comment_parser::ws;
+use nom::Parser;
 use nom::character::complete::satisfy;
 use nom::combinator::peek;
 use nom::sequence::delimited;
-use nom::Parser;
 use nom_supreme::ParserExt;
 /// Parse an optional constructor initializer: ": base(args)" or ": this(args)"
 fn parse_constructor_initializer(input: Span) -> BResult<ConstructorInitializer> {
-
     // Shared arg-list parser for (expr, expr, ...)
     fn parse_arg_list(i: Span) -> BResult<Vec<Expression>> {
         crate::syntax::list_parser::parse_delimited_list0::<
@@ -46,18 +45,20 @@ fn parse_constructor_initializer(input: Span) -> BResult<ConstructorInitializer>
         (
             delimited(ws, tok_colon(), ws),
             alt((
-                map((delimited(ws, tag("base"), ws), parse_arg_list), |(_, args)| {
-                    ConstructorInitializer::Base(args)
-                }),
-                map((delimited(ws, tag("this"), ws), parse_arg_list), |(_, args)| {
-                    ConstructorInitializer::This(args)
-                }),
+                map(
+                    (delimited(ws, tag("base"), ws), parse_arg_list),
+                    |(_, args)| ConstructorInitializer::Base(args),
+                ),
+                map(
+                    (delimited(ws, tag("this"), ws), parse_arg_list),
+                    |(_, args)| ConstructorInitializer::This(args),
+                ),
             )),
         ),
         |(_, init)| init,
     )
-        .context("constructor initializer")
-        .parse(input)
+    .context("constructor initializer")
+    .parse(input)
 }
 
 /// Parse a pure method declaration, erroring if the unified parser determines constructor syntax.
@@ -124,8 +125,11 @@ fn parse_member_body(input: Span) -> BResult<Option<Statement>> {
         |i| {
             use nom::combinator::cut;
             let (i, _) = delimited(ws, tok_lambda(), ws).parse(i)?;
-            let (i, (expr, _semi)) = cut((delimited(ws, parse_expression, ws), delimited(ws, tok_semicolon(), ws)))
-                .parse(i)?;
+            let (i, (expr, _semi)) = cut((
+                delimited(ws, parse_expression, ws),
+                delimited(ws, tok_semicolon(), ws),
+            ))
+            .parse(i)?;
             Ok((i, Some(Statement::Expression(expr))))
         },
         // Abstract/interface member: ; (no body)
@@ -134,8 +138,8 @@ fn parse_member_body(input: Span) -> BResult<Option<Statement>> {
             Ok((i, None))
         },
     ))
-        .context("member body (expected block '{...}', expression body '=> expr;', or ';')")
-        .parse(input)
+    .context("member body (expected block '{...}', expression body '=> expr;', or ';')")
+    .parse(input)
 }
 
 /// **Pure Structural Parser**
@@ -153,7 +157,9 @@ pub fn parse_member_declaration(input: Span) -> BResult<MemberDeclaration> {
     // Try method parsing first (Type Name(...))
     if let Ok((after_type, return_type)) = delimited(ws, parse_type_expression, ws).parse(input) {
         // Successfully parsed a type, now try to parse an identifier after it
-        if let Ok((after_name_candidate, name)) = delimited(ws, parse_identifier, ws).parse(after_type) {
+        if let Ok((after_name_candidate, name)) =
+            delimited(ws, parse_identifier, ws).parse(after_type)
+        {
             // Attempt to parse optional type parameters <T, U> for the method itself
             // This must happen BEFORE checking for the parameter list '('.
             let (after_type_params, type_parameters) =
@@ -174,7 +180,8 @@ pub fn parse_member_declaration(input: Span) -> BResult<MemberDeclaration> {
                         .parse(input_after_params)?;
 
                 // 7. Parse body - REQUIRED for methods (not optional)
-                let (input_after_body, body) = delimited(ws, parse_member_body, ws).parse(input_after_constraints)?;
+                let (input_after_body, body) =
+                    delimited(ws, parse_member_body, ws).parse(input_after_constraints)?;
 
                 // Clean up empty vectors to None for cleaner AST
                 let final_constraints = match constraints {
@@ -204,11 +211,11 @@ pub fn parse_member_declaration(input: Span) -> BResult<MemberDeclaration> {
     let (input_after_mods, name) = delimited(ws, parse_identifier, ws).parse(input)?;
     // 4. Parse type parameters (for generic constructors - though rare, syntactically possible)
     let (input_after_type_params, type_parameters) =
-        opt(|i| delimited(ws, parse_type_parameter_list, ws).parse(i))
-            .parse(input_after_mods)?;
+        opt(|i| delimited(ws, parse_type_parameter_list, ws).parse(i)).parse(input_after_mods)?;
 
     // 5. Parse parameters (must continue after type parameters when present)
-    let (input_after_params, parameters) = delimited(ws, parse_parameter_list, ws).parse(input_after_type_params)?;
+    let (input_after_params, parameters) =
+        delimited(ws, parse_parameter_list, ws).parse(input_after_type_params)?;
 
     // 5.1 Optional constructor initializer
     let (input_after_init, initializer) =

@@ -1,8 +1,8 @@
 // Added for initializer
 use super::Modifier;
+use crate::Identifier;
 use crate::expressions::Expression;
 use crate::types::Type;
-use crate::Identifier;
 use bsharp_syntax_derive::AstNode;
 use serde::{Deserialize, Serialize};
 

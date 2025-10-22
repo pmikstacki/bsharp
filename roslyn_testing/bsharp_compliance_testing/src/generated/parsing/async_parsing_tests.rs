@@ -1,14 +1,20 @@
 // Auto-generated STRUCTURE tests from Roslyn: AsyncParsingTests
-use bsharp_parser::syntax::span::Span;
-use bsharp_parser::bsharp::parse_csharp_source_strict;
 use crate::custom_asserts::structure_assert;
+use bsharp_parser::bsharp::parse_csharp_source_strict;
+use bsharp_parser::syntax::span::Span;
 #[test]
 fn simple_async_method() {
     let src = r#""#;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -19,7 +25,13 @@ fn method_called_async() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -30,7 +42,13 @@ fn method_returning_async() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -41,7 +59,13 @@ fn method_async_async() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -52,7 +76,13 @@ fn method_async_async_async() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -63,7 +93,13 @@ fn method_async_async_async_async() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -74,7 +110,13 @@ fn method_async_var_async() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -85,7 +127,13 @@ fn incomplete_async() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -96,7 +144,13 @@ fn incomplete_async_async() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -107,7 +161,13 @@ fn complete_async_async_1() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -118,7 +178,13 @@ fn complete_async_async_2() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -129,7 +195,13 @@ fn incomplete_async_async_async() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -140,7 +212,13 @@ fn complete_async_async_async() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -151,7 +229,13 @@ fn incomplete_async_async_async_async() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -162,7 +246,13 @@ fn complete_async_async_async_async() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -173,7 +263,13 @@ fn incomplete_async_member_01() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -184,7 +280,13 @@ fn incomplete_async_member_02() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -195,7 +297,13 @@ fn incomplete_async_member_03() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -206,7 +314,13 @@ fn incomplete_async_member_04() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -217,7 +331,13 @@ fn incomplete_async_member_05() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -228,7 +348,13 @@ fn incomplete_async_member_06() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -239,7 +365,13 @@ fn property_async_async() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -250,7 +382,13 @@ fn property_async_async_async() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -261,7 +399,13 @@ fn event_async_async() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -272,7 +416,13 @@ fn event_async_async_async_1() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -283,7 +433,13 @@ fn event_async_async_async_2() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -294,7 +450,13 @@ fn async_modifier_on_delegate_declaration() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -305,7 +467,13 @@ fn async_interface() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -316,7 +484,13 @@ fn async_partial_class() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -327,7 +501,13 @@ fn async_event() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -338,7 +518,13 @@ fn async_partial_event() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -349,7 +535,13 @@ fn async_implicit_operator() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -360,7 +552,13 @@ fn async_partial_implicit_operator() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -371,7 +569,13 @@ fn async_explicit_operator() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -382,7 +586,13 @@ fn async_partial_explicit_operator() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -393,7 +603,13 @@ fn async_type_operator() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -404,7 +620,13 @@ fn async_partial_type_operator() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -415,7 +637,13 @@ fn async_field() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -426,7 +654,13 @@ fn async_partial_indexer() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -437,7 +671,13 @@ fn async_type_end_of_file() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -448,7 +688,13 @@ fn async_type_close_curly() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -459,7 +705,13 @@ fn async_type_predefined_type() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -470,7 +722,13 @@ fn async_type_modifier() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -481,7 +739,13 @@ fn async_type_followed_by_type_decl() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -492,7 +756,13 @@ fn async_type_followed_by_namespace_decl() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -503,7 +773,13 @@ fn async_generic_type() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -514,7 +790,13 @@ fn async_as_type_property_expression_body() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -525,7 +807,13 @@ fn async_as_type_property() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -536,7 +824,49 @@ fn async_as_type_indexer_expression_body_error_case() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![    structure_assert::ExpectedNode { kind: "InterfaceDeclaration".to_string(), token_value: None, children: vec![        structure_assert::ExpectedNode { kind: "IndexerDeclaration".to_string(), token_value: None, children: vec![            structure_assert::ExpectedNode { kind: "IdentifierName".to_string(), token_value: Some("async".to_string()), children: vec![] },             structure_assert::ExpectedNode { kind: "BracketedParameterList".to_string(), token_value: None, children: vec![                structure_assert::ExpectedNode { kind: "Parameter".to_string(), token_value: None, children: vec![                    structure_assert::ExpectedNode { kind: "IdentifierName".to_string(), token_value: Some("async".to_string()), children: vec![] }] }] },             structure_assert::ExpectedNode { kind: "ArrowExpressionClause".to_string(), token_value: None, children: vec![                structure_assert::ExpectedNode { kind: "NullLiteralExpression".to_string(), token_value: None, children: vec![] }] }] }] }] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![structure_assert::ExpectedNode {
+                    kind: "InterfaceDeclaration".to_string(),
+                    token_value: None,
+                    children: vec![structure_assert::ExpectedNode {
+                        kind: "IndexerDeclaration".to_string(),
+                        token_value: None,
+                        children: vec![
+                            structure_assert::ExpectedNode {
+                                kind: "IdentifierName".to_string(),
+                                token_value: Some("async".to_string()),
+                                children: vec![],
+                            },
+                            structure_assert::ExpectedNode {
+                                kind: "BracketedParameterList".to_string(),
+                                token_value: None,
+                                children: vec![structure_assert::ExpectedNode {
+                                    kind: "Parameter".to_string(),
+                                    token_value: None,
+                                    children: vec![structure_assert::ExpectedNode {
+                                        kind: "IdentifierName".to_string(),
+                                        token_value: Some("async".to_string()),
+                                        children: vec![],
+                                    }],
+                                }],
+                            },
+                            structure_assert::ExpectedNode {
+                                kind: "ArrowExpressionClause".to_string(),
+                                token_value: None,
+                                children: vec![structure_assert::ExpectedNode {
+                                    kind: "NullLiteralExpression".to_string(),
+                                    token_value: None,
+                                    children: vec![],
+                                }],
+                            },
+                        ],
+                    }],
+                }],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -547,7 +877,49 @@ fn async_as_type_indexer() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![    structure_assert::ExpectedNode { kind: "InterfaceDeclaration".to_string(), token_value: None, children: vec![        structure_assert::ExpectedNode { kind: "IndexerDeclaration".to_string(), token_value: None, children: vec![            structure_assert::ExpectedNode { kind: "IdentifierName".to_string(), token_value: Some("async".to_string()), children: vec![] },             structure_assert::ExpectedNode { kind: "BracketedParameterList".to_string(), token_value: None, children: vec![                structure_assert::ExpectedNode { kind: "Parameter".to_string(), token_value: None, children: vec![                    structure_assert::ExpectedNode { kind: "IdentifierName".to_string(), token_value: Some("async".to_string()), children: vec![] }] }] },             structure_assert::ExpectedNode { kind: "AccessorList".to_string(), token_value: None, children: vec![                structure_assert::ExpectedNode { kind: "GetAccessorDeclaration".to_string(), token_value: None, children: vec![] }] }] }] }] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![structure_assert::ExpectedNode {
+                    kind: "InterfaceDeclaration".to_string(),
+                    token_value: None,
+                    children: vec![structure_assert::ExpectedNode {
+                        kind: "IndexerDeclaration".to_string(),
+                        token_value: None,
+                        children: vec![
+                            structure_assert::ExpectedNode {
+                                kind: "IdentifierName".to_string(),
+                                token_value: Some("async".to_string()),
+                                children: vec![],
+                            },
+                            structure_assert::ExpectedNode {
+                                kind: "BracketedParameterList".to_string(),
+                                token_value: None,
+                                children: vec![structure_assert::ExpectedNode {
+                                    kind: "Parameter".to_string(),
+                                    token_value: None,
+                                    children: vec![structure_assert::ExpectedNode {
+                                        kind: "IdentifierName".to_string(),
+                                        token_value: Some("async".to_string()),
+                                        children: vec![],
+                                    }],
+                                }],
+                            },
+                            structure_assert::ExpectedNode {
+                                kind: "AccessorList".to_string(),
+                                token_value: None,
+                                children: vec![structure_assert::ExpectedNode {
+                                    kind: "GetAccessorDeclaration".to_string(),
+                                    token_value: None,
+                                    children: vec![],
+                                }],
+                            },
+                        ],
+                    }],
+                }],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -558,8 +930,65 @@ fn async_as_type_property_explicit_interface() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![    structure_assert::ExpectedNode { kind: "ClassDeclaration".to_string(), token_value: None, children: vec![        structure_assert::ExpectedNode { kind: "IdentifierName".to_string(), token_value: Some("async".to_string()), children: vec![] },         structure_assert::ExpectedNode { kind: "BaseList".to_string(), token_value: None, children: vec![            structure_assert::ExpectedNode { kind: "SimpleBaseType".to_string(), token_value: None, children: vec![                structure_assert::ExpectedNode { kind: "IdentifierName".to_string(), token_value: Some("async".to_string()), children: vec![] }] }] },         structure_assert::ExpectedNode { kind: "PropertyDeclaration".to_string(), token_value: None, children: vec![            structure_assert::ExpectedNode { kind: "IdentifierName".to_string(), token_value: Some("async".to_string()), children: vec![] },             structure_assert::ExpectedNode { kind: "ExplicitInterfaceSpecifier".to_string(), token_value: None, children: vec![                structure_assert::ExpectedNode { kind: "IdentifierName".to_string(), token_value: Some("async".to_string()), children: vec![] }] },             structure_assert::ExpectedNode { kind: "ArrowExpressionClause".to_string(), token_value: None, children: vec![                structure_assert::ExpectedNode { kind: "NullLiteralExpression".to_string(), token_value: None, children: vec![] }] }] }] }] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![structure_assert::ExpectedNode {
+                    kind: "ClassDeclaration".to_string(),
+                    token_value: None,
+                    children: vec![
+                        structure_assert::ExpectedNode {
+                            kind: "IdentifierName".to_string(),
+                            token_value: Some("async".to_string()),
+                            children: vec![],
+                        },
+                        structure_assert::ExpectedNode {
+                            kind: "BaseList".to_string(),
+                            token_value: None,
+                            children: vec![structure_assert::ExpectedNode {
+                                kind: "SimpleBaseType".to_string(),
+                                token_value: None,
+                                children: vec![structure_assert::ExpectedNode {
+                                    kind: "IdentifierName".to_string(),
+                                    token_value: Some("async".to_string()),
+                                    children: vec![],
+                                }],
+                            }],
+                        },
+                        structure_assert::ExpectedNode {
+                            kind: "PropertyDeclaration".to_string(),
+                            token_value: None,
+                            children: vec![
+                                structure_assert::ExpectedNode {
+                                    kind: "IdentifierName".to_string(),
+                                    token_value: Some("async".to_string()),
+                                    children: vec![],
+                                },
+                                structure_assert::ExpectedNode {
+                                    kind: "ExplicitInterfaceSpecifier".to_string(),
+                                    token_value: None,
+                                    children: vec![structure_assert::ExpectedNode {
+                                        kind: "IdentifierName".to_string(),
+                                        token_value: Some("async".to_string()),
+                                        children: vec![],
+                                    }],
+                                },
+                                structure_assert::ExpectedNode {
+                                    kind: "ArrowExpressionClause".to_string(),
+                                    token_value: None,
+                                    children: vec![structure_assert::ExpectedNode {
+                                        kind: "NullLiteralExpression".to_string(),
+                                        token_value: None,
+                                        children: vec![],
+                                    }],
+                                },
+                            ],
+                        },
+                    ],
+                }],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
-

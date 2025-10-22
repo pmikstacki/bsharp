@@ -8,7 +8,9 @@ pub struct Query<'a> {
 
 impl<'a> Query<'a> {
     pub fn from<T: Into<NodeRef<'a>>>(start: T) -> Self {
-        Self { start: start.into() }
+        Self {
+            start: start.into(),
+        }
     }
 
     pub fn descendants(self) -> Descendants<'a> {
@@ -27,12 +29,18 @@ impl<'a> Query<'a> {
         acc.into_iter()
     }
 
-    pub fn filter(self, p: impl Fn(&NodeRef<'a>) -> bool + 'a) -> impl Iterator<Item = NodeRef<'a>> + 'a {
+    pub fn filter(
+        self,
+        p: impl Fn(&NodeRef<'a>) -> bool + 'a,
+    ) -> impl Iterator<Item = NodeRef<'a>> + 'a {
         let v: Vec<NodeRef<'a>> = self.descendants().collect();
         v.into_iter().filter(move |n| p(n))
     }
 
-    pub fn filter_typed<T: AstNode + 'static>(self, p: impl Fn(&T) -> bool + 'a) -> impl Iterator<Item = &'a T> + 'a {
+    pub fn filter_typed<T: AstNode + 'static>(
+        self,
+        p: impl Fn(&T) -> bool + 'a,
+    ) -> impl Iterator<Item = &'a T> + 'a {
         self.of::<T>().filter(move |t| p(*t))
     }
 }

@@ -1,14 +1,20 @@
 // Auto-generated STRUCTURE tests from Roslyn: IgnoredDirectiveParsingTests
-use bsharp_parser::syntax::span::Span;
-use bsharp_parser::bsharp::parse_csharp_source_strict;
 use crate::custom_asserts::structure_assert;
+use bsharp_parser::bsharp::parse_csharp_source_strict;
+use bsharp_parser::syntax::span::Span;
 #[test]
 fn feature_flag() {
     let src = r#""#;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -19,7 +25,13 @@ fn feature_flag_case_2() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -30,7 +42,13 @@ fn shebang_not_first() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -41,7 +59,13 @@ fn after_token() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -52,7 +76,13 @@ fn after_if() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -63,7 +93,13 @@ fn after_if_case_2() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -74,7 +110,13 @@ fn after_comment() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -85,7 +127,13 @@ fn after_define() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -96,7 +144,13 @@ fn space_before_hash() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -107,7 +161,13 @@ fn spaces_after_hash() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -118,7 +178,13 @@ fn no_message() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -129,7 +195,13 @@ fn no_colon() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -140,7 +212,13 @@ fn shebang_correctly_placed() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -151,7 +229,13 @@ fn shebang_with_trivia_in_between() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -162,8 +246,13 @@ fn shebang_incorrectly_placed() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
-

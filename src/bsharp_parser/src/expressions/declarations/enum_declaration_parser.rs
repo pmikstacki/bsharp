@@ -9,24 +9,20 @@ use crate::parser::types::type_parser::parse_type_expression;
 use crate::syntax::errors::BResult;
 use crate::syntax::span::Span;
 
+use crate::keywords::declaration_keywords::kw_enum;
 use crate::syntax::comment_parser::ws;
+use crate::tokens::assignment::tok_assign;
+use crate::tokens::separators::{tok_colon, tok_comma};
 use log::trace;
-use nom::sequence::delimited;
 use nom::Parser;
-use nom::{
-    combinator::opt,
-    multi::separated_list0,
-    sequence::preceded,
-};
+use nom::sequence::delimited;
+use nom::{combinator::opt, multi::separated_list0, sequence::preceded};
 use nom_supreme::ParserExt;
 use syntax::declarations::enum_declaration::EnumMember;
 pub use syntax::declarations::*;
 pub use syntax::expressions::expression::*;
 pub use syntax::statements::statement::*;
 pub use syntax::trivia::*;
-use crate::keywords::declaration_keywords::kw_enum;
-use crate::tokens::assignment::tok_assign;
-use crate::tokens::separators::{tok_colon, tok_comma};
 
 /// Parse a C# enum declaration.
 ///
@@ -62,15 +58,13 @@ pub fn parse_enum_declaration(input: Span) -> BResult<EnumDeclaration> {
         .parse(input)?;
 
     // Parse optional underlying type (: byte, : int, etc.)
-    let (input, underlying_type) = opt(
-        (
-            delimited(ws, tok_colon(), ws),
-            delimited(ws, parse_type_expression, ws),
-        )
-            .map(|(_, ty)| ty)
-            .context("enum underlying type"),
+    let (input, underlying_type) = opt((
+        delimited(ws, tok_colon(), ws),
+        delimited(ws, parse_type_expression, ws),
     )
-        .parse(input)?;
+        .map(|(_, ty)| ty)
+        .context("enum underlying type"))
+    .parse(input)?;
 
     // Parse the enum body
     let (input, _) = parse_open_brace(input)?;
@@ -101,8 +95,8 @@ fn parse_enum_members(input: Span) -> BResult<Vec<EnumMember>> {
         |i| delimited(ws, tok_comma(), ws).parse(i),
         |i| delimited(ws, parse_enum_member, ws).parse(i),
     )
-        .context("enum members")
-        .parse(input)
+    .context("enum members")
+    .parse(input)
 }
 
 /// Parse a single enum member
@@ -121,11 +115,10 @@ fn parse_enum_member(input: Span) -> BResult<EnumMember> {
 
     // Parse optional value assignment
     let (input, value) = opt(preceded(
-        delimited(ws, tok_assign(), ws)
-            .context("enum value assignment"),
+        delimited(ws, tok_assign(), ws).context("enum value assignment"),
         delimited(ws, parse_expression, ws),
     ))
-        .parse(input)?;
+    .parse(input)?;
 
     Ok((
         input,
@@ -136,4 +129,3 @@ fn parse_enum_member(input: Span) -> BResult<EnumMember> {
         },
     ))
 }
-

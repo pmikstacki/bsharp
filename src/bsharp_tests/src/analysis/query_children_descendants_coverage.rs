@@ -15,9 +15,10 @@ namespace Ns { public class C { public void M() { if (true) { } } } }
     // Children of CU include Namespace
     let root = NodeRef::from(&cu);
     let cu_children: Vec<_> = root.children_iter().collect();
-    assert!(cu_children
-        .iter()
-        .any(|n| n.of::<analysis::syntax::declarations::NamespaceDeclaration>().is_some()));
+    assert!(cu_children.iter().any(|n| {
+        n.of::<analysis::syntax::declarations::NamespaceDeclaration>()
+            .is_some()
+    }));
 
     // Descendants include Class and Method
     let has_class = Query::from(&cu)
@@ -37,7 +38,8 @@ namespace Ns { public class C { public void M() { if (true) { } } } }
         .unwrap();
     let method_node = NodeRef::from(method);
     let method_children: Vec<_> = method_node.children_iter().collect();
-    assert!(method_children
-        .iter()
-        .any(|n| n.of::<analysis::syntax::statements::statement::Statement>().is_some()));
+    assert!(method_children.iter().any(|n| {
+        n.of::<analysis::syntax::statements::statement::Statement>()
+            .is_some()
+    }));
 }

@@ -14,7 +14,10 @@ fn parse_ref_expr_helper(code: &str) -> Result<Expression, String> {
             if remaining.fragment().trim().is_empty() {
                 Ok(expr)
             } else {
-                Err(format!("Unexpected remaining input: '{}'", remaining.fragment()))
+                Err(format!(
+                    "Unexpected remaining input: '{}'",
+                    remaining.fragment()
+                ))
             }
         }
         Err(e) => Err(format!("Parse error: {:?}", e)),
@@ -27,7 +30,10 @@ fn parse_expr_helper(code: &str) -> Result<Expression, String> {
             if remaining.fragment().trim().is_empty() {
                 Ok(expr)
             } else {
-                Err(format!("Unexpected remaining input: '{}'", remaining.fragment()))
+                Err(format!(
+                    "Unexpected remaining input: '{}'",
+                    remaining.fragment()
+                ))
             }
         }
         Err(e) => Err(format!("Parse error: {:?}", e)),
@@ -40,7 +46,10 @@ fn parse_type_helper(code: &str) -> Result<Type, String> {
             if remaining.fragment().trim().is_empty() {
                 Ok(ty)
             } else {
-                Err(format!("Unexpected remaining input: '{}'", remaining.fragment()))
+                Err(format!(
+                    "Unexpected remaining input: '{}'",
+                    remaining.fragment()
+                ))
             }
         }
         Err(e) => Err(format!("Parse error: {:?}", e)),

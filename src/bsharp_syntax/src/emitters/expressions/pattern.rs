@@ -1,5 +1,8 @@
 use crate::emitters::emit_trait::{Emit, EmitCtx, EmitError};
-use crate::expressions::{Pattern, PatternDesignation, PropertySubpattern, ListPatternElement, RelationalOperator, PatternCase};
+use crate::expressions::{
+    ListPatternElement, Pattern, PatternCase, PatternDesignation, PropertySubpattern,
+    RelationalOperator,
+};
 
 impl Emit for Pattern {
     fn emit<W: std::fmt::Write>(&self, w: &mut W, cx: &mut EmitCtx) -> Result<(), EmitError> {
@@ -16,14 +19,20 @@ impl Emit for Pattern {
             Pattern::Discard => {
                 w.write_str("_")?;
             }
-            Pattern::Type { target_type, designation } => {
+            Pattern::Type {
+                target_type,
+                designation,
+            } => {
                 write!(w, "{}", target_type)?;
                 if let Some(d) = designation {
                     w.write_char(' ')?;
                     d.emit(w, cx)?;
                 }
             }
-            Pattern::Property { type_name, subpatterns } => {
+            Pattern::Property {
+                type_name,
+                subpatterns,
+            } => {
                 if let Some(t) = type_name {
                     write!(w, "{} ", t)?;
                 }
@@ -36,7 +45,10 @@ impl Emit for Pattern {
                 }
                 w.write_char('}')?;
             }
-            Pattern::Positional { type_name, subpatterns } => {
+            Pattern::Positional {
+                type_name,
+                subpatterns,
+            } => {
                 if let Some(t) = type_name {
                     write!(w, "{}", t)?;
                 }
@@ -106,52 +118,77 @@ impl Emit for Pattern {
 }
 
 impl Emit for PatternDesignation {
-    fn emit<W: std::fmt::Write>(&self, w:&mut W, _cx:&mut EmitCtx)->Result<(),EmitError>{
+    fn emit<W: std::fmt::Write>(&self, w: &mut W, _cx: &mut EmitCtx) -> Result<(), EmitError> {
         match self {
             PatternDesignation::Variable(id) => write!(w, "{}", id)?,
             PatternDesignation::Discard => w.write_str("_")?,
-            PatternDesignation::Parenthesized(_inner) => { w.write_char('(')?; write!(w, "")?; w.write_char(')')?; /* printer for designation tree minimal */ },
+            PatternDesignation::Parenthesized(_inner) => {
+                w.write_char('(')?;
+                write!(w, "")?;
+                w.write_char(')')?; /* printer for designation tree minimal */
+            }
         }
         Ok(())
     }
 }
 
 impl Emit for PropertySubpattern {
-    fn emit<W: std::fmt::Write>(&self, w:&mut W, cx:&mut EmitCtx)->Result<(),EmitError>{
+    fn emit<W: std::fmt::Write>(&self, w: &mut W, cx: &mut EmitCtx) -> Result<(), EmitError> {
         use crate::emitters::emit_trait::Emit as _;
-        write!(w, "{}: ", self.member_name)?; self.pattern.emit(w, cx)
+        write!(w, "{}: ", self.member_name)?;
+        self.pattern.emit(w, cx)
     }
 }
 
 impl Emit for ListPatternElement {
-    fn emit<W: std::fmt::Write>(&self, w:&mut W, cx:&mut EmitCtx)->Result<(),EmitError>{
+    fn emit<W: std::fmt::Write>(&self, w: &mut W, cx: &mut EmitCtx) -> Result<(), EmitError> {
         use crate::emitters::emit_trait::Emit as _;
         match self {
             ListPatternElement::Pattern(p) => p.emit(w, cx),
-            ListPatternElement::Slice(opt) => { w.write_str("..")?; if let Some(p) = opt { w.write_char(' ')?; p.emit(w, cx)?; } Ok(()) }
+            ListPatternElement::Slice(opt) => {
+                w.write_str("..")?;
+                if let Some(p) = opt {
+                    w.write_char(' ')?;
+                    p.emit(w, cx)?;
+                }
+                Ok(())
+            }
         }
     }
 }
 
-impl Emit for RelationalOperator { 
-    fn emit<W: std::fmt::Write>(&self, w:&mut W, _cx:&mut EmitCtx)->Result<(),EmitError>{ 
-        let s = match self { 
+impl Emit for RelationalOperator {
+    fn emit<W: std::fmt::Write>(&self, w: &mut W, _cx: &mut EmitCtx) -> Result<(), EmitError> {
+        let s = match self {
             RelationalOperator::LessThan => "<",
             RelationalOperator::LessThanOrEqual => "<=",
             RelationalOperator::GreaterThan => ">",
             RelationalOperator::GreaterThanOrEqual => ">=",
             RelationalOperator::Equal => "==",
             RelationalOperator::NotEqual => "!=",
-        }; w.write_str(s)?; Ok(()) } }
-
-impl Emit for PatternCase {
-    fn emit<W: std::fmt::Write>(&self, w:&mut W, cx:&mut EmitCtx)->Result<(),EmitError>{
-        use crate::emitters::emit_trait::Emit as _;
-        w.write_str("case ")?; self.pattern.emit(w, cx)?; if let Some(when) = &self.when_clause { w.write_str(" when ")?; when.emit(w, cx)?; } w.write_str(": ")?; 
-        // body as comma-separated expressions (placeholder, statements would be elsewhere)
-        for (i, e) in self.body.iter().enumerate() { if i!=0 { w.write_str(", ")?; } e.emit(w, cx)?; }
+        };
+        w.write_str(s)?;
         Ok(())
     }
 }
 
- 
+impl Emit for PatternCase {
+    fn emit<W: std::fmt::Write>(&self, w: &mut W, cx: &mut EmitCtx) -> Result<(), EmitError> {
+        use crate::emitters::emit_trait::Emit as _;
+        w.write_str("case ")?;
+        self.pattern.emit(w, cx)?;
+        if let Some(when) = &self.when_clause {
+            w.write_str(" when ")?;
+            when.emit(w, cx)?;
+        }
+        w.write_str(": ")?;
+        // body as comma-separated expressions (placeholder, statements would be elsewhere)
+        for (i, e) in self.body.iter().enumerate() {
+            if i != 0 {
+                w.write_str(", ")?;
+            }
+            e.emit(w, cx)?;
+        }
+        Ok(())
+    }
+}

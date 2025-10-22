@@ -9,7 +9,11 @@ use syntax::types::{PrimitiveType, Type};
 fn explicit_cast_basic() {
     let code = "(int)x";
     let (rest, expr) = parse_expression(code.into()).expect("parse ok");
-    assert!(rest.fragment().trim().is_empty(), "unparsed: {}", rest.fragment());
+    assert!(
+        rest.fragment().trim().is_empty(),
+        "unparsed: {}",
+        rest.fragment()
+    );
     match expr {
         Expression::Cast {
             expression,

@@ -1,9 +1,9 @@
 // Auto-generated from Roslyn: PartialEventsAndConstructorsParsingTests
-use bsharp_parser::syntax::span::Span;
 use crate::custom_asserts::after_parse;
 use crate::custom_asserts::after_parse::CaseData;
-use bsharp_parser::bsharp::parse_csharp_source_strict;
 use crate::custom_asserts::roslyn_asserts::ExpectedDiagnostics;
+use bsharp_parser::bsharp::parse_csharp_source_strict;
+use bsharp_parser::syntax::span::Span;
 /// Roslyn: PartialEventsAndConstructorsParsingTests.Event_Tree (case 1)
 #[test]
 fn event_tree() {
@@ -14,22 +14,51 @@ fn event_tree() {
                 partial event Action E { add { } remove { } }
             }
             "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_Tree", 1, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Event_Tree",
+                    1,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_Tree", 1, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Event_Tree",
+                    1,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_Tree", 1, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "partial_events_and_constructors_parsing_tests",
+            "PartialEventsAndConstructorsParsingTests",
+            "Event_Tree",
+            1,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -39,7 +68,7 @@ fn event_definition() {
     let src = r#"
             partial event Action E;
             "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { 
             partial event Action E;
@@ -49,16 +78,45 @@ fn event_definition() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_Definition", 2, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Event_Definition",
+                    2,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_Definition", 2, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Event_Definition",
+                    2,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_Definition", 2, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "partial_events_and_constructors_parsing_tests",
+            "PartialEventsAndConstructorsParsingTests",
+            "Event_Definition",
+            2,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -68,7 +126,7 @@ fn event_definition_multiple() {
     let src = r#"
             partial event Action E, F;
             "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { 
             partial event Action E, F;
@@ -78,16 +136,45 @@ fn event_definition_multiple() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_Definition_Multiple", 3, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Event_Definition_Multiple",
+                    3,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_Definition_Multiple", 3, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Event_Definition_Multiple",
+                    3,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_Definition_Multiple", 3, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "partial_events_and_constructors_parsing_tests",
+            "PartialEventsAndConstructorsParsingTests",
+            "Event_Definition_Multiple",
+            3,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -97,7 +184,7 @@ fn event_definition_initializer() {
     let src = r#"
             partial event Action E = null;
             "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { 
             partial event Action E = null;
@@ -107,16 +194,45 @@ fn event_definition_initializer() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_Definition_Initializer", 4, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Event_Definition_Initializer",
+                    4,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_Definition_Initializer", 4, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Event_Definition_Initializer",
+                    4,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_Definition_Initializer", 4, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "partial_events_and_constructors_parsing_tests",
+            "PartialEventsAndConstructorsParsingTests",
+            "Event_Definition_Initializer",
+            4,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -126,7 +242,7 @@ fn event_definition_multiple_initializer() {
     let src = r#"
             partial event Action E, F = null;
             "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { 
             partial event Action E, F = null;
@@ -136,16 +252,45 @@ fn event_definition_multiple_initializer() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_Definition_Multiple_Initializer", 5, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Event_Definition_Multiple_Initializer",
+                    5,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_Definition_Multiple_Initializer", 5, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Event_Definition_Multiple_Initializer",
+                    5,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_Definition_Multiple_Initializer", 5, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "partial_events_and_constructors_parsing_tests",
+            "PartialEventsAndConstructorsParsingTests",
+            "Event_Definition_Multiple_Initializer",
+            5,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -155,7 +300,7 @@ fn event_definition_multiple_initializers() {
     let src = r#"
             partial event Action E = null, F = null;
             "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { 
             partial event Action E = null, F = null;
@@ -165,16 +310,45 @@ fn event_definition_multiple_initializers() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_Definition_Multiple_Initializers", 6, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Event_Definition_Multiple_Initializers",
+                    6,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_Definition_Multiple_Initializers", 6, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Event_Definition_Multiple_Initializers",
+                    6,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_Definition_Multiple_Initializers", 6, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "partial_events_and_constructors_parsing_tests",
+            "PartialEventsAndConstructorsParsingTests",
+            "Event_Definition_Multiple_Initializers",
+            6,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -184,7 +358,10 @@ fn event_definition_partial_after_event() {
     let src = r#"
             event partial Action E;
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 3, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 3,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { 
             event partial Action E;
@@ -194,16 +371,45 @@ fn event_definition_partial_after_event() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_Definition_PartialAfterEvent", 7, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Event_Definition_PartialAfterEvent",
+                    7,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_Definition_PartialAfterEvent", 7, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Event_Definition_PartialAfterEvent",
+                    7,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_Definition_PartialAfterEvent", 7, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "partial_events_and_constructors_parsing_tests",
+            "PartialEventsAndConstructorsParsingTests",
+            "Event_Definition_PartialAfterEvent",
+            7,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -213,7 +419,10 @@ fn event_definition_partial_after_type() {
     let src = r#"
             event Action partial E;
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { 
             event Action partial E;
@@ -223,16 +432,45 @@ fn event_definition_partial_after_type() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_Definition_PartialAfterType", 8, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Event_Definition_PartialAfterType",
+                    8,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_Definition_PartialAfterType", 8, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Event_Definition_PartialAfterType",
+                    8,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_Definition_PartialAfterType", 8, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "partial_events_and_constructors_parsing_tests",
+            "PartialEventsAndConstructorsParsingTests",
+            "Event_Definition_PartialAfterType",
+            8,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -242,7 +480,7 @@ fn event_definition_partial_after_public() {
     let src = r#"
             public partial event Action E;
             "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { 
             public partial event Action E;
@@ -252,16 +490,45 @@ fn event_definition_partial_after_public() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_Definition_PartialAfterPublic", 9, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Event_Definition_PartialAfterPublic",
+                    9,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_Definition_PartialAfterPublic", 9, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Event_Definition_PartialAfterPublic",
+                    9,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_Definition_PartialAfterPublic", 9, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "partial_events_and_constructors_parsing_tests",
+            "PartialEventsAndConstructorsParsingTests",
+            "Event_Definition_PartialAfterPublic",
+            9,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -271,7 +538,7 @@ fn event_definition_partial_before_public() {
     let src = r#"
             partial public event Action E;
             "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { 
             partial public event Action E;
@@ -281,16 +548,45 @@ fn event_definition_partial_before_public() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_Definition_PartialBeforePublic", 10, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Event_Definition_PartialBeforePublic",
+                    10,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_Definition_PartialBeforePublic", 10, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Event_Definition_PartialBeforePublic",
+                    10,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_Definition_PartialBeforePublic", 10, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "partial_events_and_constructors_parsing_tests",
+            "PartialEventsAndConstructorsParsingTests",
+            "Event_Definition_PartialBeforePublic",
+            10,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -300,7 +596,10 @@ fn event_definition_double_partial() {
     let src = r#"
             partial partial event Action E;
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { 
             partial partial event Action E;
@@ -310,16 +609,45 @@ fn event_definition_double_partial() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_Definition_DoublePartial", 11, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Event_Definition_DoublePartial",
+                    11,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_Definition_DoublePartial", 11, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Event_Definition_DoublePartial",
+                    11,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_Definition_DoublePartial", 11, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "partial_events_and_constructors_parsing_tests",
+            "PartialEventsAndConstructorsParsingTests",
+            "Event_Definition_DoublePartial",
+            11,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -329,7 +657,10 @@ fn event_definition_missing_rest() {
     let src = r#"
             partial event
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 3, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 3,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { 
             partial event
@@ -339,16 +670,45 @@ fn event_definition_missing_rest() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_Definition_MissingRest", 12, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Event_Definition_MissingRest",
+                    12,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_Definition_MissingRest", 12, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Event_Definition_MissingRest",
+                    12,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_Definition_MissingRest", 12, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "partial_events_and_constructors_parsing_tests",
+            "PartialEventsAndConstructorsParsingTests",
+            "Event_Definition_MissingRest",
+            12,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -358,7 +718,7 @@ fn event_implementation() {
     let src = r#"
             partial event Action E { add { } remove { } }
             "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { 
             partial event Action E { add { } remove { } }
@@ -368,16 +728,45 @@ fn event_implementation() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_Implementation", 13, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Event_Implementation",
+                    13,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_Implementation", 13, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Event_Implementation",
+                    13,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_Implementation", 13, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "partial_events_and_constructors_parsing_tests",
+            "PartialEventsAndConstructorsParsingTests",
+            "Event_Implementation",
+            13,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -387,7 +776,10 @@ fn event_implementation_multiple() {
     let src = r#"
             partial event Action E, F { add { } remove { } }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { 
             partial event Action E, F { add { } remove { } }
@@ -397,16 +789,45 @@ fn event_implementation_multiple() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_Implementation_Multiple", 14, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Event_Implementation_Multiple",
+                    14,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_Implementation_Multiple", 14, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Event_Implementation_Multiple",
+                    14,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_Implementation_Multiple", 14, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "partial_events_and_constructors_parsing_tests",
+            "PartialEventsAndConstructorsParsingTests",
+            "Event_Implementation_Multiple",
+            14,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -416,7 +837,10 @@ fn event_implementation_partial_after_event() {
     let src = r#"
             event partial Action E { add { } remove { } }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 4, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 4,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { 
             event partial Action E { add { } remove { } }
@@ -426,16 +850,45 @@ fn event_implementation_partial_after_event() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_Implementation_PartialAfterEvent", 15, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Event_Implementation_PartialAfterEvent",
+                    15,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_Implementation_PartialAfterEvent", 15, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Event_Implementation_PartialAfterEvent",
+                    15,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_Implementation_PartialAfterEvent", 15, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "partial_events_and_constructors_parsing_tests",
+            "PartialEventsAndConstructorsParsingTests",
+            "Event_Implementation_PartialAfterEvent",
+            15,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -445,7 +898,7 @@ fn event_implementation_semicolon_accessors() {
     let src = r#"
             partial event Action E { add; remove; }
             "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { 
             partial event Action E { add; remove; }
@@ -455,16 +908,45 @@ fn event_implementation_semicolon_accessors() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_Implementation_SemicolonAccessors", 16, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Event_Implementation_SemicolonAccessors",
+                    16,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_Implementation_SemicolonAccessors", 16, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Event_Implementation_SemicolonAccessors",
+                    16,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_Implementation_SemicolonAccessors", 16, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "partial_events_and_constructors_parsing_tests",
+            "PartialEventsAndConstructorsParsingTests",
+            "Event_Implementation_SemicolonAccessors",
+            16,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -474,7 +956,10 @@ fn event_implementation_partial_accessors() {
     let src = r#"
             partial event Action E { partial add; partial remove; }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { 
             partial event Action E { partial add; partial remove; }
@@ -484,16 +969,45 @@ fn event_implementation_partial_accessors() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_Implementation_PartialAccessors", 17, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Event_Implementation_PartialAccessors",
+                    17,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_Implementation_PartialAccessors", 17, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Event_Implementation_PartialAccessors",
+                    17,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_Implementation_PartialAccessors", 17, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "partial_events_and_constructors_parsing_tests",
+            "PartialEventsAndConstructorsParsingTests",
+            "Event_Implementation_PartialAccessors",
+            17,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -507,22 +1021,51 @@ fn event_in_place_of_identifier() {
                 partial event Action E;
             }
             "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_InPlaceOfIdentifier", 18, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Event_InPlaceOfIdentifier",
+                    18,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_InPlaceOfIdentifier", 18, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Event_InPlaceOfIdentifier",
+                    18,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Event_InPlaceOfIdentifier", 18, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "partial_events_and_constructors_parsing_tests",
+            "PartialEventsAndConstructorsParsingTests",
+            "Event_InPlaceOfIdentifier",
+            18,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -536,22 +1079,51 @@ fn constructor_tree() {
                 partial C() { }
             }
             "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Constructor_Tree", 19, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Constructor_Tree",
+                    19,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Constructor_Tree", 19, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Constructor_Tree",
+                    19,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Constructor_Tree", 19, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "partial_events_and_constructors_parsing_tests",
+            "PartialEventsAndConstructorsParsingTests",
+            "Constructor_Tree",
+            19,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -561,7 +1133,7 @@ fn constructor_declaration() {
     let src = r#"
             partial C() { }
             "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { 
             partial C() { }
@@ -571,16 +1143,45 @@ fn constructor_declaration() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Constructor_Declaration", 20, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Constructor_Declaration",
+                    20,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Constructor_Declaration", 20, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Constructor_Declaration",
+                    20,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Constructor_Declaration", 20, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "partial_events_and_constructors_parsing_tests",
+            "PartialEventsAndConstructorsParsingTests",
+            "Constructor_Declaration",
+            20,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -590,7 +1191,7 @@ fn constructor_declaration_csharp_13() {
     let src = r#"
             partial C() { }
             "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { 
             partial C() { }
@@ -600,16 +1201,45 @@ fn constructor_declaration_csharp_13() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Constructor_Declaration_CSharp13", 21, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Constructor_Declaration_CSharp13",
+                    21,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Constructor_Declaration_CSharp13", 21, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Constructor_Declaration_CSharp13",
+                    21,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Constructor_Declaration_CSharp13", 21, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "partial_events_and_constructors_parsing_tests",
+            "PartialEventsAndConstructorsParsingTests",
+            "Constructor_Declaration_CSharp13",
+            21,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -619,7 +1249,7 @@ fn constructor_arrow_body() {
     let src = r#"
             partial C() => throw null;
             "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { 
             partial C() => throw null;
@@ -629,16 +1259,45 @@ fn constructor_arrow_body() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Constructor_ArrowBody", 22, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Constructor_ArrowBody",
+                    22,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Constructor_ArrowBody", 22, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Constructor_ArrowBody",
+                    22,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Constructor_ArrowBody", 22, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "partial_events_and_constructors_parsing_tests",
+            "PartialEventsAndConstructorsParsingTests",
+            "Constructor_ArrowBody",
+            22,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -648,7 +1307,7 @@ fn constructor_no_parens() {
     let src = r#"
             partial C;
             "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { 
             partial C;
@@ -658,16 +1317,45 @@ fn constructor_no_parens() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Constructor_NoParens", 23, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Constructor_NoParens",
+                    23,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Constructor_NoParens", 23, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Constructor_NoParens",
+                    23,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Constructor_NoParens", 23, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "partial_events_and_constructors_parsing_tests",
+            "PartialEventsAndConstructorsParsingTests",
+            "Constructor_NoParens",
+            23,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -677,7 +1365,7 @@ fn constructor_no_name() {
     let src = r#"
             partial ();
             "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { 
             partial ();
@@ -687,16 +1375,45 @@ fn constructor_no_name() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Constructor_NoName", 24, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Constructor_NoName",
+                    24,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Constructor_NoName", 24, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Constructor_NoName",
+                    24,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Constructor_NoName", 24, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "partial_events_and_constructors_parsing_tests",
+            "PartialEventsAndConstructorsParsingTests",
+            "Constructor_NoName",
+            24,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -706,7 +1423,7 @@ fn constructor_partial_as_name() {
     let src = r#"
             partial partial();
             "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { 
             partial partial();
@@ -716,16 +1433,45 @@ fn constructor_partial_as_name() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Constructor_PartialAsName", 25, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Constructor_PartialAsName",
+                    25,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Constructor_PartialAsName", 25, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Constructor_PartialAsName",
+                    25,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Constructor_PartialAsName", 25, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "partial_events_and_constructors_parsing_tests",
+            "PartialEventsAndConstructorsParsingTests",
+            "Constructor_PartialAsName",
+            25,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -735,7 +1481,7 @@ fn constructor_partial_after_name() {
     let src = r#"
             C partial();
             "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { 
             C partial();
@@ -745,16 +1491,45 @@ fn constructor_partial_after_name() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Constructor_PartialAfterName", 26, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Constructor_PartialAfterName",
+                    26,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Constructor_PartialAfterName", 26, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Constructor_PartialAfterName",
+                    26,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Constructor_PartialAfterName", 26, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "partial_events_and_constructors_parsing_tests",
+            "PartialEventsAndConstructorsParsingTests",
+            "Constructor_PartialAfterName",
+            26,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -764,7 +1539,7 @@ fn constructor_partial_after_public() {
     let src = r#"
             public partial C();
             "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { 
             public partial C();
@@ -774,16 +1549,45 @@ fn constructor_partial_after_public() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Constructor_PartialAfterPublic", 27, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Constructor_PartialAfterPublic",
+                    27,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Constructor_PartialAfterPublic", 27, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Constructor_PartialAfterPublic",
+                    27,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Constructor_PartialAfterPublic", 27, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "partial_events_and_constructors_parsing_tests",
+            "PartialEventsAndConstructorsParsingTests",
+            "Constructor_PartialAfterPublic",
+            27,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -793,7 +1597,7 @@ fn constructor_partial_before_public() {
     let src = r#"
             partial public C();
             "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { 
             partial public C();
@@ -803,16 +1607,45 @@ fn constructor_partial_before_public() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Constructor_PartialBeforePublic", 28, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Constructor_PartialBeforePublic",
+                    28,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Constructor_PartialBeforePublic", 28, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Constructor_PartialBeforePublic",
+                    28,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Constructor_PartialBeforePublic", 28, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "partial_events_and_constructors_parsing_tests",
+            "PartialEventsAndConstructorsParsingTests",
+            "Constructor_PartialBeforePublic",
+            28,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -822,7 +1655,7 @@ fn constructor_type_twice() {
     let src = r#"
             partial C C();
             "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { 
             partial C C();
@@ -832,16 +1665,45 @@ fn constructor_type_twice() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Constructor_TypeTwice", 29, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Constructor_TypeTwice",
+                    29,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Constructor_TypeTwice", 29, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Constructor_TypeTwice",
+                    29,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Constructor_TypeTwice", 29, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "partial_events_and_constructors_parsing_tests",
+            "PartialEventsAndConstructorsParsingTests",
+            "Constructor_TypeTwice",
+            29,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -851,7 +1713,7 @@ fn constructor_partial_escaped() {
     let src = r#"
             @partial C();
             "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { 
             @partial C();
@@ -861,16 +1723,45 @@ fn constructor_partial_escaped() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Constructor_PartialEscaped", 30, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Constructor_PartialEscaped",
+                    30,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Constructor_PartialEscaped", 30, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Constructor_PartialEscaped",
+                    30,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Constructor_PartialEscaped", 30, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "partial_events_and_constructors_parsing_tests",
+            "PartialEventsAndConstructorsParsingTests",
+            "Constructor_PartialEscaped",
+            30,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -880,7 +1771,10 @@ fn constructor_keyword_name() {
     let src = r#"
             partial const();
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { 
             partial const();
@@ -890,16 +1784,45 @@ fn constructor_keyword_name() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Constructor_KeywordName", 31, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Constructor_KeywordName",
+                    31,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Constructor_KeywordName", 31, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Constructor_KeywordName",
+                    31,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Constructor_KeywordName", 31, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "partial_events_and_constructors_parsing_tests",
+            "PartialEventsAndConstructorsParsingTests",
+            "Constructor_KeywordName",
+            31,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -913,22 +1836,51 @@ fn constructor_in_place_of_identifier() {
                 partial C();
             }
             "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Constructor_InPlaceOfIdentifier", 32, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Constructor_InPlaceOfIdentifier",
+                    32,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Constructor_InPlaceOfIdentifier", 32, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "Constructor_InPlaceOfIdentifier",
+                    32,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "Constructor_InPlaceOfIdentifier", 32, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "partial_events_and_constructors_parsing_tests",
+            "PartialEventsAndConstructorsParsingTests",
+            "Constructor_InPlaceOfIdentifier",
+            32,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -944,22 +1896,54 @@ fn returning_partial_type_local_function_in_method() {
                 }
             }
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "ReturningPartialType_LocalFunction_InMethod", 33, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "ReturningPartialType_LocalFunction_InMethod",
+                    33,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "ReturningPartialType_LocalFunction_InMethod", 33, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "ReturningPartialType_LocalFunction_InMethod",
+                    33,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "ReturningPartialType_LocalFunction_InMethod", 33, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "partial_events_and_constructors_parsing_tests",
+            "PartialEventsAndConstructorsParsingTests",
+            "ReturningPartialType_LocalFunction_InMethod",
+            33,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -975,22 +1959,51 @@ fn returning_partial_type_local_function_in_method_csharp_13() {
                 }
             }
             "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "ReturningPartialType_LocalFunction_InMethod_CSharp13", 34, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "ReturningPartialType_LocalFunction_InMethod_CSharp13",
+                    34,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "ReturningPartialType_LocalFunction_InMethod_CSharp13", 34, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "ReturningPartialType_LocalFunction_InMethod_CSharp13",
+                    34,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "ReturningPartialType_LocalFunction_InMethod_CSharp13", 34, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "partial_events_and_constructors_parsing_tests",
+            "PartialEventsAndConstructorsParsingTests",
+            "ReturningPartialType_LocalFunction_InMethod_CSharp13",
+            34,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -1000,22 +2013,54 @@ fn returning_partial_type_local_function_top_level() {
     let src = r#"
             partial F() => null;
             "#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "ReturningPartialType_LocalFunction_TopLevel", 35, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "ReturningPartialType_LocalFunction_TopLevel",
+                    35,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "ReturningPartialType_LocalFunction_TopLevel", 35, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "ReturningPartialType_LocalFunction_TopLevel",
+                    35,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "ReturningPartialType_LocalFunction_TopLevel", 35, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "partial_events_and_constructors_parsing_tests",
+            "PartialEventsAndConstructorsParsingTests",
+            "ReturningPartialType_LocalFunction_TopLevel",
+            35,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -1025,22 +2070,51 @@ fn returning_partial_type_local_function_top_level_csharp_13() {
     let src = r#"
             partial F() => null;
             "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "ReturningPartialType_LocalFunction_TopLevel_CSharp13", 36, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "ReturningPartialType_LocalFunction_TopLevel_CSharp13",
+                    36,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "ReturningPartialType_LocalFunction_TopLevel_CSharp13", 36, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "ReturningPartialType_LocalFunction_TopLevel_CSharp13",
+                    36,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "ReturningPartialType_LocalFunction_TopLevel_CSharp13", 36, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "partial_events_and_constructors_parsing_tests",
+            "PartialEventsAndConstructorsParsingTests",
+            "ReturningPartialType_LocalFunction_TopLevel_CSharp13",
+            36,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -1054,22 +2128,51 @@ fn returning_partial_type_method() {
                 @partial M() => null;
             }
             "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "ReturningPartialType_Method", 37, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "ReturningPartialType_Method",
+                    37,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "ReturningPartialType_Method", 37, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "ReturningPartialType_Method",
+                    37,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "ReturningPartialType_Method", 37, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "partial_events_and_constructors_parsing_tests",
+            "PartialEventsAndConstructorsParsingTests",
+            "ReturningPartialType_Method",
+            37,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -1083,22 +2186,50 @@ fn returning_partial_type_method_csharp_13() {
                 @partial M() => null;
             }
             "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "ReturningPartialType_Method_CSharp13", 38, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "ReturningPartialType_Method_CSharp13",
+                    38,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "ReturningPartialType_Method_CSharp13", 38, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "partial_events_and_constructors_parsing_tests",
+                    "PartialEventsAndConstructorsParsingTests",
+                    "ReturningPartialType_Method_CSharp13",
+                    38,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("partial_events_and_constructors_parsing_tests", "PartialEventsAndConstructorsParsingTests", "ReturningPartialType_Method_CSharp13", 38, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "partial_events_and_constructors_parsing_tests",
+            "PartialEventsAndConstructorsParsingTests",
+            "ReturningPartialType_Method_CSharp13",
+            38,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
-

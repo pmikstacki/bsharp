@@ -1,6 +1,6 @@
+use crate::DiagnosticCode;
 use crate::diagnostics::diagnostic::Diagnostic;
 use crate::framework::AnalysisSession;
-use crate::DiagnosticCode;
 
 pub struct DiagnosticBuilder {
     code: DiagnosticCode,

@@ -1,10 +1,10 @@
 use crate::syntax::comment_parser::ws;
 use crate::syntax::errors::BResult;
 use crate::syntax::span::Span;
+use nom::Parser;
 use nom::combinator::{cut, opt, peek};
 use nom::multi::{many0, separated_list0};
 use nom::sequence::delimited;
-use nom::Parser;
 
 /// Result of parsing either a singleton value or a delimited list of values
 #[derive(Debug, Clone, PartialEq)]
@@ -52,7 +52,8 @@ where
             let (input, mut rest) = separated_list0(
                 delimited(ws, &mut sep, ws),
                 delimited(ws, &mut rest_elem, ws),
-            ).parse(input)?;
+            )
+            .parse(input)?;
 
             // Optional trailing separator
             let (input, _) = if allow_trailing_sep {
@@ -108,7 +109,7 @@ where
             let (i, _) = delimited(ws, &mut sep, ws).parse(i)?;
             delimited(ws, &mut elem, ws).parse(i)
         })
-            .parse(input)?;
+        .parse(input)?;
 
         // Optional trailing separator
         let (input, _) = if allow_trailing_sep {
@@ -154,7 +155,7 @@ where
             let (i, _) = delimited(ws, &mut sep, ws).parse(i)?;
             delimited(ws, &mut elem, ws).parse(i)
         })
-            .parse(input)?;
+        .parse(input)?;
         // Optional trailing separator
         let (input, _) = if allow_trailing_sep {
             opt(delimited(ws, &mut sep, ws)).parse(input)?
@@ -181,5 +182,7 @@ where
     FE: FnMut(Span<'a>) -> BResult<'a, T>,
     FS: FnMut(Span<'a>) -> BResult<'a, OSep>,
 {
-    move |input: Span<'a>| separated_list0(delimited(ws, &mut sep, ws), delimited(ws, &mut elem, ws)).parse(input)
+    move |input: Span<'a>| {
+        separated_list0(delimited(ws, &mut sep, ws), delimited(ws, &mut elem, ws)).parse(input)
+    }
 }

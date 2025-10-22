@@ -1,8 +1,8 @@
 // Auto-generated from Roslyn: SyntaxTreeTests
-use bsharp_parser::syntax::span::Span;
 use crate::custom_asserts::after_parse;
 use crate::custom_asserts::after_parse::CaseData;
 use bsharp_parser::bsharp::parse_csharp_source_strict;
+use bsharp_parser::syntax::span::Span;
 /// Roslyn: SyntaxTreeTests.Create (case 1)
 #[test]
 fn create() {
@@ -11,7 +11,18 @@ fn create() {
     let r = parse_csharp_source_strict(span);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_tree_tests", "SyntaxTreeTests", "Create", 1, None, CaseData::File { unit: &unit, src, original: None });
+            after_parse::after_parse_with_expected(
+                "syntax_tree_tests",
+                "SyntaxTreeTests",
+                "Create",
+                1,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src,
+                    original: None,
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -25,7 +36,18 @@ fn create_with_diagnostic_options() {
     let r = parse_csharp_source_strict(span);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_tree_tests", "SyntaxTreeTests", "Create_WithDiagnosticOptions", 2, None, CaseData::File { unit: &unit, src, original: None });
+            after_parse::after_parse_with_expected(
+                "syntax_tree_tests",
+                "SyntaxTreeTests",
+                "Create_WithDiagnosticOptions",
+                2,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src,
+                    original: None,
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -39,7 +61,18 @@ fn with_root_and_options_parsed_tree() {
     let r = parse_csharp_source_strict(span);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_tree_tests", "SyntaxTreeTests", "WithRootAndOptions_ParsedTree", 3, None, CaseData::File { unit: &unit, src, original: None });
+            after_parse::after_parse_with_expected(
+                "syntax_tree_tests",
+                "SyntaxTreeTests",
+                "WithRootAndOptions_ParsedTree",
+                3,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src,
+                    original: None,
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -53,7 +86,18 @@ fn with_root_and_options_parsed_tree_with_text() {
     let r = parse_csharp_source_strict(span);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_tree_tests", "SyntaxTreeTests", "WithRootAndOptions_ParsedTreeWithText", 4, None, CaseData::File { unit: &unit, src, original: None });
+            after_parse::after_parse_with_expected(
+                "syntax_tree_tests",
+                "SyntaxTreeTests",
+                "WithRootAndOptions_ParsedTreeWithText",
+                4,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src,
+                    original: None,
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -67,9 +111,19 @@ fn with_root_and_options_dummy_tree() {
     let r = parse_csharp_source_strict(span);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_tree_tests", "SyntaxTreeTests", "WithRootAndOptions_DummyTree", 5, None, CaseData::File { unit: &unit, src, original: None });
+            after_parse::after_parse_with_expected(
+                "syntax_tree_tests",
+                "SyntaxTreeTests",
+                "WithRootAndOptions_DummyTree",
+                5,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src,
+                    original: None,
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
 }
-

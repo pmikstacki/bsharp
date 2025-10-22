@@ -3,12 +3,16 @@ use crate::syntax::errors::BResult;
 
 use crate::syntax::comment_parser::ws;
 use crate::syntax::span::Span;
+use nom::Parser;
 use nom::branch::alt;
 use nom::combinator::{map, opt};
-use nom::Parser;
 // tuples implement Parser directly in nom 8
+use crate::tokens::assignment::{
+    tok_add_assign, tok_and_assign, tok_assign, tok_div_assign, tok_mod_assign, tok_mul_assign,
+    tok_null_coalescing_assign, tok_or_assign, tok_shl_assign, tok_shr_assign, tok_sub_assign,
+    tok_ushr_assign, tok_xor_assign,
+};
 use syntax::expressions::{AssignmentExpression, BinaryOperator, Expression};
-use crate::tokens::assignment::{tok_add_assign, tok_and_assign, tok_assign, tok_div_assign, tok_mod_assign, tok_mul_assign, tok_null_coalescing_assign, tok_or_assign, tok_shl_assign, tok_shr_assign, tok_sub_assign, tok_ushr_assign, tok_xor_assign};
 
 pub(crate) fn parse_assignment_expression_or_higher(input: Span) -> BResult<Expression> {
     // Try to parse a conditional expression first
@@ -16,47 +20,32 @@ pub(crate) fn parse_assignment_expression_or_higher(input: Span) -> BResult<Expr
         conditional_expression_parser::parse_conditional_expression_or_higher(input)?;
 
     // Check for assignment operators - order matters, longer operators first
-    let (input, assignment_op) = opt(
-        nom::sequence::delimited(ws, alt((
+    let (input, assignment_op) = opt(nom::sequence::delimited(
+        ws,
+        alt((
             // Multi-character assignment operators first
-            map(tok_ushr_assign(), |_| BinaryOperator::UnsignedRightShiftAssign),
+            map(tok_ushr_assign(), |_| {
+                BinaryOperator::UnsignedRightShiftAssign
+            }),
             map(tok_null_coalescing_assign(), |_| {
                 BinaryOperator::NullCoalescingAssign
             }),
-            map(tok_shl_assign(), |_| {
-                BinaryOperator::LeftShiftAssign
-            }),
-            map(tok_shr_assign(), |_| {
-                BinaryOperator::RightShiftAssign
-            }),
-            map(tok_add_assign(), |_| {
-                BinaryOperator::AddAssign
-            }),
-            map(tok_sub_assign(), |_| {
-                BinaryOperator::SubtractAssign
-            }),
-            map(tok_mul_assign(), |_| {
-                BinaryOperator::MultiplyAssign
-            }),
-            map(tok_div_assign(), |_| {
-                BinaryOperator::DivideAssign
-            }),
-            map(tok_mod_assign(), |_| {
-                BinaryOperator::ModuloAssign
-            }),
-            map(tok_and_assign(), |_| {
-                BinaryOperator::AndAssign
-            }),
-            map(tok_or_assign(), |_| {
-                BinaryOperator::OrAssign
-            }),
-            map(tok_xor_assign(), |_| {
-                BinaryOperator::XorAssign
-            }),
+            map(tok_shl_assign(), |_| BinaryOperator::LeftShiftAssign),
+            map(tok_shr_assign(), |_| BinaryOperator::RightShiftAssign),
+            map(tok_add_assign(), |_| BinaryOperator::AddAssign),
+            map(tok_sub_assign(), |_| BinaryOperator::SubtractAssign),
+            map(tok_mul_assign(), |_| BinaryOperator::MultiplyAssign),
+            map(tok_div_assign(), |_| BinaryOperator::DivideAssign),
+            map(tok_mod_assign(), |_| BinaryOperator::ModuloAssign),
+            map(tok_and_assign(), |_| BinaryOperator::AndAssign),
+            map(tok_or_assign(), |_| BinaryOperator::OrAssign),
+            map(tok_xor_assign(), |_| BinaryOperator::XorAssign),
             // Simple assignment last
             map(tok_assign(), |_| BinaryOperator::Assign),
-        )), ws))
-        .parse(input)?;
+        )),
+        ws,
+    ))
+    .parse(input)?;
 
     if let Some(op) = assignment_op {
         // Parse the right side of the assignment (right-associative)

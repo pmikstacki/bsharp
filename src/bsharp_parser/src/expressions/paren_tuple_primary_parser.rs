@@ -5,8 +5,8 @@ use crate::syntax::errors::BResult;
 use nom::Parser;
 use nom_supreme::ParserExt;
 
-use crate::syntax::list_parser::{parse_delimited_list_or_singleton, OneOrMany};
-use nom::{combinator::map};
+use crate::syntax::list_parser::{OneOrMany, parse_delimited_list_or_singleton};
+use nom::combinator::map;
 use syntax::expressions::{Expression, TupleElement, TupleExpression};
 
 /// Unified syntax for either a parenthesized expression or a tuple expression
@@ -73,11 +73,11 @@ fn parse_tuple_element_local(input: Span) -> BResult<TupleElement> {
     }
 
     // Otherwise, parse as unnamed element
-    map(nom::sequence::delimited(ws, parse_expression, ws), |value| TupleElement {
-        name: None,
-        value,
-    })
-        .parse(input)
+    map(
+        nom::sequence::delimited(ws, parse_expression, ws),
+        |value| TupleElement { name: None, value },
+    )
+    .parse(input)
 }
 use crate::syntax::span::Span;
 use crate::tokens::delimiters::{tok_l_paren, tok_r_paren};

@@ -1,6 +1,6 @@
+use crate::AnalysisReport;
 use crate::framework::{AnalysisSession, AnalyzerPass, Phase};
 use crate::syntax::ast::CompilationUnit;
-use crate::AnalysisReport;
 
 pub struct ReportingPass;
 

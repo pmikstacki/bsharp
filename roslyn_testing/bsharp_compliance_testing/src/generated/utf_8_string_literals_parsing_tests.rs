@@ -1,14 +1,14 @@
 // Auto-generated from Roslyn: Utf8StringLiteralsParsingTests
-use bsharp_parser::syntax::span::Span;
 use crate::custom_asserts::after_parse;
 use crate::custom_asserts::after_parse::CaseData;
-use bsharp_parser::bsharp::parse_csharp_source_strict;
 use crate::custom_asserts::roslyn_asserts::ExpectedDiagnostics;
+use bsharp_parser::bsharp::parse_csharp_source_strict;
+use bsharp_parser::syntax::span::Span;
 /// Roslyn: Utf8StringLiteralsParsingTests.RegularStringLiteral_01 (case 1)
 #[test]
 fn regular_string_literal_01() {
     let src = r#"""hello"""#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { ""hello""; } }"#;
     let span2 = Span::new(src2);
@@ -16,16 +16,45 @@ fn regular_string_literal_01() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "RegularStringLiteral_01", 1, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "RegularStringLiteral_01",
+                    1,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "RegularStringLiteral_01", 1, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "RegularStringLiteral_01",
+                    1,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "RegularStringLiteral_01", 1, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "RegularStringLiteral_01",
+            1,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -33,7 +62,7 @@ fn regular_string_literal_01() {
 #[test]
 fn regular_string_literal_02() {
     let src = r#"@""hello"""#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { @""hello""; } }"#;
     let span2 = Span::new(src2);
@@ -41,16 +70,45 @@ fn regular_string_literal_02() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "RegularStringLiteral_02", 2, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "RegularStringLiteral_02",
+                    2,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "RegularStringLiteral_02", 2, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "RegularStringLiteral_02",
+                    2,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "RegularStringLiteral_02", 2, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "RegularStringLiteral_02",
+            2,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -58,7 +116,7 @@ fn regular_string_literal_02() {
 #[test]
 fn raw_string_literal_01() {
     let src = r#"""""""hello"""""""#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { """"""hello""""""; } }"#;
     let span2 = Span::new(src2);
@@ -66,16 +124,45 @@ fn raw_string_literal_01() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "RawStringLiteral_01", 3, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "RawStringLiteral_01",
+                    3,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "RawStringLiteral_01", 3, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "RawStringLiteral_01",
+                    3,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "RawStringLiteral_01", 3, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "RawStringLiteral_01",
+            3,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -85,7 +172,7 @@ fn raw_string_literal_02() {
     let src = r#"""""""
 hello
 """""""#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { """"""
 hello
@@ -95,16 +182,45 @@ hello
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "RawStringLiteral_02", 4, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "RawStringLiteral_02",
+                    4,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "RawStringLiteral_02", 4, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "RawStringLiteral_02",
+                    4,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "RawStringLiteral_02", 4, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "RawStringLiteral_02",
+            4,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -112,7 +228,7 @@ hello
 #[test]
 fn raw_string_literal_03() {
     let src = r#"@""""""hello"""""""#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { @""""""hello""""""; } }"#;
     let span2 = Span::new(src2);
@@ -120,16 +236,45 @@ fn raw_string_literal_03() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "RawStringLiteral_03", 5, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "RawStringLiteral_03",
+                    5,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "RawStringLiteral_03", 5, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "RawStringLiteral_03",
+                    5,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "RawStringLiteral_03", 5, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "RawStringLiteral_03",
+            5,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -139,7 +284,7 @@ fn raw_string_literal_04() {
     let src = r#"@""""""
 hello
 """""""#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { @""""""
 hello
@@ -149,16 +294,45 @@ hello
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "RawStringLiteral_04", 6, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "RawStringLiteral_04",
+                    6,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "RawStringLiteral_04", 6, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "RawStringLiteral_04",
+                    6,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "RawStringLiteral_04", 6, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "RawStringLiteral_04",
+            6,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -166,7 +340,7 @@ hello
 #[test]
 fn utf_8_string_literal_01() {
     let src = r#"""hello""u8"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { ""hello""u8; } }"#;
     let span2 = Span::new(src2);
@@ -174,16 +348,45 @@ fn utf_8_string_literal_01() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_01", 7, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Utf8StringLiteral_01",
+                    7,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_01", 7, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Utf8StringLiteral_01",
+                    7,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_01", 7, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "Utf8StringLiteral_01",
+            7,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -191,7 +394,7 @@ fn utf_8_string_literal_01() {
 #[test]
 fn utf_8_string_literal_02() {
     let src = r#"""hello""u8"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { ""hello""u8; } }"#;
     let span2 = Span::new(src2);
@@ -199,16 +402,45 @@ fn utf_8_string_literal_02() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_02", 8, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Utf8StringLiteral_02",
+                    8,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_02", 8, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Utf8StringLiteral_02",
+                    8,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_02", 8, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "Utf8StringLiteral_02",
+            8,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -216,7 +448,7 @@ fn utf_8_string_literal_02() {
 #[test]
 fn utf_8_string_literal_03() {
     let src = r#"""hello""u8"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { ""hello""u8; } }"#;
     let span2 = Span::new(src2);
@@ -224,16 +456,45 @@ fn utf_8_string_literal_03() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_03", 9, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Utf8StringLiteral_03",
+                    9,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_03", 9, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Utf8StringLiteral_03",
+                    9,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_03", 9, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "Utf8StringLiteral_03",
+            9,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -241,7 +502,7 @@ fn utf_8_string_literal_03() {
 #[test]
 fn utf_8_string_literal_04() {
     let src = r#"@""hello""u8"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { @""hello""u8; } }"#;
     let span2 = Span::new(src2);
@@ -249,16 +510,45 @@ fn utf_8_string_literal_04() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_04", 10, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Utf8StringLiteral_04",
+                    10,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_04", 10, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Utf8StringLiteral_04",
+                    10,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_04", 10, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "Utf8StringLiteral_04",
+            10,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -266,7 +556,7 @@ fn utf_8_string_literal_04() {
 #[test]
 fn utf_8_string_literal_05() {
     let src = r#"@""hello""u8"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { @""hello""u8; } }"#;
     let span2 = Span::new(src2);
@@ -274,16 +564,45 @@ fn utf_8_string_literal_05() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_05", 11, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Utf8StringLiteral_05",
+                    11,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_05", 11, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Utf8StringLiteral_05",
+                    11,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_05", 11, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "Utf8StringLiteral_05",
+            11,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -291,7 +610,7 @@ fn utf_8_string_literal_05() {
 #[test]
 fn utf_8_string_literal_06() {
     let src = r#"@""hello""u8"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { @""hello""u8; } }"#;
     let span2 = Span::new(src2);
@@ -299,16 +618,45 @@ fn utf_8_string_literal_06() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_06", 12, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Utf8StringLiteral_06",
+                    12,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_06", 12, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Utf8StringLiteral_06",
+                    12,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_06", 12, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "Utf8StringLiteral_06",
+            12,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -316,7 +664,7 @@ fn utf_8_string_literal_06() {
 #[test]
 fn utf_8_string_literal_07() {
     let src = r#"""hello""U8"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { ""hello""U8; } }"#;
     let span2 = Span::new(src2);
@@ -324,16 +672,45 @@ fn utf_8_string_literal_07() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_07", 13, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Utf8StringLiteral_07",
+                    13,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_07", 13, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Utf8StringLiteral_07",
+                    13,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_07", 13, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "Utf8StringLiteral_07",
+            13,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -341,7 +718,7 @@ fn utf_8_string_literal_07() {
 #[test]
 fn utf_8_string_literal_08() {
     let src = r#"""hello""U8"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { ""hello""U8; } }"#;
     let span2 = Span::new(src2);
@@ -349,16 +726,45 @@ fn utf_8_string_literal_08() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_08", 14, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Utf8StringLiteral_08",
+                    14,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_08", 14, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Utf8StringLiteral_08",
+                    14,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_08", 14, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "Utf8StringLiteral_08",
+            14,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -366,7 +772,7 @@ fn utf_8_string_literal_08() {
 #[test]
 fn utf_8_string_literal_09() {
     let src = r#"""hello""U8"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { ""hello""U8; } }"#;
     let span2 = Span::new(src2);
@@ -374,16 +780,45 @@ fn utf_8_string_literal_09() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_09", 15, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Utf8StringLiteral_09",
+                    15,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_09", 15, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Utf8StringLiteral_09",
+                    15,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_09", 15, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "Utf8StringLiteral_09",
+            15,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -391,7 +826,7 @@ fn utf_8_string_literal_09() {
 #[test]
 fn utf_8_string_literal_10() {
     let src = r#"@""hello""U8"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { @""hello""U8; } }"#;
     let span2 = Span::new(src2);
@@ -399,16 +834,45 @@ fn utf_8_string_literal_10() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_10", 16, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Utf8StringLiteral_10",
+                    16,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_10", 16, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Utf8StringLiteral_10",
+                    16,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_10", 16, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "Utf8StringLiteral_10",
+            16,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -416,7 +880,7 @@ fn utf_8_string_literal_10() {
 #[test]
 fn utf_8_string_literal_11() {
     let src = r#"@""hello""U8"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { @""hello""U8; } }"#;
     let span2 = Span::new(src2);
@@ -424,16 +888,45 @@ fn utf_8_string_literal_11() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_11", 17, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Utf8StringLiteral_11",
+                    17,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_11", 17, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Utf8StringLiteral_11",
+                    17,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_11", 17, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "Utf8StringLiteral_11",
+            17,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -441,7 +934,7 @@ fn utf_8_string_literal_11() {
 #[test]
 fn utf_8_string_literal_12() {
     let src = r#"@""hello""U8"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { @""hello""U8; } }"#;
     let span2 = Span::new(src2);
@@ -449,16 +942,45 @@ fn utf_8_string_literal_12() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_12", 18, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Utf8StringLiteral_12",
+                    18,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_12", 18, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Utf8StringLiteral_12",
+                    18,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_12", 18, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "Utf8StringLiteral_12",
+            18,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -466,7 +988,10 @@ fn utf_8_string_literal_12() {
 #[test]
 fn errors_01() {
     let src = r#"@""hello"" u8"#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { @""hello"" u8; } }"#;
     let span2 = Span::new(src2);
@@ -474,16 +999,45 @@ fn errors_01() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_01", 19, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Errors_01",
+                    19,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_01", 19, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Errors_01",
+                    19,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_01", 19, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "Errors_01",
+            19,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -491,7 +1045,10 @@ fn errors_01() {
 #[test]
 fn errors_02() {
     let src = r#"@""hello""u"#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { @""hello""u; } }"#;
     let span2 = Span::new(src2);
@@ -499,16 +1056,45 @@ fn errors_02() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_02", 20, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Errors_02",
+                    20,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_02", 20, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Errors_02",
+                    20,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_02", 20, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "Errors_02",
+            20,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -516,7 +1102,10 @@ fn errors_02() {
 #[test]
 fn errors_03() {
     let src = r#"@""hello""8"#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { @""hello""8; } }"#;
     let span2 = Span::new(src2);
@@ -524,16 +1113,45 @@ fn errors_03() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_03", 21, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Errors_03",
+                    21,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_03", 21, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Errors_03",
+                    21,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_03", 21, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "Errors_03",
+            21,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -541,7 +1159,10 @@ fn errors_03() {
 #[test]
 fn errors_04() {
     let src = r#"@""hello""u80"#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { @""hello""u80; } }"#;
     let span2 = Span::new(src2);
@@ -549,16 +1170,45 @@ fn errors_04() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_04", 22, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Errors_04",
+                    22,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_04", 22, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Errors_04",
+                    22,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_04", 22, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "Errors_04",
+            22,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -566,7 +1216,10 @@ fn errors_04() {
 #[test]
 fn errors_05() {
     let src = r#"1L0"#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { 1L0; } }"#;
     let span2 = Span::new(src2);
@@ -574,16 +1227,45 @@ fn errors_05() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_05", 23, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Errors_05",
+                    23,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_05", 23, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Errors_05",
+                    23,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_05", 23, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "Errors_05",
+            23,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -591,7 +1273,10 @@ fn errors_05() {
 #[test]
 fn errors_06() {
     let src = r#"1 L"#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { 1 L; } }"#;
     let span2 = Span::new(src2);
@@ -599,16 +1284,45 @@ fn errors_06() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_06", 24, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Errors_06",
+                    24,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_06", 24, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Errors_06",
+                    24,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_06", 24, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "Errors_06",
+            24,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -616,7 +1330,10 @@ fn errors_06() {
 #[test]
 fn errors_07() {
     let src = r#"""hello"" u8"#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { ""hello"" u8; } }"#;
     let span2 = Span::new(src2);
@@ -624,16 +1341,45 @@ fn errors_07() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_07", 25, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Errors_07",
+                    25,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_07", 25, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Errors_07",
+                    25,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_07", 25, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "Errors_07",
+            25,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -641,7 +1387,10 @@ fn errors_07() {
 #[test]
 fn errors_08() {
     let src = r#"""hello""u"#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { ""hello""u; } }"#;
     let span2 = Span::new(src2);
@@ -649,16 +1398,45 @@ fn errors_08() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_08", 26, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Errors_08",
+                    26,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_08", 26, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Errors_08",
+                    26,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_08", 26, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "Errors_08",
+            26,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -666,7 +1444,10 @@ fn errors_08() {
 #[test]
 fn errors_09() {
     let src = r#"""hello""8"#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { ""hello""8; } }"#;
     let span2 = Span::new(src2);
@@ -674,16 +1455,45 @@ fn errors_09() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_09", 27, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Errors_09",
+                    27,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_09", 27, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Errors_09",
+                    27,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_09", 27, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "Errors_09",
+            27,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -691,7 +1501,10 @@ fn errors_09() {
 #[test]
 fn errors_10() {
     let src = r#"""hello""u80"#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { ""hello""u80; } }"#;
     let span2 = Span::new(src2);
@@ -699,16 +1512,45 @@ fn errors_10() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_10", 28, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Errors_10",
+                    28,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_10", 28, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Errors_10",
+                    28,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_10", 28, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "Errors_10",
+            28,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -716,7 +1558,10 @@ fn errors_10() {
 #[test]
 fn errors_11() {
     let src = r#"@""hello"" U8"#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { @""hello"" U8; } }"#;
     let span2 = Span::new(src2);
@@ -724,16 +1569,45 @@ fn errors_11() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_11", 29, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Errors_11",
+                    29,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_11", 29, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Errors_11",
+                    29,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_11", 29, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "Errors_11",
+            29,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -741,7 +1615,10 @@ fn errors_11() {
 #[test]
 fn errors_12() {
     let src = r#"@""hello""U"#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { @""hello""U; } }"#;
     let span2 = Span::new(src2);
@@ -749,16 +1626,45 @@ fn errors_12() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_12", 30, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Errors_12",
+                    30,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_12", 30, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Errors_12",
+                    30,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_12", 30, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "Errors_12",
+            30,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -766,7 +1672,10 @@ fn errors_12() {
 #[test]
 fn errors_13() {
     let src = r#"@""hello""U80"#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { @""hello""U80; } }"#;
     let span2 = Span::new(src2);
@@ -774,16 +1683,45 @@ fn errors_13() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_13", 31, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Errors_13",
+                    31,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_13", 31, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Errors_13",
+                    31,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_13", 31, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "Errors_13",
+            31,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -791,7 +1729,10 @@ fn errors_13() {
 #[test]
 fn errors_14() {
     let src = r#"""hello"" U8"#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { ""hello"" U8; } }"#;
     let span2 = Span::new(src2);
@@ -799,16 +1740,45 @@ fn errors_14() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_14", 32, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Errors_14",
+                    32,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_14", 32, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Errors_14",
+                    32,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_14", 32, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "Errors_14",
+            32,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -816,7 +1786,10 @@ fn errors_14() {
 #[test]
 fn errors_15() {
     let src = r#"""hello""U"#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { ""hello""U; } }"#;
     let span2 = Span::new(src2);
@@ -824,16 +1797,45 @@ fn errors_15() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_15", 33, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Errors_15",
+                    33,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_15", 33, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Errors_15",
+                    33,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_15", 33, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "Errors_15",
+            33,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -841,7 +1843,10 @@ fn errors_15() {
 #[test]
 fn errors_16() {
     let src = r#"""hello""U80"#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { ""hello""U80; } }"#;
     let span2 = Span::new(src2);
@@ -849,16 +1854,45 @@ fn errors_16() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_16", 34, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Errors_16",
+                    34,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_16", 34, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Errors_16",
+                    34,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_16", 34, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "Errors_16",
+            34,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -866,7 +1900,10 @@ fn errors_16() {
 #[test]
 fn interpolation_01() {
     let src = r#"$""hello""u8"#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { $""hello""u8; } }"#;
     let span2 = Span::new(src2);
@@ -874,16 +1911,45 @@ fn interpolation_01() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Interpolation_01", 35, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Interpolation_01",
+                    35,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Interpolation_01", 35, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Interpolation_01",
+                    35,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Interpolation_01", 35, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "Interpolation_01",
+            35,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -891,7 +1957,10 @@ fn interpolation_01() {
 #[test]
 fn interpolation_02() {
     let src = r#"$@""hello""u8"#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { $@""hello""u8; } }"#;
     let span2 = Span::new(src2);
@@ -899,16 +1968,45 @@ fn interpolation_02() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Interpolation_02", 36, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Interpolation_02",
+                    36,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Interpolation_02", 36, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Interpolation_02",
+                    36,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Interpolation_02", 36, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "Interpolation_02",
+            36,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -916,7 +2014,10 @@ fn interpolation_02() {
 #[test]
 fn interpolation_03() {
     let src = r#"$""hello""U8"#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { $""hello""U8; } }"#;
     let span2 = Span::new(src2);
@@ -924,16 +2025,45 @@ fn interpolation_03() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Interpolation_03", 37, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Interpolation_03",
+                    37,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Interpolation_03", 37, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Interpolation_03",
+                    37,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Interpolation_03", 37, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "Interpolation_03",
+            37,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -941,7 +2071,10 @@ fn interpolation_03() {
 #[test]
 fn interpolation_04() {
     let src = r#"$@""hello""U8"#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { $@""hello""U8; } }"#;
     let span2 = Span::new(src2);
@@ -949,16 +2082,45 @@ fn interpolation_04() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Interpolation_04", 38, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Interpolation_04",
+                    38,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Interpolation_04", 38, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Interpolation_04",
+                    38,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Interpolation_04", 38, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "Interpolation_04",
+            38,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -966,7 +2128,7 @@ fn interpolation_04() {
 #[test]
 fn utf_8_string_literal_13() {
     let src = r#"""""""hello"""""""#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { """"""hello""""""; } }"#;
     let span2 = Span::new(src2);
@@ -974,16 +2136,45 @@ fn utf_8_string_literal_13() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_13", 39, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Utf8StringLiteral_13",
+                    39,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_13", 39, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Utf8StringLiteral_13",
+                    39,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_13", 39, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "Utf8StringLiteral_13",
+            39,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -991,7 +2182,7 @@ fn utf_8_string_literal_13() {
 #[test]
 fn utf_8_string_literal_14() {
     let src = r#"@""""""hello"""""""#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { @""""""hello""""""; } }"#;
     let span2 = Span::new(src2);
@@ -999,16 +2190,45 @@ fn utf_8_string_literal_14() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_14", 40, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Utf8StringLiteral_14",
+                    40,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_14", 40, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Utf8StringLiteral_14",
+                    40,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_14", 40, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "Utf8StringLiteral_14",
+            40,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1016,7 +2236,10 @@ fn utf_8_string_literal_14() {
 #[test]
 fn errors_17() {
     let src = r#"""""""hello"""""" "#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { """"""hello"""""" ; } }"#;
     let span2 = Span::new(src2);
@@ -1024,16 +2247,45 @@ fn errors_17() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_17", 41, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Errors_17",
+                    41,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_17", 41, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Errors_17",
+                    41,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_17", 41, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "Errors_17",
+            41,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1041,7 +2293,10 @@ fn errors_17() {
 #[test]
 fn errors_18() {
     let src = r#"""""""hello"""""""#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { """"""hello""""""; } }"#;
     let span2 = Span::new(src2);
@@ -1049,16 +2304,45 @@ fn errors_18() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_18", 42, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Errors_18",
+                    42,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_18", 42, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Errors_18",
+                    42,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_18", 42, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "Errors_18",
+            42,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1066,7 +2350,10 @@ fn errors_18() {
 #[test]
 fn errors_19() {
     let src = r#"""""""hello""""""8"#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { """"""hello""""""8; } }"#;
     let span2 = Span::new(src2);
@@ -1074,16 +2361,45 @@ fn errors_19() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_19", 43, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Errors_19",
+                    43,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_19", 43, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Errors_19",
+                    43,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_19", 43, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "Errors_19",
+            43,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1091,7 +2407,10 @@ fn errors_19() {
 #[test]
 fn errors_20() {
     let src = r#"""""""hello"""""""#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { """"""hello""""""; } }"#;
     let span2 = Span::new(src2);
@@ -1099,16 +2418,45 @@ fn errors_20() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_20", 44, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Errors_20",
+                    44,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_20", 44, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Errors_20",
+                    44,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_20", 44, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "Errors_20",
+            44,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1116,7 +2464,10 @@ fn errors_20() {
 #[test]
 fn interpolation_05() {
     let src = r#"$""""""hello"""""""#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { $""""""hello""""""; } }"#;
     let span2 = Span::new(src2);
@@ -1124,16 +2475,45 @@ fn interpolation_05() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Interpolation_05", 45, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Interpolation_05",
+                    45,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Interpolation_05", 45, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Interpolation_05",
+                    45,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Interpolation_05", 45, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "Interpolation_05",
+            45,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1141,7 +2521,10 @@ fn interpolation_05() {
 #[test]
 fn interpolation_06() {
     let src = r#"$@""""""hello"""""""#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { $@""""""hello""""""; } }"#;
     let span2 = Span::new(src2);
@@ -1149,16 +2532,45 @@ fn interpolation_06() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Interpolation_06", 46, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Interpolation_06",
+                    46,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Interpolation_06", 46, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Interpolation_06",
+                    46,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Interpolation_06", 46, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "Interpolation_06",
+            46,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1168,7 +2580,7 @@ fn utf_8_string_literal_15() {
     let src = r#"""""""
 hello
 """""""#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { """"""
 hello
@@ -1178,16 +2590,45 @@ hello
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_15", 47, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Utf8StringLiteral_15",
+                    47,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_15", 47, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Utf8StringLiteral_15",
+                    47,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_15", 47, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "Utf8StringLiteral_15",
+            47,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1197,7 +2638,7 @@ fn utf_8_string_literal_16() {
     let src = r#"@""""""
 hello
 """""""#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { @""""""
 hello
@@ -1207,16 +2648,45 @@ hello
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_16", 48, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Utf8StringLiteral_16",
+                    48,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_16", 48, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Utf8StringLiteral_16",
+                    48,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_16", 48, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "Utf8StringLiteral_16",
+            48,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1226,7 +2696,10 @@ fn errors_21() {
     let src = r#"""""""
 hello
 """""" "#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { """"""
 hello
@@ -1236,16 +2709,45 @@ hello
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_21", 49, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Errors_21",
+                    49,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_21", 49, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Errors_21",
+                    49,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_21", 49, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "Errors_21",
+            49,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1255,7 +2757,10 @@ fn errors_22() {
     let src = r#"""""""
 hello
 """""""#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { """"""
 hello
@@ -1265,16 +2770,45 @@ hello
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_22", 50, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Errors_22",
+                    50,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_22", 50, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Errors_22",
+                    50,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_22", 50, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "Errors_22",
+            50,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1284,7 +2818,10 @@ fn errors_23() {
     let src = r#"""""""
 hello
 """"""8"#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { """"""
 hello
@@ -1294,16 +2831,45 @@ hello
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_23", 51, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Errors_23",
+                    51,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_23", 51, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Errors_23",
+                    51,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_23", 51, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "Errors_23",
+            51,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1313,7 +2879,10 @@ fn errors_24() {
     let src = r#"""""""
 hello
 """""""#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { """"""
 hello
@@ -1323,16 +2892,45 @@ hello
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_24", 52, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Errors_24",
+                    52,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_24", 52, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Errors_24",
+                    52,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Errors_24", 52, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "Errors_24",
+            52,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1342,7 +2940,10 @@ fn interpolation_07() {
     let src = r#"$""""""
 hello
 """""""#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { $""""""
 hello
@@ -1352,16 +2953,45 @@ hello
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Interpolation_07", 53, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Interpolation_07",
+                    53,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Interpolation_07", 53, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Interpolation_07",
+                    53,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Interpolation_07", 53, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "Interpolation_07",
+            53,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1371,7 +3001,10 @@ fn interpolation_08() {
     let src = r#"$@""""""
 hello
 """""""#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { $@""""""
 hello
@@ -1381,16 +3014,45 @@ hello
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Interpolation_08", 54, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Interpolation_08",
+                    54,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Interpolation_08", 54, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Interpolation_08",
+                    54,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Interpolation_08", 54, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "Interpolation_08",
+            54,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1398,7 +3060,7 @@ hello
 #[test]
 fn utf_8_string_literal_await_01() {
     let src = r#"await ""hello""u8"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { await ""hello""u8; } }"#;
     let span2 = Span::new(src2);
@@ -1406,16 +3068,45 @@ fn utf_8_string_literal_await_01() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_Await_01", 55, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Utf8StringLiteral_Await_01",
+                    55,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_Await_01", 55, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Utf8StringLiteral_Await_01",
+                    55,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_Await_01", 55, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "Utf8StringLiteral_Await_01",
+            55,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1423,7 +3114,7 @@ fn utf_8_string_literal_await_01() {
 #[test]
 fn utf_8_string_literal_await_02() {
     let src = r#"await @""hello""u8"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { await @""hello""u8; } }"#;
     let span2 = Span::new(src2);
@@ -1431,16 +3122,45 @@ fn utf_8_string_literal_await_02() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_Await_02", 56, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Utf8StringLiteral_Await_02",
+                    56,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_Await_02", 56, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Utf8StringLiteral_Await_02",
+                    56,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_Await_02", 56, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "Utf8StringLiteral_Await_02",
+            56,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1448,7 +3168,7 @@ fn utf_8_string_literal_await_02() {
 #[test]
 fn utf_8_string_literal_await_03() {
     let src = r#"await """"""hello""""""u8"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { await """"""hello""""""u8; } }"#;
     let span2 = Span::new(src2);
@@ -1456,16 +3176,45 @@ fn utf_8_string_literal_await_03() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_Await_03", 57, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Utf8StringLiteral_Await_03",
+                    57,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_Await_03", 57, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Utf8StringLiteral_Await_03",
+                    57,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_Await_03", 57, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "Utf8StringLiteral_Await_03",
+            57,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1475,7 +3224,7 @@ fn utf_8_string_literal_await_04() {
     let src = r#"await """"""
 hello
 """"""u8"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { await """"""
 hello
@@ -1485,16 +3234,44 @@ hello
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_Await_04", 58, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Utf8StringLiteral_Await_04",
+                    58,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_Await_04", 58, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "utf_8_string_literals_parsing_tests",
+                    "Utf8StringLiteralsParsingTests",
+                    "Utf8StringLiteral_Await_04",
+                    58,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("utf_8_string_literals_parsing_tests", "Utf8StringLiteralsParsingTests", "Utf8StringLiteral_Await_04", 58, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "utf_8_string_literals_parsing_tests",
+            "Utf8StringLiteralsParsingTests",
+            "Utf8StringLiteral_Await_04",
+            58,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
-

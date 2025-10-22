@@ -1,7 +1,7 @@
-use crate::artifacts::control_flow_graph::graph::{build_cfg, ControlFlowGraphs};
+use crate::artifacts::control_flow_graph::graph::{ControlFlowGraphs, build_cfg};
 use crate::artifacts::control_flow_graph::index::ControlFlowIndex;
 use crate::artifacts::control_flow_graph::stats::MethodControlFlowStats;
-use crate::framework::{method_fqn, AnalysisSession, AnalyzerPass, Phase, Query};
+use crate::framework::{AnalysisSession, AnalyzerPass, Phase, Query, method_fqn};
 use crate::metrics::shared::{
     count_exit_points, count_statements, decision_points, max_nesting_of,
 };

@@ -17,14 +17,20 @@ pub mod exposed {
 
     pub fn parse_csharp_source_with_diags(
         input: Span,
-    ) -> (BResult<'_, crate::syntax::ast::CompilationUnit>, Vec<ParserDiag>) {
+    ) -> (
+        BResult<'_, crate::syntax::ast::CompilationUnit>,
+        Vec<ParserDiag>,
+    ) {
         let r = crate::bsharp::parse_csharp_source(input);
         (r, Vec::new())
     }
 
     pub fn parse_statement_with_diags(
         input: Span,
-    ) -> (BResult<'_, crate::syntax::statements::statement::Statement>, Vec<ParserDiag>) {
+    ) -> (
+        BResult<'_, crate::syntax::statements::statement::Statement>,
+        Vec<ParserDiag>,
+    ) {
         // Use the whitespace-tolerant entry used by tests
         let r = crate::statement_parser::parse_statement_ws(input);
         (r, Vec::new())

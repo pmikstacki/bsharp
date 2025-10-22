@@ -1,8 +1,8 @@
 use crate::syntax::errors::BResult;
 use crate::syntax::span::Span;
+use nom::Parser;
 use nom::branch::alt;
 use nom::combinator::map;
-use nom::Parser;
 use syntax::expressions::BinaryOperator;
 
 define_token_pair_str!(tok_equal, tok_peek_equal, "==");

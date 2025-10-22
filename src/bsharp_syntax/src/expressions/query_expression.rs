@@ -1,5 +1,5 @@
-use crate::expressions::expression::Expression;
 use crate::Identifier;
+use crate::expressions::expression::Expression;
 use serde::{Deserialize, Serialize};
 
 #[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]

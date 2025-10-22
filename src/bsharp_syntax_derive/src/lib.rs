@@ -1,8 +1,6 @@
 use proc_macro::TokenStream;
 use quote::{format_ident, quote};
-use syn::{
-    parse_macro_input, Data, DeriveInput, Fields, GenericArgument, PathArguments, Type,
-};
+use syn::{Data, DeriveInput, Fields, GenericArgument, PathArguments, Type, parse_macro_input};
 
 #[proc_macro_derive(AstNode)]
 pub fn derive_ast_node(input: TokenStream) -> TokenStream {
@@ -123,7 +121,9 @@ fn gen_push_for_type(ty: &Type, access: proc_macro2::TokenStream) -> proc_macro2
                     }
                 }
                 // Skip primitives and String and internal primitive enums
-                if is_primitive_like(ident) { return quote! {}; }
+                if is_primitive_like(ident) {
+                    return quote! {};
+                }
             }
             // Default: treat as AST node; `#access` is a &T already.
             quote! {
@@ -139,10 +139,21 @@ fn is_primitive_like(ident: &syn::Ident) -> bool {
     let s = ident.to_string();
     matches!(
         s.as_str(),
-        "bool" | "char"
-            | "i8" | "i16" | "i32" | "i64" | "isize"
-            | "u8" | "u16" | "u32" | "u64" | "usize"
-            | "f32" | "f64"
-            | "String" | "PrimitiveType"
+        "bool"
+            | "char"
+            | "i8"
+            | "i16"
+            | "i32"
+            | "i64"
+            | "isize"
+            | "u8"
+            | "u16"
+            | "u32"
+            | "u64"
+            | "usize"
+            | "f32"
+            | "f64"
+            | "String"
+            | "PrimitiveType"
     )
 }

@@ -11,15 +11,15 @@ use crate::syntax::errors::BResult;
 use log::trace;
 
 use crate::syntax::comment_parser::ws;
+use nom::Parser;
 use nom::bytes::complete::tag;
 use nom::character::complete::satisfy;
 use nom::combinator::{cut, peek};
 use nom::sequence::delimited;
-use nom::Parser;
 use nom_supreme::ParserExt;
+use syntax::Identifier;
 use syntax::declarations::{AttributeList, Modifier};
 use syntax::types::{Type, TypeParameter};
-use syntax::Identifier;
 
 /// Core structure for type declarations (class, struct, interface, record)
 /// Contains the common elements shared by all these declaration types
@@ -81,7 +81,9 @@ pub fn parse_close_brace(input: Span) -> BResult<()> {
 /// Skip whitespace and check if we've reached the end of a body (closing brace)
 pub fn at_end_of_body(input: Span) -> bool {
     // Non-consuming lookahead for '}' after whitespace/comments
-    peek(delimited(ws, satisfy(|c| c == '}'), ws)).parse(input).is_ok()
+    peek(delimited(ws, satisfy(|c| c == '}'), ws))
+        .parse(input)
+        .is_ok()
 }
 
 /// Skip malformed input within a type body until a safe, top-level recovery boundary.
@@ -116,7 +118,9 @@ pub fn skip_to_member_boundary_top_level(input: Span) -> &str {
     // Guardrails: discourage calling when already at a closing brace for the current body.
     // This is not a hard error in release builds, but it helps surface misuse during development.
     debug_assert!(
-        peek(delimited(ws, satisfy(|c| c == '}'), ws)).parse(input).is_err(),
+        peek(delimited(ws, satisfy(|c| c == '}'), ws))
+            .parse(input)
+            .is_err(),
         "skip_to_member_boundary_top_level called at a top-level closing brace; caller should handle '}}'"
     );
 

@@ -1,12 +1,12 @@
 use anyhow::{Context, Result};
 use bsharp_parser::bsharp::parse_csharp_source_strict;
 use bsharp_parser::syntax::span::Span;
-use clap::{arg, Args, ValueEnum};
+use bsharp_syntax::{FormatOptions, Formatter};
+use clap::{Args, ValueEnum, arg};
 use log::{info, warn};
 use std::env;
 use std::fs;
 use std::path::{Path, PathBuf};
-use bsharp_syntax::{FormatOptions, Formatter};
 
 #[derive(Args, Debug, Clone)]
 pub struct FormatArgs {

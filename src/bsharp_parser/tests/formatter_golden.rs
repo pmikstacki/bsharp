@@ -24,13 +24,21 @@ class C
     let mut idx_m1 = None;
     let mut idx_m2 = None;
     for (i, l) in lines.iter().enumerate() {
-        if l.contains("void M1") { idx_m1 = Some(i); }
-        if l.contains("void M2") { idx_m2 = Some(i); }
+        if l.contains("void M1") {
+            idx_m1 = Some(i);
+        }
+        if l.contains("void M2") {
+            idx_m2 = Some(i);
+        }
     }
     let (i1, i2) = (idx_m1.expect("m1 line"), idx_m2.expect("m2 line"));
-    let between = &lines[i1+1..i2];
+    let between = &lines[i1 + 1..i2];
     let blank_count = between.iter().filter(|l| l.trim().is_empty()).count();
-    assert_eq!(blank_count, 1, "expected exactly one blank line between members, got {}", blank_count);
+    assert_eq!(
+        blank_count, 1,
+        "expected exactly one blank line between members, got {}",
+        blank_count
+    );
 
     // Idempotency
     let out2 = format_src(&out, FormatOptions::default());
@@ -54,12 +62,15 @@ class C {}
 
     // Invariant: usings appear before declarations and are followed by a blank line before class
     let ns_end = out.find("\n\n").unwrap();
-    let after_ns = &out[ns_end+2..];
+    let after_ns = &out[ns_end + 2..];
     assert!(after_ns.contains("using System;"));
     assert!(after_ns.contains("using System.IO;"));
     let idx_class = after_ns.find("class C").expect("class present");
     let before_class = &after_ns[..idx_class];
-    assert!(before_class.ends_with("\n\n"), "expected blank line between usings and class");
+    assert!(
+        before_class.ends_with("\n\n"),
+        "expected blank line between usings and class"
+    );
 
     // Idempotency
     let out2 = format_src(&out, FormatOptions::default());
@@ -79,5 +90,8 @@ class C {}
     // Invariant: one blank line between using block and first declaration
     let idx_class = out.find("class C").expect("class present");
     let before_class = &out[..idx_class];
-    assert!(before_class.ends_with("\n\n"), "expected one blank line before class");
+    assert!(
+        before_class.ends_with("\n\n"),
+        "expected one blank line before class"
+    );
 }

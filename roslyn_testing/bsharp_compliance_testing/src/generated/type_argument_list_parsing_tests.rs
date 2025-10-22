@@ -1,9 +1,9 @@
 // Auto-generated from Roslyn: TypeArgumentListParsingTests
-use bsharp_parser::syntax::span::Span;
 use crate::custom_asserts::after_parse;
 use crate::custom_asserts::after_parse::CaseData;
-use bsharp_parser::bsharp::parse_csharp_source_strict;
 use crate::custom_asserts::roslyn_asserts::ExpectedDiagnostics;
+use bsharp_parser::bsharp::parse_csharp_source_strict;
+use bsharp_parser::syntax::span::Span;
 /// Roslyn: TypeArgumentListParsingTests.TestPredefinedType (case 1)
 #[test]
 fn predefined_type() {
@@ -18,22 +18,54 @@ class C
     }
 }
 "#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestPredefinedType", 1, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestPredefinedType",
+                    1,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestPredefinedType", 1, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestPredefinedType",
+                    1,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestPredefinedType", 1, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "type_argument_list_parsing_tests",
+            "TypeArgumentListParsingTests",
+            "TestPredefinedType",
+            1,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -51,22 +83,54 @@ class C
     }
 }
 "#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestArrayType", 2, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestArrayType",
+                    2,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestArrayType", 2, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestArrayType",
+                    2,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestArrayType", 2, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "type_argument_list_parsing_tests",
+            "TypeArgumentListParsingTests",
+            "TestArrayType",
+            2,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -84,22 +148,54 @@ class C
     }
 }
 "#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestPredefinedPointerType", 3, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestPredefinedPointerType",
+                    3,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestPredefinedPointerType", 3, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestPredefinedPointerType",
+                    3,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestPredefinedPointerType", 3, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "type_argument_list_parsing_tests",
+            "TypeArgumentListParsingTests",
+            "TestPredefinedPointerType",
+            3,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -117,22 +213,54 @@ class C
     }
 }
 "#;
-    let expected = Some(ExpectedDiagnostics { count: 5, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 5,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestNonPredefinedPointerType", 4, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestNonPredefinedPointerType",
+                    4,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestNonPredefinedPointerType", 4, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestNonPredefinedPointerType",
+                    4,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestNonPredefinedPointerType", 4, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "type_argument_list_parsing_tests",
+            "TypeArgumentListParsingTests",
+            "TestNonPredefinedPointerType",
+            4,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -150,22 +278,54 @@ class C
     }
 }
 "#;
-    let expected = Some(ExpectedDiagnostics { count: 6, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 6,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestTwoItemTupleType", 5, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestTwoItemTupleType",
+                    5,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestTwoItemTupleType", 5, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestTwoItemTupleType",
+                    5,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestTwoItemTupleType", 5, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "type_argument_list_parsing_tests",
+            "TypeArgumentListParsingTests",
+            "TestTwoItemTupleType",
+            5,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -188,22 +348,51 @@ struct XX
     public static bool operator <(XX x, (int a, int b) arg) => true;
     public static bool operator >(XX x, (int a, int b) arg) => false;
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestComparisonToTuple", 6, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestComparisonToTuple",
+                    6,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestComparisonToTuple", 6, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestComparisonToTuple",
+                    6,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestComparisonToTuple", 6, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "type_argument_list_parsing_tests",
+            "TypeArgumentListParsingTests",
+            "TestComparisonToTuple",
+            6,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -221,22 +410,54 @@ class C
     }
 }
 "#;
-    let expected = Some(ExpectedDiagnostics { count: 4, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 4,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestOneItemTupleType", 7, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestOneItemTupleType",
+                    7,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestOneItemTupleType", 7, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestOneItemTupleType",
+                    7,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestOneItemTupleType", 7, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "type_argument_list_parsing_tests",
+            "TypeArgumentListParsingTests",
+            "TestOneItemTupleType",
+            7,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -254,22 +475,54 @@ class C
     }
 }
 "#;
-    let expected = Some(ExpectedDiagnostics { count: 4, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 4,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestQualifiedName", 8, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestQualifiedName",
+                    8,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestQualifiedName", 8, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestQualifiedName",
+                    8,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestQualifiedName", 8, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "type_argument_list_parsing_tests",
+            "TypeArgumentListParsingTests",
+            "TestQualifiedName",
+            8,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -287,22 +540,54 @@ class C
     }
 }
 "#;
-    let expected = Some(ExpectedDiagnostics { count: 4, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 4,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestAliasName", 9, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestAliasName",
+                    9,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestAliasName", 9, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestAliasName",
+                    9,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestAliasName", 9, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "type_argument_list_parsing_tests",
+            "TypeArgumentListParsingTests",
+            "TestAliasName",
+            9,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -320,22 +605,54 @@ class C
     }
 }
 "#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestNullableTypeWithComma", 10, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestNullableTypeWithComma",
+                    10,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestNullableTypeWithComma", 10, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestNullableTypeWithComma",
+                    10,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestNullableTypeWithComma", 10, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "type_argument_list_parsing_tests",
+            "TypeArgumentListParsingTests",
+            "TestNullableTypeWithComma",
+            10,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -353,22 +670,54 @@ class C
     }
 }
 "#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestNullableTypeWithGreaterThan", 11, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestNullableTypeWithGreaterThan",
+                    11,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestNullableTypeWithGreaterThan", 11, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestNullableTypeWithGreaterThan",
+                    11,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestNullableTypeWithGreaterThan", 11, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "type_argument_list_parsing_tests",
+            "TypeArgumentListParsingTests",
+            "TestNullableTypeWithGreaterThan",
+            11,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -386,22 +735,54 @@ class C
     }
 }
 "#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestNotNullableType", 12, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestNotNullableType",
+                    12,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestNotNullableType", 12, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestNotNullableType",
+                    12,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestNotNullableType", 12, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "type_argument_list_parsing_tests",
+            "TypeArgumentListParsingTests",
+            "TestNotNullableType",
+            12,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -419,22 +800,54 @@ class C
     }
 }
 "#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestGenericArgWithComma_01", 13, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestGenericArgWithComma_01",
+                    13,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestGenericArgWithComma_01", 13, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestGenericArgWithComma_01",
+                    13,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestGenericArgWithComma_01", 13, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "type_argument_list_parsing_tests",
+            "TypeArgumentListParsingTests",
+            "TestGenericArgWithComma_01",
+            13,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -452,22 +865,51 @@ class C
     }
 }
 "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestGenericArgWithComma_02", 14, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestGenericArgWithComma_02",
+                    14,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestGenericArgWithComma_02", 14, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestGenericArgWithComma_02",
+                    14,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestGenericArgWithComma_02", 14, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "type_argument_list_parsing_tests",
+            "TypeArgumentListParsingTests",
+            "TestGenericArgWithComma_02",
+            14,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -485,22 +927,54 @@ class C
     }
 }
 "#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestGenericArgWithComma_03", 15, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestGenericArgWithComma_03",
+                    15,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestGenericArgWithComma_03", 15, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestGenericArgWithComma_03",
+                    15,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestGenericArgWithComma_03", 15, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "type_argument_list_parsing_tests",
+            "TypeArgumentListParsingTests",
+            "TestGenericArgWithComma_03",
+            15,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -518,22 +992,54 @@ class C
     }
 }
 "#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestGenericArgWithComma_04", 16, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestGenericArgWithComma_04",
+                    16,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestGenericArgWithComma_04", 16, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestGenericArgWithComma_04",
+                    16,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestGenericArgWithComma_04", 16, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "type_argument_list_parsing_tests",
+            "TypeArgumentListParsingTests",
+            "TestGenericArgWithComma_04",
+            16,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -551,22 +1057,51 @@ class C
     }
 }
 "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestGenericArgWithGreaterThan_01", 17, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestGenericArgWithGreaterThan_01",
+                    17,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestGenericArgWithGreaterThan_01", 17, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestGenericArgWithGreaterThan_01",
+                    17,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestGenericArgWithGreaterThan_01", 17, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "type_argument_list_parsing_tests",
+            "TypeArgumentListParsingTests",
+            "TestGenericArgWithGreaterThan_01",
+            17,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -584,22 +1119,51 @@ class C
     }
 }
 "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestGenericArgWithGreaterThan_02", 18, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestGenericArgWithGreaterThan_02",
+                    18,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestGenericArgWithGreaterThan_02", 18, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestGenericArgWithGreaterThan_02",
+                    18,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestGenericArgWithGreaterThan_02", 18, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "type_argument_list_parsing_tests",
+            "TypeArgumentListParsingTests",
+            "TestGenericArgWithGreaterThan_02",
+            18,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -617,22 +1181,51 @@ class C
     }
 }
 "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestGenericArgWithGreaterThan_03", 19, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestGenericArgWithGreaterThan_03",
+                    19,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestGenericArgWithGreaterThan_03", 19, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestGenericArgWithGreaterThan_03",
+                    19,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestGenericArgWithGreaterThan_03", 19, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "type_argument_list_parsing_tests",
+            "TypeArgumentListParsingTests",
+            "TestGenericArgWithGreaterThan_03",
+            19,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -650,22 +1243,51 @@ class C
     }
 }
 "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestGenericArgWithGreaterThan_04", 20, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestGenericArgWithGreaterThan_04",
+                    20,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestGenericArgWithGreaterThan_04", 20, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestGenericArgWithGreaterThan_04",
+                    20,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestGenericArgWithGreaterThan_04", 20, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "type_argument_list_parsing_tests",
+            "TypeArgumentListParsingTests",
+            "TestGenericArgWithGreaterThan_04",
+            20,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -683,22 +1305,51 @@ class C
     }
 }
 "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestGenericArgWithGreaterThan_05", 21, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestGenericArgWithGreaterThan_05",
+                    21,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestGenericArgWithGreaterThan_05", 21, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestGenericArgWithGreaterThan_05",
+                    21,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestGenericArgWithGreaterThan_05", 21, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "type_argument_list_parsing_tests",
+            "TypeArgumentListParsingTests",
+            "TestGenericArgWithGreaterThan_05",
+            21,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -714,22 +1365,54 @@ fn generic_with_extra_commas_and_missing_types_1() {
                     }
                 }
                 "#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestGenericWithExtraCommasAndMissingTypes1", 22, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestGenericWithExtraCommasAndMissingTypes1",
+                    22,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestGenericWithExtraCommasAndMissingTypes1", 22, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestGenericWithExtraCommasAndMissingTypes1",
+                    22,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestGenericWithExtraCommasAndMissingTypes1", 22, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "type_argument_list_parsing_tests",
+            "TypeArgumentListParsingTests",
+            "TestGenericWithExtraCommasAndMissingTypes1",
+            22,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -745,22 +1428,54 @@ fn generic_with_extra_commas_and_missing_types_2() {
                     }
                 }
                 "#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestGenericWithExtraCommasAndMissingTypes2", 23, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestGenericWithExtraCommasAndMissingTypes2",
+                    23,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestGenericWithExtraCommasAndMissingTypes2", 23, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestGenericWithExtraCommasAndMissingTypes2",
+                    23,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestGenericWithExtraCommasAndMissingTypes2", 23, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "type_argument_list_parsing_tests",
+            "TypeArgumentListParsingTests",
+            "TestGenericWithExtraCommasAndMissingTypes2",
+            23,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -776,22 +1491,54 @@ fn generic_with_extra_commas_and_missing_types_3() {
                     }
                 }
                 "#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestGenericWithExtraCommasAndMissingTypes3", 24, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestGenericWithExtraCommasAndMissingTypes3",
+                    24,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestGenericWithExtraCommasAndMissingTypes3", 24, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestGenericWithExtraCommasAndMissingTypes3",
+                    24,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestGenericWithExtraCommasAndMissingTypes3", 24, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "type_argument_list_parsing_tests",
+            "TypeArgumentListParsingTests",
+            "TestGenericWithExtraCommasAndMissingTypes3",
+            24,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -807,22 +1554,54 @@ fn generic_with_extra_commas_and_missing_types_4() {
                     }
                 }
                 "#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestGenericWithExtraCommasAndMissingTypes4", 25, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestGenericWithExtraCommasAndMissingTypes4",
+                    25,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestGenericWithExtraCommasAndMissingTypes4", 25, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestGenericWithExtraCommasAndMissingTypes4",
+                    25,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestGenericWithExtraCommasAndMissingTypes4", 25, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "type_argument_list_parsing_tests",
+            "TypeArgumentListParsingTests",
+            "TestGenericWithExtraCommasAndMissingTypes4",
+            25,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -838,22 +1617,54 @@ fn generic_with_extra_commas_and_missing_types_5() {
                     }
                 }
                 "#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestGenericWithExtraCommasAndMissingTypes5", 26, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestGenericWithExtraCommasAndMissingTypes5",
+                    26,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestGenericWithExtraCommasAndMissingTypes5", 26, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestGenericWithExtraCommasAndMissingTypes5",
+                    26,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestGenericWithExtraCommasAndMissingTypes5", 26, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "type_argument_list_parsing_tests",
+            "TypeArgumentListParsingTests",
+            "TestGenericWithExtraCommasAndMissingTypes5",
+            26,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -869,22 +1680,54 @@ fn generic_with_extra_commas_and_missing_types_6() {
                     }
                 }
                 "#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestGenericWithExtraCommasAndMissingTypes6", 27, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestGenericWithExtraCommasAndMissingTypes6",
+                    27,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestGenericWithExtraCommasAndMissingTypes6", 27, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestGenericWithExtraCommasAndMissingTypes6",
+                    27,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestGenericWithExtraCommasAndMissingTypes6", 27, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "type_argument_list_parsing_tests",
+            "TypeArgumentListParsingTests",
+            "TestGenericWithExtraCommasAndMissingTypes6",
+            27,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -900,22 +1743,54 @@ fn generic_with_extra_commas_and_missing_types_7() {
                     }
                 }
                 "#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestGenericWithExtraCommasAndMissingTypes7", 28, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestGenericWithExtraCommasAndMissingTypes7",
+                    28,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestGenericWithExtraCommasAndMissingTypes7", 28, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestGenericWithExtraCommasAndMissingTypes7",
+                    28,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestGenericWithExtraCommasAndMissingTypes7", 28, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "type_argument_list_parsing_tests",
+            "TypeArgumentListParsingTests",
+            "TestGenericWithExtraCommasAndMissingTypes7",
+            28,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -931,22 +1806,53 @@ fn generic_with_extra_commas_and_missing_types_8() {
                     }
                 }
                 "#;
-    let expected = Some(ExpectedDiagnostics { count: 4, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 4,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestGenericWithExtraCommasAndMissingTypes8", 29, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestGenericWithExtraCommasAndMissingTypes8",
+                    29,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestGenericWithExtraCommasAndMissingTypes8", 29, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "type_argument_list_parsing_tests",
+                    "TypeArgumentListParsingTests",
+                    "TestGenericWithExtraCommasAndMissingTypes8",
+                    29,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("type_argument_list_parsing_tests", "TypeArgumentListParsingTests", "TestGenericWithExtraCommasAndMissingTypes8", 29, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "type_argument_list_parsing_tests",
+            "TypeArgumentListParsingTests",
+            "TestGenericWithExtraCommasAndMissingTypes8",
+            29,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
-

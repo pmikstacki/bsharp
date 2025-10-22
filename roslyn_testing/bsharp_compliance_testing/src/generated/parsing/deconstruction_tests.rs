@@ -1,14 +1,20 @@
 // Auto-generated STRUCTURE tests from Roslyn: DeconstructionTests
-use bsharp_parser::syntax::span::Span;
-use bsharp_parser::bsharp::parse_csharp_source_strict;
 use crate::custom_asserts::structure_assert;
+use bsharp_parser::bsharp::parse_csharp_source_strict;
+use bsharp_parser::syntax::span::Span;
 #[test]
 fn paren_expression() {
     let src = r#""#;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -19,7 +25,13 @@ fn tuple_type_with_element_names() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -30,7 +42,13 @@ fn tuple_type() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -41,7 +59,13 @@ fn tuple_type_array() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -52,7 +76,13 @@ fn tuple_literal() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -63,7 +93,13 @@ fn deconstruction_assignment() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -74,7 +110,13 @@ fn simple_declaration() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -85,7 +127,13 @@ fn nested_deconstruction_assignment() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -96,7 +144,13 @@ fn deconstruction_declaration() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -107,7 +161,13 @@ fn nested_deconstruction_declaration() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -118,7 +178,13 @@ fn var_deconstruction_declaration() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -129,7 +195,13 @@ fn var_nested_deconstruction_declaration() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -140,7 +212,13 @@ fn var_method_call() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -151,7 +229,13 @@ fn mixed_deconstruction_variables() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -162,7 +246,13 @@ fn deconstruction_for() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -173,7 +263,13 @@ fn var_deconstruction_for() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -184,7 +280,13 @@ fn deconstruction_foreach() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -195,7 +297,13 @@ fn var_deconstruction_foreach() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -206,7 +314,13 @@ fn deconstruction_in_script() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -217,7 +331,13 @@ fn deconstruction_for_each_in_script() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -228,7 +348,13 @@ fn deconstruction_declaration_with_discard() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -239,7 +365,81 @@ fn discards_in_deconstruction_01() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![    structure_assert::ExpectedNode { kind: "GlobalStatement".to_string(), token_value: None, children: vec![        structure_assert::ExpectedNode { kind: "LocalFunctionStatement".to_string(), token_value: None, children: vec![            structure_assert::ExpectedNode { kind: "PredefinedType".to_string(), token_value: None, children: vec![] },             structure_assert::ExpectedNode { kind: "ParameterList".to_string(), token_value: None, children: vec![] },             structure_assert::ExpectedNode { kind: "Block".to_string(), token_value: None, children: vec![                structure_assert::ExpectedNode { kind: "ExpressionStatement".to_string(), token_value: None, children: vec![                    structure_assert::ExpectedNode { kind: "SimpleAssignmentExpression".to_string(), token_value: None, children: vec![                        structure_assert::ExpectedNode { kind: "DeclarationExpression".to_string(), token_value: None, children: vec![                            structure_assert::ExpectedNode { kind: "IdentifierName".to_string(), token_value: Some("var".to_string()), children: vec![] },                             structure_assert::ExpectedNode { kind: "ParenthesizedVariableDesignation".to_string(), token_value: None, children: vec![                                structure_assert::ExpectedNode { kind: "SingleVariableDesignation".to_string(), token_value: None, children: vec![] },                                 structure_assert::ExpectedNode { kind: "DiscardDesignation".to_string(), token_value: None, children: vec![] }] }] },                         structure_assert::ExpectedNode { kind: "IdentifierName".to_string(), token_value: Some("e".to_string()), children: vec![] }] }] }] }] }] }] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![structure_assert::ExpectedNode {
+                    kind: "GlobalStatement".to_string(),
+                    token_value: None,
+                    children: vec![structure_assert::ExpectedNode {
+                        kind: "LocalFunctionStatement".to_string(),
+                        token_value: None,
+                        children: vec![
+                            structure_assert::ExpectedNode {
+                                kind: "PredefinedType".to_string(),
+                                token_value: None,
+                                children: vec![],
+                            },
+                            structure_assert::ExpectedNode {
+                                kind: "ParameterList".to_string(),
+                                token_value: None,
+                                children: vec![],
+                            },
+                            structure_assert::ExpectedNode {
+                                kind: "Block".to_string(),
+                                token_value: None,
+                                children: vec![structure_assert::ExpectedNode {
+                                    kind: "ExpressionStatement".to_string(),
+                                    token_value: None,
+                                    children: vec![structure_assert::ExpectedNode {
+                                        kind: "SimpleAssignmentExpression".to_string(),
+                                        token_value: None,
+                                        children: vec![
+                                            structure_assert::ExpectedNode {
+                                                kind: "DeclarationExpression".to_string(),
+                                                token_value: None,
+                                                children: vec![
+                                                    structure_assert::ExpectedNode {
+                                                        kind: "IdentifierName".to_string(),
+                                                        token_value: Some("var".to_string()),
+                                                        children: vec![],
+                                                    },
+                                                    structure_assert::ExpectedNode {
+                                                        kind: "ParenthesizedVariableDesignation"
+                                                            .to_string(),
+                                                        token_value: None,
+                                                        children: vec![
+                                                            structure_assert::ExpectedNode {
+                                                                kind: "SingleVariableDesignation"
+                                                                    .to_string(),
+                                                                token_value: None,
+                                                                children: vec![],
+                                                            },
+                                                            structure_assert::ExpectedNode {
+                                                                kind: "DiscardDesignation"
+                                                                    .to_string(),
+                                                                token_value: None,
+                                                                children: vec![],
+                                                            },
+                                                        ],
+                                                    },
+                                                ],
+                                            },
+                                            structure_assert::ExpectedNode {
+                                                kind: "IdentifierName".to_string(),
+                                                token_value: Some("e".to_string()),
+                                                children: vec![],
+                                            },
+                                        ],
+                                    }],
+                                }],
+                            },
+                        ],
+                    }],
+                }],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -261,7 +461,82 @@ fn discards_in_out_01() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![    structure_assert::ExpectedNode { kind: "GlobalStatement".to_string(), token_value: None, children: vec![        structure_assert::ExpectedNode { kind: "LocalFunctionStatement".to_string(), token_value: None, children: vec![            structure_assert::ExpectedNode { kind: "PredefinedType".to_string(), token_value: None, children: vec![] },             structure_assert::ExpectedNode { kind: "ParameterList".to_string(), token_value: None, children: vec![] },             structure_assert::ExpectedNode { kind: "Block".to_string(), token_value: None, children: vec![                structure_assert::ExpectedNode { kind: "ExpressionStatement".to_string(), token_value: None, children: vec![                    structure_assert::ExpectedNode { kind: "InvocationExpression".to_string(), token_value: None, children: vec![                        structure_assert::ExpectedNode { kind: "IdentifierName".to_string(), token_value: Some("M".to_string()), children: vec![] },                         structure_assert::ExpectedNode { kind: "ArgumentList".to_string(), token_value: None, children: vec![                            structure_assert::ExpectedNode { kind: "Argument".to_string(), token_value: None, children: vec![                                structure_assert::ExpectedNode { kind: "DeclarationExpression".to_string(), token_value: None, children: vec![                                    structure_assert::ExpectedNode { kind: "IdentifierName".to_string(), token_value: Some("var".to_string()), children: vec![] },                                     structure_assert::ExpectedNode { kind: "DiscardDesignation".to_string(), token_value: None, children: vec![] }] }] }] }] }] }] }] }] }] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![structure_assert::ExpectedNode {
+                    kind: "GlobalStatement".to_string(),
+                    token_value: None,
+                    children: vec![structure_assert::ExpectedNode {
+                        kind: "LocalFunctionStatement".to_string(),
+                        token_value: None,
+                        children: vec![
+                            structure_assert::ExpectedNode {
+                                kind: "PredefinedType".to_string(),
+                                token_value: None,
+                                children: vec![],
+                            },
+                            structure_assert::ExpectedNode {
+                                kind: "ParameterList".to_string(),
+                                token_value: None,
+                                children: vec![],
+                            },
+                            structure_assert::ExpectedNode {
+                                kind: "Block".to_string(),
+                                token_value: None,
+                                children: vec![structure_assert::ExpectedNode {
+                                    kind: "ExpressionStatement".to_string(),
+                                    token_value: None,
+                                    children: vec![structure_assert::ExpectedNode {
+                                        kind: "InvocationExpression".to_string(),
+                                        token_value: None,
+                                        children: vec![
+                                            structure_assert::ExpectedNode {
+                                                kind: "IdentifierName".to_string(),
+                                                token_value: Some("M".to_string()),
+                                                children: vec![],
+                                            },
+                                            structure_assert::ExpectedNode {
+                                                kind: "ArgumentList".to_string(),
+                                                token_value: None,
+                                                children: vec![structure_assert::ExpectedNode {
+                                                    kind: "Argument".to_string(),
+                                                    token_value: None,
+                                                    children: vec![
+                                                        structure_assert::ExpectedNode {
+                                                            kind: "DeclarationExpression"
+                                                                .to_string(),
+                                                            token_value: None,
+                                                            children: vec![
+                                                                structure_assert::ExpectedNode {
+                                                                    kind: "IdentifierName"
+                                                                        .to_string(),
+                                                                    token_value: Some(
+                                                                        "var".to_string(),
+                                                                    ),
+                                                                    children: vec![],
+                                                                },
+                                                                structure_assert::ExpectedNode {
+                                                                    kind: "DiscardDesignation"
+                                                                        .to_string(),
+                                                                    token_value: None,
+                                                                    children: vec![],
+                                                                },
+                                                            ],
+                                                        },
+                                                    ],
+                                                }],
+                                            },
+                                        ],
+                                    }],
+                                }],
+                            },
+                        ],
+                    }],
+                }],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -272,7 +547,80 @@ fn discards_in_out_02() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![    structure_assert::ExpectedNode { kind: "GlobalStatement".to_string(), token_value: None, children: vec![        structure_assert::ExpectedNode { kind: "LocalFunctionStatement".to_string(), token_value: None, children: vec![            structure_assert::ExpectedNode { kind: "PredefinedType".to_string(), token_value: None, children: vec![] },             structure_assert::ExpectedNode { kind: "ParameterList".to_string(), token_value: None, children: vec![] },             structure_assert::ExpectedNode { kind: "Block".to_string(), token_value: None, children: vec![                structure_assert::ExpectedNode { kind: "ExpressionStatement".to_string(), token_value: None, children: vec![                    structure_assert::ExpectedNode { kind: "InvocationExpression".to_string(), token_value: None, children: vec![                        structure_assert::ExpectedNode { kind: "IdentifierName".to_string(), token_value: Some("M".to_string()), children: vec![] },                         structure_assert::ExpectedNode { kind: "ArgumentList".to_string(), token_value: None, children: vec![                            structure_assert::ExpectedNode { kind: "Argument".to_string(), token_value: None, children: vec![                                structure_assert::ExpectedNode { kind: "DeclarationExpression".to_string(), token_value: None, children: vec![                                    structure_assert::ExpectedNode { kind: "PredefinedType".to_string(), token_value: None, children: vec![] },                                     structure_assert::ExpectedNode { kind: "DiscardDesignation".to_string(), token_value: None, children: vec![] }] }] }] }] }] }] }] }] }] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![structure_assert::ExpectedNode {
+                    kind: "GlobalStatement".to_string(),
+                    token_value: None,
+                    children: vec![structure_assert::ExpectedNode {
+                        kind: "LocalFunctionStatement".to_string(),
+                        token_value: None,
+                        children: vec![
+                            structure_assert::ExpectedNode {
+                                kind: "PredefinedType".to_string(),
+                                token_value: None,
+                                children: vec![],
+                            },
+                            structure_assert::ExpectedNode {
+                                kind: "ParameterList".to_string(),
+                                token_value: None,
+                                children: vec![],
+                            },
+                            structure_assert::ExpectedNode {
+                                kind: "Block".to_string(),
+                                token_value: None,
+                                children: vec![structure_assert::ExpectedNode {
+                                    kind: "ExpressionStatement".to_string(),
+                                    token_value: None,
+                                    children: vec![structure_assert::ExpectedNode {
+                                        kind: "InvocationExpression".to_string(),
+                                        token_value: None,
+                                        children: vec![
+                                            structure_assert::ExpectedNode {
+                                                kind: "IdentifierName".to_string(),
+                                                token_value: Some("M".to_string()),
+                                                children: vec![],
+                                            },
+                                            structure_assert::ExpectedNode {
+                                                kind: "ArgumentList".to_string(),
+                                                token_value: None,
+                                                children: vec![structure_assert::ExpectedNode {
+                                                    kind: "Argument".to_string(),
+                                                    token_value: None,
+                                                    children: vec![
+                                                        structure_assert::ExpectedNode {
+                                                            kind: "DeclarationExpression"
+                                                                .to_string(),
+                                                            token_value: None,
+                                                            children: vec![
+                                                                structure_assert::ExpectedNode {
+                                                                    kind: "PredefinedType"
+                                                                        .to_string(),
+                                                                    token_value: None,
+                                                                    children: vec![],
+                                                                },
+                                                                structure_assert::ExpectedNode {
+                                                                    kind: "DiscardDesignation"
+                                                                        .to_string(),
+                                                                    token_value: None,
+                                                                    children: vec![],
+                                                                },
+                                                            ],
+                                                        },
+                                                    ],
+                                                }],
+                                            },
+                                        ],
+                                    }],
+                                }],
+                            },
+                        ],
+                    }],
+                }],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -283,7 +631,74 @@ fn discards_in_pattern_01() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![    structure_assert::ExpectedNode { kind: "GlobalStatement".to_string(), token_value: None, children: vec![        structure_assert::ExpectedNode { kind: "LocalFunctionStatement".to_string(), token_value: None, children: vec![            structure_assert::ExpectedNode { kind: "PredefinedType".to_string(), token_value: None, children: vec![] },             structure_assert::ExpectedNode { kind: "ParameterList".to_string(), token_value: None, children: vec![] },             structure_assert::ExpectedNode { kind: "Block".to_string(), token_value: None, children: vec![                structure_assert::ExpectedNode { kind: "IfStatement".to_string(), token_value: None, children: vec![                    structure_assert::ExpectedNode { kind: "IsPatternExpression".to_string(), token_value: None, children: vec![                        structure_assert::ExpectedNode { kind: "IdentifierName".to_string(), token_value: Some("e".to_string()), children: vec![] },                         structure_assert::ExpectedNode { kind: "DeclarationPattern".to_string(), token_value: None, children: vec![                            structure_assert::ExpectedNode { kind: "PredefinedType".to_string(), token_value: None, children: vec![] },                             structure_assert::ExpectedNode { kind: "DiscardDesignation".to_string(), token_value: None, children: vec![] }] }] },                     structure_assert::ExpectedNode { kind: "Block".to_string(), token_value: None, children: vec![] }] }] }] }] }] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![structure_assert::ExpectedNode {
+                    kind: "GlobalStatement".to_string(),
+                    token_value: None,
+                    children: vec![structure_assert::ExpectedNode {
+                        kind: "LocalFunctionStatement".to_string(),
+                        token_value: None,
+                        children: vec![
+                            structure_assert::ExpectedNode {
+                                kind: "PredefinedType".to_string(),
+                                token_value: None,
+                                children: vec![],
+                            },
+                            structure_assert::ExpectedNode {
+                                kind: "ParameterList".to_string(),
+                                token_value: None,
+                                children: vec![],
+                            },
+                            structure_assert::ExpectedNode {
+                                kind: "Block".to_string(),
+                                token_value: None,
+                                children: vec![structure_assert::ExpectedNode {
+                                    kind: "IfStatement".to_string(),
+                                    token_value: None,
+                                    children: vec![
+                                        structure_assert::ExpectedNode {
+                                            kind: "IsPatternExpression".to_string(),
+                                            token_value: None,
+                                            children: vec![
+                                                structure_assert::ExpectedNode {
+                                                    kind: "IdentifierName".to_string(),
+                                                    token_value: Some("e".to_string()),
+                                                    children: vec![],
+                                                },
+                                                structure_assert::ExpectedNode {
+                                                    kind: "DeclarationPattern".to_string(),
+                                                    token_value: None,
+                                                    children: vec![
+                                                        structure_assert::ExpectedNode {
+                                                            kind: "PredefinedType".to_string(),
+                                                            token_value: None,
+                                                            children: vec![],
+                                                        },
+                                                        structure_assert::ExpectedNode {
+                                                            kind: "DiscardDesignation".to_string(),
+                                                            token_value: None,
+                                                            children: vec![],
+                                                        },
+                                                    ],
+                                                },
+                                            ],
+                                        },
+                                        structure_assert::ExpectedNode {
+                                            kind: "Block".to_string(),
+                                            token_value: None,
+                                            children: vec![],
+                                        },
+                                    ],
+                                }],
+                            },
+                        ],
+                    }],
+                }],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -294,7 +709,69 @@ fn discards_in_pattern_02() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![    structure_assert::ExpectedNode { kind: "GlobalStatement".to_string(), token_value: None, children: vec![        structure_assert::ExpectedNode { kind: "LocalFunctionStatement".to_string(), token_value: None, children: vec![            structure_assert::ExpectedNode { kind: "PredefinedType".to_string(), token_value: None, children: vec![] },             structure_assert::ExpectedNode { kind: "ParameterList".to_string(), token_value: None, children: vec![] },             structure_assert::ExpectedNode { kind: "Block".to_string(), token_value: None, children: vec![                structure_assert::ExpectedNode { kind: "IfStatement".to_string(), token_value: None, children: vec![                    structure_assert::ExpectedNode { kind: "IsPatternExpression".to_string(), token_value: None, children: vec![                        structure_assert::ExpectedNode { kind: "IdentifierName".to_string(), token_value: Some("e".to_string()), children: vec![] },                         structure_assert::ExpectedNode { kind: "VarPattern".to_string(), token_value: None, children: vec![                            structure_assert::ExpectedNode { kind: "DiscardDesignation".to_string(), token_value: None, children: vec![] }] }] },                     structure_assert::ExpectedNode { kind: "Block".to_string(), token_value: None, children: vec![] }] }] }] }] }] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![structure_assert::ExpectedNode {
+                    kind: "GlobalStatement".to_string(),
+                    token_value: None,
+                    children: vec![structure_assert::ExpectedNode {
+                        kind: "LocalFunctionStatement".to_string(),
+                        token_value: None,
+                        children: vec![
+                            structure_assert::ExpectedNode {
+                                kind: "PredefinedType".to_string(),
+                                token_value: None,
+                                children: vec![],
+                            },
+                            structure_assert::ExpectedNode {
+                                kind: "ParameterList".to_string(),
+                                token_value: None,
+                                children: vec![],
+                            },
+                            structure_assert::ExpectedNode {
+                                kind: "Block".to_string(),
+                                token_value: None,
+                                children: vec![structure_assert::ExpectedNode {
+                                    kind: "IfStatement".to_string(),
+                                    token_value: None,
+                                    children: vec![
+                                        structure_assert::ExpectedNode {
+                                            kind: "IsPatternExpression".to_string(),
+                                            token_value: None,
+                                            children: vec![
+                                                structure_assert::ExpectedNode {
+                                                    kind: "IdentifierName".to_string(),
+                                                    token_value: Some("e".to_string()),
+                                                    children: vec![],
+                                                },
+                                                structure_assert::ExpectedNode {
+                                                    kind: "VarPattern".to_string(),
+                                                    token_value: None,
+                                                    children: vec![
+                                                        structure_assert::ExpectedNode {
+                                                            kind: "DiscardDesignation".to_string(),
+                                                            token_value: None,
+                                                            children: vec![],
+                                                        },
+                                                    ],
+                                                },
+                                            ],
+                                        },
+                                        structure_assert::ExpectedNode {
+                                            kind: "Block".to_string(),
+                                            token_value: None,
+                                            children: vec![],
+                                        },
+                                    ],
+                                }],
+                            },
+                        ],
+                    }],
+                }],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -305,7 +782,82 @@ fn discards_in_pattern_03() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![    structure_assert::ExpectedNode { kind: "GlobalStatement".to_string(), token_value: None, children: vec![        structure_assert::ExpectedNode { kind: "LocalFunctionStatement".to_string(), token_value: None, children: vec![            structure_assert::ExpectedNode { kind: "PredefinedType".to_string(), token_value: None, children: vec![] },             structure_assert::ExpectedNode { kind: "ParameterList".to_string(), token_value: None, children: vec![] },             structure_assert::ExpectedNode { kind: "Block".to_string(), token_value: None, children: vec![                structure_assert::ExpectedNode { kind: "SwitchStatement".to_string(), token_value: None, children: vec![                    structure_assert::ExpectedNode { kind: "IdentifierName".to_string(), token_value: Some("e".to_string()), children: vec![] },                     structure_assert::ExpectedNode { kind: "SwitchSection".to_string(), token_value: None, children: vec![                        structure_assert::ExpectedNode { kind: "CasePatternSwitchLabel".to_string(), token_value: None, children: vec![                            structure_assert::ExpectedNode { kind: "DeclarationPattern".to_string(), token_value: None, children: vec![                                structure_assert::ExpectedNode { kind: "PredefinedType".to_string(), token_value: None, children: vec![] },                                 structure_assert::ExpectedNode { kind: "DiscardDesignation".to_string(), token_value: None, children: vec![] }] }] },                         structure_assert::ExpectedNode { kind: "BreakStatement".to_string(), token_value: None, children: vec![] }] }] }] }] }] }] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![structure_assert::ExpectedNode {
+                    kind: "GlobalStatement".to_string(),
+                    token_value: None,
+                    children: vec![structure_assert::ExpectedNode {
+                        kind: "LocalFunctionStatement".to_string(),
+                        token_value: None,
+                        children: vec![
+                            structure_assert::ExpectedNode {
+                                kind: "PredefinedType".to_string(),
+                                token_value: None,
+                                children: vec![],
+                            },
+                            structure_assert::ExpectedNode {
+                                kind: "ParameterList".to_string(),
+                                token_value: None,
+                                children: vec![],
+                            },
+                            structure_assert::ExpectedNode {
+                                kind: "Block".to_string(),
+                                token_value: None,
+                                children: vec![structure_assert::ExpectedNode {
+                                    kind: "SwitchStatement".to_string(),
+                                    token_value: None,
+                                    children: vec![
+                                        structure_assert::ExpectedNode {
+                                            kind: "IdentifierName".to_string(),
+                                            token_value: Some("e".to_string()),
+                                            children: vec![],
+                                        },
+                                        structure_assert::ExpectedNode {
+                                            kind: "SwitchSection".to_string(),
+                                            token_value: None,
+                                            children: vec![
+                                                structure_assert::ExpectedNode {
+                                                    kind: "CasePatternSwitchLabel".to_string(),
+                                                    token_value: None,
+                                                    children: vec![
+                                                        structure_assert::ExpectedNode {
+                                                            kind: "DeclarationPattern".to_string(),
+                                                            token_value: None,
+                                                            children: vec![
+                                                                structure_assert::ExpectedNode {
+                                                                    kind: "PredefinedType"
+                                                                        .to_string(),
+                                                                    token_value: None,
+                                                                    children: vec![],
+                                                                },
+                                                                structure_assert::ExpectedNode {
+                                                                    kind: "DiscardDesignation"
+                                                                        .to_string(),
+                                                                    token_value: None,
+                                                                    children: vec![],
+                                                                },
+                                                            ],
+                                                        },
+                                                    ],
+                                                },
+                                                structure_assert::ExpectedNode {
+                                                    kind: "BreakStatement".to_string(),
+                                                    token_value: None,
+                                                    children: vec![],
+                                                },
+                                            ],
+                                        },
+                                    ],
+                                }],
+                            },
+                        ],
+                    }],
+                }],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -316,7 +868,76 @@ fn discards_in_pattern_04() {
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Ok((_rest, unit)) = r {
-        let expected = structure_assert::ExpectedTree { root: structure_assert::ExpectedNode { kind: "CompilationUnit".to_string(), token_value: None, children: vec![    structure_assert::ExpectedNode { kind: "GlobalStatement".to_string(), token_value: None, children: vec![        structure_assert::ExpectedNode { kind: "LocalFunctionStatement".to_string(), token_value: None, children: vec![            structure_assert::ExpectedNode { kind: "PredefinedType".to_string(), token_value: None, children: vec![] },             structure_assert::ExpectedNode { kind: "ParameterList".to_string(), token_value: None, children: vec![] },             structure_assert::ExpectedNode { kind: "Block".to_string(), token_value: None, children: vec![                structure_assert::ExpectedNode { kind: "SwitchStatement".to_string(), token_value: None, children: vec![                    structure_assert::ExpectedNode { kind: "IdentifierName".to_string(), token_value: Some("e".to_string()), children: vec![] },                     structure_assert::ExpectedNode { kind: "SwitchSection".to_string(), token_value: None, children: vec![                        structure_assert::ExpectedNode { kind: "CasePatternSwitchLabel".to_string(), token_value: None, children: vec![                            structure_assert::ExpectedNode { kind: "VarPattern".to_string(), token_value: None, children: vec![                                structure_assert::ExpectedNode { kind: "DiscardDesignation".to_string(), token_value: None, children: vec![] }] }] },                         structure_assert::ExpectedNode { kind: "BreakStatement".to_string(), token_value: None, children: vec![] }] }] }] }] }] }] } };
+        let expected = structure_assert::ExpectedTree {
+            root: structure_assert::ExpectedNode {
+                kind: "CompilationUnit".to_string(),
+                token_value: None,
+                children: vec![structure_assert::ExpectedNode {
+                    kind: "GlobalStatement".to_string(),
+                    token_value: None,
+                    children: vec![structure_assert::ExpectedNode {
+                        kind: "LocalFunctionStatement".to_string(),
+                        token_value: None,
+                        children: vec![
+                            structure_assert::ExpectedNode {
+                                kind: "PredefinedType".to_string(),
+                                token_value: None,
+                                children: vec![],
+                            },
+                            structure_assert::ExpectedNode {
+                                kind: "ParameterList".to_string(),
+                                token_value: None,
+                                children: vec![],
+                            },
+                            structure_assert::ExpectedNode {
+                                kind: "Block".to_string(),
+                                token_value: None,
+                                children: vec![structure_assert::ExpectedNode {
+                                    kind: "SwitchStatement".to_string(),
+                                    token_value: None,
+                                    children: vec![
+                                        structure_assert::ExpectedNode {
+                                            kind: "IdentifierName".to_string(),
+                                            token_value: Some("e".to_string()),
+                                            children: vec![],
+                                        },
+                                        structure_assert::ExpectedNode {
+                                            kind: "SwitchSection".to_string(),
+                                            token_value: None,
+                                            children: vec![
+                                                structure_assert::ExpectedNode {
+                                                    kind: "CasePatternSwitchLabel".to_string(),
+                                                    token_value: None,
+                                                    children: vec![
+                                                        structure_assert::ExpectedNode {
+                                                            kind: "VarPattern".to_string(),
+                                                            token_value: None,
+                                                            children: vec![
+                                                                structure_assert::ExpectedNode {
+                                                                    kind: "DiscardDesignation"
+                                                                        .to_string(),
+                                                                    token_value: None,
+                                                                    children: vec![],
+                                                                },
+                                                            ],
+                                                        },
+                                                    ],
+                                                },
+                                                structure_assert::ExpectedNode {
+                                                    kind: "BreakStatement".to_string(),
+                                                    token_value: None,
+                                                    children: vec![],
+                                                },
+                                            ],
+                                        },
+                                    ],
+                                }],
+                            },
+                        ],
+                    }],
+                }],
+            },
+        };
         structure_assert::assert_tree(&expected, &unit);
     }
 }
@@ -331,4 +952,3 @@ fn pointer_type_in_deconstruction() {
         structure_assert::assert_tree(&expected, &unit);
     }
 }
-

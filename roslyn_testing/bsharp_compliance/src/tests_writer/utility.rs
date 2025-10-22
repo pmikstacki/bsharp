@@ -1,28 +1,47 @@
-use std::path::PathBuf;
+use crate::tests_writer::codegen;
 use bsharp_parser::bsharp::parse_csharp_source_strict;
 use bsharp_parser::statement_parser::parse_statement_ws;
 use bsharp_parser::syntax::span::Span;
 use regex::Regex;
-use crate::tests_writer::codegen;
+use std::path::PathBuf;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum Category { Tree, Statement, Declaration, Expression }
+pub enum Category {
+    Tree,
+    Statement,
+    Declaration,
+    Expression,
+}
 
 // (removed unused helper sanitize_ident)
 
 pub fn to_snake_case(s: &str) -> String {
-    if s.is_empty() { return String::new(); }
+    if s.is_empty() {
+        return String::new();
+    }
     let mut out = String::with_capacity(s.len() + 8);
     #[derive(Copy, Clone, PartialEq)]
-    enum Cat { None, Upper, Lower, Digit }
+    enum Cat {
+        None,
+        Upper,
+        Lower,
+        Digit,
+    }
     let mut prev: Cat = Cat::None;
     for ch in s.chars() {
-        let cat = if ch.is_ascii_uppercase() { Cat::Upper }
-            else if ch.is_ascii_lowercase() { Cat::Lower }
-            else if ch.is_ascii_digit() { Cat::Digit }
-            else { Cat::None };
+        let cat = if ch.is_ascii_uppercase() {
+            Cat::Upper
+        } else if ch.is_ascii_lowercase() {
+            Cat::Lower
+        } else if ch.is_ascii_digit() {
+            Cat::Digit
+        } else {
+            Cat::None
+        };
         if cat == Cat::None {
-            if !out.ends_with('_') { out.push('_'); }
+            if !out.ends_with('_') {
+                out.push('_');
+            }
             prev = Cat::None;
             continue;
         }
@@ -30,20 +49,29 @@ pub fn to_snake_case(s: &str) -> String {
         // - lower/digit -> upper (CamelCase)
         // - alpha -> digit
         // - digit -> alpha
-        let boundary = matches!((prev, cat),
+        let boundary = matches!(
+            (prev, cat),
             (Cat::Lower, Cat::Upper)
-            | (Cat::Lower, Cat::Digit)
-            | (Cat::Upper, Cat::Digit)
-            | (Cat::Digit, Cat::Lower)
-            | (Cat::Digit, Cat::Upper)
+                | (Cat::Lower, Cat::Digit)
+                | (Cat::Upper, Cat::Digit)
+                | (Cat::Digit, Cat::Lower)
+                | (Cat::Digit, Cat::Upper)
         );
-        if boundary && !out.ends_with('_') { out.push('_'); }
+        if boundary && !out.ends_with('_') {
+            out.push('_');
+        }
         out.push(ch.to_ascii_lowercase());
         prev = cat;
     }
-    while out.ends_with('_') { out.pop(); }
-    if out.starts_with(|c: char| c.is_ascii_digit()) { out.insert(0, '_'); }
-    if out.is_empty() { out.push_str("case"); }
+    while out.ends_with('_') {
+        out.pop();
+    }
+    if out.starts_with(|c: char| c.is_ascii_digit()) {
+        out.insert(0, '_');
+    }
+    if out.is_empty() {
+        out.push_str("case");
+    }
     out
 }
 
@@ -71,10 +99,16 @@ pub fn collect_test_methods(content: &str) -> Vec<(usize, String)> {
 }
 
 pub fn find_enclosing_method_name(methods: &[(usize, String)], pos: usize) -> Option<String> {
-    if methods.is_empty() { return None; }
+    if methods.is_empty() {
+        return None;
+    }
     let mut last: Option<String> = None;
     for (i, name) in methods.iter() {
-        if *i <= pos { last = Some(name.clone()); } else { break; }
+        if *i <= pos {
+            last = Some(name.clone());
+        } else {
+            break;
+        }
     }
     last
 }

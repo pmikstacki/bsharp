@@ -8,8 +8,8 @@ use nom::combinator::cut;
 use nom::{branch::alt, combinator::map};
 
 use crate::syntax::comment_parser::ws;
-use nom::sequence::delimited;
 use nom::Parser;
+use nom::sequence::delimited;
 use nom_supreme::ParserExt;
 
 pub use syntax::declarations::*;
@@ -71,8 +71,8 @@ fn parse_destructor_body(input: Span) -> BResult<Option<Statement>> {
         // Semicolon (extern)
         map(delimited(ws, tok_semicolon(), ws), |_| None),
     ))
-        .context("destructor body")
-        .parse(input)
+    .context("destructor body")
+    .parse(input)
 }
 use crate::syntax::span::Span;
 use crate::tokens::bitwise::tok_tilde;

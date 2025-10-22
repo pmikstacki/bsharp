@@ -1,10 +1,11 @@
 use crate::parser::expressions::primary_expression_parser::parse_expression;
 // This is used by parse_interpolation
+use crate::keywords::literal_keywords::{kw_false, kw_null, kw_true};
 use crate::syntax::comment_parser::ws;
 use crate::syntax::errors::BResult;
-use nom::error::{make_error, ErrorKind};
 use nom::Input;
 use nom::Parser;
+use nom::error::{ErrorKind, make_error};
 use nom::{
     branch::alt,
     bytes::complete::{escaped_transform, is_not as b_is_not, tag_no_case},
@@ -17,7 +18,6 @@ use nom_supreme::ParserExt;
 use syntax::expressions::literal::InterpolatedStringPart;
 use syntax::expressions::literal::{IntegerSuffix, InterpolatedStringLiteral};
 use syntax::expressions::{Expression, Literal};
-use crate::keywords::literal_keywords::{kw_null, kw_true, kw_false};
 // Use the global comment-aware bws wrapper instead of a local whitespace helper
 
 // Parse a boolean literal (true or false)
@@ -26,8 +26,8 @@ pub fn parse_boolean(input: Span) -> BResult<Literal> {
         map(kw_true(), |_| Literal::Boolean(true)),
         map(kw_false(), |_| Literal::Boolean(false)),
     ))
-        .context("boolean literal (expected 'true' or 'false')")
-        .parse(input)
+    .context("boolean literal (expected 'true' or 'false')")
+    .parse(input)
 }
 
 // Parse a raw interpolated string literal: $""" ... {expr} ... """ or with multiple $ and N quotes
@@ -37,7 +37,11 @@ pub fn parse_raw_interpolated_string<'a>(input: Span<'a>) -> BResult<'a, Literal
         // Count leading dollars
         let mut dollar_count = 0usize;
         for ch in s.chars() {
-            if ch == '$' { dollar_count += 1; } else { break; }
+            if ch == '$' {
+                dollar_count += 1;
+            } else {
+                break;
+            }
         }
         if dollar_count == 0 {
             return Err(nom::Err::Error(make_error(i, ErrorKind::Tag)));
@@ -45,7 +49,11 @@ pub fn parse_raw_interpolated_string<'a>(input: Span<'a>) -> BResult<'a, Literal
         // Count opening quotes (must be >= 3)
         let mut qcount = 0usize;
         for ch in s[dollar_count..].chars() {
-            if ch == '"' { qcount += 1; } else { break; }
+            if ch == '"' {
+                qcount += 1;
+            } else {
+                break;
+            }
         }
         if qcount < 3 {
             return Err(nom::Err::Error(make_error(i, ErrorKind::Tag)));
@@ -67,8 +75,7 @@ pub fn parse_raw_interpolated_string<'a>(input: Span<'a>) -> BResult<'a, Literal
                 if rem.starts_with(&open_pat) {
                     // Flush preceding text
                     if last < idx {
-                        parts
-                            .push(InterpolatedStringPart::Text(content[last..idx].to_string()));
+                        parts.push(InterpolatedStringPart::Text(content[last..idx].to_string()));
                     }
                     let after_open_idx = idx + open_pat.len();
                     let rem_after_open = &content[after_open_idx..];
@@ -115,8 +122,8 @@ pub fn parse_raw_interpolated_string<'a>(input: Span<'a>) -> BResult<'a, Literal
         }
         Err(nom::Err::Error(make_error(i, ErrorKind::Tag)))
     })
-        .context("raw interpolated string literal (expected $\"\"\"...\"\"\" with {expr})")
-        .parse(input)
+    .context("raw interpolated string literal (expected $\"\"\"...\"\"\" with {expr})")
+    .parse(input)
 }
 
 fn parse_raw_interpolation_core(core: &str) -> Option<InterpolatedStringPart> {
@@ -128,7 +135,9 @@ fn parse_raw_interpolation_core(core: &str) -> Option<InterpolatedStringPart> {
         let mut alignment: Option<Expression> = None;
         if rest.starts_with(',') {
             let rest2 = rest[1..].trim_start();
-            if let Ok((rest_after_align, align_expr)) = robust_expression_in_interpolation(rest2.into()) {
+            if let Ok((rest_after_align, align_expr)) =
+                robust_expression_in_interpolation(rest2.into())
+            {
                 alignment = Some(align_expr);
                 rest = rest_after_align.trim_start();
             }
@@ -313,8 +322,8 @@ pub fn parse_integer<'a>(input: Span<'a>) -> BResult<'a, Literal> {
             },
         ),
     ))
-        .context("integer literal (decimal, 0x..., or 0b..., underscores allowed)")
-        .parse(input)
+    .context("integer literal (decimal, 0x..., or 0b..., underscores allowed)")
+    .parse(input)
 }
 
 // Parse a floating-point literal with underscores and exponent: 1.23, .5, 1e10, 1_2.3_4e-5
@@ -334,7 +343,7 @@ pub fn parse_float<'a>(input: Span<'a>) -> BResult<'a, Literal> {
             // optional float/decimal suffix
             opt(map_opt(nom::character::complete::one_of("fFdDmM"), Some)),
         ))
-            .parse(i)?;
+        .parse(i)?;
 
         // Determine suffix
         let mfrag = matched.fragment();
@@ -362,8 +371,8 @@ pub fn parse_float<'a>(input: Span<'a>) -> BResult<'a, Literal> {
             }
         }
     })
-        .context("floating-point literal (decimal with optional exponent, underscores allowed)")
-        .parse(input)
+    .context("floating-point literal (decimal with optional exponent, underscores allowed)")
+    .parse(input)
 }
 
 // Parse a decimal literal like 123m or 1.23m (no exponent). Returns Decimal with normalized content.
@@ -374,13 +383,13 @@ pub fn parse_decimal_literal<'a>(input: Span<'a>) -> BResult<'a, Literal> {
             opt((nom_char('.'), recognize(many1(satisfy(is_dec))))),
             map_opt(nom::character::complete::one_of("mM"), Some),
         ))
-            .parse(i)?;
+        .parse(i)?;
         let mfrag = matched.fragment();
         let num = &mfrag[..mfrag.len() - 1];
         Ok((rest, Literal::Decimal(strip_underscores(num))))
     })
-        .context("decimal literal")
-        .parse(input)
+    .context("decimal literal")
+    .parse(input)
 }
 
 // Parse a string literal (e.g., "hello", "with \" escape")
@@ -392,7 +401,7 @@ pub fn parse_string<'a>(input: Span<'a>) -> BResult<'a, Literal> {
             // Use opt to handle the case of an empty string content ""
             opt(escaped_transform(
                 b_is_not("\"\\"), // Normal characters
-                '\\',           // Escape character
+                '\\',             // Escape character
                 alt((
                     // Transformation syntax for escaped chars
                     value("\"", tok_double_quote()),
@@ -404,7 +413,7 @@ pub fn parse_string<'a>(input: Span<'a>) -> BResult<'a, Literal> {
             )),
             tok_double_quote(),
         )
-            .parse(i)?;
+        .parse(i)?;
 
         let content = inner.unwrap_or_default();
 
@@ -417,8 +426,8 @@ pub fn parse_string<'a>(input: Span<'a>) -> BResult<'a, Literal> {
 
         Ok((rest_after_quote, Literal::String(content)))
     })
-        .context("string literal")
-        .parse(input)
+    .context("string literal")
+    .parse(input)
 }
 
 // Parse a verbatim string literal (@"...")
@@ -449,8 +458,8 @@ pub fn parse_verbatim_string<'a>(input: Span<'a>) -> BResult<'a, Literal> {
         }
         Err(nom::Err::Error(make_error(i, ErrorKind::Tag)))
     })
-        .context("verbatim string literal")
-        .parse(input)
+    .context("verbatim string literal")
+    .parse(input)
 }
 
 // Parse a raw string literal ("""text""")
@@ -460,7 +469,11 @@ pub fn parse_raw_string<'a>(input: Span<'a>) -> BResult<'a, Literal> {
         // Count opening quotes
         let mut qcount = 0usize;
         for ch in s.chars() {
-            if ch == '"' { qcount += 1; } else { break; }
+            if ch == '"' {
+                qcount += 1;
+            } else {
+                break;
+            }
         }
         if qcount < 3 {
             return Err(nom::Err::Error(make_error(i, ErrorKind::Tag)));
@@ -476,8 +489,8 @@ pub fn parse_raw_string<'a>(input: Span<'a>) -> BResult<'a, Literal> {
         }
         Err(nom::Err::Error(make_error(i, ErrorKind::Tag)))
     })
-        .context("raw string literal")
-        .parse(input)
+    .context("raw string literal")
+    .parse(input)
 }
 
 /// Enhanced interpolated string syntax using robust Nom combinators
@@ -490,32 +503,34 @@ pub fn parse_interpolated_string<'a>(input: Span<'a>) -> BResult<'a, Literal> {
             map(tok_at_dollar(), |_| true),
             map(tok_dollar(), |_| false),
         ))
-            .parse(input)?;
+        .parse(input)?;
 
         let (input, parts) = delimited(
             tok_double_quote(),
             enhanced_interpolated_parts,
             cut(tok_double_quote()), // Use cut for better error reporting
         )
-            .parse(input)?;
+        .parse(input)?;
 
         Ok((
             input,
             Literal::InterpolatedString(InterpolatedStringLiteral { parts, is_verbatim }),
         ))
     })
-        .context("interpolated string literal")
-        .parse(input)
+    .context("interpolated string literal")
+    .parse(input)
 }
 
 /// Enhanced parsing of interpolated string parts with better error recovery
 fn enhanced_interpolated_parts(input: Span) -> BResult<Vec<InterpolatedStringPart>> {
     many0(|i| {
-        if let Ok(r) = enhanced_interpolation(i) { return Ok(r); }
+        if let Ok(r) = enhanced_interpolation(i) {
+            return Ok(r);
+        }
         enhanced_interpolated_text(i)
     })
-        .context("interpolated string parts")
-        .parse(input)
+    .context("interpolated string parts")
+    .parse(input)
 }
 
 /// Enhanced text part parsing with better handling of edge cases
@@ -524,8 +539,8 @@ fn enhanced_interpolated_text<'a>(input: Span<'a>) -> BResult<'a, InterpolatedSt
         recognize(many1(satisfy(|c| c != '{' && c != '"' && c != '\\'))),
         |s: Span<'a>| InterpolatedStringPart::Text(s.fragment().to_string()),
     )
-        .context("interpolated string text")
-        .parse(input)
+    .context("interpolated string text")
+    .parse(input)
 }
 
 /// Enhanced interpolation parsing with graceful fallback
@@ -536,7 +551,10 @@ fn enhanced_interpolation(input: Span<'_>) -> BResult<'_, InterpolatedStringPart
             cut((
                 robust_expression_in_interpolation,
                 opt(preceded(tok_comma(), robust_expression_in_interpolation)),
-                opt(preceded(tok_colon(), recognize(many1(satisfy(|c| c != '}'))))),
+                opt(preceded(
+                    tok_colon(),
+                    recognize(many1(satisfy(|c| c != '}'))),
+                )),
             )),
             cut(tok_r_brace()),
         ),
@@ -546,8 +564,8 @@ fn enhanced_interpolation(input: Span<'_>) -> BResult<'_, InterpolatedStringPart
             format_string: format_string.map(|s| s.fragment().to_string()),
         },
     )
-        .context("string interpolation")
-        .parse(input)
+    .context("string interpolation")
+    .parse(input)
 }
 
 /// Robust expression parsing within interpolation with fallback
@@ -624,31 +642,38 @@ pub fn parse_char_literal(input: Span) -> BResult<Literal> {
         ),
         Literal::Char,
     )
-        .context("char literal")
-        .parse(input)
+    .context("char literal")
+    .parse(input)
 }
 
 // Main literal syntax: tries boolean, integer, float, string, then char
 pub fn parse_literal(input: Span) -> BResult<Literal> {
-    (|i| delimited(ws, alt((
-        parse_boolean,
-        // null keyword - treat as a special literal
-        map(kw_null(), |_| Literal::Null),
-        // Try float before integer to handle cases like "3.14"
-        // which would otherwise be partially parsed as integer "3"
-        parse_decimal_literal, // Decimal literals with m/M must be detected before ints
-        parse_float,
-        parse_integer,
-        parse_raw_interpolated_string, // Raw interpolated strings before non-raw
-        parse_interpolated_string,     // Try interpolated strings before regular strings
-        parse_verbatim_string,         // Try verbatim strings before regular strings
-        parse_raw_string,              // Try raw strings before regular strings
-        parse_string,
-        parse_char_literal,
-        // Add other literal types here (null, etc.) if needed
-    )), ws).parse(i))
-        .context("literal")
-        .parse(input)
+    (|i| {
+        delimited(
+            ws,
+            alt((
+                parse_boolean,
+                // null keyword - treat as a special literal
+                map(kw_null(), |_| Literal::Null),
+                // Try float before integer to handle cases like "3.14"
+                // which would otherwise be partially parsed as integer "3"
+                parse_decimal_literal, // Decimal literals with m/M must be detected before ints
+                parse_float,
+                parse_integer,
+                parse_raw_interpolated_string, // Raw interpolated strings before non-raw
+                parse_interpolated_string,     // Try interpolated strings before regular strings
+                parse_verbatim_string,         // Try verbatim strings before regular strings
+                parse_raw_string,              // Try raw strings before regular strings
+                parse_string,
+                parse_char_literal,
+                // Add other literal types here (null, etc.) if needed
+            )),
+            ws,
+        )
+        .parse(i)
+    })
+    .context("literal")
+    .parse(input)
 }
 
 // Helper: trim multi-line raw string content according to trailing indentation

@@ -8,14 +8,13 @@ pub mod keywords;
 pub mod parse_mode;
 pub mod statement_parser;
 pub mod syntax;
+pub mod tokens;
 pub mod traits;
 pub mod trivia;
 pub mod types;
-pub mod tokens;
 
 // Test-only diagnostics exposure (behind feature)
 pub mod test_diagnostics;
-
 
 use std::collections::HashMap;
 

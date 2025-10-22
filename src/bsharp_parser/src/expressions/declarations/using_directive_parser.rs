@@ -18,9 +18,11 @@ pub fn parse_using_directive(input: Span) -> BResult<UsingDirective> {
         let (input, _) = kw_using().context("using keyword").parse(input)?;
 
         // Optional 'static' keyword branch
-        let (input_after_static, opt_static) = nom::combinator::opt(delimited(ws, kw_static(), ws)).parse(input)?;
+        let (input_after_static, opt_static) =
+            nom::combinator::opt(delimited(ws, kw_static(), ws)).parse(input)?;
         if opt_static.is_some() {
-            let (input_after_name, type_name_parts) = delimited(ws, parse_qualified_name, ws).parse(input_after_static)?;
+            let (input_after_name, type_name_parts) =
+                delimited(ws, parse_qualified_name, ws).parse(input_after_static)?;
             let type_name_segments: Vec<String> = type_name_parts
                 .into_iter()
                 .map(|id| match id {
@@ -30,7 +32,9 @@ pub fn parse_using_directive(input: Span) -> BResult<UsingDirective> {
                 })
                 .collect();
             let (input_final, _) = delimited(ws, nom_char(';'), ws).parse(input_after_name)?;
-            let using_directive = UsingDirective::Static { type_name: Identifier::QualifiedIdentifier(type_name_segments) };
+            let using_directive = UsingDirective::Static {
+                type_name: Identifier::QualifiedIdentifier(type_name_segments),
+            };
             return Ok((input_final, using_directive));
         }
 
@@ -45,13 +49,9 @@ pub fn parse_using_directive(input: Span) -> BResult<UsingDirective> {
             })
             .collect();
 
-        if peek(delimited(ws, tok_assign(), ws))
-            .parse(input)
-            .is_ok()
-        {
+        if peek(delimited(ws, tok_assign(), ws)).parse(input).is_ok() {
             let (input, _) = delimited(ws, tok_assign(), ws).parse(input)?;
-            let (input, right_parts) =
-                delimited(ws, parse_qualified_name, ws).parse(input)?;
+            let (input, right_parts) = delimited(ws, parse_qualified_name, ws).parse(input)?;
             let right_segments: Vec<String> = right_parts
                 .into_iter()
                 .map(|id| match id {

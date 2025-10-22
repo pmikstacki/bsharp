@@ -1,3 +1,3 @@
-mod formatting_compare;
-mod emitter_targets;
 mod csharpier_installer;
+mod emitter_targets;
+mod formatting_compare;

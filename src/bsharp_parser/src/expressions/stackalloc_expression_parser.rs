@@ -4,13 +4,9 @@ use crate::parser::types::type_parser::parse_type_expression;
 use crate::syntax::comment_parser::ws;
 use crate::syntax::errors::BResult;
 use crate::syntax::list_parser::parse_delimited_list0;
-use nom::combinator::cut;
 use nom::Parser;
-use nom::{
-    branch::alt,
-    combinator::map,
-    sequence::delimited,
-};
+use nom::combinator::cut;
+use nom::{branch::alt, combinator::map, sequence::delimited};
 use nom_supreme::ParserExt;
 use syntax::expressions::{Expression, StackAllocExpression};
 use syntax::types::Type;
@@ -21,11 +17,11 @@ fn parse_collection_initializer(input: Span) -> BResult<Vec<Expression>> {
         |i| delimited(ws, tok_l_brace(), ws).parse(i),
         |i| delimited(ws, parse_expression, ws).parse(i),
         |i| delimited(ws, tok_comma(), ws).parse(i),
-        |i| delimited(ws,tok_r_brace(), ws).parse(i),
+        |i| delimited(ws, tok_r_brace(), ws).parse(i),
         false,
         true,
     )
-        .parse(input)
+    .parse(input)
 }
 
 /// Parse a stackalloc expression
@@ -45,7 +41,7 @@ pub fn parse_stackalloc_expression(input: Span) -> BResult<Expression> {
                 // stackalloc[] { ... } (implicitly typed)
                 map(
                     (
-                        delimited(ws,tok_l_brack(), ws),
+                        delimited(ws, tok_l_brack(), ws),
                         delimited(ws, tok_r_brack(), ws),
                         delimited(ws, parse_collection_initializer, ws),
                     ),
@@ -68,7 +64,7 @@ pub fn parse_stackalloc_expression(input: Span) -> BResult<Expression> {
                             // Case 2: [size]
                             map(
                                 delimited(
-                                    delimited(ws,tok_l_brack(), ws),
+                                    delimited(ws, tok_l_brack(), ws),
                                     delimited(ws, parse_expression, ws),
                                     cut(delimited(ws, tok_r_brack(), ws)),
                                 ),
@@ -77,7 +73,7 @@ pub fn parse_stackalloc_expression(input: Span) -> BResult<Expression> {
                             // Case 3: [] { ... }
                             map(
                                 (
-                                    delimited(ws,tok_l_brack(), ws),
+                                    delimited(ws, tok_l_brack(), ws),
                                     delimited(ws, tok_r_brack(), ws),
                                     delimited(ws, parse_collection_initializer, ws),
                                 ),
@@ -105,8 +101,8 @@ pub fn parse_stackalloc_expression(input: Span) -> BResult<Expression> {
         ),
         |(_, stackalloc)| Expression::StackAlloc(Box::new(stackalloc)),
     )
-        .context("stackalloc expression")
-        .parse(input)
+    .context("stackalloc expression")
+    .parse(input)
 }
 use crate::syntax::span::Span;
 use crate::tokens::delimiters::{tok_l_brace, tok_l_brack, tok_r_brace, tok_r_brack};

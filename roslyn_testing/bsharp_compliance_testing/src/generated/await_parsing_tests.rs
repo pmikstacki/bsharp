@@ -1,9 +1,9 @@
 // Auto-generated from Roslyn: AwaitParsingTests
-use bsharp_parser::syntax::span::Span;
 use crate::custom_asserts::after_parse;
 use crate::custom_asserts::after_parse::CaseData;
-use bsharp_parser::bsharp::parse_csharp_source_strict;
 use crate::custom_asserts::roslyn_asserts::ExpectedDiagnostics;
+use bsharp_parser::bsharp::parse_csharp_source_strict;
+use bsharp_parser::syntax::span::Span;
 /// Roslyn: AwaitParsingTests.AwaitOnIdentifierInAsynchronousContext (case 1)
 #[test]
 fn await_on_identifier_in_asynchronous_context() {
@@ -16,22 +16,51 @@ class C
     }
 }
 "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("await_parsing_tests", "AwaitParsingTests", "AwaitOnIdentifierInAsynchronousContext", 1, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "await_parsing_tests",
+                    "AwaitParsingTests",
+                    "AwaitOnIdentifierInAsynchronousContext",
+                    1,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("await_parsing_tests", "AwaitParsingTests", "AwaitOnIdentifierInAsynchronousContext", 1, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "await_parsing_tests",
+                    "AwaitParsingTests",
+                    "AwaitOnIdentifierInAsynchronousContext",
+                    1,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("await_parsing_tests", "AwaitParsingTests", "AwaitOnIdentifierInAsynchronousContext", 1, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "await_parsing_tests",
+            "AwaitParsingTests",
+            "AwaitOnIdentifierInAsynchronousContext",
+            1,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -47,22 +76,51 @@ class C
     }
 }
 "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("await_parsing_tests", "AwaitParsingTests", "AwaitOnIdentifierInSynchronousContext", 2, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "await_parsing_tests",
+                    "AwaitParsingTests",
+                    "AwaitOnIdentifierInSynchronousContext",
+                    2,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("await_parsing_tests", "AwaitParsingTests", "AwaitOnIdentifierInSynchronousContext", 2, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "await_parsing_tests",
+                    "AwaitParsingTests",
+                    "AwaitOnIdentifierInSynchronousContext",
+                    2,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("await_parsing_tests", "AwaitParsingTests", "AwaitOnIdentifierInSynchronousContext", 2, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "await_parsing_tests",
+            "AwaitParsingTests",
+            "AwaitOnIdentifierInSynchronousContext",
+            2,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -78,22 +136,51 @@ class C
     }
 }
 "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("await_parsing_tests", "AwaitParsingTests", "AwaitStatement", 3, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "await_parsing_tests",
+                    "AwaitParsingTests",
+                    "AwaitStatement",
+                    3,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("await_parsing_tests", "AwaitParsingTests", "AwaitStatement", 3, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "await_parsing_tests",
+                    "AwaitParsingTests",
+                    "AwaitStatement",
+                    3,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("await_parsing_tests", "AwaitParsingTests", "AwaitStatement", 3, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "await_parsing_tests",
+            "AwaitParsingTests",
+            "AwaitStatement",
+            3,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -114,22 +201,54 @@ class C
     }
 }
 "#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("await_parsing_tests", "AwaitParsingTests", "NestedLambdaAwait", 4, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "await_parsing_tests",
+                    "AwaitParsingTests",
+                    "NestedLambdaAwait",
+                    4,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("await_parsing_tests", "AwaitParsingTests", "NestedLambdaAwait", 4, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "await_parsing_tests",
+                    "AwaitParsingTests",
+                    "NestedLambdaAwait",
+                    4,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("await_parsing_tests", "AwaitParsingTests", "NestedLambdaAwait", 4, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "await_parsing_tests",
+            "AwaitParsingTests",
+            "NestedLambdaAwait",
+            4,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -145,22 +264,51 @@ class C
     }
 }
 "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("await_parsing_tests", "AwaitParsingTests", "AwaitExpr", 5, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "await_parsing_tests",
+                    "AwaitParsingTests",
+                    "AwaitExpr",
+                    5,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("await_parsing_tests", "AwaitParsingTests", "AwaitExpr", 5, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "await_parsing_tests",
+                    "AwaitParsingTests",
+                    "AwaitExpr",
+                    5,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("await_parsing_tests", "AwaitParsingTests", "AwaitExpr", 5, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "await_parsing_tests",
+            "AwaitParsingTests",
+            "AwaitExpr",
+            5,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -168,7 +316,7 @@ class C
 #[test]
 fn await_in_conditional_expression_after_pattern_1() {
     let src = r#"x is int ? await y : z"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { x is int ? await y : z; } }"#;
     let span2 = Span::new(src2);
@@ -176,16 +324,45 @@ fn await_in_conditional_expression_after_pattern_1() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("await_parsing_tests", "AwaitParsingTests", "AwaitInConditionalExpressionAfterPattern1", 6, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "await_parsing_tests",
+                    "AwaitParsingTests",
+                    "AwaitInConditionalExpressionAfterPattern1",
+                    6,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("await_parsing_tests", "AwaitParsingTests", "AwaitInConditionalExpressionAfterPattern1", 6, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "await_parsing_tests",
+                    "AwaitParsingTests",
+                    "AwaitInConditionalExpressionAfterPattern1",
+                    6,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("await_parsing_tests", "AwaitParsingTests", "AwaitInConditionalExpressionAfterPattern1", 6, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "await_parsing_tests",
+            "AwaitParsingTests",
+            "AwaitInConditionalExpressionAfterPattern1",
+            6,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -193,7 +370,7 @@ fn await_in_conditional_expression_after_pattern_1() {
 #[test]
 fn await_in_conditional_expression_after_pattern_2() {
     let src = r#"x is int ? await this.SomeMethodAsync() : z"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { x is int ? await this.SomeMethodAsync() : z; } }"#;
     let span2 = Span::new(src2);
@@ -201,16 +378,45 @@ fn await_in_conditional_expression_after_pattern_2() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("await_parsing_tests", "AwaitParsingTests", "AwaitInConditionalExpressionAfterPattern2", 7, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "await_parsing_tests",
+                    "AwaitParsingTests",
+                    "AwaitInConditionalExpressionAfterPattern2",
+                    7,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("await_parsing_tests", "AwaitParsingTests", "AwaitInConditionalExpressionAfterPattern2", 7, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "await_parsing_tests",
+                    "AwaitParsingTests",
+                    "AwaitInConditionalExpressionAfterPattern2",
+                    7,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("await_parsing_tests", "AwaitParsingTests", "AwaitInConditionalExpressionAfterPattern2", 7, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "await_parsing_tests",
+            "AwaitParsingTests",
+            "AwaitInConditionalExpressionAfterPattern2",
+            7,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -218,7 +424,7 @@ fn await_in_conditional_expression_after_pattern_2() {
 #[test]
 fn await_in_conditional_expression_after_pattern_3() {
     let src = r#"x is int ? await base.SomeMethodAsync() : z"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { x is int ? await base.SomeMethodAsync() : z; } }"#;
     let span2 = Span::new(src2);
@@ -226,16 +432,45 @@ fn await_in_conditional_expression_after_pattern_3() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("await_parsing_tests", "AwaitParsingTests", "AwaitInConditionalExpressionAfterPattern3", 8, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "await_parsing_tests",
+                    "AwaitParsingTests",
+                    "AwaitInConditionalExpressionAfterPattern3",
+                    8,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("await_parsing_tests", "AwaitParsingTests", "AwaitInConditionalExpressionAfterPattern3", 8, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "await_parsing_tests",
+                    "AwaitParsingTests",
+                    "AwaitInConditionalExpressionAfterPattern3",
+                    8,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("await_parsing_tests", "AwaitParsingTests", "AwaitInConditionalExpressionAfterPattern3", 8, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "await_parsing_tests",
+            "AwaitParsingTests",
+            "AwaitInConditionalExpressionAfterPattern3",
+            8,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -243,7 +478,7 @@ fn await_in_conditional_expression_after_pattern_3() {
 #[test]
 fn await_in_conditional_expression_after_pattern_4() {
     let src = r#"x is int ? await (myTask) : z"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { x is int ? await (myTask) : z; } }"#;
     let span2 = Span::new(src2);
@@ -251,16 +486,45 @@ fn await_in_conditional_expression_after_pattern_4() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("await_parsing_tests", "AwaitParsingTests", "AwaitInConditionalExpressionAfterPattern4", 9, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "await_parsing_tests",
+                    "AwaitParsingTests",
+                    "AwaitInConditionalExpressionAfterPattern4",
+                    9,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("await_parsing_tests", "AwaitParsingTests", "AwaitInConditionalExpressionAfterPattern4", 9, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "await_parsing_tests",
+                    "AwaitParsingTests",
+                    "AwaitInConditionalExpressionAfterPattern4",
+                    9,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("await_parsing_tests", "AwaitParsingTests", "AwaitInConditionalExpressionAfterPattern4", 9, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "await_parsing_tests",
+            "AwaitParsingTests",
+            "AwaitInConditionalExpressionAfterPattern4",
+            9,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -273,7 +537,7 @@ fn await_in_conditional_expression_after_pattern_5() {
                     var c = x is X ? await y : z;
                 }
                 "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { 
                 void M()
@@ -286,16 +550,45 @@ fn await_in_conditional_expression_after_pattern_5() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("await_parsing_tests", "AwaitParsingTests", "AwaitInConditionalExpressionAfterPattern5", 10, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "await_parsing_tests",
+                    "AwaitParsingTests",
+                    "AwaitInConditionalExpressionAfterPattern5",
+                    10,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("await_parsing_tests", "AwaitParsingTests", "AwaitInConditionalExpressionAfterPattern5", 10, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "await_parsing_tests",
+                    "AwaitParsingTests",
+                    "AwaitInConditionalExpressionAfterPattern5",
+                    10,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("await_parsing_tests", "AwaitParsingTests", "AwaitInConditionalExpressionAfterPattern5", 10, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "await_parsing_tests",
+            "AwaitParsingTests",
+            "AwaitInConditionalExpressionAfterPattern5",
+            10,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -308,7 +601,7 @@ fn await_in_conditional_expression_after_pattern_6() {
                     var c = x is X ? await y : z;
                 }
                 "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { 
                 async void M()
@@ -321,16 +614,45 @@ fn await_in_conditional_expression_after_pattern_6() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("await_parsing_tests", "AwaitParsingTests", "AwaitInConditionalExpressionAfterPattern6", 11, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "await_parsing_tests",
+                    "AwaitParsingTests",
+                    "AwaitInConditionalExpressionAfterPattern6",
+                    11,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("await_parsing_tests", "AwaitParsingTests", "AwaitInConditionalExpressionAfterPattern6", 11, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "await_parsing_tests",
+                    "AwaitParsingTests",
+                    "AwaitInConditionalExpressionAfterPattern6",
+                    11,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("await_parsing_tests", "AwaitParsingTests", "AwaitInConditionalExpressionAfterPattern6", 11, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "await_parsing_tests",
+            "AwaitParsingTests",
+            "AwaitInConditionalExpressionAfterPattern6",
+            11,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -343,7 +665,7 @@ fn await_in_conditional_expression_after_pattern_7() {
                     var c = x is X ? await(y) : z;
                 }
                 "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { 
                 void M()
@@ -356,16 +678,45 @@ fn await_in_conditional_expression_after_pattern_7() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("await_parsing_tests", "AwaitParsingTests", "AwaitInConditionalExpressionAfterPattern7", 12, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "await_parsing_tests",
+                    "AwaitParsingTests",
+                    "AwaitInConditionalExpressionAfterPattern7",
+                    12,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("await_parsing_tests", "AwaitParsingTests", "AwaitInConditionalExpressionAfterPattern7", 12, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "await_parsing_tests",
+                    "AwaitParsingTests",
+                    "AwaitInConditionalExpressionAfterPattern7",
+                    12,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("await_parsing_tests", "AwaitParsingTests", "AwaitInConditionalExpressionAfterPattern7", 12, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "await_parsing_tests",
+            "AwaitParsingTests",
+            "AwaitInConditionalExpressionAfterPattern7",
+            12,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -378,7 +729,7 @@ fn await_in_conditional_expression_after_pattern_8() {
                     var c = x is X ? await (y) : z;
                 }
                 "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { 
                 async void M()
@@ -391,16 +742,45 @@ fn await_in_conditional_expression_after_pattern_8() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("await_parsing_tests", "AwaitParsingTests", "AwaitInConditionalExpressionAfterPattern8", 13, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "await_parsing_tests",
+                    "AwaitParsingTests",
+                    "AwaitInConditionalExpressionAfterPattern8",
+                    13,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("await_parsing_tests", "AwaitParsingTests", "AwaitInConditionalExpressionAfterPattern8", 13, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "await_parsing_tests",
+                    "AwaitParsingTests",
+                    "AwaitInConditionalExpressionAfterPattern8",
+                    13,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("await_parsing_tests", "AwaitParsingTests", "AwaitInConditionalExpressionAfterPattern8", 13, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "await_parsing_tests",
+            "AwaitParsingTests",
+            "AwaitInConditionalExpressionAfterPattern8",
+            13,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -408,7 +788,10 @@ fn await_in_conditional_expression_after_pattern_8() {
 #[test]
 fn await_as_start_of_expression_in_conditional_1() {
     let src = r#"f(x is int? await)"#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { f(x is int? await); } }"#;
     let span2 = Span::new(src2);
@@ -416,16 +799,45 @@ fn await_as_start_of_expression_in_conditional_1() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("await_parsing_tests", "AwaitParsingTests", "AwaitAsStartOfExpressionInConditional1", 14, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "await_parsing_tests",
+                    "AwaitParsingTests",
+                    "AwaitAsStartOfExpressionInConditional1",
+                    14,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("await_parsing_tests", "AwaitParsingTests", "AwaitAsStartOfExpressionInConditional1", 14, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "await_parsing_tests",
+                    "AwaitParsingTests",
+                    "AwaitAsStartOfExpressionInConditional1",
+                    14,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("await_parsing_tests", "AwaitParsingTests", "AwaitAsStartOfExpressionInConditional1", 14, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "await_parsing_tests",
+            "AwaitParsingTests",
+            "AwaitAsStartOfExpressionInConditional1",
+            14,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -433,7 +845,10 @@ fn await_as_start_of_expression_in_conditional_1() {
 #[test]
 fn await_as_start_of_expression_in_conditional_2() {
     let src = r#"dict[x is int? await]"#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { dict[x is int? await]; } }"#;
     let span2 = Span::new(src2);
@@ -441,16 +856,45 @@ fn await_as_start_of_expression_in_conditional_2() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("await_parsing_tests", "AwaitParsingTests", "AwaitAsStartOfExpressionInConditional2", 15, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "await_parsing_tests",
+                    "AwaitParsingTests",
+                    "AwaitAsStartOfExpressionInConditional2",
+                    15,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("await_parsing_tests", "AwaitParsingTests", "AwaitAsStartOfExpressionInConditional2", 15, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "await_parsing_tests",
+                    "AwaitParsingTests",
+                    "AwaitAsStartOfExpressionInConditional2",
+                    15,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("await_parsing_tests", "AwaitParsingTests", "AwaitAsStartOfExpressionInConditional2", 15, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "await_parsing_tests",
+            "AwaitParsingTests",
+            "AwaitAsStartOfExpressionInConditional2",
+            15,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -458,7 +902,10 @@ fn await_as_start_of_expression_in_conditional_2() {
 #[test]
 fn await_as_start_of_expression_in_conditional_3() {
     let src = r#"x is { Prop: int? await }"#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { x is { Prop: int? await }; } }"#;
     let span2 = Span::new(src2);
@@ -466,16 +913,44 @@ fn await_as_start_of_expression_in_conditional_3() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("await_parsing_tests", "AwaitParsingTests", "AwaitAsStartOfExpressionInConditional3", 16, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "await_parsing_tests",
+                    "AwaitParsingTests",
+                    "AwaitAsStartOfExpressionInConditional3",
+                    16,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("await_parsing_tests", "AwaitParsingTests", "AwaitAsStartOfExpressionInConditional3", 16, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "await_parsing_tests",
+                    "AwaitParsingTests",
+                    "AwaitAsStartOfExpressionInConditional3",
+                    16,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("await_parsing_tests", "AwaitParsingTests", "AwaitAsStartOfExpressionInConditional3", 16, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "await_parsing_tests",
+            "AwaitParsingTests",
+            "AwaitAsStartOfExpressionInConditional3",
+            16,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
-

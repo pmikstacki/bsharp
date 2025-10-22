@@ -1,29 +1,61 @@
 // Auto-generated from Roslyn: ParsingErrorRecoveryTests
-use bsharp_parser::syntax::span::Span;
 use crate::custom_asserts::after_parse;
 use crate::custom_asserts::after_parse::CaseData;
-use bsharp_parser::bsharp::parse_csharp_source_strict;
 use crate::custom_asserts::roslyn_asserts::ExpectedDiagnostics;
+use bsharp_parser::bsharp::parse_csharp_source_strict;
+use bsharp_parser::syntax::span::Span;
 /// Roslyn: ParsingErrorRecoveryTests.RazorCommentRecovery_Space (case 1)
 #[test]
 fn razor_comment_recovery_space() {
     let src = r#"@ * *@"#;
-    let expected = Some(ExpectedDiagnostics { count: 4, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 4,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("parsing_error_recovery_tests", "ParsingErrorRecoveryTests", "RazorCommentRecovery_Space", 1, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "parsing_error_recovery_tests",
+                    "ParsingErrorRecoveryTests",
+                    "RazorCommentRecovery_Space",
+                    1,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("parsing_error_recovery_tests", "ParsingErrorRecoveryTests", "RazorCommentRecovery_Space", 1, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "parsing_error_recovery_tests",
+                    "ParsingErrorRecoveryTests",
+                    "RazorCommentRecovery_Space",
+                    1,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("parsing_error_recovery_tests", "ParsingErrorRecoveryTests", "RazorCommentRecovery_Space", 1, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "parsing_error_recovery_tests",
+            "ParsingErrorRecoveryTests",
+            "RazorCommentRecovery_Space",
+            1,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -31,22 +63,54 @@ fn razor_comment_recovery_space() {
 #[test]
 fn razor_comment_recovery_no_start() {
     let src = r#"*@"#;
-    let expected = Some(ExpectedDiagnostics { count: 3, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 3,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("parsing_error_recovery_tests", "ParsingErrorRecoveryTests", "RazorCommentRecovery_NoStart", 2, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "parsing_error_recovery_tests",
+                    "ParsingErrorRecoveryTests",
+                    "RazorCommentRecovery_NoStart",
+                    2,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("parsing_error_recovery_tests", "ParsingErrorRecoveryTests", "RazorCommentRecovery_NoStart", 2, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "parsing_error_recovery_tests",
+                    "ParsingErrorRecoveryTests",
+                    "RazorCommentRecovery_NoStart",
+                    2,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("parsing_error_recovery_tests", "ParsingErrorRecoveryTests", "RazorCommentRecovery_NoStart", 2, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "parsing_error_recovery_tests",
+            "ParsingErrorRecoveryTests",
+            "RazorCommentRecovery_NoStart",
+            2,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -56,22 +120,54 @@ fn preprocessor_directive_trailing_01() {
     let src = r#"
                 if (#if)
                 "#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("parsing_error_recovery_tests", "ParsingErrorRecoveryTests", "PreprocessorDirective_Trailing_01", 3, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "parsing_error_recovery_tests",
+                    "ParsingErrorRecoveryTests",
+                    "PreprocessorDirective_Trailing_01",
+                    3,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("parsing_error_recovery_tests", "ParsingErrorRecoveryTests", "PreprocessorDirective_Trailing_01", 3, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "parsing_error_recovery_tests",
+                    "ParsingErrorRecoveryTests",
+                    "PreprocessorDirective_Trailing_01",
+                    3,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("parsing_error_recovery_tests", "ParsingErrorRecoveryTests", "PreprocessorDirective_Trailing_01", 3, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "parsing_error_recovery_tests",
+            "ParsingErrorRecoveryTests",
+            "PreprocessorDirective_Trailing_01",
+            3,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -81,22 +177,54 @@ fn preprocessor_directive_trailing_01_whitespace_before_hash() {
     let src = r#"
                 if ( #if)
                 "#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("parsing_error_recovery_tests", "ParsingErrorRecoveryTests", "PreprocessorDirective_Trailing_01_WhitespaceBeforeHash", 4, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "parsing_error_recovery_tests",
+                    "ParsingErrorRecoveryTests",
+                    "PreprocessorDirective_Trailing_01_WhitespaceBeforeHash",
+                    4,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("parsing_error_recovery_tests", "ParsingErrorRecoveryTests", "PreprocessorDirective_Trailing_01_WhitespaceBeforeHash", 4, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "parsing_error_recovery_tests",
+                    "ParsingErrorRecoveryTests",
+                    "PreprocessorDirective_Trailing_01_WhitespaceBeforeHash",
+                    4,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("parsing_error_recovery_tests", "ParsingErrorRecoveryTests", "PreprocessorDirective_Trailing_01_WhitespaceBeforeHash", 4, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "parsing_error_recovery_tests",
+            "ParsingErrorRecoveryTests",
+            "PreprocessorDirective_Trailing_01_WhitespaceBeforeHash",
+            4,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -106,22 +234,54 @@ fn preprocessor_directive_trailing_01_whitespace_after_hash() {
     let src = r#"
                 if ( # if)
                 "#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("parsing_error_recovery_tests", "ParsingErrorRecoveryTests", "PreprocessorDirective_Trailing_01_WhitespaceAfterHash", 5, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "parsing_error_recovery_tests",
+                    "ParsingErrorRecoveryTests",
+                    "PreprocessorDirective_Trailing_01_WhitespaceAfterHash",
+                    5,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("parsing_error_recovery_tests", "ParsingErrorRecoveryTests", "PreprocessorDirective_Trailing_01_WhitespaceAfterHash", 5, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "parsing_error_recovery_tests",
+                    "ParsingErrorRecoveryTests",
+                    "PreprocessorDirective_Trailing_01_WhitespaceAfterHash",
+                    5,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("parsing_error_recovery_tests", "ParsingErrorRecoveryTests", "PreprocessorDirective_Trailing_01_WhitespaceAfterHash", 5, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "parsing_error_recovery_tests",
+            "ParsingErrorRecoveryTests",
+            "PreprocessorDirective_Trailing_01_WhitespaceAfterHash",
+            5,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -135,22 +295,54 @@ fn preprocessor_directive_trailing_02() {
                 y
                 #endif
                 "#;
-    let expected = Some(ExpectedDiagnostics { count: 5, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 5,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("parsing_error_recovery_tests", "ParsingErrorRecoveryTests", "PreprocessorDirective_Trailing_02", 6, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "parsing_error_recovery_tests",
+                    "ParsingErrorRecoveryTests",
+                    "PreprocessorDirective_Trailing_02",
+                    6,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("parsing_error_recovery_tests", "ParsingErrorRecoveryTests", "PreprocessorDirective_Trailing_02", 6, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "parsing_error_recovery_tests",
+                    "ParsingErrorRecoveryTests",
+                    "PreprocessorDirective_Trailing_02",
+                    6,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("parsing_error_recovery_tests", "ParsingErrorRecoveryTests", "PreprocessorDirective_Trailing_02", 6, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "parsing_error_recovery_tests",
+            "ParsingErrorRecoveryTests",
+            "PreprocessorDirective_Trailing_02",
+            6,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -165,22 +357,51 @@ fn preprocessor_directive_trailing_03() {
                 c();
                 #endif
                 "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("parsing_error_recovery_tests", "ParsingErrorRecoveryTests", "PreprocessorDirective_Trailing_03", 7, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "parsing_error_recovery_tests",
+                    "ParsingErrorRecoveryTests",
+                    "PreprocessorDirective_Trailing_03",
+                    7,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("parsing_error_recovery_tests", "ParsingErrorRecoveryTests", "PreprocessorDirective_Trailing_03", 7, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "parsing_error_recovery_tests",
+                    "ParsingErrorRecoveryTests",
+                    "PreprocessorDirective_Trailing_03",
+                    7,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("parsing_error_recovery_tests", "ParsingErrorRecoveryTests", "PreprocessorDirective_Trailing_03", 7, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "parsing_error_recovery_tests",
+            "ParsingErrorRecoveryTests",
+            "PreprocessorDirective_Trailing_03",
+            7,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -195,22 +416,54 @@ fn preprocessor_directive_trailing_04() {
                 c();
                 #endif
                 "#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("parsing_error_recovery_tests", "ParsingErrorRecoveryTests", "PreprocessorDirective_Trailing_04", 8, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "parsing_error_recovery_tests",
+                    "ParsingErrorRecoveryTests",
+                    "PreprocessorDirective_Trailing_04",
+                    8,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("parsing_error_recovery_tests", "ParsingErrorRecoveryTests", "PreprocessorDirective_Trailing_04", 8, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "parsing_error_recovery_tests",
+                    "ParsingErrorRecoveryTests",
+                    "PreprocessorDirective_Trailing_04",
+                    8,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("parsing_error_recovery_tests", "ParsingErrorRecoveryTests", "PreprocessorDirective_Trailing_04", 8, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "parsing_error_recovery_tests",
+            "ParsingErrorRecoveryTests",
+            "PreprocessorDirective_Trailing_04",
+            8,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -227,22 +480,54 @@ fn preprocessor_directive_trailing_05() {
                 #endif
                 d();
                 "#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("parsing_error_recovery_tests", "ParsingErrorRecoveryTests", "PreprocessorDirective_Trailing_05", 9, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "parsing_error_recovery_tests",
+                    "ParsingErrorRecoveryTests",
+                    "PreprocessorDirective_Trailing_05",
+                    9,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("parsing_error_recovery_tests", "ParsingErrorRecoveryTests", "PreprocessorDirective_Trailing_05", 9, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "parsing_error_recovery_tests",
+                    "ParsingErrorRecoveryTests",
+                    "PreprocessorDirective_Trailing_05",
+                    9,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("parsing_error_recovery_tests", "ParsingErrorRecoveryTests", "PreprocessorDirective_Trailing_05", 9, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "parsing_error_recovery_tests",
+            "ParsingErrorRecoveryTests",
+            "PreprocessorDirective_Trailing_05",
+            9,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -257,22 +542,54 @@ fn preprocessor_directive_trailing_define() {
                 y();
                 #endif
                 "#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("parsing_error_recovery_tests", "ParsingErrorRecoveryTests", "PreprocessorDirective_Trailing_Define", 10, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "parsing_error_recovery_tests",
+                    "ParsingErrorRecoveryTests",
+                    "PreprocessorDirective_Trailing_Define",
+                    10,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("parsing_error_recovery_tests", "ParsingErrorRecoveryTests", "PreprocessorDirective_Trailing_Define", 10, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "parsing_error_recovery_tests",
+                    "ParsingErrorRecoveryTests",
+                    "PreprocessorDirective_Trailing_Define",
+                    10,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("parsing_error_recovery_tests", "ParsingErrorRecoveryTests", "PreprocessorDirective_Trailing_Define", 10, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "parsing_error_recovery_tests",
+            "ParsingErrorRecoveryTests",
+            "PreprocessorDirective_Trailing_Define",
+            10,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -288,22 +605,54 @@ fn preprocessor_directive_trailing_undefine() {
                 y();
                 #endif
                 "#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("parsing_error_recovery_tests", "ParsingErrorRecoveryTests", "PreprocessorDirective_Trailing_Undefine", 11, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "parsing_error_recovery_tests",
+                    "ParsingErrorRecoveryTests",
+                    "PreprocessorDirective_Trailing_Undefine",
+                    11,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("parsing_error_recovery_tests", "ParsingErrorRecoveryTests", "PreprocessorDirective_Trailing_Undefine", 11, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "parsing_error_recovery_tests",
+                    "ParsingErrorRecoveryTests",
+                    "PreprocessorDirective_Trailing_Undefine",
+                    11,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("parsing_error_recovery_tests", "ParsingErrorRecoveryTests", "PreprocessorDirective_Trailing_Undefine", 11, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "parsing_error_recovery_tests",
+            "ParsingErrorRecoveryTests",
+            "PreprocessorDirective_Trailing_Undefine",
+            11,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -316,22 +665,54 @@ fn preprocessor_directive_trailing_error_warning() {
                 #error E2
                 #warning W2
                 "#;
-    let expected = Some(ExpectedDiagnostics { count: 4, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 4,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("parsing_error_recovery_tests", "ParsingErrorRecoveryTests", "PreprocessorDirective_Trailing_ErrorWarning", 12, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "parsing_error_recovery_tests",
+                    "ParsingErrorRecoveryTests",
+                    "PreprocessorDirective_Trailing_ErrorWarning",
+                    12,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("parsing_error_recovery_tests", "ParsingErrorRecoveryTests", "PreprocessorDirective_Trailing_ErrorWarning", 12, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "parsing_error_recovery_tests",
+                    "ParsingErrorRecoveryTests",
+                    "PreprocessorDirective_Trailing_ErrorWarning",
+                    12,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("parsing_error_recovery_tests", "ParsingErrorRecoveryTests", "PreprocessorDirective_Trailing_ErrorWarning", 12, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "parsing_error_recovery_tests",
+            "ParsingErrorRecoveryTests",
+            "PreprocessorDirective_Trailing_ErrorWarning",
+            12,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -343,22 +724,54 @@ fn preprocessor_directive_trailing_line() {
                 /* comment */ #line 100
                 #error E1
                 "#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("parsing_error_recovery_tests", "ParsingErrorRecoveryTests", "PreprocessorDirective_Trailing_Line", 13, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "parsing_error_recovery_tests",
+                    "ParsingErrorRecoveryTests",
+                    "PreprocessorDirective_Trailing_Line",
+                    13,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("parsing_error_recovery_tests", "ParsingErrorRecoveryTests", "PreprocessorDirective_Trailing_Line", 13, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "parsing_error_recovery_tests",
+                    "ParsingErrorRecoveryTests",
+                    "PreprocessorDirective_Trailing_Line",
+                    13,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("parsing_error_recovery_tests", "ParsingErrorRecoveryTests", "PreprocessorDirective_Trailing_Line", 13, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "parsing_error_recovery_tests",
+            "ParsingErrorRecoveryTests",
+            "PreprocessorDirective_Trailing_Line",
+            13,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -370,22 +783,50 @@ fn missing_node_with_skipped_tokens_1() {
 
                 interface
                 "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("parsing_error_recovery_tests", "ParsingErrorRecoveryTests", "MissingNodeWithSkippedTokens1", 14, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "parsing_error_recovery_tests",
+                    "ParsingErrorRecoveryTests",
+                    "MissingNodeWithSkippedTokens1",
+                    14,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("parsing_error_recovery_tests", "ParsingErrorRecoveryTests", "MissingNodeWithSkippedTokens1", 14, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "parsing_error_recovery_tests",
+                    "ParsingErrorRecoveryTests",
+                    "MissingNodeWithSkippedTokens1",
+                    14,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("parsing_error_recovery_tests", "ParsingErrorRecoveryTests", "MissingNodeWithSkippedTokens1", 14, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "parsing_error_recovery_tests",
+            "ParsingErrorRecoveryTests",
+            "MissingNodeWithSkippedTokens1",
+            14,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
-

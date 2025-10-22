@@ -1,11 +1,11 @@
+use super::csharpier_installer::ensure_csharpier_bin;
 use assert_cmd::prelude::*;
 use similar::TextDiff;
 use std::io::Write as _;
 use std::path::{Path, PathBuf};
 use std::process::Command;
-use tempfile::NamedTempFile;
 use tempfile::Builder as TempBuilder;
-use super::csharpier_installer::ensure_csharpier_bin;
+use tempfile::NamedTempFile;
 
 fn run_our_formatter(input: &Path) -> anyhow::Result<String> {
     let output = Command::cargo_bin("bsharp_cli")?
@@ -104,7 +104,13 @@ fn run_csharpier(input: &Path) -> anyhow::Result<String> {
     Ok(formatted)
 }
 
-fn normalize_eol(mut s: String) -> String { s = s.replace("\r\n", "\n"); if !s.ends_with('\n') { s.push('\n'); } s }
+fn normalize_eol(mut s: String) -> String {
+    s = s.replace("\r\n", "\n");
+    if !s.ends_with('\n') {
+        s.push('\n');
+    }
+    s
+}
 
 fn diff_report(left_name: &str, left: &str, right_name: &str, right: &str) -> String {
     let diff = TextDiff::from_lines(left, right);

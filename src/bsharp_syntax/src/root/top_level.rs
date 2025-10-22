@@ -3,8 +3,8 @@ use crate::declarations::{
     GlobalAttribute, InterfaceDeclaration, NamespaceDeclaration, RecordDeclaration,
     StructDeclaration,
 };
-use serde::{Deserialize, Serialize};
 use bsharp_syntax_derive::AstNode;
+use serde::{Deserialize, Serialize};
 
 // Ensure TopLevelDeclaration also derives PartialEq for CompilationUnit's derive to work.
 // It should also have other common derives for AST nodes.

@@ -1,9 +1,9 @@
 // Auto-generated from Roslyn: SyntaxFactoryTests
-use bsharp_parser::syntax::span::Span;
 use crate::custom_asserts::after_parse;
 use crate::custom_asserts::after_parse::CaseData;
 use bsharp_parser::bsharp::parse_csharp_source_strict;
 use bsharp_parser::statement_parser::parse_statement_ws;
+use bsharp_parser::syntax::span::Span;
 /// Roslyn: SyntaxFactoryTests.UsingDirective (case 1)
 #[test]
 fn using_directive() {
@@ -14,7 +14,18 @@ fn using_directive() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_factory_tests", "SyntaxFactoryTests", "UsingDirective", 1, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_factory_tests",
+                "SyntaxFactoryTests",
+                "UsingDirective",
+                1,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -30,7 +41,18 @@ fn get_token_diagnostics_with_syntax_tree_with_diagnostics() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_factory_tests", "SyntaxFactoryTests", "GetTokenDiagnosticsWithSyntaxTree_WithDiagnostics", 2, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_factory_tests",
+                "SyntaxFactoryTests",
+                "GetTokenDiagnosticsWithSyntaxTree_WithDiagnostics",
+                2,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -46,7 +68,18 @@ fn get_token_diagnostics_with_syntax_tree_without_diagnostics() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_factory_tests", "SyntaxFactoryTests", "GetTokenDiagnosticsWithSyntaxTree_WithoutDiagnostics", 3, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_factory_tests",
+                "SyntaxFactoryTests",
+                "GetTokenDiagnosticsWithSyntaxTree_WithoutDiagnostics",
+                3,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -62,7 +95,18 @@ fn spacing_on_nullable_datetime_type() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_factory_tests", "SyntaxFactoryTests", "TestSpacingOnNullableDatetimeType", 4, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_factory_tests",
+                "SyntaxFactoryTests",
+                "TestSpacingOnNullableDatetimeType",
+                4,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -78,7 +122,18 @@ fn spacing_on_ternary() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_factory_tests", "SyntaxFactoryTests", "TestSpacingOnTernary", 5, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_factory_tests",
+                "SyntaxFactoryTests",
+                "TestSpacingOnTernary",
+                5,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -94,7 +149,18 @@ fn spacing_on_ternary_case_2() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_factory_tests", "SyntaxFactoryTests", "TestSpacingOnTernary", 6, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_factory_tests",
+                "SyntaxFactoryTests",
+                "TestSpacingOnTernary",
+                6,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -110,7 +176,18 @@ fn spacing_on_coalescing() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_factory_tests", "SyntaxFactoryTests", "TestSpacingOnCoalescing", 7, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_factory_tests",
+                "SyntaxFactoryTests",
+                "TestSpacingOnCoalescing",
+                7,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -126,7 +203,18 @@ fn spacing_on_coalescing_case_2() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_factory_tests", "SyntaxFactoryTests", "TestSpacingOnCoalescing", 8, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_factory_tests",
+                "SyntaxFactoryTests",
+                "TestSpacingOnCoalescing",
+                8,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -142,7 +230,18 @@ fn spacing_on_coalescing_case_3() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_factory_tests", "SyntaxFactoryTests", "TestSpacingOnCoalescing", 9, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_factory_tests",
+                "SyntaxFactoryTests",
+                "TestSpacingOnCoalescing",
+                9,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -158,7 +257,18 @@ fn unnecessary_semicolon() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_factory_tests", "SyntaxFactoryTests", "TestUnnecessarySemicolon", 10, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_factory_tests",
+                "SyntaxFactoryTests",
+                "TestUnnecessarySemicolon",
+                10,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -174,7 +284,18 @@ fn unnecessary_semicolon_case_2() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_factory_tests", "SyntaxFactoryTests", "TestUnnecessarySemicolon", 11, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_factory_tests",
+                "SyntaxFactoryTests",
+                "TestUnnecessarySemicolon",
+                11,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -188,8 +309,19 @@ fn unnecessary_semicolon_case_3() {
     let r = parse_statement_ws(span);
     match r {
         Ok((rest, ast)) => {
-            assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-            after_parse::after_parse_with_expected("syntax_factory_tests", "SyntaxFactoryTests", "TestUnnecessarySemicolon", 12, None, CaseData::Statement { ast: &ast, src });
+            assert!(
+                rest.fragment().trim().is_empty(),
+                "Unconsumed input: {}",
+                rest.fragment()
+            );
+            after_parse::after_parse_with_expected(
+                "syntax_factory_tests",
+                "SyntaxFactoryTests",
+                "TestUnnecessarySemicolon",
+                12,
+                None,
+                CaseData::Statement { ast: &ast, src },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -205,7 +337,18 @@ fn create_record_with_members() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_factory_tests", "SyntaxFactoryTests", "TestCreateRecordWithMembers", 13, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_factory_tests",
+                "SyntaxFactoryTests",
+                "TestCreateRecordWithMembers",
+                13,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -221,7 +364,18 @@ fn create_record_with_members_case_2() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_factory_tests", "SyntaxFactoryTests", "TestCreateRecordWithMembers", 14, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_factory_tests",
+                "SyntaxFactoryTests",
+                "TestCreateRecordWithMembers",
+                14,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -235,7 +389,18 @@ fn parse_methods_keep_parse_options_in_the_tree() {
     let r = parse_csharp_source_strict(span);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_factory_tests", "SyntaxFactoryTests", "TestParseMethodsKeepParseOptionsInTheTree", 15, None, CaseData::File { unit: &unit, src, original: None });
+            after_parse::after_parse_with_expected(
+                "syntax_factory_tests",
+                "SyntaxFactoryTests",
+                "TestParseMethodsKeepParseOptionsInTheTree",
+                15,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src,
+                    original: None,
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -251,7 +416,18 @@ fn parse_methods_keep_parse_options_in_the_tree_case_2() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_factory_tests", "SyntaxFactoryTests", "TestParseMethodsKeepParseOptionsInTheTree", 16, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_factory_tests",
+                "SyntaxFactoryTests",
+                "TestParseMethodsKeepParseOptionsInTheTree",
+                16,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -267,7 +443,18 @@ fn parse_methods_keep_parse_options_in_the_tree_case_3() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_factory_tests", "SyntaxFactoryTests", "TestParseMethodsKeepParseOptionsInTheTree", 17, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_factory_tests",
+                "SyntaxFactoryTests",
+                "TestParseMethodsKeepParseOptionsInTheTree",
+                17,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -283,7 +470,18 @@ fn parse_methods_keep_parse_options_in_the_tree_case_4() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_factory_tests", "SyntaxFactoryTests", "TestParseMethodsKeepParseOptionsInTheTree", 18, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_factory_tests",
+                "SyntaxFactoryTests",
+                "TestParseMethodsKeepParseOptionsInTheTree",
+                18,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -297,8 +495,19 @@ fn parse_methods_keep_parse_options_in_the_tree_case_5() {
     let r = parse_statement_ws(span);
     match r {
         Ok((rest, ast)) => {
-            assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-            after_parse::after_parse_with_expected("syntax_factory_tests", "SyntaxFactoryTests", "TestParseMethodsKeepParseOptionsInTheTree", 19, None, CaseData::Statement { ast: &ast, src });
+            assert!(
+                rest.fragment().trim().is_empty(),
+                "Unconsumed input: {}",
+                rest.fragment()
+            );
+            after_parse::after_parse_with_expected(
+                "syntax_factory_tests",
+                "SyntaxFactoryTests",
+                "TestParseMethodsKeepParseOptionsInTheTree",
+                19,
+                None,
+                CaseData::Statement { ast: &ast, src },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -314,9 +523,19 @@ fn parse_methods_keep_parse_options_in_the_tree_case_6() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_factory_tests", "SyntaxFactoryTests", "TestParseMethodsKeepParseOptionsInTheTree", 20, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_factory_tests",
+                "SyntaxFactoryTests",
+                "TestParseMethodsKeepParseOptionsInTheTree",
+                20,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
 }
-

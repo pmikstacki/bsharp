@@ -1,9 +1,9 @@
 use crate::syntax::errors::BResult;
 use crate::syntax::span::Span;
 
-use nom::combinator::cut;
 use nom::Err;
 use nom::Parser;
+use nom::combinator::cut;
 use nom_supreme::error::{BaseErrorKind, ErrorTree, Expectation};
 use syntax::expressions::{BinaryOperator, Expression};
 

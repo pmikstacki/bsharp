@@ -1,6 +1,6 @@
 use crate::framework::{AnalysisSession, AnalyzerPass, Phase, Query};
-use crate::metrics::shared::{count_statements, decision_points, max_nesting_of};
 use crate::metrics::AstAnalysis;
+use crate::metrics::shared::{count_statements, decision_points, max_nesting_of};
 use crate::syntax::ast::CompilationUnit;
 use crate::syntax::declarations::{
     ClassBodyDeclaration, ClassDeclaration, StructBodyDeclaration, StructDeclaration,

@@ -1,7 +1,7 @@
-use std::fmt::Write;
 use crate::declarations::OperatorKind;
-use crate::expressions::{AssignmentOperator, BinaryOperator, UnaryOperator};
 use crate::emitters::emit_trait::{Emit, EmitCtx, EmitError};
+use crate::expressions::{AssignmentOperator, BinaryOperator, UnaryOperator};
+use std::fmt::Write;
 
 impl Emit for OperatorKind {
     fn emit<W: Write>(&self, w: &mut W, cx: &mut EmitCtx) -> Result<(), EmitError> {
@@ -42,8 +42,7 @@ impl Emit for BinaryOperator {
     }
 }
 
-impl Emit for UnaryOperator
-{
+impl Emit for UnaryOperator {
     fn emit<W: Write>(&self, w: &mut W, cx: &mut EmitCtx) -> Result<(), EmitError> {
         let _ = cx;
         write!(w, "{}", self)?;

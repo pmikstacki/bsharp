@@ -96,10 +96,12 @@ impl ControlFlowGraph {
                         v_out[0].0
                     };
                     // Remove edges u->v, u->w, v->j, w->j
-                    edges.retain(|Edge(a, b, _)| !matches!((*a, *b), (x, y) if
-                        (x == u && (y == v || y == w)) ||
-                        ((x == v || x == w) && y == j)
-                    ));
+                    edges.retain(|Edge(a, b, _)| {
+                        !matches!((*a, *b), (x, y) if
+                            (x == u && (y == v || y == w)) ||
+                            ((x == v || x == w) && y == j)
+                        )
+                    });
                     // Remove nodes v and w
                     nodes.remove(&v);
                     nodes.remove(&w);

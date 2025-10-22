@@ -1,8 +1,8 @@
 use crate::expressions::expression::Expression;
 use crate::identifier::Identifier;
 use crate::types::Type;
-use serde::{Deserialize, Serialize};
 use bsharp_syntax_derive::AstNode;
+use serde::{Deserialize, Serialize};
 
 #[derive(AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct Attribute {

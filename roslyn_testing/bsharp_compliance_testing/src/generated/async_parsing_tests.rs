@@ -1,9 +1,9 @@
 // Auto-generated from Roslyn: AsyncParsingTests
-use bsharp_parser::syntax::span::Span;
 use crate::custom_asserts::after_parse;
 use crate::custom_asserts::after_parse::CaseData;
-use bsharp_parser::bsharp::parse_csharp_source_strict;
 use crate::custom_asserts::roslyn_asserts::ExpectedDiagnostics;
+use bsharp_parser::bsharp::parse_csharp_source_strict;
+use bsharp_parser::syntax::span::Span;
 /// Roslyn: AsyncParsingTests.SimpleAsyncMethod (case 1)
 #[test]
 fn simple_async_method() {
@@ -13,22 +13,51 @@ class C
     async void M() { }
 }
 "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "SimpleAsyncMethod", 1, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "SimpleAsyncMethod",
+                    1,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "SimpleAsyncMethod", 1, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "SimpleAsyncMethod",
+                    1,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "SimpleAsyncMethod", 1, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "async_parsing_tests",
+            "AsyncParsingTests",
+            "SimpleAsyncMethod",
+            1,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -41,22 +70,51 @@ class C
     void async() { }
 }
 "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "MethodCalledAsync", 2, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "MethodCalledAsync",
+                    2,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "MethodCalledAsync", 2, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "MethodCalledAsync",
+                    2,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "MethodCalledAsync", 2, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "async_parsing_tests",
+            "AsyncParsingTests",
+            "MethodCalledAsync",
+            2,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -69,22 +127,51 @@ class C
     async M() { }
 }
 "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "MethodReturningAsync", 3, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "MethodReturningAsync",
+                    3,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "MethodReturningAsync", 3, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "MethodReturningAsync",
+                    3,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "MethodReturningAsync", 3, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "async_parsing_tests",
+            "AsyncParsingTests",
+            "MethodReturningAsync",
+            3,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -97,22 +184,51 @@ class C
     async async() { }
 }
 "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "MethodAsyncAsync", 4, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "MethodAsyncAsync",
+                    4,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "MethodAsyncAsync", 4, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "MethodAsyncAsync",
+                    4,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "MethodAsyncAsync", 4, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "async_parsing_tests",
+            "AsyncParsingTests",
+            "MethodAsyncAsync",
+            4,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -125,22 +241,51 @@ class C
     async async async() { }
 }
 "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "MethodAsyncAsyncAsync", 5, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "MethodAsyncAsyncAsync",
+                    5,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "MethodAsyncAsyncAsync", 5, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "MethodAsyncAsyncAsync",
+                    5,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "MethodAsyncAsyncAsync", 5, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "async_parsing_tests",
+            "AsyncParsingTests",
+            "MethodAsyncAsyncAsync",
+            5,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -153,22 +298,51 @@ class C
     async async async async() { }
 }
 "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "MethodAsyncAsyncAsyncAsync", 6, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "MethodAsyncAsyncAsyncAsync",
+                    6,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "MethodAsyncAsyncAsyncAsync", 6, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "MethodAsyncAsyncAsyncAsync",
+                    6,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "MethodAsyncAsyncAsyncAsync", 6, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "async_parsing_tests",
+            "AsyncParsingTests",
+            "MethodAsyncAsyncAsyncAsync",
+            6,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -182,22 +356,51 @@ fn method_async_var_async() {
         async.F();
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "MethodAsyncVarAsync", 7, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "MethodAsyncVarAsync",
+                    7,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "MethodAsyncVarAsync", 7, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "MethodAsyncVarAsync",
+                    7,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "MethodAsyncVarAsync", 7, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "async_parsing_tests",
+            "AsyncParsingTests",
+            "MethodAsyncVarAsync",
+            7,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -209,22 +412,54 @@ class C
 {
     async
 "#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "IncompleteAsync", 8, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "IncompleteAsync",
+                    8,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "IncompleteAsync", 8, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "IncompleteAsync",
+                    8,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "IncompleteAsync", 8, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "async_parsing_tests",
+            "AsyncParsingTests",
+            "IncompleteAsync",
+            8,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -236,22 +471,54 @@ class C
 {
     async async
 "#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "IncompleteAsyncAsync", 9, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "IncompleteAsyncAsync",
+                    9,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "IncompleteAsyncAsync", 9, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "IncompleteAsyncAsync",
+                    9,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "IncompleteAsyncAsync", 9, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "async_parsing_tests",
+            "AsyncParsingTests",
+            "IncompleteAsyncAsync",
+            9,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -263,22 +530,54 @@ class C
 {
     async async;
 "#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "CompleteAsyncAsync1", 10, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "CompleteAsyncAsync1",
+                    10,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "CompleteAsyncAsync1", 10, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "CompleteAsyncAsync1",
+                    10,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "CompleteAsyncAsync1", 10, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "async_parsing_tests",
+            "AsyncParsingTests",
+            "CompleteAsyncAsync1",
+            10,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -290,22 +589,54 @@ class C
 {
     async async = 1;
 "#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "CompleteAsyncAsync2", 11, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "CompleteAsyncAsync2",
+                    11,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "CompleteAsyncAsync2", 11, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "CompleteAsyncAsync2",
+                    11,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "CompleteAsyncAsync2", 11, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "async_parsing_tests",
+            "AsyncParsingTests",
+            "CompleteAsyncAsync2",
+            11,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -317,22 +648,54 @@ class C
 {
     async async async
 "#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "IncompleteAsyncAsyncAsync", 12, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "IncompleteAsyncAsyncAsync",
+                    12,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "IncompleteAsyncAsyncAsync", 12, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "IncompleteAsyncAsyncAsync",
+                    12,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "IncompleteAsyncAsyncAsync", 12, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "async_parsing_tests",
+            "AsyncParsingTests",
+            "IncompleteAsyncAsyncAsync",
+            12,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -344,22 +707,54 @@ class C
 {
     async async async;
 "#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "CompleteAsyncAsyncAsync", 13, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "CompleteAsyncAsyncAsync",
+                    13,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "CompleteAsyncAsyncAsync", 13, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "CompleteAsyncAsyncAsync",
+                    13,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "CompleteAsyncAsyncAsync", 13, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "async_parsing_tests",
+            "AsyncParsingTests",
+            "CompleteAsyncAsyncAsync",
+            13,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -371,22 +766,54 @@ class C
 {
     async async async async
 "#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "IncompleteAsyncAsyncAsyncAsync", 14, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "IncompleteAsyncAsyncAsyncAsync",
+                    14,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "IncompleteAsyncAsyncAsyncAsync", 14, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "IncompleteAsyncAsyncAsyncAsync",
+                    14,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "IncompleteAsyncAsyncAsyncAsync", 14, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "async_parsing_tests",
+            "AsyncParsingTests",
+            "IncompleteAsyncAsyncAsyncAsync",
+            14,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -398,22 +825,54 @@ class C
 {
     async async async async;
 "#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "CompleteAsyncAsyncAsyncAsync", 15, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "CompleteAsyncAsyncAsyncAsync",
+                    15,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "CompleteAsyncAsyncAsyncAsync", 15, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "CompleteAsyncAsyncAsyncAsync",
+                    15,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "CompleteAsyncAsyncAsyncAsync", 15, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "async_parsing_tests",
+            "AsyncParsingTests",
+            "CompleteAsyncAsyncAsyncAsync",
+            15,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -425,22 +884,54 @@ class C
 {
     async Task<
 }"#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "IncompleteAsyncMember01", 16, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "IncompleteAsyncMember01",
+                    16,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "IncompleteAsyncMember01", 16, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "IncompleteAsyncMember01",
+                    16,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "IncompleteAsyncMember01", 16, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "async_parsing_tests",
+            "AsyncParsingTests",
+            "IncompleteAsyncMember01",
+            16,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -452,22 +943,54 @@ class C
 {
     async Tasks.Task<
 }"#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "IncompleteAsyncMember02", 17, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "IncompleteAsyncMember02",
+                    17,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "IncompleteAsyncMember02", 17, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "IncompleteAsyncMember02",
+                    17,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "IncompleteAsyncMember02", 17, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "async_parsing_tests",
+            "AsyncParsingTests",
+            "IncompleteAsyncMember02",
+            17,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -479,22 +1002,54 @@ class C
 {
     static async Tasks.Task<
 }"#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "IncompleteAsyncMember03", 18, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "IncompleteAsyncMember03",
+                    18,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "IncompleteAsyncMember03", 18, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "IncompleteAsyncMember03",
+                    18,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "IncompleteAsyncMember03", 18, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "async_parsing_tests",
+            "AsyncParsingTests",
+            "IncompleteAsyncMember03",
+            18,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -506,22 +1061,54 @@ class C
 {
     async operator+
 }"#;
-    let expected = Some(ExpectedDiagnostics { count: 4, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 4,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "IncompleteAsyncMember04", 19, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "IncompleteAsyncMember04",
+                    19,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "IncompleteAsyncMember04", 19, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "IncompleteAsyncMember04",
+                    19,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "IncompleteAsyncMember04", 19, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "async_parsing_tests",
+            "AsyncParsingTests",
+            "IncompleteAsyncMember04",
+            19,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -533,22 +1120,54 @@ class C
 {
     async Task<T>
 }"#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "IncompleteAsyncMember05", 20, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "IncompleteAsyncMember05",
+                    20,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "IncompleteAsyncMember05", 20, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "IncompleteAsyncMember05",
+                    20,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "IncompleteAsyncMember05", 20, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "async_parsing_tests",
+            "AsyncParsingTests",
+            "IncompleteAsyncMember05",
+            20,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -560,22 +1179,54 @@ class C
 {
     async Task<T> f
 }"#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "IncompleteAsyncMember06", 21, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "IncompleteAsyncMember06",
+                    21,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "IncompleteAsyncMember06", 21, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "IncompleteAsyncMember06",
+                    21,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "IncompleteAsyncMember06", 21, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "async_parsing_tests",
+            "AsyncParsingTests",
+            "IncompleteAsyncMember06",
+            21,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -588,22 +1239,51 @@ class C
     async async { get; set; }
 }
 "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "PropertyAsyncAsync", 22, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "PropertyAsyncAsync",
+                    22,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "PropertyAsyncAsync", 22, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "PropertyAsyncAsync",
+                    22,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "PropertyAsyncAsync", 22, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "async_parsing_tests",
+            "AsyncParsingTests",
+            "PropertyAsyncAsync",
+            22,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -616,22 +1296,51 @@ class C
     async async async { get; set; }
 }
 "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "PropertyAsyncAsyncAsync", 23, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "PropertyAsyncAsyncAsync",
+                    23,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "PropertyAsyncAsyncAsync", 23, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "PropertyAsyncAsyncAsync",
+                    23,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "PropertyAsyncAsyncAsync", 23, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "async_parsing_tests",
+            "AsyncParsingTests",
+            "PropertyAsyncAsyncAsync",
+            23,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -644,22 +1353,51 @@ class C
     event async async;
 }
 "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "EventAsyncAsync", 24, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "EventAsyncAsync",
+                    24,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "EventAsyncAsync", 24, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "EventAsyncAsync",
+                    24,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "EventAsyncAsync", 24, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "async_parsing_tests",
+            "AsyncParsingTests",
+            "EventAsyncAsync",
+            24,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -672,22 +1410,54 @@ class C
     event async async async;
 }
 "#;
-    let expected = Some(ExpectedDiagnostics { count: 3, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 3,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "EventAsyncAsyncAsync1", 25, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "EventAsyncAsyncAsync1",
+                    25,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "EventAsyncAsyncAsync1", 25, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "EventAsyncAsyncAsync1",
+                    25,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "EventAsyncAsyncAsync1", 25, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "async_parsing_tests",
+            "AsyncParsingTests",
+            "EventAsyncAsyncAsync1",
+            25,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -700,22 +1470,51 @@ class C
     async event async async;
 }
 "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "EventAsyncAsyncAsync2", 26, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "EventAsyncAsyncAsync2",
+                    26,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "EventAsyncAsyncAsync2", 26, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "EventAsyncAsyncAsync2",
+                    26,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "EventAsyncAsyncAsync2", 26, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "async_parsing_tests",
+            "AsyncParsingTests",
+            "EventAsyncAsyncAsync2",
+            26,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -728,22 +1527,51 @@ class C
     public async delegate void Goo();
 }
 "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncModifierOnDelegateDeclaration", 27, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "AsyncModifierOnDelegateDeclaration",
+                    27,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncModifierOnDelegateDeclaration", 27, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "AsyncModifierOnDelegateDeclaration",
+                    27,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncModifierOnDelegateDeclaration", 27, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "async_parsing_tests",
+            "AsyncParsingTests",
+            "AsyncModifierOnDelegateDeclaration",
+            27,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -755,22 +1583,54 @@ class C
 {
     async interface
 "#;
-    let expected = Some(ExpectedDiagnostics { count: 4, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 4,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncInterface", 28, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "AsyncInterface",
+                    28,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncInterface", 28, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "AsyncInterface",
+                    28,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncInterface", 28, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "async_parsing_tests",
+            "AsyncParsingTests",
+            "AsyncInterface",
+            28,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -782,22 +1642,54 @@ class C
 {
     async partial class
 "#;
-    let expected = Some(ExpectedDiagnostics { count: 4, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 4,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncPartialClass", 29, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "AsyncPartialClass",
+                    29,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncPartialClass", 29, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "AsyncPartialClass",
+                    29,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncPartialClass", 29, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "async_parsing_tests",
+            "AsyncParsingTests",
+            "AsyncPartialClass",
+            29,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -809,22 +1701,54 @@ class C
 {
     async event
 "#;
-    let expected = Some(ExpectedDiagnostics { count: 4, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 4,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncEvent", 30, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "AsyncEvent",
+                    30,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncEvent", 30, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "AsyncEvent",
+                    30,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncEvent", 30, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "async_parsing_tests",
+            "AsyncParsingTests",
+            "AsyncEvent",
+            30,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -836,22 +1760,54 @@ class C
 {
     async partial event
 "#;
-    let expected = Some(ExpectedDiagnostics { count: 4, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 4,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncPartialEvent", 31, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "AsyncPartialEvent",
+                    31,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncPartialEvent", 31, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "AsyncPartialEvent",
+                    31,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncPartialEvent", 31, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "async_parsing_tests",
+            "AsyncParsingTests",
+            "AsyncPartialEvent",
+            31,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -863,22 +1819,54 @@ class C
 {
     async implicit operator
 "#;
-    let expected = Some(ExpectedDiagnostics { count: 5, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 5,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncImplicitOperator", 32, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "AsyncImplicitOperator",
+                    32,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncImplicitOperator", 32, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "AsyncImplicitOperator",
+                    32,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncImplicitOperator", 32, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "async_parsing_tests",
+            "AsyncParsingTests",
+            "AsyncImplicitOperator",
+            32,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -890,22 +1878,51 @@ class C
 {
     async partial implicit operator
 "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncPartialImplicitOperator", 33, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "AsyncPartialImplicitOperator",
+                    33,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncPartialImplicitOperator", 33, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "AsyncPartialImplicitOperator",
+                    33,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncPartialImplicitOperator", 33, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "async_parsing_tests",
+            "AsyncParsingTests",
+            "AsyncPartialImplicitOperator",
+            33,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -917,22 +1934,54 @@ class C
 {
     async explicit operator
 "#;
-    let expected = Some(ExpectedDiagnostics { count: 5, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 5,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncExplicitOperator", 34, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "AsyncExplicitOperator",
+                    34,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncExplicitOperator", 34, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "AsyncExplicitOperator",
+                    34,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncExplicitOperator", 34, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "async_parsing_tests",
+            "AsyncParsingTests",
+            "AsyncExplicitOperator",
+            34,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -944,22 +1993,51 @@ class C
 {
     async partial explicit operator
 "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncPartialExplicitOperator", 35, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "AsyncPartialExplicitOperator",
+                    35,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncPartialExplicitOperator", 35, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "AsyncPartialExplicitOperator",
+                    35,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncPartialExplicitOperator", 35, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "async_parsing_tests",
+            "AsyncParsingTests",
+            "AsyncPartialExplicitOperator",
+            35,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -971,22 +2049,54 @@ class C
 {
     async C operator
 "#;
-    let expected = Some(ExpectedDiagnostics { count: 5, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 5,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncTypeOperator", 36, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "AsyncTypeOperator",
+                    36,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncTypeOperator", 36, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "AsyncTypeOperator",
+                    36,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncTypeOperator", 36, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "async_parsing_tests",
+            "AsyncParsingTests",
+            "AsyncTypeOperator",
+            36,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -998,22 +2108,54 @@ class C
 {
     async partial int operator
 "#;
-    let expected = Some(ExpectedDiagnostics { count: 6, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 6,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncPartialTypeOperator", 37, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "AsyncPartialTypeOperator",
+                    37,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncPartialTypeOperator", 37, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "AsyncPartialTypeOperator",
+                    37,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncPartialTypeOperator", 37, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "async_parsing_tests",
+            "AsyncParsingTests",
+            "AsyncPartialTypeOperator",
+            37,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -1025,22 +2167,54 @@ class C
 {
     async C C
 "#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncField", 38, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "AsyncField",
+                    38,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncField", 38, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "AsyncField",
+                    38,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncField", 38, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "async_parsing_tests",
+            "AsyncParsingTests",
+            "AsyncField",
+            38,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -1052,22 +2226,54 @@ class C
 {
     async partial C this
 "#;
-    let expected = Some(ExpectedDiagnostics { count: 5, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 5,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncPartialIndexer", 39, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "AsyncPartialIndexer",
+                    39,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncPartialIndexer", 39, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "AsyncPartialIndexer",
+                    39,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncPartialIndexer", 39, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "async_parsing_tests",
+            "AsyncParsingTests",
+            "AsyncPartialIndexer",
+            39,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -1075,22 +2281,54 @@ class C
 #[test]
 fn async_type_end_of_file() {
     let src = r#"class C { async T"#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncTypeEndOfFile", 40, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "AsyncTypeEndOfFile",
+                    40,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncTypeEndOfFile", 40, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "AsyncTypeEndOfFile",
+                    40,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncTypeEndOfFile", 40, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "async_parsing_tests",
+            "AsyncParsingTests",
+            "AsyncTypeEndOfFile",
+            40,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -1098,22 +2336,54 @@ fn async_type_end_of_file() {
 #[test]
 fn async_type_close_curly() {
     let src = r#"class C { async T }"#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncTypeCloseCurly", 41, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "AsyncTypeCloseCurly",
+                    41,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncTypeCloseCurly", 41, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "AsyncTypeCloseCurly",
+                    41,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncTypeCloseCurly", 41, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "async_parsing_tests",
+            "AsyncParsingTests",
+            "AsyncTypeCloseCurly",
+            41,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -1123,22 +2393,54 @@ fn async_type_predefined_type() {
     let src = r#"class C {
     async T
     int"#;
-    let expected = Some(ExpectedDiagnostics { count: 3, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 3,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncTypePredefinedType", 42, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "AsyncTypePredefinedType",
+                    42,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncTypePredefinedType", 42, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "AsyncTypePredefinedType",
+                    42,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncTypePredefinedType", 42, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "async_parsing_tests",
+            "AsyncParsingTests",
+            "AsyncTypePredefinedType",
+            42,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -1148,22 +2450,54 @@ fn async_type_modifier() {
     let src = r#"class C {
     async T
     public"#;
-    let expected = Some(ExpectedDiagnostics { count: 3, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 3,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncTypeModifier", 43, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "AsyncTypeModifier",
+                    43,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncTypeModifier", 43, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "AsyncTypeModifier",
+                    43,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncTypeModifier", 43, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "async_parsing_tests",
+            "AsyncParsingTests",
+            "AsyncTypeModifier",
+            43,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -1173,22 +2507,54 @@ fn async_type_followed_by_type_decl() {
     let src = r#"class C {
     async T
 class"#;
-    let expected = Some(ExpectedDiagnostics { count: 5, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 5,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncTypeFollowedByTypeDecl", 44, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "AsyncTypeFollowedByTypeDecl",
+                    44,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncTypeFollowedByTypeDecl", 44, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "AsyncTypeFollowedByTypeDecl",
+                    44,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncTypeFollowedByTypeDecl", 44, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "async_parsing_tests",
+            "AsyncParsingTests",
+            "AsyncTypeFollowedByTypeDecl",
+            44,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -1198,22 +2564,54 @@ fn async_type_followed_by_namespace_decl() {
     let src = r#"class C {
     async T
 namespace"#;
-    let expected = Some(ExpectedDiagnostics { count: 5, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 5,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncTypeFollowedByNamespaceDecl", 45, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "AsyncTypeFollowedByNamespaceDecl",
+                    45,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncTypeFollowedByNamespaceDecl", 45, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "AsyncTypeFollowedByNamespaceDecl",
+                    45,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncTypeFollowedByNamespaceDecl", 45, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "async_parsing_tests",
+            "AsyncParsingTests",
+            "AsyncTypeFollowedByNamespaceDecl",
+            45,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -1224,22 +2622,54 @@ fn async_generic_type() {
 {
     public async Task<IReadOnlyCollection<ProjectConfiguration>>
 }"#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncGenericType", 46, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "AsyncGenericType",
+                    46,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncGenericType", 46, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "AsyncGenericType",
+                    46,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncGenericType", 46, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "async_parsing_tests",
+            "AsyncParsingTests",
+            "AsyncGenericType",
+            46,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -1247,22 +2677,51 @@ fn async_generic_type() {
 #[test]
 fn async_as_type_property() {
     let src = r#"class async { async async { get; } }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncAsType_Property", 47, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "AsyncAsType_Property",
+                    47,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncAsType_Property", 47, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "AsyncAsType_Property",
+                    47,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncAsType_Property", 47, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "async_parsing_tests",
+            "AsyncParsingTests",
+            "AsyncAsType_Property",
+            47,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -1270,22 +2729,51 @@ fn async_as_type_property() {
 #[test]
 fn async_as_type_indexer() {
     let src = r#"interface async { async this[async i] { get; } }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncAsType_Indexer", 48, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "AsyncAsType_Indexer",
+                    48,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncAsType_Indexer", 48, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "AsyncAsType_Indexer",
+                    48,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncAsType_Indexer", 48, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "async_parsing_tests",
+            "AsyncParsingTests",
+            "AsyncAsType_Indexer",
+            48,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -1293,7 +2781,7 @@ fn async_as_type_indexer() {
 #[test]
 fn async_lambda_in_conditional_expression_after_pattern_1() {
     let src = r#"x is A ? async b => 0 : null"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { x is A ? async b => 0 : null; } }"#;
     let span2 = Span::new(src2);
@@ -1301,16 +2789,45 @@ fn async_lambda_in_conditional_expression_after_pattern_1() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncLambdaInConditionalExpressionAfterPattern1", 49, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "AsyncLambdaInConditionalExpressionAfterPattern1",
+                    49,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncLambdaInConditionalExpressionAfterPattern1", 49, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "AsyncLambdaInConditionalExpressionAfterPattern1",
+                    49,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncLambdaInConditionalExpressionAfterPattern1", 49, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "async_parsing_tests",
+            "AsyncParsingTests",
+            "AsyncLambdaInConditionalExpressionAfterPattern1",
+            49,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1318,7 +2835,7 @@ fn async_lambda_in_conditional_expression_after_pattern_1() {
 #[test]
 fn async_lambda_in_conditional_expression_after_pattern_2() {
     let src = r#"x is A a ? async b => 0 : null"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { x is A a ? async b => 0 : null; } }"#;
     let span2 = Span::new(src2);
@@ -1326,16 +2843,45 @@ fn async_lambda_in_conditional_expression_after_pattern_2() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncLambdaInConditionalExpressionAfterPattern2", 50, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "AsyncLambdaInConditionalExpressionAfterPattern2",
+                    50,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncLambdaInConditionalExpressionAfterPattern2", 50, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "AsyncLambdaInConditionalExpressionAfterPattern2",
+                    50,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncLambdaInConditionalExpressionAfterPattern2", 50, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "async_parsing_tests",
+            "AsyncParsingTests",
+            "AsyncLambdaInConditionalExpressionAfterPattern2",
+            50,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1343,7 +2889,7 @@ fn async_lambda_in_conditional_expression_after_pattern_2() {
 #[test]
 fn async_lambda_in_conditional_expression_after_pattern_3() {
     let src = r#"x is A ? async (b) => 0 : null"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { x is A ? async (b) => 0 : null; } }"#;
     let span2 = Span::new(src2);
@@ -1351,16 +2897,45 @@ fn async_lambda_in_conditional_expression_after_pattern_3() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncLambdaInConditionalExpressionAfterPattern3", 51, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "AsyncLambdaInConditionalExpressionAfterPattern3",
+                    51,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncLambdaInConditionalExpressionAfterPattern3", 51, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "AsyncLambdaInConditionalExpressionAfterPattern3",
+                    51,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncLambdaInConditionalExpressionAfterPattern3", 51, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "async_parsing_tests",
+            "AsyncParsingTests",
+            "AsyncLambdaInConditionalExpressionAfterPattern3",
+            51,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1368,7 +2943,7 @@ fn async_lambda_in_conditional_expression_after_pattern_3() {
 #[test]
 fn async_lambda_in_conditional_expression_after_pattern_4() {
     let src = r#"x is A a ? async (b) => 0 : null"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { x is A a ? async (b) => 0 : null; } }"#;
     let span2 = Span::new(src2);
@@ -1376,16 +2951,44 @@ fn async_lambda_in_conditional_expression_after_pattern_4() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncLambdaInConditionalExpressionAfterPattern4", 52, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "AsyncLambdaInConditionalExpressionAfterPattern4",
+                    52,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncLambdaInConditionalExpressionAfterPattern4", 52, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "async_parsing_tests",
+                    "AsyncParsingTests",
+                    "AsyncLambdaInConditionalExpressionAfterPattern4",
+                    52,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("async_parsing_tests", "AsyncParsingTests", "AsyncLambdaInConditionalExpressionAfterPattern4", 52, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "async_parsing_tests",
+            "AsyncParsingTests",
+            "AsyncLambdaInConditionalExpressionAfterPattern4",
+            52,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
-

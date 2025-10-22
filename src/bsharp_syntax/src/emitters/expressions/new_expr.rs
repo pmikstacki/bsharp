@@ -12,7 +12,9 @@ impl Emit for NewExpression {
         // Arguments
         w.write_char('(')?;
         for (i, a) in self.arguments.iter().enumerate() {
-            if i != 0 { w.write_str(", ")?; }
+            if i != 0 {
+                w.write_str(", ")?;
+            }
             a.emit(w, cx)?;
         }
         w.write_char(')')?;
@@ -21,7 +23,9 @@ impl Emit for NewExpression {
         if let Some(inits) = &self.object_initializer {
             w.write_str(" { ")?;
             for (i, init) in inits.iter().enumerate() {
-                if i != 0 { w.write_str(", ")?; }
+                if i != 0 {
+                    w.write_str(", ")?;
+                }
                 init.emit(w, cx)?;
             }
             w.write_str(" }")?;
@@ -30,7 +34,9 @@ impl Emit for NewExpression {
         if let Some(items) = &self.collection_initializer {
             w.write_str(" { ")?;
             for (i, it) in items.iter().enumerate() {
-                if i != 0 { w.write_str(", ")?; }
+                if i != 0 {
+                    w.write_str(", ")?;
+                }
                 it.emit(w, cx)?;
             }
             w.write_str(" }")?;

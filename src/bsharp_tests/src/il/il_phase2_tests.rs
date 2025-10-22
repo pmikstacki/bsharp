@@ -72,7 +72,11 @@ fn loads_all_fixture_dlls_and_indexes_types() {
             );
         }
     }
-    assert!(success_count > 0, "no fixture DLLs could be loaded from {}", fixture_dir().display());
+    assert!(
+        success_count > 0,
+        "no fixture DLLs could be loaded from {}",
+        fixture_dir().display()
+    );
 }
 
 #[test]

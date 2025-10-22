@@ -1,6 +1,6 @@
+use crate::Identifier;
 use crate::expressions::Expression;
 use crate::types::Type;
-use crate::Identifier;
 use serde::{Deserialize, Serialize};
 
 /// Represents a deconstruction expression in C#

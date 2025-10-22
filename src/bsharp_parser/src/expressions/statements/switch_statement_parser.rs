@@ -10,12 +10,12 @@ use crate::syntax::errors::BResult;
 // Need this for statements within sections
 
 use crate::syntax::comment_parser::ws;
+use nom::Parser;
 use nom::branch::alt;
 use nom::combinator::map;
 use nom::combinator::{cut, not, peek};
 use nom::multi::{many0, many1};
 use nom::sequence::{delimited, preceded, terminated};
-use nom::Parser;
 use nom_supreme::ParserExt;
 use syntax::expressions::Pattern::Constant;
 use syntax::statements::statement::Statement;
@@ -33,7 +33,7 @@ fn parse_case_label(input: Span) -> BResult<SwitchLabel> {
                 delimited(ws, kw_when(), ws),
                 delimited(ws, parse_expression, ws),
             ))
-                .parse(after_pat)
+            .parse(after_pat)
             {
                 Ok((r, w)) => (r, w),
                 Err(_) => (after_pat, None),
@@ -67,8 +67,8 @@ fn parse_case_label(input: Span) -> BResult<SwitchLabel> {
             .parse(input)?;
         Ok((input, SwitchLabel::Case(expr)))
     })
-        .context("case label")
-        .parse(input)
+    .context("case label")
+    .parse(input)
 }
 
 // Helper syntax for default label: default:
@@ -80,8 +80,8 @@ fn parse_default_label(input: Span) -> BResult<SwitchLabel> {
         ),
         |_| SwitchLabel::Default,
     )
-        .context("default label")
-        .parse(input)
+    .context("default label")
+    .parse(input)
 }
 
 // Helper syntax for switch sections (one or more labels followed by zero or more statements)
@@ -93,12 +93,14 @@ fn parse_switch_section(input: Span) -> BResult<SwitchSection> {
                     many1(delimited(
                         ws,
                         |x| {
-                            if let Ok(r) = parse_case_label(x) { return Ok(r); }
+                            if let Ok(r) = parse_case_label(x) {
+                                return Ok(r);
+                            }
                             parse_default_label(x)
                         },
                         ws,
                     ))
-                        .parse(j)
+                    .parse(j)
                 },
                 |j| {
                     many0(|k| {
@@ -107,20 +109,20 @@ fn parse_switch_section(input: Span) -> BResult<SwitchSection> {
                         let guard = alt((
                             map(delimited(ws, kw_case(), ws), |_| ()),
                             map(delimited(ws, kw_default(), ws), |_| ()),
-                            map(delimited(ws,tok_r_brace(), ws), |_| ()),
+                            map(delimited(ws, tok_r_brace(), ws), |_| ()),
                         ));
                         peek(not(guard)).parse(k)?;
                         delimited(ws, parse_statement, ws).parse(k)
                     })
-                        .parse(j)
+                    .parse(j)
                 },
             ),
             |(labels, statements)| SwitchSection { labels, statements },
         )
-            .parse(i)
+        .parse(i)
     })
-        .context("switch section")
-        .parse(input)
+    .context("switch section")
+    .parse(input)
 }
 
 // Original parse_switch_statement function from statement_parser.rs
@@ -131,19 +133,16 @@ pub fn parse_switch_statement(input: Span) -> BResult<Statement> {
             delimited(
                 delimited(ws, tok_l_paren(), ws)
                     .context("opening parenthesis for switch expression"),
-                delimited(ws, parse_expression, ws)
-                    .context("switch expression"),
+                delimited(ws, parse_expression, ws).context("switch expression"),
                 cut(delimited(ws, tok_r_paren(), ws))
                     .context("closing parenthesis for switch expression"),
             ),
             delimited(
-                delimited(ws, tok_l_brace(), ws)
-                    .context("opening brace for switch body"),
+                delimited(ws, tok_l_brace(), ws).context("opening brace for switch body"),
                 |i| many0(|j| delimited(ws, parse_switch_section, ws).parse(j)).parse(i),
-                cut(delimited(ws,tok_r_brace(), ws))
-                    .context("closing brace for switch body"),
+                cut(delimited(ws, tok_r_brace(), ws)).context("closing brace for switch body"),
             )
-                .context("switch body"),
+            .context("switch body"),
         ),
         |(_, switch_expr, sections)| {
             Statement::Switch(Box::new(SwitchStatement {
@@ -152,8 +151,8 @@ pub fn parse_switch_statement(input: Span) -> BResult<Statement> {
             }))
         },
     )
-        .context("switch statement")
-        .parse(input)
+    .context("switch statement")
+    .parse(input)
 }
 use crate::syntax::span::Span;
 use crate::tokens::delimiters::{tok_l_brace, tok_l_paren, tok_r_brace, tok_r_paren};

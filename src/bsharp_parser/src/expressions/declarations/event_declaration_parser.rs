@@ -9,13 +9,13 @@ use crate::syntax::errors::BResult;
 
 use crate::syntax::comment_parser::ws;
 
+use nom::Parser;
 use nom::character::complete::satisfy;
 use nom::combinator::cut;
-use nom::Parser;
 use nom::{
     branch::alt,
     combinator::{map, opt},
-    sequence::{delimited},
+    sequence::delimited,
 };
 use nom_supreme::ParserExt;
 use syntax::declarations::{EventAccessor, EventAccessorList, EventDeclaration};
@@ -62,22 +62,20 @@ fn parse_event_accessor(input: Span) -> BResult<(String, EventAccessor)> {
             },
         ),
     ))
-        .context("event accessor")
-        .parse(input)
+    .context("event accessor")
+    .parse(input)
 }
 
 /// Parse event accessor list: { add; remove; } or { add { ... } remove { ... } }
 fn parse_event_accessor_list(input: Span) -> BResult<EventAccessorList> {
     map(
         delimited(
-            delimited(ws, satisfy(|c| c == '{'), ws)
-                .context("event accessor list opening"),
+            delimited(ws, satisfy(|c| c == '{'), ws).context("event accessor list opening"),
             (
                 opt(delimited(ws, parse_event_accessor, ws)),
                 opt(delimited(ws, parse_event_accessor, ws)),
             ),
-            cut(delimited(ws, satisfy(|c| c == '}'), ws))
-                .context("event accessor list closing"),
+            cut(delimited(ws, satisfy(|c| c == '}'), ws)).context("event accessor list closing"),
         ),
         |(first, second)| {
             let mut add_accessor = None;
@@ -107,8 +105,8 @@ fn parse_event_accessor_list(input: Span) -> BResult<EventAccessorList> {
             }
         },
     )
-        .context("event accessor list")
-        .parse(input)
+    .context("event accessor list")
+    .parse(input)
 }
 
 /// Parse an event declaration
@@ -135,18 +133,16 @@ pub fn parse_event_declaration(input: Span) -> BResult<EventDeclaration> {
                 map(delimited(ws, tok_semicolon(), ws), |_| None),
             )),
         ),
-        |(attributes, modifiers, _event_kw, event_type, name, accessor_list)| {
-            EventDeclaration {
-                attributes,
-                modifiers,
-                event_type,
-                name,
-                accessor_list,
-            }
+        |(attributes, modifiers, _event_kw, event_type, name, accessor_list)| EventDeclaration {
+            attributes,
+            modifiers,
+            event_type,
+            name,
+            accessor_list,
         },
     )
-        .context("event declaration")
-        .parse(input)
+    .context("event declaration")
+    .parse(input)
 }
 use crate::syntax::span::Span;
 use crate::tokens::separators::tok_semicolon;

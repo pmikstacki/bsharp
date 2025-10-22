@@ -32,10 +32,7 @@ fn test_parse_if_statement() {
     match result_if_else.unwrap().1 {
         Statement::If(if_stmt) => {
             // Check the condition
-            assert!(matches!(
-                if_stmt.condition,
-                Expression::Variable(_)
-            ));
+            assert!(matches!(if_stmt.condition, Expression::Variable(_)));
             // Check the consequence (ExpressionStatement)
             assert!(matches!(*if_stmt.consequence, Statement::Expression(_)));
             // Check the alternative (else block with ExpressionStatement)

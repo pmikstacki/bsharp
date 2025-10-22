@@ -45,7 +45,9 @@ impl Display for Type {
             Type::Generic { base, args } => {
                 write!(f, "{}<", base)?;
                 for (i, a) in args.iter().enumerate() {
-                    if i > 0 { f.write_str(", ")?; }
+                    if i > 0 {
+                        f.write_str(", ")?;
+                    }
                     write!(f, "{}", a)?;
                 }
                 f.write_str(">")
@@ -57,7 +59,9 @@ impl Display for Type {
                 } else {
                     f.write_str("[")?;
                     for i in 0..(rank.saturating_sub(1)) {
-                        if i > 0 { f.write_str("")?; }
+                        if i > 0 {
+                            f.write_str("")?;
+                        }
                         f.write_str(",")?;
                     }
                     f.write_str("]")
@@ -69,7 +73,11 @@ impl Display for Type {
             Type::Void => f.write_str("void"),
             Type::ImplicitArray => f.write_str("new[]"),
             Type::Var => f.write_str("var"),
-            Type::FunctionPointer { calling_convention, parameter_types, return_type } => {
+            Type::FunctionPointer {
+                calling_convention,
+                parameter_types,
+                return_type,
+            } => {
                 f.write_str("delegate*")?;
                 if let Some(cc) = calling_convention {
                     match cc {
@@ -79,10 +87,14 @@ impl Display for Type {
                 }
                 f.write_str("<")?;
                 for (i, p) in parameter_types.iter().enumerate() {
-                    if i > 0 { f.write_str(", ")?; }
+                    if i > 0 {
+                        f.write_str(", ")?;
+                    }
                     write!(f, "{}", p)?;
                 }
-                if !parameter_types.is_empty() { f.write_str(", ")?; }
+                if !parameter_types.is_empty() {
+                    f.write_str(", ")?;
+                }
                 write!(f, "{}", return_type)?;
                 f.write_str(">")
             }

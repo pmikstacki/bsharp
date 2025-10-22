@@ -5,8 +5,8 @@ use parser::expressions::statements::try_catch_finally_parser::{
 use parser::syntax::test_helpers::parse_all;
 use parser::syntax::test_helpers::parse_input_unwrap;
 use syntax::identifier::Identifier;
-use syntax::statements::statement::Statement;
 use syntax::statements::FinallyClause;
+use syntax::statements::statement::Statement;
 use syntax::types::Type;
 
 #[test]
@@ -19,10 +19,7 @@ fn test_parse_specific_catch_clause() {
         catch_clause.exception_type,
         Some(Type::Reference(Identifier::new("Exception")))
     );
-    assert_eq!(
-        catch_clause.exception_variable,
-        Some(Identifier::new("e"))
-    );
+    assert_eq!(catch_clause.exception_variable, Some(Identifier::new("e")));
     match *catch_clause.block {
         Statement::Block(ref block_statement) => assert!(block_statement.is_empty()),
         _ => panic!("Expected BlockStatement"),
@@ -96,10 +93,7 @@ fn test_parse_try_catch_finally() {
                 catch_clause.exception_type,
                 Some(Type::Reference(Identifier::new("Exception")))
             );
-            assert_eq!(
-                catch_clause.exception_variable,
-                Some(Identifier::new("e"))
-            );
+            assert_eq!(catch_clause.exception_variable, Some(Identifier::new("e")));
             assert!(matches!(*catch_clause.block, Statement::Block(_)));
         }
         _ => panic!("Expected Try statement"),
@@ -135,10 +129,7 @@ fn test_parse_try_catch_finally() {
                 catch_clause.exception_type,
                 Some(Type::Reference(Identifier::new("IOException")))
             );
-            assert_eq!(
-                catch_clause.exception_variable,
-                Some(Identifier::new("ex"))
-            );
+            assert_eq!(catch_clause.exception_variable, Some(Identifier::new("ex")));
             match ts.finally_clause {
                 Some(FinallyClause { block }) => assert!(matches!(*block, Statement::Block(_))),
                 _ => panic!("Expected Finally clause"),

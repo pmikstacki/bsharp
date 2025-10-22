@@ -6,14 +6,10 @@ use crate::parser::statement_parser::parse_statement_ws;
 use crate::syntax::comment_parser::ws;
 use crate::syntax::errors::BResult;
 use nom::combinator::cut;
-use nom::{
-    combinator::map,
-    sequence::delimited,
-    Parser,
-};
+use nom::{Parser, combinator::map, sequence::delimited};
 use nom_supreme::ParserExt;
-use syntax::statements::statement::Statement;
 use syntax::statements::DoWhileStatement;
+use syntax::statements::statement::Statement;
 
 // Parse a do-while statement
 pub fn parse_do_while_statement(input: Span) -> BResult<Statement> {
@@ -27,7 +23,7 @@ pub fn parse_do_while_statement(input: Span) -> BResult<Statement> {
                 parse_expression,
                 cut(delimited(ws, tok_r_paren(), ws)),
             )
-                .context("while condition in parentheses"),
+            .context("while condition in parentheses"),
             cut(delimited(ws, tok_semicolon(), ws)).context("semicolon after do-while"),
         ),
         |(_, body_statement, _, condition, _)| {
@@ -37,8 +33,8 @@ pub fn parse_do_while_statement(input: Span) -> BResult<Statement> {
             }))
         },
     )
-        .context("do-while statement")
-        .parse(input)
+    .context("do-while statement")
+    .parse(input)
 }
 use crate::syntax::span::Span;
 use crate::tokens::delimiters::{tok_l_paren, tok_r_paren};

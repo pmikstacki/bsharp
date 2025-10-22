@@ -102,7 +102,10 @@ impl AnalysisContext {
         let length = length.min(self.source.len().saturating_sub(start));
 
         // Binary search for the line containing start
-        let line_idx = self.line_starts.binary_search(&start).unwrap_or_else(|idx| idx.saturating_sub(1));
+        let line_idx = self
+            .line_starts
+            .binary_search(&start)
+            .unwrap_or_else(|idx| idx.saturating_sub(1));
         let line_start = *self.line_starts.get(line_idx).unwrap_or(&0);
         let column0 = start.saturating_sub(line_start);
 

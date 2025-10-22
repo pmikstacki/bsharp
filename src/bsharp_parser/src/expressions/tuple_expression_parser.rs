@@ -6,10 +6,10 @@ use nom_supreme::ParserExt;
 
 use nom::combinator::cut;
 use nom::{
+    Parser,
     combinator::{map, opt},
     multi::separated_list1,
     sequence::delimited,
-    Parser,
 };
 use syntax::expressions::{Expression, TupleElement, TupleExpression};
 
@@ -36,8 +36,8 @@ pub fn parse_tuple_expression(input: Span) -> BResult<Expression> {
             Expression::Tuple(TupleExpression { elements: rest })
         },
     )
-        .context("tuple expression")
-        .parse(input)
+    .context("tuple expression")
+    .parse(input)
 }
 
 /// Parse a tuple element: [name:] expression
@@ -64,7 +64,7 @@ fn parse_tuple_element(input: Span) -> BResult<TupleElement> {
         name: None,
         value,
     })
-        .parse(input)
+    .parse(input)
 }
 use crate::syntax::span::Span;
 use crate::tokens::delimiters::{tok_l_paren, tok_r_paren};

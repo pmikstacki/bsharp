@@ -5,10 +5,10 @@ use crate::parser::types::type_parser::parse_type_expression;
 use crate::syntax::comment_parser::ws;
 use crate::syntax::errors::BResult;
 
+use nom::Parser;
 use nom::character::complete::satisfy;
 use nom::combinator::cut;
 use nom::sequence::delimited;
-use nom::Parser;
 use nom::{
     branch::alt,
     combinator::{map, verify},
@@ -30,8 +30,8 @@ pub fn parse_deconstruction_expression(input: Span) -> BResult<DeconstructionExp
             value: Box::new(value),
         },
     )
-        .context("deconstruction expression")
-        .parse(input)
+    .context("deconstruction expression")
+    .parse(input)
 }
 
 /// Parse deconstruction targets: (var x, var y) or (int a, string b)
@@ -51,30 +51,39 @@ fn parse_deconstruction_targets(input: Span) -> BResult<Vec<DeconstructionTarget
         ),
         ws,
     )
-        .context("deconstruction targets")
-        .parse(input)
+    .context("deconstruction targets")
+    .parse(input)
 }
 
 /// Parse a single deconstruction target
 fn parse_deconstruction_target(input: Span) -> BResult<DeconstructionTarget> {
     alt((
         // Discard: _
-        map(delimited(ws, satisfy(|c| c == '_'), ws), |_| DeconstructionTarget::Discard),
+        map(delimited(ws, satisfy(|c| c == '_'), ws), |_| {
+            DeconstructionTarget::Discard
+        }),
         // Nested deconstruction: (var a, var b)
         map(parse_deconstruction_targets, |targets| {
             DeconstructionTarget::Nested(targets)
         }),
         // Variable declaration with 'var': var x
-        map((delimited(ws, kw_var(), ws), delimited(ws, parse_identifier, ws)), |(_, name)| {
-            DeconstructionTarget::Declaration {
+        map(
+            (
+                delimited(ws, kw_var(), ws),
+                delimited(ws, parse_identifier, ws),
+            ),
+            |(_, name)| DeconstructionTarget::Declaration {
                 variable_type: None,
                 name,
                 is_var: true,
-            }
-        }),
+            },
+        ),
         // Variable declaration with explicit type: int x, string y
         map(
-            (delimited(ws, parse_type_expression, ws), delimited(ws, parse_identifier, ws)),
+            (
+                delimited(ws, parse_type_expression, ws),
+                delimited(ws, parse_identifier, ws),
+            ),
             |(variable_type, name)| DeconstructionTarget::Declaration {
                 variable_type: Some(variable_type),
                 name,
@@ -86,8 +95,8 @@ fn parse_deconstruction_target(input: Span) -> BResult<DeconstructionTarget> {
             DeconstructionTarget::Variable(name)
         }),
     ))
-        .context("deconstruction target")
-        .parse(input)
+    .context("deconstruction target")
+    .parse(input)
 }
 use crate::syntax::span::Span;
 use crate::tokens::assignment::tok_assign;

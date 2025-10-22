@@ -1,8 +1,8 @@
 // Auto-generated from Roslyn: SyntaxNodeOrTokenListTests
-use bsharp_parser::syntax::span::Span;
 use crate::custom_asserts::after_parse;
 use crate::custom_asserts::after_parse::CaseData;
 use bsharp_parser::bsharp::parse_csharp_source_strict;
+use bsharp_parser::syntax::span::Span;
 /// Roslyn: SyntaxNodeOrTokenListTests.TestAddInsertRemove (case 1)
 #[test]
 fn add_insert_remove() {
@@ -13,7 +13,18 @@ fn add_insert_remove() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_or_token_list_tests", "SyntaxNodeOrTokenListTests", "TestAddInsertRemove", 1, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_node_or_token_list_tests",
+                "SyntaxNodeOrTokenListTests",
+                "TestAddInsertRemove",
+                1,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -29,9 +40,19 @@ fn do_test_add_insert_remove_replace_on_empty_list() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_or_token_list_tests", "SyntaxNodeOrTokenListTests", "DoTestAddInsertRemoveReplaceOnEmptyList", 2, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_node_or_token_list_tests",
+                "SyntaxNodeOrTokenListTests",
+                "DoTestAddInsertRemoveReplaceOnEmptyList",
+                2,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
 }
-

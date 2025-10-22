@@ -75,7 +75,10 @@ fn test_empty_attribute_list() {
     // No attributes in source code
     let input = "public class MyClass {}";
     let (rest, lists) = parse_attribute_lists(input.into()).unwrap();
-    assert_eq!(rest.fragment().to_string(), "public class MyClass {}".to_string());
+    assert_eq!(
+        rest.fragment().to_string(),
+        "public class MyClass {}".to_string()
+    );
     assert!(lists.is_empty());
 }
 

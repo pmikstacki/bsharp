@@ -1,13 +1,13 @@
+use super::csharpier_installer::ensure_csharpier_bin;
 use assert_cmd::prelude::*;
+use parser::bsharp::parse_csharp_source_strict;
+use parser::syntax::span::Span;
 use similar::TextDiff;
 use std::path::PathBuf;
 use std::process::Command;
 use std::{fs, io};
-use tempfile::NamedTempFile;
 use tempfile::Builder as TempBuilder;
-use super::csharpier_installer::ensure_csharpier_bin;
-use parser::bsharp::parse_csharp_source_strict;
-use parser::syntax::span::Span;
+use tempfile::NamedTempFile;
 
 fn run_our_formatter(input: &PathBuf) -> anyhow::Result<String> {
     // Use the CLI binary to format and print to stdout without writing
@@ -48,16 +48,37 @@ fn run_csharpier(input: &PathBuf) -> anyhow::Result<String> {
 }
 
 fn collect_cs_files(dir: &PathBuf, out: &mut Vec<PathBuf>) -> io::Result<()> {
-    for entry in fs::read_dir(dir)? { let e = entry?; let p = e.path(); if e.file_type()?.is_dir() { collect_cs_files(&p, out)?; } else if p.extension().and_then(|s| s.to_str()).map(|s| s.eq_ignore_ascii_case("cs")).unwrap_or(false) { out.push(p); } }
+    for entry in fs::read_dir(dir)? {
+        let e = entry?;
+        let p = e.path();
+        if e.file_type()?.is_dir() {
+            collect_cs_files(&p, out)?;
+        } else if p
+            .extension()
+            .and_then(|s| s.to_str())
+            .map(|s| s.eq_ignore_ascii_case("cs"))
+            .unwrap_or(false)
+        {
+            out.push(p);
+        }
+    }
     Ok(())
 }
 
-fn normalize_eol(mut s: String) -> String { s = s.replace("\r\n", "\n"); if !s.ends_with('\n') { s.push('\n'); } s }
+fn normalize_eol(mut s: String) -> String {
+    s = s.replace("\r\n", "\n");
+    if !s.ends_with('\n') {
+        s.push('\n');
+    }
+    s
+}
 
 #[test]
 fn cs_test_cases_match_csharpier_suite() -> anyhow::Result<()> {
     // Locate directory
-    let dir: PathBuf = [env!("CARGO_MANIFEST_DIR"), "src", "cs_test_cases"].iter().collect();
+    let dir: PathBuf = [env!("CARGO_MANIFEST_DIR"), "src", "cs_test_cases"]
+        .iter()
+        .collect();
 
     let mut files = Vec::new();
     collect_cs_files(&dir, &mut files)?;
@@ -67,11 +88,16 @@ fn cs_test_cases_match_csharpier_suite() -> anyhow::Result<()> {
     for file in files {
         // Skip files our parser cannot handle yet
         let src = fs::read_to_string(&file)?;
-        if parse_csharp_source_strict(Span::new(&src)).is_err() { continue; }
+        if parse_csharp_source_strict(Span::new(&src)).is_err() {
+            continue;
+        }
 
         let csharpier = match run_csharpier(&file) {
             Ok(s) => s,
-            Err(e) => { eprintln!("skipping (csharpier failed): {} -> {}", file.display(), e); continue; }
+            Err(e) => {
+                eprintln!("skipping (csharpier failed): {} -> {}", file.display(), e);
+                continue;
+            }
         };
         let ours = run_our_formatter(&file)?;
         let left = normalize_eol(ours);
@@ -84,8 +110,17 @@ fn cs_test_cases_match_csharpier_suite() -> anyhow::Result<()> {
 
     if !mismatches.is_empty() {
         let mut msg = String::new();
-        msg.push_str(&format!("{} mismatches found vs CSharpier:\n\n", mismatches.len()));
-        for (i, (path, rep)) in mismatches.iter().enumerate() { if i>=5 { msg.push_str("... (truncated)\n"); break; } msg.push_str(&format!("File: {}\n{}\n", path.display(), rep)); }
+        msg.push_str(&format!(
+            "{} mismatches found vs CSharpier:\n\n",
+            mismatches.len()
+        ));
+        for (i, (path, rep)) in mismatches.iter().enumerate() {
+            if i >= 5 {
+                msg.push_str("... (truncated)\n");
+                break;
+            }
+            msg.push_str(&format!("File: {}\n{}\n", path.display(), rep));
+        }
         panic!("{}", msg);
     }
     Ok(())
@@ -121,7 +156,11 @@ fn advanced_features_matches_csharpier() -> anyhow::Result<()> {
 
     if ours != csharpier {
         let report = diff_report("ours (bsharp)", &ours, "csharpier", &csharpier);
-        panic!("Formatter mismatch with CSharpier for {}:\n{}", file.display(), report);
+        panic!(
+            "Formatter mismatch with CSharpier for {}:\n{}",
+            file.display(),
+            report
+        );
     }
     Ok(())
 }

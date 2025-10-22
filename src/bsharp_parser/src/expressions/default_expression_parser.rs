@@ -4,8 +4,8 @@ use crate::syntax::errors::BResult;
 
 use crate::syntax::comment_parser::ws;
 
-use nom::combinator::cut;
 use nom::Parser;
+use nom::combinator::cut;
 use nom::{
     branch::alt,
     combinator::map,
@@ -38,8 +38,8 @@ pub fn parse_default_expression(input: Span) -> BResult<Expression> {
             Expression::Default(Box::new(DefaultExpression { target_type: None }))
         }),
     ))
-        .context("default expression")
-        .parse(input)
+    .context("default expression")
+    .parse(input)
 }
 use crate::syntax::span::Span;
 use crate::tokens::delimiters::{tok_l_paren, tok_r_paren};

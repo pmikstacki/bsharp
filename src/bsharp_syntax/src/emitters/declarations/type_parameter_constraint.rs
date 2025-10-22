@@ -1,5 +1,5 @@
-use crate::emitters::emit_trait::{Emit, EmitCtx, EmitError};
 use crate::declarations::{TypeParameterConstraint, TypeParameterConstraintClause};
+use crate::emitters::emit_trait::{Emit, EmitCtx, EmitError};
 
 impl Emit for TypeParameterConstraint {
     fn emit<W: std::fmt::Write>(&self, w: &mut W, cx: &mut EmitCtx) -> Result<(), EmitError> {
@@ -23,7 +23,9 @@ impl Emit for TypeParameterConstraintClause {
         use crate::emitters::emit_trait::Emit as _;
         write!(w, "where {} : ", self.type_param)?;
         for (i, c) in self.constraints.iter().enumerate() {
-            if i != 0 { w.write_str(", ")?; }
+            if i != 0 {
+                w.write_str(", ")?;
+            }
             c.emit(w, cx)?;
         }
         Ok(())

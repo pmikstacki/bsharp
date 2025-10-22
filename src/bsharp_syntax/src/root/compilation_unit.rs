@@ -15,7 +15,9 @@ pub struct CompilationUnit {
 }
 
 impl crate::node::ast_node::AstNode for CompilationUnit {
-    fn as_any(&self) -> &dyn core::any::Any { self }
+    fn as_any(&self) -> &dyn core::any::Any {
+        self
+    }
 
     fn children<'a>(&'a self, push: &mut dyn FnMut(crate::node::ast_node::NodeRef<'a>)) {
         use crate::node::ast_node::push_child;

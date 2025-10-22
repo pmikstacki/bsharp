@@ -36,9 +36,13 @@ impl Emit for Literal {
                 for &b in bytes {
                     let c = b as char;
                     if c.is_ascii_graphic() || c == ' ' {
-                        if c == '"' { w.write_str("\\\"")?; }
-                        else if c == '\\' { w.write_str("\\\\")?; }
-                        else { w.write_char(c)?; }
+                        if c == '"' {
+                            w.write_str("\\\"")?;
+                        } else if c == '\\' {
+                            w.write_str("\\\\")?;
+                        } else {
+                            w.write_char(c)?;
+                        }
                     } else {
                         write!(w, "\\x{:02X}", b)?;
                     }
@@ -78,7 +82,11 @@ impl Emit for Literal {
                                 }
                             }
                         }
-                        P::Interpolation { expression, alignment, format_string } => {
+                        P::Interpolation {
+                            expression,
+                            alignment,
+                            format_string,
+                        } => {
                             w.write_char('{')?;
                             use crate::emitters::emit_trait::Emit as _;
                             expression.emit(w, &mut EmitCtx::new())?;

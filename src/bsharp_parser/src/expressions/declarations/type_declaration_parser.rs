@@ -1,12 +1,12 @@
 use crate::syntax::comment_parser::ws;
 use nom::Parser;
 use nom::branch::alt;
+use nom::bytes::complete::take_until;
+use nom::character::complete::char as nom_char;
 use nom::combinator::map;
 use nom::combinator::opt;
 use nom::combinator::peek;
 use nom::sequence::delimited;
-use nom::bytes::complete::take_until;
-use nom::character::complete::char as nom_char;
 use std::marker::PhantomData;
 
 use crate::syntax::errors::BResult;
@@ -222,15 +222,21 @@ where
                 } else {
                     // In lenient mode, attempt to recover by skipping to the next statement terminator or block end
                     // 1) Try to skip up to and including the next ';'
-                    if let Ok((after_skipped, _)) = take_until::<&str, Span, ErrorTree<Span>>(";")(cur) {
+                    if let Ok((after_skipped, _)) =
+                        take_until::<&str, Span, ErrorTree<Span>>(";")(cur)
+                    {
                         // Consume the semicolon
-                        if let Ok((after_semi, _)) = delimited(ws, nom_char(';'), ws).parse(after_skipped) {
+                        if let Ok((after_semi, _)) =
+                            delimited(ws, nom_char(';'), ws).parse(after_skipped)
+                        {
                             cur = after_semi;
                             continue;
                         }
                     }
                     // 2) Otherwise, skip up to the next '}' but do not consume it
-                    if let Ok((before_rbrace, _)) = take_until::<&str, Span, ErrorTree<Span>>("}")(cur) {
+                    if let Ok((before_rbrace, _)) =
+                        take_until::<&str, Span, ErrorTree<Span>>("}")(cur)
+                    {
                         cur = before_rbrace;
                         continue;
                     }

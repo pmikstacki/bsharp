@@ -1,6 +1,6 @@
+use crate::Identifier;
 use crate::declarations::{AttributeList, Modifier, TypeParameterConstraintClause};
 use crate::types::{Parameter, Type};
-use crate::Identifier;
 use serde::{Deserialize, Serialize};
 
 #[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]

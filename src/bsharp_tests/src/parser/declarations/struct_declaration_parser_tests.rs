@@ -166,5 +166,8 @@ fn test_struct_with_attribute() {
 
     assert_eq!(result.attributes.len(), 1);
     assert_eq!(result.attributes[0].attributes.len(), 1);
-    assert_eq!(result.attributes[0].attributes[0].name.to_string(), "Serializable");
+    assert_eq!(
+        result.attributes[0].attributes[0].name.to_string(),
+        "Serializable"
+    );
 }

@@ -29,11 +29,11 @@ pub fn parse_switch_expression(input: Span) -> BResult<Expression> {
             tok_l_brace(),
             |i| delimited(ws, parse_switch_expression_arm, ws).parse(i),
             tok_comma(),
-           tok_r_brace(),
+            tok_r_brace(),
             true,
             true,
         )
-            .parse(i)
+        .parse(i)
     }
     map(
         (
@@ -45,7 +45,7 @@ pub fn parse_switch_expression(input: Span) -> BResult<Expression> {
             Expression::SwitchExpression(Box::new(SwitchExpression { expression, arms }))
         },
     )
-        .parse(input)
+    .parse(input)
 }
 
 /// Parse a single switch expression arm (pattern [when condition] => expression)
@@ -66,24 +66,28 @@ fn parse_switch_expression_arm(input: Span) -> BResult<SwitchExpressionArm> {
             expression,
         },
     )
-        .parse(input)
+    .parse(input)
 }
 
 /// Parse relational expressions for when clauses
 fn parse_relational_basic_expression(input: Span) -> BResult<Expression> {
     let (input, first) = parse_additive_basic_expression(input)?;
     let (input, rest) = nom::multi::many0((
-        delimited(ws, alt((
-            map(tok_ge(), |_| BinaryOperator::GreaterEqual),
-            map(tok_le(), |_| BinaryOperator::LessEqual),
-            map(tok_equal(), |_| BinaryOperator::Equal),
-            map(tok_not_equal(), |_| BinaryOperator::NotEqual),
-            map(tok_gt(), |_| BinaryOperator::GreaterThan),
-            map(tok_lt(), |_| BinaryOperator::LessThan),
-        )), ws),
+        delimited(
+            ws,
+            alt((
+                map(tok_ge(), |_| BinaryOperator::GreaterEqual),
+                map(tok_le(), |_| BinaryOperator::LessEqual),
+                map(tok_equal(), |_| BinaryOperator::Equal),
+                map(tok_not_equal(), |_| BinaryOperator::NotEqual),
+                map(tok_gt(), |_| BinaryOperator::GreaterThan),
+                map(tok_lt(), |_| BinaryOperator::LessThan),
+            )),
+            ws,
+        ),
         parse_additive_basic_expression,
     ))
-        .parse(input)?;
+    .parse(input)?;
 
     // Fold the results into a left-associative tree
     Ok((
@@ -127,13 +131,17 @@ fn parse_basic_expression(input: Span) -> BResult<Expression> {
 fn parse_additive_basic_expression(input: Span) -> BResult<Expression> {
     let (input, first) = parse_multiplicative_basic_expression(input)?;
     let (input, rest) = nom::multi::many0((
-        delimited(ws, alt((
-            map(nom_char('+'), |_| BinaryOperator::Add),
-            map(nom_char('-'), |_| BinaryOperator::Subtract),
-        )), ws),
+        delimited(
+            ws,
+            alt((
+                map(nom_char('+'), |_| BinaryOperator::Add),
+                map(nom_char('-'), |_| BinaryOperator::Subtract),
+            )),
+            ws,
+        ),
         parse_multiplicative_basic_expression,
     ))
-        .parse(input)?;
+    .parse(input)?;
 
     // Fold the results into a left-associative tree
     Ok((
@@ -151,14 +159,18 @@ fn parse_additive_basic_expression(input: Span) -> BResult<Expression> {
 fn parse_multiplicative_basic_expression(input: Span) -> BResult<Expression> {
     let (input, first) = parse_primary_basic_expression(input)?;
     let (input, rest) = nom::multi::many0((
-        delimited(ws, alt((
-            map(nom_char('*'), |_| BinaryOperator::Multiply),
-            map(nom_char('/'), |_| BinaryOperator::Divide),
-            map(nom_char('%'), |_| BinaryOperator::Modulo),
-        )), ws),
+        delimited(
+            ws,
+            alt((
+                map(nom_char('*'), |_| BinaryOperator::Multiply),
+                map(nom_char('/'), |_| BinaryOperator::Divide),
+                map(nom_char('%'), |_| BinaryOperator::Modulo),
+            )),
+            ws,
+        ),
         parse_primary_basic_expression,
     ))
-        .parse(input)?;
+    .parse(input)?;
 
     // Fold the results into a left-associative tree
     Ok((
@@ -174,104 +186,109 @@ fn parse_multiplicative_basic_expression(input: Span) -> BResult<Expression> {
 
 /// Parse primary basic expressions
 fn parse_primary_basic_expression(input: Span) -> BResult<Expression> {
-    map(alt((
-        // Literals first (most specific)
-        map(parse_literal, Expression::Literal),
-        // Identifiers (variables)
-        map(parse_identifier, Expression::Variable),
-        // Parenthesized basic expressions
-        delimited(
-            delimited(ws, tok_l_paren(), ws),
-            parse_basic_expression,
-            cut(delimited(ws, tok_r_paren(), ws)),
-        ),
-        // Member access: obj.member (but no further nesting)
-        map(
-            (
-                parse_identifier,
-                preceded(nom_char('.'), parse_identifier),
+    map(
+        alt((
+            // Literals first (most specific)
+            map(parse_literal, Expression::Literal),
+            // Identifiers (variables)
+            map(parse_identifier, Expression::Variable),
+            // Parenthesized basic expressions
+            delimited(
+                delimited(ws, tok_l_paren(), ws),
+                parse_basic_expression,
+                cut(delimited(ws, tok_r_paren(), ws)),
             ),
-            |(obj, member)| {
-                Expression::MemberAccess(Box::new(MemberAccessExpression {
-                    object: Box::new(Expression::Variable(obj)),
-                    member,
-                }))
-            },
-        ),
-        // Method calls on basic expressions: obj.Method()
-        map(
-            (
-                parse_identifier,
-                preceded(nom_char('.'), parse_identifier),
-                delimited(
-                    delimited(ws, tok_l_paren(), ws),
-                    nom::multi::separated_list0(
-                        delimited(ws, tok_comma(), ws),
-                        parse_basic_expression,
-                    ),
-                    cut(delimited(ws, tok_r_paren(), ws)),
-                ),
-            ),
-            |(obj, method, args)| {
-                use syntax::expressions::invocation_expression::Argument;
-                Expression::Invocation(Box::new(InvocationExpression {
-                    callee: Box::new(Expression::MemberAccess(Box::new(MemberAccessExpression {
+            // Member access: obj.member (but no further nesting)
+            map(
+                (parse_identifier, preceded(nom_char('.'), parse_identifier)),
+                |(obj, member)| {
+                    Expression::MemberAccess(Box::new(MemberAccessExpression {
                         object: Box::new(Expression::Variable(obj)),
-                        member: method,
-                    }))),
-                    arguments: args
-                        .into_iter()
-                        .map(|expr| Argument {
-                            name: None,
-                            modifier: None,
-                            expr,
-                        })
-                        .collect(),
-                }))
-            },
-        ),
-    )), |v| v)
-        .parse(input)
+                        member,
+                    }))
+                },
+            ),
+            // Method calls on basic expressions: obj.Method()
+            map(
+                (
+                    parse_identifier,
+                    preceded(nom_char('.'), parse_identifier),
+                    delimited(
+                        delimited(ws, tok_l_paren(), ws),
+                        nom::multi::separated_list0(
+                            delimited(ws, tok_comma(), ws),
+                            parse_basic_expression,
+                        ),
+                        cut(delimited(ws, tok_r_paren(), ws)),
+                    ),
+                ),
+                |(obj, method, args)| {
+                    use syntax::expressions::invocation_expression::Argument;
+                    Expression::Invocation(Box::new(InvocationExpression {
+                        callee: Box::new(Expression::MemberAccess(Box::new(
+                            MemberAccessExpression {
+                                object: Box::new(Expression::Variable(obj)),
+                                member: method,
+                            },
+                        ))),
+                        arguments: args
+                            .into_iter()
+                            .map(|expr| Argument {
+                                name: None,
+                                modifier: None,
+                                expr,
+                            })
+                            .collect(),
+                    }))
+                },
+            ),
+        )),
+        |v| v,
+    )
+    .parse(input)
 }
 
 /// Parse switch statement cases for traditional switch statements
 pub fn parse_switch_case(input: Span) -> BResult<PatternCase> {
-    map(alt((
-        // case pattern [when condition]:
-        map(
-            (
-                delimited(ws, kw_case(), ws),
-                delimited(ws, parse_pattern, ws),
-                opt(preceded(
-                    delimited(ws, kw_when(), ws),
+    map(
+        alt((
+            // case pattern [when condition]:
+            map(
+                (
+                    delimited(ws, kw_case(), ws),
+                    delimited(ws, parse_pattern, ws),
+                    opt(preceded(
+                        delimited(ws, kw_when(), ws),
+                        delimited(ws, parse_basic_expression, ws),
+                    )),
+                    delimited(ws, tok_colon(), ws),
+                    // For simplicity, we'll parse the body as a single expression
+                    // In a real implementation, this would parse a list of statements
                     delimited(ws, parse_basic_expression, ws),
-                )),
-                delimited(ws, tok_colon(), ws),
-                // For simplicity, we'll parse the body as a single expression
-                // In a real implementation, this would parse a list of statements
-                delimited(ws, parse_basic_expression, ws),
+                ),
+                |(_, pattern, when_clause, _, body)| PatternCase {
+                    pattern,
+                    when_clause,
+                    body: vec![body],
+                },
             ),
-            |(_, pattern, when_clause, _, body)| PatternCase {
-                pattern,
-                when_clause,
-                body: vec![body],
-            },
-        ),
-        // default:
-        map(
-            (
-                delimited(ws, kw_default(), ws),
-                delimited(ws, tok_colon(), ws),
-                delimited(ws, parse_basic_expression, ws),
+            // default:
+            map(
+                (
+                    delimited(ws, kw_default(), ws),
+                    delimited(ws, tok_colon(), ws),
+                    delimited(ws, parse_basic_expression, ws),
+                ),
+                |(_, _, body)| PatternCase {
+                    pattern: Pattern::Discard, // default is like a discard pattern
+                    when_clause: None,
+                    body: vec![body],
+                },
             ),
-            |(_, _, body)| PatternCase {
-                pattern: Pattern::Discard, // default is like a discard pattern
-                when_clause: None,
-                body: vec![body],
-            },
-        ),
-    )), |v| v)
-        .parse(input)
+        )),
+        |v| v,
+    )
+    .parse(input)
 }
 use crate::syntax::span::Span;
 use crate::tokens::delimiters::{tok_l_brace, tok_l_paren, tok_r_brace, tok_r_paren};

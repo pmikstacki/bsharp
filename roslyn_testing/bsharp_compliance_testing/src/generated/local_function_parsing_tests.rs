@@ -1,9 +1,9 @@
 // Auto-generated from Roslyn: LocalFunctionParsingTests
-use bsharp_parser::syntax::span::Span;
 use crate::custom_asserts::after_parse;
 use crate::custom_asserts::after_parse::CaseData;
-use bsharp_parser::bsharp::parse_csharp_source_strict;
 use crate::custom_asserts::roslyn_asserts::ExpectedDiagnostics;
+use bsharp_parser::bsharp::parse_csharp_source_strict;
+use bsharp_parser::syntax::span::Span;
 /// Roslyn: LocalFunctionParsingTests.IncompleteLocalFunc (case 1)
 #[test]
 fn incomplete_local_func() {
@@ -35,22 +35,54 @@ class C
         int? L(
     }
 }"#;
-    let expected = Some(ExpectedDiagnostics { count: 12, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 12,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("local_function_parsing_tests", "LocalFunctionParsingTests", "IncompleteLocalFunc", 1, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "local_function_parsing_tests",
+                    "LocalFunctionParsingTests",
+                    "IncompleteLocalFunc",
+                    1,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("local_function_parsing_tests", "LocalFunctionParsingTests", "IncompleteLocalFunc", 1, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "local_function_parsing_tests",
+                    "LocalFunctionParsingTests",
+                    "IncompleteLocalFunc",
+                    1,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("local_function_parsing_tests", "LocalFunctionParsingTests", "IncompleteLocalFunc", 1, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "local_function_parsing_tests",
+            "LocalFunctionParsingTests",
+            "IncompleteLocalFunc",
+            1,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -74,22 +106,51 @@ class C
         [A][B] void local() { }
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("local_function_parsing_tests", "LocalFunctionParsingTests", "LocalFunctionAttribute", 2, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "local_function_parsing_tests",
+                    "LocalFunctionParsingTests",
+                    "LocalFunctionAttribute",
+                    2,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("local_function_parsing_tests", "LocalFunctionParsingTests", "LocalFunctionAttribute", 2, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "local_function_parsing_tests",
+                    "LocalFunctionParsingTests",
+                    "LocalFunctionAttribute",
+                    2,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("local_function_parsing_tests", "LocalFunctionParsingTests", "LocalFunctionAttribute", 2, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "local_function_parsing_tests",
+            "LocalFunctionParsingTests",
+            "LocalFunctionAttribute",
+            2,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -104,22 +165,54 @@ class C
         public object local;
     }
 }"#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("local_function_parsing_tests", "LocalFunctionParsingTests", "LocalFunctionModifier_Error_LocalVariable", 3, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "local_function_parsing_tests",
+                    "LocalFunctionParsingTests",
+                    "LocalFunctionModifier_Error_LocalVariable",
+                    3,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("local_function_parsing_tests", "LocalFunctionParsingTests", "LocalFunctionModifier_Error_LocalVariable", 3, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "local_function_parsing_tests",
+                    "LocalFunctionParsingTests",
+                    "LocalFunctionModifier_Error_LocalVariable",
+                    3,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("local_function_parsing_tests", "LocalFunctionParsingTests", "LocalFunctionModifier_Error_LocalVariable", 3, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "local_function_parsing_tests",
+            "LocalFunctionParsingTests",
+            "LocalFunctionModifier_Error_LocalVariable",
+            3,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -135,22 +228,51 @@ class C
     }
 }
 "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("local_function_parsing_tests", "LocalFunctionParsingTests", "LocalFunction_NoBody", 4, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "local_function_parsing_tests",
+                    "LocalFunctionParsingTests",
+                    "LocalFunction_NoBody",
+                    4,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("local_function_parsing_tests", "LocalFunctionParsingTests", "LocalFunction_NoBody", 4, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "local_function_parsing_tests",
+                    "LocalFunctionParsingTests",
+                    "LocalFunction_NoBody",
+                    4,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("local_function_parsing_tests", "LocalFunctionParsingTests", "LocalFunction_NoBody", 4, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "local_function_parsing_tests",
+            "LocalFunctionParsingTests",
+            "LocalFunction_NoBody",
+            4,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -165,22 +287,51 @@ class C
         [A] object local;
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("local_function_parsing_tests", "LocalFunctionParsingTests", "LocalFunctionAttribute_Error_LocalVariable", 5, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "local_function_parsing_tests",
+                    "LocalFunctionParsingTests",
+                    "LocalFunctionAttribute_Error_LocalVariable",
+                    5,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("local_function_parsing_tests", "LocalFunctionParsingTests", "LocalFunctionAttribute_Error_LocalVariable", 5, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "local_function_parsing_tests",
+                    "LocalFunctionParsingTests",
+                    "LocalFunctionAttribute_Error_LocalVariable",
+                    5,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("local_function_parsing_tests", "LocalFunctionParsingTests", "LocalFunctionAttribute_Error_LocalVariable", 5, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "local_function_parsing_tests",
+            "LocalFunctionParsingTests",
+            "LocalFunctionAttribute_Error_LocalVariable",
+            5,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -195,22 +346,51 @@ class C
         [A] object local1, local2;
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("local_function_parsing_tests", "LocalFunctionParsingTests", "LocalFunctionAttribute_Error_LocalVariable_MultipleDeclarators", 6, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "local_function_parsing_tests",
+                    "LocalFunctionParsingTests",
+                    "LocalFunctionAttribute_Error_LocalVariable_MultipleDeclarators",
+                    6,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("local_function_parsing_tests", "LocalFunctionParsingTests", "LocalFunctionAttribute_Error_LocalVariable_MultipleDeclarators", 6, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "local_function_parsing_tests",
+                    "LocalFunctionParsingTests",
+                    "LocalFunctionAttribute_Error_LocalVariable_MultipleDeclarators",
+                    6,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("local_function_parsing_tests", "LocalFunctionParsingTests", "LocalFunctionAttribute_Error_LocalVariable_MultipleDeclarators", 6, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "local_function_parsing_tests",
+            "LocalFunctionParsingTests",
+            "LocalFunctionAttribute_Error_LocalVariable_MultipleDeclarators",
+            6,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -225,22 +405,54 @@ class C
         [A]
     }
 }"#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("local_function_parsing_tests", "LocalFunctionParsingTests", "LocalFunctionAttribute_Error_IncompleteMember", 7, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "local_function_parsing_tests",
+                    "LocalFunctionParsingTests",
+                    "LocalFunctionAttribute_Error_IncompleteMember",
+                    7,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("local_function_parsing_tests", "LocalFunctionParsingTests", "LocalFunctionAttribute_Error_IncompleteMember", 7, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "local_function_parsing_tests",
+                    "LocalFunctionParsingTests",
+                    "LocalFunctionAttribute_Error_IncompleteMember",
+                    7,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("local_function_parsing_tests", "LocalFunctionParsingTests", "LocalFunctionAttribute_Error_IncompleteMember", 7, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "local_function_parsing_tests",
+            "LocalFunctionParsingTests",
+            "LocalFunctionAttribute_Error_IncompleteMember",
+            7,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -256,22 +468,50 @@ class c
     void m4() { async await() => new await(); }
     async void m5() { await async () => new await(); }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("local_function_parsing_tests", "LocalFunctionParsingTests", "LocalFunctionsWithAwait", 8, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "local_function_parsing_tests",
+                    "LocalFunctionParsingTests",
+                    "LocalFunctionsWithAwait",
+                    8,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("local_function_parsing_tests", "LocalFunctionParsingTests", "LocalFunctionsWithAwait", 8, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "local_function_parsing_tests",
+                    "LocalFunctionParsingTests",
+                    "LocalFunctionsWithAwait",
+                    8,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("local_function_parsing_tests", "LocalFunctionParsingTests", "LocalFunctionsWithAwait", 8, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "local_function_parsing_tests",
+            "LocalFunctionParsingTests",
+            "LocalFunctionsWithAwait",
+            8,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
-

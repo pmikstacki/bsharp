@@ -31,9 +31,16 @@ pub fn ensure_csharpier_bin() -> anyhow::Result<String> {
     let auto = env::var("BSHARP_AUTO_INSTALL_CSHARPIER").unwrap_or_default();
     let auto = matches!(auto.as_str(), "1" | "true" | "TRUE" | "yes");
     if auto {
-        let tool_dir: PathBuf = [env!("CARGO_MANIFEST_DIR"), "..", "..", "target", "tools", "csharpier_bin"]
-            .iter()
-            .collect();
+        let tool_dir: PathBuf = [
+            env!("CARGO_MANIFEST_DIR"),
+            "..",
+            "..",
+            "target",
+            "tools",
+            "csharpier_bin",
+        ]
+        .iter()
+        .collect();
         fs::create_dir_all(&tool_dir)?;
         let status = Command::new("dotnet")
             .args([

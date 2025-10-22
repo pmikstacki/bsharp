@@ -8,14 +8,14 @@ use crate::parser::keywords::literal_keywords::{kw_false, kw_true};
 use crate::parser::types::type_parser::parse_type_expression;
 use crate::syntax::errors::BResult;
 use nom::{branch::alt, combinator::map};
+use syntax::Identifier;
 use syntax::declarations::{
     Attribute, ConversionKind, Modifier, OperatorDeclaration, OperatorKind,
 };
-use syntax::Identifier;
 
 use crate::syntax::comment_parser::ws;
-use nom::sequence::delimited;
 use nom::Parser;
+use nom::sequence::delimited;
 use nom_supreme::ParserExt;
 
 /// Parse a C# operator declaration
@@ -127,10 +127,16 @@ fn parse_conversion_operator(
 fn parse_operator_symbol(input: Span) -> BResult<Identifier> {
     alt((
         // Multi-character operators first (to avoid prefix conflicts)
-        map(delimited(ws, tok_increment(), ws), |_| Identifier::new("++")),
-        map(delimited(ws, tok_decrement(), ws), |_| Identifier::new("--")),
+        map(delimited(ws, tok_increment(), ws), |_| {
+            Identifier::new("++")
+        }),
+        map(delimited(ws, tok_decrement(), ws), |_| {
+            Identifier::new("--")
+        }),
         map(delimited(ws, tok_equal(), ws), |_| Identifier::new("==")),
-        map(delimited(ws, tok_not_equal(), ws), |_| Identifier::new("!=")),
+        map(delimited(ws, tok_not_equal(), ws), |_| {
+            Identifier::new("!=")
+        }),
         map(delimited(ws, tok_ge(), ws), |_| Identifier::new(">=")),
         map(delimited(ws, tok_le(), ws), |_| Identifier::new("<=")),
         // Keywords (these should also come before single characters)
@@ -147,26 +153,27 @@ fn parse_operator_symbol(input: Span) -> BResult<Identifier> {
         map(delimited(ws, tok_not(), ws), |_| Identifier::new("!")),
         map(delimited(ws, tok_tilde(), ws), |_| Identifier::new("~")),
     ))
-        .context("operator symbol")
-        .parse(input)
+    .context("operator symbol")
+    .parse(input)
 }
 
 /// Parse the operator body (either a block statement or semicolon)
 fn parse_operator_body(input: Span) -> BResult<String> {
     alt((
         // Block body
-        map(
-            delimited(ws, parse_block_statement, ws),
-            |_| "{ /* body */ }".to_string(),
-        ),
+        map(delimited(ws, parse_block_statement, ws), |_| {
+            "{ /* body */ }".to_string()
+        }),
         // Semicolon (abstract/extern)
         map(delimited(ws, tok_semicolon(), ws), |_| "".to_string()),
     ))
-        .context("operator body")
-        .parse(input)
+    .context("operator body")
+    .parse(input)
 }
 use crate::syntax::span::Span;
-use crate::tokens::arithmetic::{tok_decrement, tok_divide, tok_increment, tok_minus, tok_mod, tok_multiply, tok_plus};
+use crate::tokens::arithmetic::{
+    tok_decrement, tok_divide, tok_increment, tok_minus, tok_mod, tok_multiply, tok_plus,
+};
 use crate::tokens::bitwise::tok_tilde;
 use crate::tokens::equality::{tok_equal, tok_not_equal};
 use crate::tokens::nullish::tok_not;

@@ -1,6 +1,6 @@
+use crate::SourceLocation;
 use crate::artifacts::symbols::{Symbol, SymbolIndex};
 use crate::framework::AnalysisSession;
-use crate::SourceLocation;
 
 /// Return all symbols with the given local name using the SymbolIndex artifact.
 pub fn find_symbols_by_name(session: &AnalysisSession, name: &str) -> Vec<Symbol> {

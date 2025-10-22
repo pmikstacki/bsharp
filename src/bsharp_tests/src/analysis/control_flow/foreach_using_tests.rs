@@ -1,8 +1,8 @@
 #![allow(unused_variables)]
 
+use analysis::AnalysisContext;
 use analysis::artifacts::control_flow_graph::index::ControlFlowIndex;
 use analysis::framework::{AnalysisSession, AnalyzerPipeline};
-use analysis::AnalysisContext;
 use parser::facade::Parser;
 
 #[test]

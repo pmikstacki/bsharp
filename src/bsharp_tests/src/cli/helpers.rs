@@ -1,5 +1,5 @@
-use std::path::PathBuf;
 use parser::syntax::span::Span;
+use std::path::PathBuf;
 
 /// Test helper equivalent of CLI parse command. Reads C# file, parses, writes JSON AST.
 pub fn parse_execute(
@@ -9,7 +9,7 @@ pub fn parse_execute(
     _no_color: bool,
     lenient: bool,
 ) -> anyhow::Result<()> {
-    use anyhow::{anyhow, Context};
+    use anyhow::{Context, anyhow};
     use parser::bsharp::{parse_csharp_source, parse_csharp_source_strict};
     use parser::parse_mode;
     use std::fs;
@@ -41,7 +41,7 @@ pub fn parse_execute(
 
 /// Test helper equivalent of CLI tree command. Generates Mermaid or DOT AST graph.
 pub fn tree_execute(input: PathBuf, output: Option<PathBuf>, format: String) -> anyhow::Result<()> {
-    use anyhow::{anyhow, Context};
+    use anyhow::{Context, anyhow};
     use parser::bsharp::parse_csharp_source;
     use parser::parse_mode;
     use parser::syntax::{ast, declarations::UsingDirective};
@@ -74,9 +74,15 @@ pub fn tree_execute(input: PathBuf, output: Option<PathBuf>, format: String) -> 
                 alias,
                 namespace_or_type,
             } => {
-                format!("using {} = {};", alias.to_string(), namespace_or_type.to_string())
+                format!(
+                    "using {} = {};",
+                    alias.to_string(),
+                    namespace_or_type.to_string()
+                )
             }
-            UsingDirective::Static { type_name } => format!("using static {};", type_name.to_string()),
+            UsingDirective::Static { type_name } => {
+                format!("using static {};", type_name.to_string())
+            }
         }
     }
     fn generate_mermaid_ast(ast: &ast::CompilationUnit) -> String {
@@ -98,7 +104,9 @@ pub fn tree_execute(input: PathBuf, output: Option<PathBuf>, format: String) -> 
         for (i, member) in ast.declarations.iter().enumerate() {
             let id = format!("d{}", i);
             let label = match member {
-                ast::TopLevelDeclaration::Namespace(ns) => format!("Namespace: {}", ns.name.to_string()),
+                ast::TopLevelDeclaration::Namespace(ns) => {
+                    format!("Namespace: {}", ns.name.to_string())
+                }
                 ast::TopLevelDeclaration::FileScopedNamespace(fs) => {
                     format!("File-Scoped Namespace: {}", fs.name.to_string())
                 }
@@ -108,11 +116,16 @@ pub fn tree_execute(input: PathBuf, output: Option<PathBuf>, format: String) -> 
                 }
                 ast::TopLevelDeclaration::Struct(st) => format!("Struct: {}", st.name.to_string()),
                 ast::TopLevelDeclaration::Enum(en) => format!("Enum: {}", en.name.to_string()),
-                ast::TopLevelDeclaration::Record(rec) => format!("Record: {}", rec.name.to_string()),
-                ast::TopLevelDeclaration::Delegate(del) => format!("Delegate: {}", del.name.to_string()),
+                ast::TopLevelDeclaration::Record(rec) => {
+                    format!("Record: {}", rec.name.to_string())
+                }
+                ast::TopLevelDeclaration::Delegate(del) => {
+                    format!("Delegate: {}", del.name.to_string())
+                }
                 ast::TopLevelDeclaration::GlobalAttribute(ga) => format!(
                     "Global Attribute: {} -> {}",
-                    ga.target.to_string(), ga.attribute.name.to_string()
+                    ga.target.to_string(),
+                    ga.attribute.name.to_string()
                 ),
             };
             lines.push(format!("{id}[\"{label}\"]"));
@@ -140,7 +153,9 @@ pub fn tree_execute(input: PathBuf, output: Option<PathBuf>, format: String) -> 
         for (i, member) in ast.declarations.iter().enumerate() {
             let id = format!("d{}", i);
             let label = match member {
-                ast::TopLevelDeclaration::Namespace(ns) => format!("Namespace: {}", ns.name.to_string()),
+                ast::TopLevelDeclaration::Namespace(ns) => {
+                    format!("Namespace: {}", ns.name.to_string())
+                }
                 ast::TopLevelDeclaration::FileScopedNamespace(fs) => {
                     format!("File-Scoped Namespace: {}", fs.name.to_string())
                 }
@@ -150,11 +165,16 @@ pub fn tree_execute(input: PathBuf, output: Option<PathBuf>, format: String) -> 
                 }
                 ast::TopLevelDeclaration::Struct(st) => format!("Struct: {}", st.name.to_string()),
                 ast::TopLevelDeclaration::Enum(en) => format!("Enum: {}", en.name.to_string()),
-                ast::TopLevelDeclaration::Record(rec) => format!("Record: {}", rec.name.to_string()),
-                ast::TopLevelDeclaration::Delegate(del) => format!("Delegate: {}", del.name.to_string()),
+                ast::TopLevelDeclaration::Record(rec) => {
+                    format!("Record: {}", rec.name.to_string())
+                }
+                ast::TopLevelDeclaration::Delegate(del) => {
+                    format!("Delegate: {}", del.name.to_string())
+                }
                 ast::TopLevelDeclaration::GlobalAttribute(ga) => format!(
                     "Global Attribute: {} -> {}",
-                    ga.target.to_string(), ga.attribute.name.to_string()
+                    ga.target.to_string(),
+                    ga.attribute.name.to_string()
                 ),
             };
             out.push_str(&format!("  {id} [label=\"{label}\"];\n"));

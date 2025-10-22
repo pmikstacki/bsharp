@@ -65,7 +65,10 @@ fn test_parse_query_with_type_annotation() {
 
     if let Ok(Expression::Query(query)) = result {
         assert!(query.from.type_annotation.is_some());
-        assert_eq!(query.from.type_annotation.as_ref().unwrap().to_string(), "int");
+        assert_eq!(
+            query.from.type_annotation.as_ref().unwrap().to_string(),
+            "int"
+        );
         assert_eq!(query.from.identifier.to_string(), "x");
     } else {
         panic!("Expected query expression");

@@ -15,8 +15,8 @@ use nom::{
     sequence::delimited,
 };
 use nom_supreme::ParserExt;
-use syntax::statements::statement::Statement;
 use syntax::statements::LocalFunctionStatement;
+use syntax::statements::statement::Statement;
 
 /// Parse a local function body - similar to method body parsing
 fn parse_local_function_body(input: Span) -> BResult<Statement> {
@@ -32,8 +32,8 @@ fn parse_local_function_body(input: Span) -> BResult<Statement> {
             Ok((i, Statement::Empty))
         },
     ))
-        .context("local function body")
-        .parse(input)
+    .context("local function body")
+    .parse(input)
 }
 
 /// Parse a local function statement
@@ -85,8 +85,8 @@ pub fn parse_local_function_statement(input: Span) -> BResult<Statement> {
             }))
         },
     )
-        .context("local function statement")
-        .parse(input)
+    .context("local function statement")
+    .parse(input)
 }
 use crate::syntax::span::Span;
 use crate::tokens::lambda::tok_lambda;

@@ -6,8 +6,8 @@ use crate::parser::types::type_parser::parse_type_expression;
 use crate::syntax::comment_parser::ws;
 use crate::syntax::errors::BResult;
 use crate::syntax::list_parser::{parse_delimited_list1, parse_list0};
-use nom::sequence::delimited;
 use nom::Parser;
+use nom::sequence::delimited;
 use nom::{branch::alt, combinator::value};
 use nom_supreme::ParserExt;
 use syntax::declarations::{TypeParameterConstraint, TypeParameterConstraintClause};
@@ -15,9 +15,12 @@ use syntax::types::{TypeParameter, Variance};
 
 // Parse variance keyword (in/out)
 fn parse_variance(input: Span) -> BResult<Variance> {
-    nom::combinator::map(alt((value(Variance::In, kw_in()), value(Variance::Out, kw_out()))), |v| v)
-        .context("variance modifier")
-        .parse(input)
+    nom::combinator::map(
+        alt((value(Variance::In, kw_in()), value(Variance::Out, kw_out()))),
+        |v| v,
+    )
+    .context("variance modifier")
+    .parse(input)
 }
 
 /// Public wrapper to parse a single type parameter node
@@ -33,8 +36,8 @@ pub fn parse_type_parameter_for_trait_impl(input: Span) -> BResult<TypeParameter
 // Parse a single type parameter, e.g., "T", "in T", "out T"
 fn parse_single_type_parameter(input: Span) -> BResult<TypeParameter> {
     // Try parsing optional variance keyword first
-    let (input, variance) = nom::combinator::opt(|i| delimited(ws, parse_variance, ws).parse(i))
-        .parse(input)?;
+    let (input, variance) =
+        nom::combinator::opt(|i| delimited(ws, parse_variance, ws).parse(i)).parse(input)?;
     let (input, name) = delimited(ws, parse_identifier, ws)
         .context("type parameter name")
         .parse(input)?;
@@ -52,16 +55,18 @@ fn parse_single_type_parameter(input: Span) -> BResult<TypeParameter> {
 pub fn parse_type_parameter_list(input: Span) -> BResult<Vec<TypeParameter>> {
     parse_delimited_list1::<_, _, _, _, char, char, char, TypeParameter>(
         |i| delimited(ws, tok_lt(), ws).parse(i),
-        |i| delimited(ws, parse_single_type_parameter, ws)
-            .context("type parameter")
-            .parse(i),
+        |i| {
+            delimited(ws, parse_single_type_parameter, ws)
+                .context("type parameter")
+                .parse(i)
+        },
         |i| delimited(ws, tok_comma(), ws).parse(i),
         |i| delimited(ws, tok_gt(), ws).parse(i),
         false,
         true,
     )
-        .context("type parameter list opening")
-        .parse(input)
+    .context("type parameter list opening")
+    .parse(input)
 }
 
 // Optional type parameter list (returns None if no list, Some(Vec) otherwise)
@@ -85,12 +90,18 @@ fn parse_type_parameter_constraint(input: Span) -> BResult<TypeParameterConstrai
     // Try "allows ref struct" contextual constraint
     if let Ok((rest, _)) = nom::combinator::map(
         (
-            delimited(ws, crate::parser::keywords::constraint_keywords::kw_allows(), ws),
+            delimited(
+                ws,
+                crate::parser::keywords::constraint_keywords::kw_allows(),
+                ws,
+            ),
             delimited(ws, kw_ref(), ws),
             delimited(ws, kw_struct(), ws),
         ),
         |_| (),
-    ).parse(input) {
+    )
+    .parse(input)
+    {
         return Ok((rest, TypeParameterConstraint::AllowsRefStruct));
     }
 
@@ -152,9 +163,11 @@ fn parse_where_clause(input: Span) -> BResult<TypeParameterConstraintClause> {
         .context("constraint separator  ")
         .parse(input)?;
     let (input, constraints) = parse_list0(
-        |i| delimited(ws, parse_type_parameter_constraint, ws)
-            .context("type parameter constraint")
-            .parse(i),
+        |i| {
+            delimited(ws, parse_type_parameter_constraint, ws)
+                .context("type parameter constraint")
+                .parse(i)
+        },
         |i| delimited(ws, tok_comma(), ws).parse(i),
     )(input)?;
 
@@ -168,9 +181,7 @@ fn parse_where_clause(input: Span) -> BResult<TypeParameterConstraintClause> {
 }
 
 /// Public wrapper to parse a single `where` clause (TypeParameterConstraintClause)
-pub fn parse_type_parameter_where_clause(
-    input: Span,
-) -> BResult<TypeParameterConstraintClause> {
+pub fn parse_type_parameter_where_clause(input: Span) -> BResult<TypeParameterConstraintClause> {
     parse_where_clause(input)
 }
 
@@ -197,4 +208,3 @@ use crate::keywords::modifier_keywords::{kw_new, kw_unmanaged};
 use crate::keywords::pattern_keywords::kw_not;
 use crate::tokens::relational::{tok_gt, tok_lt};
 use crate::tokens::separators::{tok_colon, tok_comma};
-

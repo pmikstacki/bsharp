@@ -2,7 +2,7 @@ use crate::emitters::emit_trait::{Emit, EmitCtx, EmitError};
 use crate::expressions::StackAllocExpression;
 
 impl Emit for StackAllocExpression {
-    fn emit<W: std::fmt::Write>(&self, w:&mut W, cx:&mut EmitCtx)->Result<(),EmitError>{
+    fn emit<W: std::fmt::Write>(&self, w: &mut W, cx: &mut EmitCtx) -> Result<(), EmitError> {
         use crate::emitters::emit_trait::Emit as _;
         w.write_str("stackalloc")?;
         // Type (optional for collection initializer form)
@@ -23,7 +23,9 @@ impl Emit for StackAllocExpression {
             w.write_str("[]")?;
             w.write_str(" { ")?;
             for (i, it) in items.iter().enumerate() {
-                if i != 0 { w.write_str(", ")?; }
+                if i != 0 {
+                    w.write_str(", ")?;
+                }
                 it.emit(w, cx)?;
             }
             w.write_str(" }")?;

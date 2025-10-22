@@ -42,21 +42,30 @@ impl Emit for Expression {
             Expression::Await(x) => x.emit(w, cx),
             Expression::Query(x) => x.emit(w, cx),
             Expression::SwitchExpression(x) => x.emit(w, cx),
-            Expression::IsPattern { expression, pattern } => {
+            Expression::IsPattern {
+                expression,
+                pattern,
+            } => {
                 expression.emit(w, cx)?;
                 cx.space(w)?;
                 w.write_str("is").map_err(EmitError::from)?;
                 cx.space(w)?;
                 pattern.emit(w, cx)
             }
-            Expression::As { expression, target_type } => {
+            Expression::As {
+                expression,
+                target_type,
+            } => {
                 expression.emit(w, cx)?;
                 cx.space(w)?;
                 w.write_str("as").map_err(EmitError::from)?;
                 cx.space(w)?;
                 write!(w, "{}", target_type).map_err(EmitError::from)
             }
-            Expression::Cast { expression, target_type } => {
+            Expression::Cast {
+                expression,
+                target_type,
+            } => {
                 w.write_char('(').map_err(EmitError::from)?;
                 write!(w, "{}", target_type).map_err(EmitError::from)?;
                 w.write_char(')').map_err(EmitError::from)?;
@@ -74,14 +83,21 @@ impl Emit for Expression {
             }
             Expression::Checked(x) => x.emit(w, cx),
             Expression::Unchecked(x) => x.emit(w, cx),
-            Expression::With { target, initializers } => {
+            Expression::With {
+                target,
+                initializers,
+            } => {
                 target.emit(w, cx)?;
-                cx.space(w)?; w.write_str("with").map_err(EmitError::from)?; cx.space(w)?;
+                cx.space(w)?;
+                w.write_str("with").map_err(EmitError::from)?;
+                cx.space(w)?;
                 w.write_char('{').map_err(EmitError::from)?;
                 if !initializers.is_empty() {
                     cx.space(w)?;
                     for (i, init) in initializers.iter().enumerate() {
-                        if i != 0 { w.write_str(", ").map_err(EmitError::from)?; }
+                        if i != 0 {
+                            w.write_str(", ").map_err(EmitError::from)?;
+                        }
                         init.emit(w, cx)?;
                     }
                     cx.space(w)?;
@@ -91,7 +107,9 @@ impl Emit for Expression {
             Expression::Collection(elements) => {
                 w.write_char('[').map_err(EmitError::from)?;
                 for (i, el) in elements.iter().enumerate() {
-                    if i != 0 { w.write_str(", ").map_err(EmitError::from)?; }
+                    if i != 0 {
+                        w.write_str(", ").map_err(EmitError::from)?;
+                    }
                     el.emit(w, cx)?;
                 }
                 w.write_char(']').map_err(EmitError::from)

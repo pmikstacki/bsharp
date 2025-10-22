@@ -1,8 +1,8 @@
 // Tests for parsing anonymous object creation expressions
 
 use parser::expressions::primary_expression_parser::parse_expression;
-use syntax::expressions::literal::Literal;
 use syntax::expressions::Expression;
+use syntax::expressions::literal::Literal;
 
 // Helper function for parsing anonymous object expressions
 fn parse_anon_obj_expr(code: &str) -> Result<Expression, String> {
@@ -50,7 +50,10 @@ fn test_parse_simple_anonymous_object() {
         assert_eq!(anon_obj.initializers.len(), 2);
 
         // Check first member (Name)
-        assert_eq!(anon_obj.initializers[0].name.as_ref().unwrap().to_string(), "Name");
+        assert_eq!(
+            anon_obj.initializers[0].name.as_ref().unwrap().to_string(),
+            "Name"
+        );
         if let Expression::Literal(Literal::String(value)) = &anon_obj.initializers[0].value {
             assert_eq!(value, "John");
         } else {
@@ -58,7 +61,10 @@ fn test_parse_simple_anonymous_object() {
         }
 
         // Check second member (Age)
-        assert_eq!(anon_obj.initializers[1].name.as_ref().unwrap().to_string(), "Age");
+        assert_eq!(
+            anon_obj.initializers[1].name.as_ref().unwrap().to_string(),
+            "Age"
+        );
         if let Expression::Literal(Literal::Integer(value)) = &anon_obj.initializers[1].value {
             assert_eq!(*value, 30);
         } else {
@@ -181,8 +187,14 @@ fn test_parse_nested_anonymous_objects() {
         // Check that the first member is another anonymous object
         if let Expression::AnonymousObject(nested) = &anon_obj.initializers[0].value {
             assert_eq!(nested.initializers.len(), 2);
-            assert_eq!(nested.initializers[0].name.as_ref().unwrap().to_string(), "Name");
-            assert_eq!(nested.initializers[1].name.as_ref().unwrap().to_string(), "Age");
+            assert_eq!(
+                nested.initializers[0].name.as_ref().unwrap().to_string(),
+                "Name"
+            );
+            assert_eq!(
+                nested.initializers[1].name.as_ref().unwrap().to_string(),
+                "Age"
+            );
         } else {
             panic!("Expected nested anonymous object");
         }
@@ -203,12 +215,18 @@ fn test_parse_anonymous_object_with_different_types() {
 
     if let Ok(Expression::AnonymousObject(anon_obj)) = result {
         assert_eq!(anon_obj.initializers.len(), 4);
-        assert_eq!(anon_obj.initializers[0].name.as_ref().unwrap().to_string(), "Text");
+        assert_eq!(
+            anon_obj.initializers[0].name.as_ref().unwrap().to_string(),
+            "Text"
+        );
         assert_eq!(
             anon_obj.initializers[1].name.as_ref().unwrap().to_string(),
             "Number"
         );
-        assert_eq!(anon_obj.initializers[2].name.as_ref().unwrap().to_string(), "Flag");
+        assert_eq!(
+            anon_obj.initializers[2].name.as_ref().unwrap().to_string(),
+            "Flag"
+        );
         assert_eq!(
             anon_obj.initializers[3].name.as_ref().unwrap().to_string(),
             "Value"

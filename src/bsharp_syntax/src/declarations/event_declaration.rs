@@ -1,7 +1,7 @@
+use crate::Identifier;
 use crate::declarations::{AttributeList, Modifier};
 use crate::statements::statement::Statement;
 use crate::types::Type;
-use crate::Identifier;
 use serde::{Deserialize, Serialize};
 
 #[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]

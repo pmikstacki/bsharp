@@ -1,3 +1,4 @@
+use crate::keywords::declaration_keywords::kw_delegate;
 use crate::parser::expressions::declarations::attribute_parser::parse_attribute_lists;
 use crate::parser::expressions::declarations::modifier_parser::parse_modifiers_for_decl_type;
 use crate::parser::expressions::declarations::parameter_parser::parse_parameter_list;
@@ -8,12 +9,11 @@ use crate::parser::identifier_parser::parse_identifier;
 use crate::parser::types::type_parser::parse_type_expression;
 use crate::syntax::comment_parser::ws;
 use crate::syntax::errors::BResult;
+use nom::Parser;
 use nom::combinator::opt;
 use nom::sequence::delimited;
-use nom::Parser;
 use nom_supreme::ParserExt;
 use syntax::declarations::DelegateDeclaration;
-use crate::keywords::declaration_keywords::kw_delegate;
 
 /// Parse a delegate declaration
 /// Example: public delegate void MyDelegate(int x, string y);
@@ -41,8 +41,8 @@ pub fn parse_delegate_declaration(input: Span) -> BResult<DelegateDeclaration> {
         .parse(input)?;
 
     // Optional type parameters
-    let (input, type_parameters) = opt(|i| delimited(ws, opt_parse_type_parameter_list, ws).parse(i))
-        .parse(input)?;
+    let (input, type_parameters) =
+        opt(|i| delimited(ws, opt_parse_type_parameter_list, ws).parse(i)).parse(input)?;
 
     // Parameters
     let (input, parameters) = delimited(ws, parse_parameter_list, ws)
@@ -50,8 +50,9 @@ pub fn parse_delegate_declaration(input: Span) -> BResult<DelegateDeclaration> {
         .parse(input)?;
 
     // Optional constraints
-    let (input, constraints) = opt(|i| delimited(ws, parse_type_parameter_constraints_clauses, ws).parse(i))
-        .parse(input)?;
+    let (input, constraints) =
+        opt(|i| delimited(ws, parse_type_parameter_constraints_clauses, ws).parse(i))
+            .parse(input)?;
 
     // Semicolon
     let (input, _) = delimited(ws, tok_semicolon(), ws)

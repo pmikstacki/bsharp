@@ -1,9 +1,9 @@
 // Auto-generated from Roslyn: SyntaxNodeTests
-use bsharp_parser::syntax::span::Span;
 use crate::custom_asserts::after_parse;
 use crate::custom_asserts::after_parse::CaseData;
 use bsharp_parser::bsharp::parse_csharp_source_strict;
 use bsharp_parser::statement_parser::parse_statement_ws;
+use bsharp_parser::syntax::span::Span;
 /// Roslyn: SyntaxNodeTests.TestQualifiedNameSyntaxWith (case 1)
 #[test]
 fn qualified_name_syntax_with() {
@@ -14,7 +14,18 @@ fn qualified_name_syntax_with() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestQualifiedNameSyntaxWith", 1, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestQualifiedNameSyntaxWith",
+                1,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -28,7 +39,18 @@ fn add_base_list_types() {
     let r = parse_csharp_source_strict(span);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestAddBaseListTypes", 2, None, CaseData::File { unit: &unit, src, original: None });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestAddBaseListTypes",
+                2,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src,
+                    original: None,
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -44,7 +66,18 @@ fn add_base_list_types_case_2() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestAddBaseListTypes", 3, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestAddBaseListTypes",
+                3,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -58,7 +91,18 @@ fn contains_directive() {
     let r = parse_csharp_source_strict(span);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestContainsDirective", 4, None, CaseData::File { unit: &unit, src, original: None });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestContainsDirective",
+                4,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src,
+                    original: None,
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -72,7 +116,18 @@ fn contains_directive_case_2() {
     let r = parse_csharp_source_strict(span);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestContainsDirective", 5, None, CaseData::File { unit: &unit, src, original: None });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestContainsDirective",
+                5,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src,
+                    original: None,
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -86,7 +141,18 @@ fn contains_directive_case_3() {
     let r = parse_csharp_source_strict(span);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestContainsDirective", 6, None, CaseData::File { unit: &unit, src, original: None });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestContainsDirective",
+                6,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src,
+                    original: None,
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -100,7 +166,18 @@ fn contains_directive_case_4() {
     let r = parse_csharp_source_strict(span);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestContainsDirective", 7, None, CaseData::File { unit: &unit, src, original: None });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestContainsDirective",
+                7,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src,
+                    original: None,
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -114,7 +191,18 @@ fn contains_directive_case_5() {
     let r = parse_csharp_source_strict(span);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestContainsDirective", 8, None, CaseData::File { unit: &unit, src, original: None });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestContainsDirective",
+                8,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src,
+                    original: None,
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -128,7 +216,18 @@ fn contains_directive_case_6() {
     let r = parse_csharp_source_strict(span);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestContainsDirective", 9, None, CaseData::File { unit: &unit, src, original: None });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestContainsDirective",
+                9,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src,
+                    original: None,
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -142,7 +241,18 @@ fn contains_directive_case_7() {
     let r = parse_csharp_source_strict(span);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestContainsDirective", 10, None, CaseData::File { unit: &unit, src, original: None });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestContainsDirective",
+                10,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src,
+                    original: None,
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -158,7 +268,18 @@ fn contains_directive_if_if() {
     let r = parse_csharp_source_strict(span);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestContainsDirective_IfIf", 11, None, CaseData::File { unit: &unit, src, original: None });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestContainsDirective_IfIf",
+                11,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src,
+                    original: None,
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -174,7 +295,18 @@ fn replace_node() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestReplaceNode", 12, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestReplaceNode",
+                12,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -190,7 +322,18 @@ fn replace_node_case_2() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestReplaceNode", 13, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestReplaceNode",
+                13,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -206,7 +349,18 @@ fn replace_nodes() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestReplaceNodes", 14, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestReplaceNodes",
+                14,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -222,7 +376,18 @@ fn replace_node_in_list_with_multiple() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestReplaceNodeInListWithMultiple", 15, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestReplaceNodeInListWithMultiple",
+                15,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -238,7 +403,18 @@ fn replace_node_in_list_with_multiple_case_2() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestReplaceNodeInListWithMultiple", 16, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestReplaceNodeInListWithMultiple",
+                16,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -254,7 +430,18 @@ fn replace_node_in_list_with_multiple_case_3() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestReplaceNodeInListWithMultiple", 17, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestReplaceNodeInListWithMultiple",
+                17,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -268,8 +455,19 @@ fn replace_non_list_node_with_multiple() {
     let r = parse_statement_ws(span);
     match r {
         Ok((rest, ast)) => {
-            assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestReplaceNonListNodeWithMultiple", 18, None, CaseData::Statement { ast: &ast, src });
+            assert!(
+                rest.fragment().trim().is_empty(),
+                "Unconsumed input: {}",
+                rest.fragment()
+            );
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestReplaceNonListNodeWithMultiple",
+                18,
+                None,
+                CaseData::Statement { ast: &ast, src },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -283,8 +481,19 @@ fn replace_non_list_node_with_multiple_case_2() {
     let r = parse_statement_ws(span);
     match r {
         Ok((rest, ast)) => {
-            assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestReplaceNonListNodeWithMultiple", 19, None, CaseData::Statement { ast: &ast, src });
+            assert!(
+                rest.fragment().trim().is_empty(),
+                "Unconsumed input: {}",
+                rest.fragment()
+            );
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestReplaceNonListNodeWithMultiple",
+                19,
+                None,
+                CaseData::Statement { ast: &ast, src },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -298,8 +507,19 @@ fn replace_non_list_node_with_multiple_case_3() {
     let r = parse_statement_ws(span);
     match r {
         Ok((rest, ast)) => {
-            assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestReplaceNonListNodeWithMultiple", 20, None, CaseData::Statement { ast: &ast, src });
+            assert!(
+                rest.fragment().trim().is_empty(),
+                "Unconsumed input: {}",
+                rest.fragment()
+            );
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestReplaceNonListNodeWithMultiple",
+                20,
+                None,
+                CaseData::Statement { ast: &ast, src },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -315,7 +535,18 @@ fn insert_nodes_in_list() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestInsertNodesInList", 21, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestInsertNodesInList",
+                21,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -331,7 +562,18 @@ fn insert_nodes_in_list_case_2() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestInsertNodesInList", 22, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestInsertNodesInList",
+                22,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -347,7 +589,18 @@ fn insert_nodes_in_list_case_3() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestInsertNodesInList", 23, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestInsertNodesInList",
+                23,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -361,8 +614,19 @@ fn insert_nodes_relative_to_non_list_node() {
     let r = parse_statement_ws(span);
     match r {
         Ok((rest, ast)) => {
-            assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestInsertNodesRelativeToNonListNode", 24, None, CaseData::Statement { ast: &ast, src });
+            assert!(
+                rest.fragment().trim().is_empty(),
+                "Unconsumed input: {}",
+                rest.fragment()
+            );
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestInsertNodesRelativeToNonListNode",
+                24,
+                None,
+                CaseData::Statement { ast: &ast, src },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -376,8 +640,19 @@ fn insert_nodes_relative_to_non_list_node_case_2() {
     let r = parse_statement_ws(span);
     match r {
         Ok((rest, ast)) => {
-            assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestInsertNodesRelativeToNonListNode", 25, None, CaseData::Statement { ast: &ast, src });
+            assert!(
+                rest.fragment().trim().is_empty(),
+                "Unconsumed input: {}",
+                rest.fragment()
+            );
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestInsertNodesRelativeToNonListNode",
+                25,
+                None,
+                CaseData::Statement { ast: &ast, src },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -391,8 +666,19 @@ fn insert_nodes_relative_to_non_list_node_case_3() {
     let r = parse_statement_ws(span);
     match r {
         Ok((rest, ast)) => {
-            assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestInsertNodesRelativeToNonListNode", 26, None, CaseData::Statement { ast: &ast, src });
+            assert!(
+                rest.fragment().trim().is_empty(),
+                "Unconsumed input: {}",
+                rest.fragment()
+            );
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestInsertNodesRelativeToNonListNode",
+                26,
+                None,
+                CaseData::Statement { ast: &ast, src },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -406,8 +692,19 @@ fn replace_statement_in_list_with_multiple() {
     let r = parse_statement_ws(span);
     match r {
         Ok((rest, ast)) => {
-            assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestReplaceStatementInListWithMultiple", 27, None, CaseData::Statement { ast: &ast, src });
+            assert!(
+                rest.fragment().trim().is_empty(),
+                "Unconsumed input: {}",
+                rest.fragment()
+            );
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestReplaceStatementInListWithMultiple",
+                27,
+                None,
+                CaseData::Statement { ast: &ast, src },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -421,8 +718,19 @@ fn replace_statement_in_list_with_multiple_case_2() {
     let r = parse_statement_ws(span);
     match r {
         Ok((rest, ast)) => {
-            assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestReplaceStatementInListWithMultiple", 28, None, CaseData::Statement { ast: &ast, src });
+            assert!(
+                rest.fragment().trim().is_empty(),
+                "Unconsumed input: {}",
+                rest.fragment()
+            );
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestReplaceStatementInListWithMultiple",
+                28,
+                None,
+                CaseData::Statement { ast: &ast, src },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -436,8 +744,19 @@ fn replace_statement_in_list_with_multiple_case_3() {
     let r = parse_statement_ws(span);
     match r {
         Ok((rest, ast)) => {
-            assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestReplaceStatementInListWithMultiple", 29, None, CaseData::Statement { ast: &ast, src });
+            assert!(
+                rest.fragment().trim().is_empty(),
+                "Unconsumed input: {}",
+                rest.fragment()
+            );
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestReplaceStatementInListWithMultiple",
+                29,
+                None,
+                CaseData::Statement { ast: &ast, src },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -451,8 +770,19 @@ fn insert_statements_in_list() {
     let r = parse_statement_ws(span);
     match r {
         Ok((rest, ast)) => {
-            assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestInsertStatementsInList", 30, None, CaseData::Statement { ast: &ast, src });
+            assert!(
+                rest.fragment().trim().is_empty(),
+                "Unconsumed input: {}",
+                rest.fragment()
+            );
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestInsertStatementsInList",
+                30,
+                None,
+                CaseData::Statement { ast: &ast, src },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -466,8 +796,19 @@ fn insert_statements_in_list_case_2() {
     let r = parse_statement_ws(span);
     match r {
         Ok((rest, ast)) => {
-            assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestInsertStatementsInList", 31, None, CaseData::Statement { ast: &ast, src });
+            assert!(
+                rest.fragment().trim().is_empty(),
+                "Unconsumed input: {}",
+                rest.fragment()
+            );
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestInsertStatementsInList",
+                31,
+                None,
+                CaseData::Statement { ast: &ast, src },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -481,8 +822,19 @@ fn insert_statements_in_list_case_3() {
     let r = parse_statement_ws(span);
     match r {
         Ok((rest, ast)) => {
-            assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestInsertStatementsInList", 32, None, CaseData::Statement { ast: &ast, src });
+            assert!(
+                rest.fragment().trim().is_empty(),
+                "Unconsumed input: {}",
+                rest.fragment()
+            );
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestInsertStatementsInList",
+                32,
+                None,
+                CaseData::Statement { ast: &ast, src },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -498,7 +850,18 @@ fn replace_single_token() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestReplaceSingleToken", 33, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestReplaceSingleToken",
+                33,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -514,7 +877,18 @@ fn replace_multiple_tokens() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestReplaceMultipleTokens", 34, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestReplaceMultipleTokens",
+                34,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -528,7 +902,18 @@ fn replace_single_token_with_multiple_tokens() {
     let r = parse_csharp_source_strict(span);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestReplaceSingleTokenWithMultipleTokens", 35, None, CaseData::File { unit: &unit, src, original: None });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestReplaceSingleTokenWithMultipleTokens",
+                35,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src,
+                    original: None,
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -542,7 +927,18 @@ fn replace_non_list_token_with_multiple_tokens_fails() {
     let r = parse_csharp_source_strict(span);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestReplaceNonListTokenWithMultipleTokensFails", 36, None, CaseData::File { unit: &unit, src, original: None });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestReplaceNonListTokenWithMultipleTokensFails",
+                36,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src,
+                    original: None,
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -556,7 +952,18 @@ fn insert_tokens() {
     let r = parse_csharp_source_strict(span);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestInsertTokens", 37, None, CaseData::File { unit: &unit, src, original: None });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestInsertTokens",
+                37,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src,
+                    original: None,
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -570,7 +977,18 @@ fn insert_tokens_relative_to_non_list_token() {
     let r = parse_csharp_source_strict(span);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestInsertTokensRelativeToNonListToken", 38, None, CaseData::File { unit: &unit, src, original: None });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestInsertTokensRelativeToNonListToken",
+                38,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src,
+                    original: None,
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -592,7 +1010,18 @@ a +
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestReplaceTriviaDeep", 39, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestReplaceTriviaDeep",
+                39,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -608,7 +1037,18 @@ fn replace_single_trivia_in_node() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestReplaceSingleTriviaInNode", 40, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestReplaceSingleTriviaInNode",
+                40,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -624,7 +1064,18 @@ fn replace_multiple_trivia_in_node() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestReplaceMultipleTriviaInNode", 41, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestReplaceMultipleTriviaInNode",
+                41,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -640,7 +1091,18 @@ fn replace_single_trivia_with_multiple_trivia_in_node() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestReplaceSingleTriviaWithMultipleTriviaInNode", 42, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestReplaceSingleTriviaWithMultipleTriviaInNode",
+                42,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -656,7 +1118,18 @@ fn insert_trivia_in_node() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestInsertTriviaInNode", 43, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestInsertTriviaInNode",
+                43,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -672,7 +1145,18 @@ fn remove_node_in_separated_list_keep_exterior_trivia() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestRemoveNodeInSeparatedList_KeepExteriorTrivia", 44, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestRemoveNodeInSeparatedList_KeepExteriorTrivia",
+                44,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -690,7 +1174,18 @@ c); } }"#;
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestRemoveNodeInSeparatedList_KeepExteriorTrivia_2", 45, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestRemoveNodeInSeparatedList_KeepExteriorTrivia_2",
+                45,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -708,7 +1203,18 @@ fn remove_node_in_separated_list_keep_exterior_trivia_3() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestRemoveNodeInSeparatedList_KeepExteriorTrivia_3", 46, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestRemoveNodeInSeparatedList_KeepExteriorTrivia_3",
+                46,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -728,7 +1234,18 @@ fn remove_node_in_separated_list_keep_exterior_trivia_4() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestRemoveNodeInSeparatedList_KeepExteriorTrivia_4", 47, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestRemoveNodeInSeparatedList_KeepExteriorTrivia_4",
+                47,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -754,7 +1271,18 @@ fn remove_node_in_separated_list_keep_exterior_trivia_5() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestRemoveNodeInSeparatedList_KeepExteriorTrivia_5", 48, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestRemoveNodeInSeparatedList_KeepExteriorTrivia_5",
+                48,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -770,7 +1298,18 @@ fn remove_node_in_separated_list_keep_no_trivia() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestRemoveNodeInSeparatedList_KeepNoTrivia", 49, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestRemoveNodeInSeparatedList_KeepNoTrivia",
+                49,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -788,7 +1327,18 @@ c); } }"#;
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestRemoveNodeInSeparatedList_KeepNoTrivia_2", 50, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestRemoveNodeInSeparatedList_KeepNoTrivia_2",
+                50,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -806,7 +1356,18 @@ fn remove_node_in_separated_list_keep_no_trivia_3() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestRemoveNodeInSeparatedList_KeepNoTrivia_3", 51, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestRemoveNodeInSeparatedList_KeepNoTrivia_3",
+                51,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -826,7 +1387,18 @@ fn remove_node_in_separated_list_keep_no_trivia_4() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestRemoveNodeInSeparatedList_KeepNoTrivia_4", 52, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestRemoveNodeInSeparatedList_KeepNoTrivia_4",
+                52,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -852,7 +1424,18 @@ fn remove_node_in_separated_list_keep_no_trivia_5() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestRemoveNodeInSeparatedList_KeepNoTrivia_5", 53, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestRemoveNodeInSeparatedList_KeepNoTrivia_5",
+                53,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -868,7 +1451,18 @@ fn remove_only_node_in_separated_list_keep_exterior_trivia() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestRemoveOnlyNodeInSeparatedList_KeepExteriorTrivia", 54, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestRemoveOnlyNodeInSeparatedList_KeepExteriorTrivia",
+                54,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -884,7 +1478,18 @@ fn remove_first_node_in_separated_list_keep_exterior_trivia() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestRemoveFirstNodeInSeparatedList_KeepExteriorTrivia", 55, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestRemoveFirstNodeInSeparatedList_KeepExteriorTrivia",
+                55,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -900,7 +1505,18 @@ fn remove_last_node_in_separated_list_keep_exterior_trivia() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestRemoveLastNodeInSeparatedList_KeepExteriorTrivia", 56, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestRemoveLastNodeInSeparatedList_KeepExteriorTrivia",
+                56,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -914,8 +1530,19 @@ fn remove_node_keep_no_trivia() {
     let r = parse_statement_ws(span);
     match r {
         Ok((rest, ast)) => {
-            assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestRemoveNode_KeepNoTrivia", 57, None, CaseData::Statement { ast: &ast, src });
+            assert!(
+                rest.fragment().trim().is_empty(),
+                "Unconsumed input: {}",
+                rest.fragment()
+            );
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestRemoveNode_KeepNoTrivia",
+                57,
+                None,
+                CaseData::Statement { ast: &ast, src },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -929,8 +1556,19 @@ fn remove_node_keep_exterior_trivia() {
     let r = parse_statement_ws(span);
     match r {
         Ok((rest, ast)) => {
-            assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestRemoveNode_KeepExteriorTrivia", 58, None, CaseData::Statement { ast: &ast, src });
+            assert!(
+                rest.fragment().trim().is_empty(),
+                "Unconsumed input: {}",
+                rest.fragment()
+            );
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestRemoveNode_KeepExteriorTrivia",
+                58,
+                None,
+                CaseData::Statement { ast: &ast, src },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -944,7 +1582,18 @@ fn remove_last_node_keep_exterior_trivia() {
     let r = parse_csharp_source_strict(span);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestRemoveLastNode_KeepExteriorTrivia", 59, None, CaseData::File { unit: &unit, src, original: None });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestRemoveLastNode_KeepExteriorTrivia",
+                59,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src,
+                    original: None,
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -967,7 +1616,18 @@ void M()
     let r = parse_csharp_source_strict(span);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestRemove_KeepExteriorTrivia_KeepUnbalancedDirectives", 60, None, CaseData::File { unit: &unit, src, original: None });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestRemove_KeepExteriorTrivia_KeepUnbalancedDirectives",
+                60,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src,
+                    original: None,
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -981,7 +1641,18 @@ fn remove_without_eol_keep_end_of_line() {
     let r = parse_csharp_source_strict(span);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestRemoveWithoutEOL_KeepEndOfLine", 61, None, CaseData::File { unit: &unit, src, original: None });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestRemoveWithoutEOL_KeepEndOfLine",
+                61,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src,
+                    original: None,
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -995,7 +1666,18 @@ fn remove_bad_directive_without_eol_keep_end_of_line_keep_directives() {
     let r = parse_csharp_source_strict(span);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestRemoveBadDirectiveWithoutEOL_KeepEndOfLine_KeepDirectives", 62, None, CaseData::File { unit: &unit, src, original: None });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestRemoveBadDirectiveWithoutEOL_KeepEndOfLine_KeepDirectives",
+                62,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src,
+                    original: None,
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -1013,7 +1695,18 @@ class A
     let r = parse_csharp_source_strict(span);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestRemoveDocument_KeepEndOfLine", 63, None, CaseData::File { unit: &unit, src, original: None });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestRemoveDocument_KeepEndOfLine",
+                63,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src,
+                    original: None,
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -1039,7 +1732,18 @@ int a
     let r = parse_csharp_source_strict(span);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestRemoveFirstParameter_KeepTrailingTrivia", 64, None, CaseData::File { unit: &unit, src, original: None });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestRemoveFirstParameter_KeepTrailingTrivia",
+                64,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src,
+                    original: None,
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -1064,7 +1768,18 @@ int b /* after b*/)
     let r = parse_csharp_source_strict(span);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestRemoveLastParameter_KeepLeadingTrivia", 65, None, CaseData::File { unit: &unit, src, original: None });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestRemoveLastParameter_KeepLeadingTrivia",
+                65,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src,
+                    original: None,
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -1080,7 +1795,18 @@ fn trivia_exists() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestTriviaExists", 66, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestTriviaExists",
+                66,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -1096,7 +1822,18 @@ fn trivia_exists_case_2() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestTriviaExists", 67, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestTriviaExists",
+                67,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -1112,7 +1849,18 @@ fn trivia_exists_case_3() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestTriviaExists", 68, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestTriviaExists",
+                68,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -1128,9 +1876,19 @@ fn trivia_exists_case_4() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_node_tests", "SyntaxNodeTests", "TestTriviaExists", 69, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_node_tests",
+                "SyntaxNodeTests",
+                "TestTriviaExists",
+                69,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
 }
-

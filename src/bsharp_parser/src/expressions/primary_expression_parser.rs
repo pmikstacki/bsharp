@@ -20,60 +20,67 @@ use nom_supreme::ParserExt;
 use crate::parser::expressions::assignment_expression_parser;
 use crate::syntax::list_parser::parse_delimited_list0;
 use crate::syntax::span::Span;
+use crate::tokens::relational::{tok_gt, tok_lt};
+use crate::tokens::separators::tok_comma;
 use nom::{
+    Parser,
     branch::alt,
     combinator::{map, peek},
     sequence::delimited,
-    Parser,
 };
 use syntax::expressions::Expression;
 use syntax::types::Type;
-use crate::tokens::relational::{tok_gt, tok_lt};
-use crate::tokens::separators::tok_comma;
 
 /// Parse any expression - the main entry point for expression parsing
 pub fn parse_expression(input: Span) -> BResult<Expression> {
-    delimited(ws, assignment_expression_parser::parse_assignment_expression_or_higher, ws)
-        .context("expression")
-        .parse(input)
+    delimited(
+        ws,
+        assignment_expression_parser::parse_assignment_expression_or_higher,
+        ws,
+    )
+    .context("expression")
+    .parse(input)
 }
 
 pub fn parse_primary_expression(input: Span) -> BResult<Expression> {
-    map(alt((
-        // Parenthesized or tuple must be tried very early to avoid other branches
-        // (like switch basic expression) consuming '(' with a cut
-        parse_paren_or_tuple_primary,
-        // Collection expressions starting with '[' must be before variable/member/indexing
-        parse_collection_expression_or_brackets,
-        // Generic type name primary (e.g., Result<User>) used for static member access
-        parse_generic_name_primary,
-        // LINQ Query expressions - must come before variables/identifiers
-        parse_query_expression,
-        // Switch expressions - must come before variables/identifiers
-        parse_switch_expression,
-        // Throw expressions - must come before variables/identifiers
-        parse_throw_expression,
-        // Nameof expressions - must come before variables/identifiers
-        parse_nameof_expression,
-        // Default expressions - must come before variables/identifiers
-        parse_default_expression,
-        // Literals
-        map(parse_literal, Expression::Literal),
-        // this keyword
-        map(kw_this(), |_| Expression::This),
-        // base keyword
-        map(kw_base(), |_| Expression::Base),
-        // New expressions (includes anonymous object creation)
-        parse_new_expression,
-        // Lambda expressions
-        parse_lambda_or_anonymous_method,
-        // Variables/identifiers
-        map(parse_identifier, Expression::Variable),
-        // Stackalloc expressions
-        parse_stackalloc_expression,
-    )), |v| v)
-        .context("primary expression")
-        .parse(input)
+    map(
+        alt((
+            // Parenthesized or tuple must be tried very early to avoid other branches
+            // (like switch basic expression) consuming '(' with a cut
+            parse_paren_or_tuple_primary,
+            // Collection expressions starting with '[' must be before variable/member/indexing
+            parse_collection_expression_or_brackets,
+            // Generic type name primary (e.g., Result<User>) used for static member access
+            parse_generic_name_primary,
+            // LINQ Query expressions - must come before variables/identifiers
+            parse_query_expression,
+            // Switch expressions - must come before variables/identifiers
+            parse_switch_expression,
+            // Throw expressions - must come before variables/identifiers
+            parse_throw_expression,
+            // Nameof expressions - must come before variables/identifiers
+            parse_nameof_expression,
+            // Default expressions - must come before variables/identifiers
+            parse_default_expression,
+            // Literals
+            map(parse_literal, Expression::Literal),
+            // this keyword
+            map(kw_this(), |_| Expression::This),
+            // base keyword
+            map(kw_base(), |_| Expression::Base),
+            // New expressions (includes anonymous object creation)
+            parse_new_expression,
+            // Lambda expressions
+            parse_lambda_or_anonymous_method,
+            // Variables/identifiers
+            map(parse_identifier, Expression::Variable),
+            // Stackalloc expressions
+            parse_stackalloc_expression,
+        )),
+        |v| v,
+    )
+    .context("primary expression")
+    .parse(input)
 }
 
 /// Parse a generic type name as a primary expression for static member access.

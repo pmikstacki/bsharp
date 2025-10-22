@@ -10,16 +10,16 @@ use crate::syntax::comment_parser::ws;
 use crate::syntax::errors::BResult;
 
 use crate::syntax::span::Span;
+use crate::tokens::delimiters::{tok_l_paren, tok_r_paren};
+use crate::tokens::nullish::tok_not;
 use nom::{
+    Parser,
     branch::alt,
     character::complete::char as nom_char,
     combinator::{map, recognize},
     sequence::{delimited, pair},
-    Parser,
 };
 use syntax::expressions::{Expression, IndexExpression, UnaryOperator, UncheckedExpression};
-use crate::tokens::delimiters::{tok_l_paren, tok_r_paren};
-use crate::tokens::nullish::tok_not;
 
 /// Parse a unary expression or higher precedence constructs
 pub(crate) fn parse_unary_expression_or_higher(input: Span) -> BResult<Expression> {
@@ -63,20 +63,28 @@ pub(crate) fn parse_unary_expression_or_higher(input: Span) -> BResult<Expressio
     }
 
     // Try prefix unary operators
-    if let Ok((input, op)) = delimited(ws, alt((
-        // Try multi-char operators first to avoid consuming a single '+' or '-' too early
-        map(recognize(pair(nom_char('+'), nom_char('+'))), |_| UnaryOperator::Increment),
-        map(recognize(pair(nom_char('-'), nom_char('-'))), |_| UnaryOperator::Decrement),
-        map(nom_char('+'), |_| UnaryOperator::Plus),
-        map(nom_char('-'), |_| UnaryOperator::Minus),
-        map(tok_not(), |_| UnaryOperator::LogicalNot),
-        map(nom_char('~'), |_| UnaryOperator::BitwiseNot),
-        map(nom_char('&'), |_| UnaryOperator::AddressOf),
-        map(nom_char('*'), |_| UnaryOperator::PointerIndirection),
-        // ^ (index from end) operator as unary
-        map(nom_char('^'), |_| UnaryOperator::IndexFromEnd),
-    )), ws)
-        .parse(input)
+    if let Ok((input, op)) = delimited(
+        ws,
+        alt((
+            // Try multi-char operators first to avoid consuming a single '+' or '-' too early
+            map(recognize(pair(nom_char('+'), nom_char('+'))), |_| {
+                UnaryOperator::Increment
+            }),
+            map(recognize(pair(nom_char('-'), nom_char('-'))), |_| {
+                UnaryOperator::Decrement
+            }),
+            map(nom_char('+'), |_| UnaryOperator::Plus),
+            map(nom_char('-'), |_| UnaryOperator::Minus),
+            map(tok_not(), |_| UnaryOperator::LogicalNot),
+            map(nom_char('~'), |_| UnaryOperator::BitwiseNot),
+            map(nom_char('&'), |_| UnaryOperator::AddressOf),
+            map(nom_char('*'), |_| UnaryOperator::PointerIndirection),
+            // ^ (index from end) operator as unary
+            map(nom_char('^'), |_| UnaryOperator::IndexFromEnd),
+        )),
+        ws,
+    )
+    .parse(input)
     {
         let (input, operand) = parse_unary_expression_or_higher(input)?;
         // If the operator is IndexFromEnd, wrap it in Expression::Index
@@ -101,7 +109,9 @@ pub(crate) fn parse_unary_expression_or_higher(input: Span) -> BResult<Expressio
     if let Ok((input_after_paren, _)) = delimited(ws, tok_l_paren(), ws).parse(input) {
         // Try to parse as a type, but only if it's followed by something that looks like an expression
         if let Ok((input_after_type, ty)) = parse_type_expression(input_after_paren) {
-            if let Ok((input_after_close_paren, _)) = delimited(ws, tok_r_paren(), ws).parse(input_after_type) {
+            if let Ok((input_after_close_paren, _)) =
+                delimited(ws, tok_r_paren(), ws).parse(input_after_type)
+            {
                 // Only treat as cast if the operand parses successfully; otherwise, backtrack.
                 if let Ok((input, operand)) =
                     parse_unary_expression_or_higher(input_after_close_paren)

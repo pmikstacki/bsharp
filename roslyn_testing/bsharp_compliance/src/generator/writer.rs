@@ -6,7 +6,12 @@ use std::io::Write;
 use std::path::{Path, PathBuf};
 
 #[allow(dead_code)]
-pub fn write_group_file(dst_dir: &Path, module_name: &str, _source_stem: &str, contents: &str) -> Result<()> {
+pub fn write_group_file(
+    dst_dir: &Path,
+    module_name: &str,
+    _source_stem: &str,
+    contents: &str,
+) -> Result<()> {
     // Ensure target directory exists
     fs::create_dir_all(dst_dir).with_context(|| format!("create_dir_all {:?}", dst_dir))?;
 
@@ -31,7 +36,8 @@ fn write_if_changed(path: &Path, new_contents: &str) -> Result<()> {
     }
     let tmp_path = tmp_path_for(path);
     {
-        let mut f = fs::File::create(&tmp_path).with_context(|| format!("create tmp file {:?}", tmp_path))?;
+        let mut f = fs::File::create(&tmp_path)
+            .with_context(|| format!("create tmp file {:?}", tmp_path))?;
         f.write_all(new_contents.as_bytes())
             .with_context(|| format!("write tmp file {:?}", tmp_path))?;
         f.flush().ok();
@@ -49,7 +55,11 @@ fn tmp_path_for(path: &Path) -> PathBuf {
 
 fn update_mod_file(mod_path: &Path, module_name: &str) -> Result<()> {
     let mut lines: Vec<String> = match fs::read_to_string(mod_path) {
-        Ok(s) => s.lines().map(|l| l.trim().to_string()).filter(|l| !l.is_empty()).collect(),
+        Ok(s) => s
+            .lines()
+            .map(|l| l.trim().to_string())
+            .filter(|l| !l.is_empty())
+            .collect(),
         Err(_) => Vec::new(),
     };
     let decl = format!("mod {};", module_name);

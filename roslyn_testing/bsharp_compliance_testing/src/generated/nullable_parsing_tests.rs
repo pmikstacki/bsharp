@@ -1,10 +1,10 @@
 // Auto-generated from Roslyn: NullableParsingTests
-use bsharp_parser::syntax::span::Span;
 use crate::custom_asserts::after_parse;
 use crate::custom_asserts::after_parse::CaseData;
+use crate::custom_asserts::roslyn_asserts::ExpectedDiagnostics;
 use bsharp_parser::bsharp::parse_csharp_source_strict;
 use bsharp_parser::statement_parser::parse_statement_ws;
-use crate::custom_asserts::roslyn_asserts::ExpectedDiagnostics;
+use bsharp_parser::syntax::span::Span;
 /// Roslyn: NullableParsingTests.PartialAccessibilityAndNullableArray (case 1)
 #[test]
 fn partial_accessibility_and_nullable_array() {
@@ -12,22 +12,54 @@ fn partial_accessibility_and_nullable_array() {
 {
     privat C[]? F;
 }"#;
-    let expected = Some(ExpectedDiagnostics { count: 5, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 5,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "PartialAccessibilityAndNullableArray", 1, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "PartialAccessibilityAndNullableArray",
+                    1,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "PartialAccessibilityAndNullableArray", 1, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "PartialAccessibilityAndNullableArray",
+                    1,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "PartialAccessibilityAndNullableArray", 1, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "nullable_parsing_tests",
+            "NullableParsingTests",
+            "PartialAccessibilityAndNullableArray",
+            1,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -35,7 +67,7 @@ fn partial_accessibility_and_nullable_array() {
 #[test]
 fn nullable_array_cast_01() {
     let src = r#"(object[]?)null"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { (object[]?)null; } }"#;
     let span2 = Span::new(src2);
@@ -43,16 +75,45 @@ fn nullable_array_cast_01() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "NullableArray_Cast_01", 2, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "NullableArray_Cast_01",
+                    2,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "NullableArray_Cast_01", 2, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "NullableArray_Cast_01",
+                    2,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "NullableArray_Cast_01", 2, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "nullable_parsing_tests",
+            "NullableParsingTests",
+            "NullableArray_Cast_01",
+            2,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -60,7 +121,10 @@ fn nullable_array_cast_01() {
 #[test]
 fn nullable_array_cast_02() {
     let src = r#"(object[]??)null"#;
-    let expected = Some(ExpectedDiagnostics { count: 3, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 3,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { (object[]??)null; } }"#;
     let span2 = Span::new(src2);
@@ -68,16 +132,45 @@ fn nullable_array_cast_02() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "NullableArray_Cast_02", 3, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "NullableArray_Cast_02",
+                    3,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "NullableArray_Cast_02", 3, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "NullableArray_Cast_02",
+                    3,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "NullableArray_Cast_02", 3, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "nullable_parsing_tests",
+            "NullableParsingTests",
+            "NullableArray_Cast_02",
+            3,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -85,7 +178,10 @@ fn nullable_array_cast_02() {
 #[test]
 fn nullable_array_cast_03() {
     let src = r#"(object[?])null"#;
-    let expected = Some(ExpectedDiagnostics { count: 3, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 3,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { (object[?])null; } }"#;
     let span2 = Span::new(src2);
@@ -93,16 +189,45 @@ fn nullable_array_cast_03() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "NullableArray_Cast_03", 4, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "NullableArray_Cast_03",
+                    4,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "NullableArray_Cast_03", 4, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "NullableArray_Cast_03",
+                    4,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "NullableArray_Cast_03", 4, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "nullable_parsing_tests",
+            "NullableParsingTests",
+            "NullableArray_Cast_03",
+            4,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -110,7 +235,7 @@ fn nullable_array_cast_03() {
 #[test]
 fn nullable_array_cast_04() {
     let src = r#"(object?[]?[])null"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { (object?[]?[])null; } }"#;
     let span2 = Span::new(src2);
@@ -118,16 +243,45 @@ fn nullable_array_cast_04() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "NullableArray_Cast_04", 5, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "NullableArray_Cast_04",
+                    5,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "NullableArray_Cast_04", 5, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "NullableArray_Cast_04",
+                    5,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "NullableArray_Cast_04", 5, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "nullable_parsing_tests",
+            "NullableParsingTests",
+            "NullableArray_Cast_04",
+            5,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -135,7 +289,7 @@ fn nullable_array_cast_04() {
 #[test]
 fn nullable_array_cast_05() {
     let src = r#"(object[][]?[]?)null"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { (object[][]?[]?)null; } }"#;
     let span2 = Span::new(src2);
@@ -143,16 +297,45 @@ fn nullable_array_cast_05() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "NullableArray_Cast_05", 6, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "NullableArray_Cast_05",
+                    6,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "NullableArray_Cast_05", 6, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "NullableArray_Cast_05",
+                    6,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "NullableArray_Cast_05", 6, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "nullable_parsing_tests",
+            "NullableParsingTests",
+            "NullableArray_Cast_05",
+            6,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -160,7 +343,7 @@ fn nullable_array_cast_05() {
 #[test]
 fn conditional_operator_not_nullable_type() {
     let src = r#"x is T ? y : z"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { x is T ? y : z; } }"#;
     let span2 = Span::new(src2);
@@ -168,16 +351,45 @@ fn conditional_operator_not_nullable_type() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "ConditionalOperator_NotNullableType", 7, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "ConditionalOperator_NotNullableType",
+                    7,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "ConditionalOperator_NotNullableType", 7, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "ConditionalOperator_NotNullableType",
+                    7,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "ConditionalOperator_NotNullableType", 7, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "nullable_parsing_tests",
+            "NullableParsingTests",
+            "ConditionalOperator_NotNullableType",
+            7,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -185,7 +397,7 @@ fn conditional_operator_not_nullable_type() {
 #[test]
 fn conditional_operator_nullable_type() {
     let src = r#"x is T ? ? y : z"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { x is T ? ? y : z; } }"#;
     let span2 = Span::new(src2);
@@ -193,16 +405,45 @@ fn conditional_operator_nullable_type() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "ConditionalOperator_NullableType", 8, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "ConditionalOperator_NullableType",
+                    8,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "ConditionalOperator_NullableType", 8, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "ConditionalOperator_NullableType",
+                    8,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "ConditionalOperator_NullableType", 8, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "nullable_parsing_tests",
+            "NullableParsingTests",
+            "ConditionalOperator_NullableType",
+            8,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -210,7 +451,7 @@ fn conditional_operator_nullable_type() {
 #[test]
 fn conditional_operator_not_nullable_array() {
     let src = r#"x is T[] ? y : z"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { x is T[] ? y : z; } }"#;
     let span2 = Span::new(src2);
@@ -218,16 +459,45 @@ fn conditional_operator_not_nullable_array() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "ConditionalOperator_NotNullableArray", 9, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "ConditionalOperator_NotNullableArray",
+                    9,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "ConditionalOperator_NotNullableArray", 9, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "ConditionalOperator_NotNullableArray",
+                    9,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "ConditionalOperator_NotNullableArray", 9, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "nullable_parsing_tests",
+            "NullableParsingTests",
+            "ConditionalOperator_NotNullableArray",
+            9,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -235,7 +505,7 @@ fn conditional_operator_not_nullable_array() {
 #[test]
 fn conditional_operator_nullable_array() {
     let src = r#"x is T[] ? ? y : z"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { x is T[] ? ? y : z; } }"#;
     let span2 = Span::new(src2);
@@ -243,16 +513,45 @@ fn conditional_operator_nullable_array() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "ConditionalOperator_NullableArray", 10, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "ConditionalOperator_NullableArray",
+                    10,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "ConditionalOperator_NullableArray", 10, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "ConditionalOperator_NullableArray",
+                    10,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "ConditionalOperator_NullableArray", 10, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "nullable_parsing_tests",
+            "NullableParsingTests",
+            "ConditionalOperator_NullableArray",
+            10,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -260,7 +559,7 @@ fn conditional_operator_nullable_array() {
 #[test]
 fn null_coalescing_operator_not_nullable_type() {
     let src = r#"x as T?? y"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { x as T?? y; } }"#;
     let span2 = Span::new(src2);
@@ -268,16 +567,45 @@ fn null_coalescing_operator_not_nullable_type() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "NullCoalescingOperator_NotNullableType", 11, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "NullCoalescingOperator_NotNullableType",
+                    11,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "NullCoalescingOperator_NotNullableType", 11, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "NullCoalescingOperator_NotNullableType",
+                    11,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "NullCoalescingOperator_NotNullableType", 11, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "nullable_parsing_tests",
+            "NullableParsingTests",
+            "NullCoalescingOperator_NotNullableType",
+            11,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -285,7 +613,7 @@ fn null_coalescing_operator_not_nullable_type() {
 #[test]
 fn null_coalescing_operator_nullable_type() {
     let src = r#"x as T? ?? y"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { x as T? ?? y; } }"#;
     let span2 = Span::new(src2);
@@ -293,16 +621,45 @@ fn null_coalescing_operator_nullable_type() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "NullCoalescingOperator_NullableType", 12, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "NullCoalescingOperator_NullableType",
+                    12,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "NullCoalescingOperator_NullableType", 12, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "NullCoalescingOperator_NullableType",
+                    12,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "NullCoalescingOperator_NullableType", 12, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "nullable_parsing_tests",
+            "NullableParsingTests",
+            "NullCoalescingOperator_NullableType",
+            12,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -310,7 +667,10 @@ fn null_coalescing_operator_nullable_type() {
 #[test]
 fn null_coalescing_operator_nullable_type_invalid() {
     let src = r#"x as T??? y"#;
-    let expected = Some(ExpectedDiagnostics { count: 3, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 3,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { x as T??? y; } }"#;
     let span2 = Span::new(src2);
@@ -318,16 +678,45 @@ fn null_coalescing_operator_nullable_type_invalid() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "NullCoalescingOperator_NullableType_Invalid", 13, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "NullCoalescingOperator_NullableType_Invalid",
+                    13,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "NullCoalescingOperator_NullableType_Invalid", 13, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "NullCoalescingOperator_NullableType_Invalid",
+                    13,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "NullCoalescingOperator_NullableType_Invalid", 13, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "nullable_parsing_tests",
+            "NullableParsingTests",
+            "NullCoalescingOperator_NullableType_Invalid",
+            13,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -335,7 +724,7 @@ fn null_coalescing_operator_nullable_type_invalid() {
 #[test]
 fn null_coalescing_operator_not_nullable_array() {
     let src = r#"x as T[] ?? y"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { x as T[] ?? y; } }"#;
     let span2 = Span::new(src2);
@@ -343,16 +732,45 @@ fn null_coalescing_operator_not_nullable_array() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "NullCoalescingOperator_NotNullableArray", 14, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "NullCoalescingOperator_NotNullableArray",
+                    14,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "NullCoalescingOperator_NotNullableArray", 14, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "NullCoalescingOperator_NotNullableArray",
+                    14,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "NullCoalescingOperator_NotNullableArray", 14, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "nullable_parsing_tests",
+            "NullableParsingTests",
+            "NullCoalescingOperator_NotNullableArray",
+            14,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -360,7 +778,7 @@ fn null_coalescing_operator_not_nullable_array() {
 #[test]
 fn null_coalescing_operator_nullable_array() {
     let src = r#"x as T[] ? ?? y"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { x as T[] ? ?? y; } }"#;
     let span2 = Span::new(src2);
@@ -368,16 +786,45 @@ fn null_coalescing_operator_nullable_array() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "NullCoalescingOperator_NullableArray", 15, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "NullCoalescingOperator_NullableArray",
+                    15,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "NullCoalescingOperator_NullableArray", 15, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "NullCoalescingOperator_NullableArray",
+                    15,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "NullCoalescingOperator_NullableArray", 15, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "nullable_parsing_tests",
+            "NullableParsingTests",
+            "NullCoalescingOperator_NullableArray",
+            15,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -385,23 +832,51 @@ fn null_coalescing_operator_nullable_array() {
 #[test]
 fn declaration_pattern_nullable_type() {
     let src = r#"switch (e) { case T? t: break; }"#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "DeclarationPattern_NullableType", 16, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "DeclarationPattern_NullableType",
+                    16,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "DeclarationPattern_NullableType", 16, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "DeclarationPattern_NullableType",
+                    16,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "DeclarationPattern_NullableType", 16, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "nullable_parsing_tests",
+            "NullableParsingTests",
+            "DeclarationPattern_NullableType",
+            16,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -409,23 +884,48 @@ fn declaration_pattern_nullable_type() {
 #[test]
 fn declaration_pattern_array_of_nullable_type() {
     let src = r#"switch (e) { case T?[] t: break; }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "DeclarationPattern_ArrayOfNullableType", 17, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "DeclarationPattern_ArrayOfNullableType",
+                    17,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "DeclarationPattern_ArrayOfNullableType", 17, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "DeclarationPattern_ArrayOfNullableType",
+                    17,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "DeclarationPattern_ArrayOfNullableType", 17, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "nullable_parsing_tests",
+            "NullableParsingTests",
+            "DeclarationPattern_ArrayOfNullableType",
+            17,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -433,23 +933,48 @@ fn declaration_pattern_array_of_nullable_type() {
 #[test]
 fn declaration_pattern_nullable_array_of_array() {
     let src = r#"switch (e) { case T[]?[] t: break; }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "DeclarationPattern_NullableArrayOfArray", 18, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "DeclarationPattern_NullableArrayOfArray",
+                    18,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "DeclarationPattern_NullableArrayOfArray", 18, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "DeclarationPattern_NullableArrayOfArray",
+                    18,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "DeclarationPattern_NullableArrayOfArray", 18, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "nullable_parsing_tests",
+            "NullableParsingTests",
+            "DeclarationPattern_NullableArrayOfArray",
+            18,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -457,7 +982,7 @@ fn declaration_pattern_nullable_array_of_array() {
 #[test]
 fn nullable_array_type_argument() {
     let src = r#"F<A[]?, object[]?>()"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { F<A[]?, object[]?>(); } }"#;
     let span2 = Span::new(src2);
@@ -465,16 +990,45 @@ fn nullable_array_type_argument() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "NullableArray_TypeArgument", 19, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "NullableArray_TypeArgument",
+                    19,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "NullableArray_TypeArgument", 19, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "NullableArray_TypeArgument",
+                    19,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "NullableArray_TypeArgument", 19, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "nullable_parsing_tests",
+            "NullableParsingTests",
+            "NullableArray_TypeArgument",
+            19,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -482,23 +1036,48 @@ fn nullable_array_type_argument() {
 #[test]
 fn nullable_array_tuple_type() {
     let src = r#"(object[]?, A[]?) t;"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "NullableArray_TupleType", 20, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "NullableArray_TupleType",
+                    20,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "NullableArray_TupleType", 20, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "NullableArray_TupleType",
+                    20,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "NullableArray_TupleType", 20, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "nullable_parsing_tests",
+            "NullableParsingTests",
+            "NullableArray_TupleType",
+            20,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -506,23 +1085,48 @@ fn nullable_array_tuple_type() {
 #[test]
 fn nullable_array_using() {
     let src = r#"using (A[]? a = b) { }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "NullableArray_Using", 21, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "NullableArray_Using",
+                    21,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "NullableArray_Using", 21, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "NullableArray_Using",
+                    21,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "NullableArray_Using", 21, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "nullable_parsing_tests",
+            "NullableParsingTests",
+            "NullableArray_Using",
+            21,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -530,7 +1134,7 @@ fn nullable_array_using() {
 #[test]
 fn nullable_array_query() {
     let src = r#"from A[]? a in b select a"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { from A[]? a in b select a; } }"#;
     let span2 = Span::new(src2);
@@ -538,16 +1142,45 @@ fn nullable_array_query() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "NullableArray_Query", 22, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "NullableArray_Query",
+                    22,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "NullableArray_Query", 22, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "NullableArray_Query",
+                    22,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "NullableArray_Query", 22, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "nullable_parsing_tests",
+            "NullableParsingTests",
+            "NullableArray_Query",
+            22,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -555,7 +1188,7 @@ fn nullable_array_query() {
 #[test]
 fn nullable_array_explicitly_typed_lambda() {
     let src = r#"F((object[]? a) => a)"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { F((object[]? a) => a); } }"#;
     let span2 = Span::new(src2);
@@ -563,16 +1196,45 @@ fn nullable_array_explicitly_typed_lambda() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "NullableArray_ExplicitlyTypedLambda", 23, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "NullableArray_ExplicitlyTypedLambda",
+                    23,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "NullableArray_ExplicitlyTypedLambda", 23, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "NullableArray_ExplicitlyTypedLambda",
+                    23,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "NullableArray_ExplicitlyTypedLambda", 23, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "nullable_parsing_tests",
+            "NullableParsingTests",
+            "NullableArray_ExplicitlyTypedLambda",
+            23,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -583,22 +1245,51 @@ fn nullable_array_partial_member() {
 {
     partial A[]? F();
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "NullableArray_PartialMember", 24, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "NullableArray_PartialMember",
+                    24,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "NullableArray_PartialMember", 24, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "NullableArray_PartialMember",
+                    24,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "NullableArray_PartialMember", 24, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "nullable_parsing_tests",
+            "NullableParsingTests",
+            "NullableArray_PartialMember",
+            24,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -606,7 +1297,10 @@ fn nullable_array_partial_member() {
 #[test]
 fn create_nullable_array_01() {
     let src = r#"new object[,][]?"#;
-    let expected = Some(ExpectedDiagnostics { count: 3, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 3,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { new object[,][]?; } }"#;
     let span2 = Span::new(src2);
@@ -614,16 +1308,45 @@ fn create_nullable_array_01() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "CreateNullableArray_01", 25, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "CreateNullableArray_01",
+                    25,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "CreateNullableArray_01", 25, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "CreateNullableArray_01",
+                    25,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "CreateNullableArray_01", 25, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "nullable_parsing_tests",
+            "NullableParsingTests",
+            "CreateNullableArray_01",
+            25,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -631,7 +1354,7 @@ fn create_nullable_array_01() {
 #[test]
 fn create_nullable_array_02() {
     let src = r#"new object[,][]? { 1, 2 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { new object[,][]? { 1, 2 }; } }"#;
     let span2 = Span::new(src2);
@@ -639,16 +1362,45 @@ fn create_nullable_array_02() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "CreateNullableArray_02", 26, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "CreateNullableArray_02",
+                    26,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "CreateNullableArray_02", 26, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "CreateNullableArray_02",
+                    26,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "CreateNullableArray_02", 26, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "nullable_parsing_tests",
+            "NullableParsingTests",
+            "CreateNullableArray_02",
+            26,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -656,7 +1408,7 @@ fn create_nullable_array_02() {
 #[test]
 fn create_nullable_array_03() {
     let src = r#"new object[1,2]?[3]?[4]"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { new object[1,2]?[3]?[4]; } }"#;
     let span2 = Span::new(src2);
@@ -664,16 +1416,45 @@ fn create_nullable_array_03() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "CreateNullableArray_03", 27, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "CreateNullableArray_03",
+                    27,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "CreateNullableArray_03", 27, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "CreateNullableArray_03",
+                    27,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "CreateNullableArray_03", 27, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "nullable_parsing_tests",
+            "NullableParsingTests",
+            "CreateNullableArray_03",
+            27,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -681,7 +1462,7 @@ fn create_nullable_array_03() {
 #[test]
 fn create_nullable_array_04() {
     let src = r#"new object[,]?[]?[]"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { new object[,]?[]?[]; } }"#;
     let span2 = Span::new(src2);
@@ -689,16 +1470,45 @@ fn create_nullable_array_04() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "CreateNullableArray_04", 28, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "CreateNullableArray_04",
+                    28,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "CreateNullableArray_04", 28, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "CreateNullableArray_04",
+                    28,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "CreateNullableArray_04", 28, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "nullable_parsing_tests",
+            "NullableParsingTests",
+            "CreateNullableArray_04",
+            28,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -706,7 +1516,7 @@ fn create_nullable_array_04() {
 #[test]
 fn create_nullable_array_05() {
     let src = r#"new object[1,2]?[3]?[]"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { new object[1,2]?[3]?[]; } }"#;
     let span2 = Span::new(src2);
@@ -714,16 +1524,45 @@ fn create_nullable_array_05() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "CreateNullableArray_05", 29, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "CreateNullableArray_05",
+                    29,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "CreateNullableArray_05", 29, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "CreateNullableArray_05",
+                    29,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "CreateNullableArray_05", 29, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "nullable_parsing_tests",
+            "NullableParsingTests",
+            "CreateNullableArray_05",
+            29,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -731,7 +1570,7 @@ fn create_nullable_array_05() {
 #[test]
 fn create_nullable_array_06() {
     let src = r#"new object[]"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { new object[]; } }"#;
     let span2 = Span::new(src2);
@@ -739,16 +1578,45 @@ fn create_nullable_array_06() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "CreateNullableArray_06", 30, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "CreateNullableArray_06",
+                    30,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "CreateNullableArray_06", 30, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "CreateNullableArray_06",
+                    30,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "CreateNullableArray_06", 30, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "nullable_parsing_tests",
+            "NullableParsingTests",
+            "CreateNullableArray_06",
+            30,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -756,7 +1624,7 @@ fn create_nullable_array_06() {
 #[test]
 fn create_nullable_array_07() {
     let src = r#"new object[1]?[2,3]?[]"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { new object[1]?[2,3]?[]; } }"#;
     let span2 = Span::new(src2);
@@ -764,16 +1632,45 @@ fn create_nullable_array_07() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "CreateNullableArray_07", 31, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "CreateNullableArray_07",
+                    31,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "CreateNullableArray_07", 31, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "CreateNullableArray_07",
+                    31,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "CreateNullableArray_07", 31, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "nullable_parsing_tests",
+            "NullableParsingTests",
+            "CreateNullableArray_07",
+            31,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -781,23 +1678,48 @@ fn create_nullable_array_07() {
 #[test]
 fn is_expression_of_nullable_type_in_statement() {
     let src = r#"_ = x is Type?;"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "IsExpressionOfNullableTypeInStatement", 32, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "IsExpressionOfNullableTypeInStatement",
+                    32,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "IsExpressionOfNullableTypeInStatement", 32, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "IsExpressionOfNullableTypeInStatement",
+                    32,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "IsExpressionOfNullableTypeInStatement", 32, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "nullable_parsing_tests",
+            "NullableParsingTests",
+            "IsExpressionOfNullableTypeInStatement",
+            32,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -805,23 +1727,48 @@ fn is_expression_of_nullable_type_in_statement() {
 #[test]
 fn declaration_pattern_of_nullable_type_in_statement() {
     let src = r#"_ = x is Type? t;"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "DeclarationPatternOfNullableTypeInStatement", 33, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "DeclarationPatternOfNullableTypeInStatement",
+                    33,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "DeclarationPatternOfNullableTypeInStatement", 33, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "DeclarationPatternOfNullableTypeInStatement",
+                    33,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "DeclarationPatternOfNullableTypeInStatement", 33, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "nullable_parsing_tests",
+            "NullableParsingTests",
+            "DeclarationPatternOfNullableTypeInStatement",
+            33,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -829,7 +1776,7 @@ fn declaration_pattern_of_nullable_type_in_statement() {
 #[test]
 fn disjunctive_pattern_nullable_type_1() {
     let src = r#"x is int? or string?"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { x is int? or string?; } }"#;
     let span2 = Span::new(src2);
@@ -837,16 +1784,45 @@ fn disjunctive_pattern_nullable_type_1() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "DisjunctivePattern_NullableType1", 34, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "DisjunctivePattern_NullableType1",
+                    34,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "DisjunctivePattern_NullableType1", 34, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "DisjunctivePattern_NullableType1",
+                    34,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "DisjunctivePattern_NullableType1", 34, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "nullable_parsing_tests",
+            "NullableParsingTests",
+            "DisjunctivePattern_NullableType1",
+            34,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -854,7 +1830,7 @@ fn disjunctive_pattern_nullable_type_1() {
 #[test]
 fn disjunctive_pattern_nullable_type_2() {
     let src = r#"x is int? i or string? s"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { x is int? i or string? s; } }"#;
     let span2 = Span::new(src2);
@@ -862,16 +1838,45 @@ fn disjunctive_pattern_nullable_type_2() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "DisjunctivePattern_NullableType2", 35, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "DisjunctivePattern_NullableType2",
+                    35,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "DisjunctivePattern_NullableType2", 35, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "DisjunctivePattern_NullableType2",
+                    35,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "DisjunctivePattern_NullableType2", 35, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "nullable_parsing_tests",
+            "NullableParsingTests",
+            "DisjunctivePattern_NullableType2",
+            35,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -879,7 +1884,7 @@ fn disjunctive_pattern_nullable_type_2() {
 #[test]
 fn conjunctive_pattern_nullable_type_1() {
     let src = r#"x is Type? and { }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { x is Type? and { }; } }"#;
     let span2 = Span::new(src2);
@@ -887,16 +1892,45 @@ fn conjunctive_pattern_nullable_type_1() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "ConjunctivePattern_NullableType1", 36, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "ConjunctivePattern_NullableType1",
+                    36,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "ConjunctivePattern_NullableType1", 36, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "ConjunctivePattern_NullableType1",
+                    36,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "ConjunctivePattern_NullableType1", 36, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "nullable_parsing_tests",
+            "NullableParsingTests",
+            "ConjunctivePattern_NullableType1",
+            36,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -904,7 +1938,7 @@ fn conjunctive_pattern_nullable_type_1() {
 #[test]
 fn conjunctive_pattern_nullable_type_2() {
     let src = r#"x is Type? t and { }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { x is Type? t and { }; } }"#;
     let span2 = Span::new(src2);
@@ -912,16 +1946,45 @@ fn conjunctive_pattern_nullable_type_2() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "ConjunctivePattern_NullableType2", 37, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "ConjunctivePattern_NullableType2",
+                    37,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "ConjunctivePattern_NullableType2", 37, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "ConjunctivePattern_NullableType2",
+                    37,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "ConjunctivePattern_NullableType2", 37, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "nullable_parsing_tests",
+            "NullableParsingTests",
+            "ConjunctivePattern_NullableType2",
+            37,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -929,7 +1992,10 @@ fn conjunctive_pattern_nullable_type_2() {
 #[test]
 fn conjunctive_pattern_conditional_expression_instead_of_nullable_type_3() {
     let src = r#"x is Type? and (1, 2)"#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { x is Type? and (1, 2); } }"#;
     let span2 = Span::new(src2);
@@ -937,16 +2003,45 @@ fn conjunctive_pattern_conditional_expression_instead_of_nullable_type_3() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "ConjunctivePattern_ConditionalExpressionInsteadOfNullableType3", 38, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "ConjunctivePattern_ConditionalExpressionInsteadOfNullableType3",
+                    38,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "ConjunctivePattern_ConditionalExpressionInsteadOfNullableType3", 38, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "ConjunctivePattern_ConditionalExpressionInsteadOfNullableType3",
+                    38,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "ConjunctivePattern_ConditionalExpressionInsteadOfNullableType3", 38, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "nullable_parsing_tests",
+            "NullableParsingTests",
+            "ConjunctivePattern_ConditionalExpressionInsteadOfNullableType3",
+            38,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -954,7 +2049,7 @@ fn conjunctive_pattern_conditional_expression_instead_of_nullable_type_3() {
 #[test]
 fn conjunctive_pattern_conditional_expression_instead_of_nullable_type_3_2() {
     let src = r#"x is Type ? f(1, 2) : 0"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { x is Type ? f(1, 2) : 0; } }"#;
     let span2 = Span::new(src2);
@@ -962,16 +2057,45 @@ fn conjunctive_pattern_conditional_expression_instead_of_nullable_type_3_2() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "ConjunctivePattern_ConditionalExpressionInsteadOfNullableType3_2", 39, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "ConjunctivePattern_ConditionalExpressionInsteadOfNullableType3_2",
+                    39,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "ConjunctivePattern_ConditionalExpressionInsteadOfNullableType3_2", 39, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "ConjunctivePattern_ConditionalExpressionInsteadOfNullableType3_2",
+                    39,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "ConjunctivePattern_ConditionalExpressionInsteadOfNullableType3_2", 39, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "nullable_parsing_tests",
+            "NullableParsingTests",
+            "ConjunctivePattern_ConditionalExpressionInsteadOfNullableType3_2",
+            39,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -979,7 +2103,7 @@ fn conjunctive_pattern_conditional_expression_instead_of_nullable_type_3_2() {
 #[test]
 fn conjunctive_pattern_nullable_type_4() {
     let src = r#"x is Type? t and (1, 2)"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { x is Type? t and (1, 2); } }"#;
     let span2 = Span::new(src2);
@@ -987,16 +2111,45 @@ fn conjunctive_pattern_nullable_type_4() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "ConjunctivePattern_NullableType4", 40, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "ConjunctivePattern_NullableType4",
+                    40,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "ConjunctivePattern_NullableType4", 40, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "ConjunctivePattern_NullableType4",
+                    40,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "ConjunctivePattern_NullableType4", 40, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "nullable_parsing_tests",
+            "NullableParsingTests",
+            "ConjunctivePattern_NullableType4",
+            40,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1004,7 +2157,10 @@ fn conjunctive_pattern_nullable_type_4() {
 #[test]
 fn conjunctive_pattern_conditional_expression_instead_of_nullable_type_5() {
     let src = r#"x is Type? and []"#;
-    let expected = Some(ExpectedDiagnostics { count: 3, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 3,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { x is Type? and []; } }"#;
     let span2 = Span::new(src2);
@@ -1012,16 +2168,45 @@ fn conjunctive_pattern_conditional_expression_instead_of_nullable_type_5() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "ConjunctivePattern_ConditionalExpressionInsteadOfNullableType5", 41, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "ConjunctivePattern_ConditionalExpressionInsteadOfNullableType5",
+                    41,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "ConjunctivePattern_ConditionalExpressionInsteadOfNullableType5", 41, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "ConjunctivePattern_ConditionalExpressionInsteadOfNullableType5",
+                    41,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "ConjunctivePattern_ConditionalExpressionInsteadOfNullableType5", 41, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "nullable_parsing_tests",
+            "NullableParsingTests",
+            "ConjunctivePattern_ConditionalExpressionInsteadOfNullableType5",
+            41,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1029,7 +2214,7 @@ fn conjunctive_pattern_conditional_expression_instead_of_nullable_type_5() {
 #[test]
 fn conjunctive_pattern_conditional_expression_instead_of_nullable_type_5_2() {
     let src = r#"x is Type ? dict[key] : default"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { x is Type ? dict[key] : default; } }"#;
     let span2 = Span::new(src2);
@@ -1037,16 +2222,45 @@ fn conjunctive_pattern_conditional_expression_instead_of_nullable_type_5_2() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "ConjunctivePattern_ConditionalExpressionInsteadOfNullableType5_2", 42, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "ConjunctivePattern_ConditionalExpressionInsteadOfNullableType5_2",
+                    42,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "ConjunctivePattern_ConditionalExpressionInsteadOfNullableType5_2", 42, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "ConjunctivePattern_ConditionalExpressionInsteadOfNullableType5_2",
+                    42,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "ConjunctivePattern_ConditionalExpressionInsteadOfNullableType5_2", 42, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "nullable_parsing_tests",
+            "NullableParsingTests",
+            "ConjunctivePattern_ConditionalExpressionInsteadOfNullableType5_2",
+            42,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1054,7 +2268,7 @@ fn conjunctive_pattern_conditional_expression_instead_of_nullable_type_5_2() {
 #[test]
 fn conjunctive_pattern_nullable_type_6() {
     let src = r#"x is Type? t and []"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { x is Type? t and []; } }"#;
     let span2 = Span::new(src2);
@@ -1062,16 +2276,44 @@ fn conjunctive_pattern_nullable_type_6() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "ConjunctivePattern_NullableType6", 43, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "ConjunctivePattern_NullableType6",
+                    43,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "ConjunctivePattern_NullableType6", 43, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "nullable_parsing_tests",
+                    "NullableParsingTests",
+                    "ConjunctivePattern_NullableType6",
+                    43,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("nullable_parsing_tests", "NullableParsingTests", "ConjunctivePattern_NullableType6", 43, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "nullable_parsing_tests",
+            "NullableParsingTests",
+            "ConjunctivePattern_NullableType6",
+            43,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
-

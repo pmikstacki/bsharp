@@ -1,9 +1,9 @@
 // Parser for if/else statements
 
+use nom::Parser;
 use nom::combinator::cut;
 use nom::combinator::opt;
 use nom::sequence::{delimited, preceded};
-use nom::Parser;
 
 use crate::parser::keywords::selection_and_switch_keywords::{kw_else, kw_if};
 use crate::syntax::comment_parser::ws;
@@ -11,10 +11,10 @@ use crate::syntax::errors::BResult;
 
 use crate::parser::expressions::primary_expression_parser::parse_expression;
 use crate::parser::statement_parser::parse_statement_ws;
-use nom_supreme::error::{BaseErrorKind, ErrorTree, Expectation};
 use nom_supreme::ParserExt;
-use syntax::statements::statement::Statement;
+use nom_supreme::error::{BaseErrorKind, ErrorTree, Expectation};
 use syntax::statements::IfStatement;
+use syntax::statements::statement::Statement;
 
 /// Parse an if statement with optional else branch
 /// Format: if (expr) stmt [else stmt]
@@ -35,29 +35,28 @@ pub fn parse_if_statement(input: Span) -> BResult<Statement> {
             .parse(input)?;
 
         // then statement, committed; on failure, report at after_paren location
-        let (input, then_branch) = match cut(delimited(ws, parse_statement_ws, ws)).parse(after_paren)
-        {
-            Ok(ok) => ok,
-            Err(_) => {
-                return Err(nom::Err::Failure(ErrorTree::Base {
-                    location: after_paren,
-                    kind: BaseErrorKind::Expected(Expectation::Tag("statement")),
-                }));
-            }
-        };
+        let (input, then_branch) =
+            match cut(delimited(ws, parse_statement_ws, ws)).parse(after_paren) {
+                Ok(ok) => ok,
+                Err(_) => {
+                    return Err(nom::Err::Failure(ErrorTree::Base {
+                        location: after_paren,
+                        kind: BaseErrorKind::Expected(Expectation::Tag("statement")),
+                    }));
+                }
+            };
 
         // optional else
-        let (input, else_branch) = opt(preceded(
-            delimited(ws, kw_else(), ws),
-            |i| match cut(delimited(ws, parse_statement_ws, ws)).parse(i) {
+        let (input, else_branch) = opt(preceded(delimited(ws, kw_else(), ws), |i| {
+            match cut(delimited(ws, parse_statement_ws, ws)).parse(i) {
                 Ok(ok) => Ok(ok),
                 Err(_) => Err(nom::Err::Failure(ErrorTree::Base {
                     location: i,
                     kind: BaseErrorKind::Expected(Expectation::Tag("statement")),
                 })),
-            },
-        ))
-            .parse(input)?;
+            }
+        }))
+        .parse(input)?;
 
         Ok((
             input,
@@ -68,8 +67,8 @@ pub fn parse_if_statement(input: Span) -> BResult<Statement> {
             })),
         ))
     })
-        .context("if statement")
-        .parse(input)
+    .context("if statement")
+    .parse(input)
 }
 use crate::syntax::span::Span;
 use crate::tokens::delimiters::{tok_l_paren, tok_r_paren};

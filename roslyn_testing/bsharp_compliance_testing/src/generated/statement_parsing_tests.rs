@@ -1,31 +1,59 @@
 // Auto-generated from Roslyn: StatementParsingTests
-use bsharp_parser::syntax::span::Span;
 use crate::custom_asserts::after_parse;
 use crate::custom_asserts::after_parse::CaseData;
+use crate::custom_asserts::roslyn_asserts::ExpectedDiagnostics;
 use bsharp_parser::bsharp::parse_csharp_source_strict;
 use bsharp_parser::statement_parser::parse_statement_ws;
-use crate::custom_asserts::roslyn_asserts::ExpectedDiagnostics;
+use bsharp_parser::syntax::span::Span;
 /// Roslyn: StatementParsingTests.ParsePrivate (case 1)
 #[test]
 fn parse_private() {
     let src = r#"private"#;
-    let expected = Some(ExpectedDiagnostics { count: 3, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 3,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParsePrivate", 1, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "ParsePrivate",
+                    1,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParsePrivate", 1, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "ParsePrivate",
+                    1,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParsePrivate", 1, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "statement_parsing_tests",
+            "StatementParsingTests",
+            "ParsePrivate",
+            1,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -33,23 +61,48 @@ fn parse_private() {
 #[test]
 fn using_var_with_declaration_tree() {
     let src = r#"using T a = b;"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestUsingVarWithDeclarationTree", 2, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "TestUsingVarWithDeclarationTree",
+                    2,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestUsingVarWithDeclarationTree", 2, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "TestUsingVarWithDeclarationTree",
+                    2,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestUsingVarWithDeclarationTree", 2, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "statement_parsing_tests",
+            "StatementParsingTests",
+            "TestUsingVarWithDeclarationTree",
+            2,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -57,23 +110,51 @@ fn using_var_with_declaration_tree() {
 #[test]
 fn using_var_with_invalid_declaration() {
     let src = r#"using public readonly var a = b;"#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestUsingVarWithInvalidDeclaration", 3, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "TestUsingVarWithInvalidDeclaration",
+                    3,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestUsingVarWithInvalidDeclaration", 3, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "TestUsingVarWithInvalidDeclaration",
+                    3,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestUsingVarWithInvalidDeclaration", 3, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "statement_parsing_tests",
+            "StatementParsingTests",
+            "TestUsingVarWithInvalidDeclaration",
+            3,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -81,23 +162,48 @@ fn using_var_with_invalid_declaration() {
 #[test]
 fn using_var_with_var_declaration_tree() {
     let src = r#"using var a = b;"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestUsingVarWithVarDeclarationTree", 4, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "TestUsingVarWithVarDeclarationTree",
+                    4,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestUsingVarWithVarDeclarationTree", 4, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "TestUsingVarWithVarDeclarationTree",
+                    4,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestUsingVarWithVarDeclarationTree", 4, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "statement_parsing_tests",
+            "StatementParsingTests",
+            "TestUsingVarWithVarDeclarationTree",
+            4,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -105,23 +211,48 @@ fn using_var_with_var_declaration_tree() {
 #[test]
 fn await_using_var_with_declaration_tree() {
     let src = r#"await using T a = b;"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestAwaitUsingVarWithDeclarationTree", 5, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "TestAwaitUsingVarWithDeclarationTree",
+                    5,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestAwaitUsingVarWithDeclarationTree", 5, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "TestAwaitUsingVarWithDeclarationTree",
+                    5,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestAwaitUsingVarWithDeclarationTree", 5, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "statement_parsing_tests",
+            "StatementParsingTests",
+            "TestAwaitUsingVarWithDeclarationTree",
+            5,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -129,23 +260,48 @@ fn await_using_var_with_declaration_tree() {
 #[test]
 fn await_using_var_with_var_declaration_tree() {
     let src = r#"await using var a = b;"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestAwaitUsingVarWithVarDeclarationTree", 6, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "TestAwaitUsingVarWithVarDeclarationTree",
+                    6,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestAwaitUsingVarWithVarDeclarationTree", 6, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "TestAwaitUsingVarWithVarDeclarationTree",
+                    6,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestAwaitUsingVarWithVarDeclarationTree", 6, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "statement_parsing_tests",
+            "StatementParsingTests",
+            "TestAwaitUsingVarWithVarDeclarationTree",
+            6,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -161,22 +317,54 @@ class C
     }
 }
 "#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "AwaitUsingVarWithVarDecl_Reversed", 7, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "AwaitUsingVarWithVarDecl_Reversed",
+                    7,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "AwaitUsingVarWithVarDecl_Reversed", 7, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "AwaitUsingVarWithVarDecl_Reversed",
+                    7,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "AwaitUsingVarWithVarDecl_Reversed", 7, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_parsing_tests",
+            "StatementParsingTests",
+            "AwaitUsingVarWithVarDecl_Reversed",
+            7,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -184,23 +372,51 @@ class C
 #[test]
 fn await_using_var_with_var_and_no_using_declaration_tree() {
     let src = r#"await var a = b;"#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestAwaitUsingVarWithVarAndNoUsingDeclarationTree", 8, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "TestAwaitUsingVarWithVarAndNoUsingDeclarationTree",
+                    8,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestAwaitUsingVarWithVarAndNoUsingDeclarationTree", 8, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "TestAwaitUsingVarWithVarAndNoUsingDeclarationTree",
+                    8,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestAwaitUsingVarWithVarAndNoUsingDeclarationTree", 8, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "statement_parsing_tests",
+            "StatementParsingTests",
+            "TestAwaitUsingVarWithVarAndNoUsingDeclarationTree",
+            8,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -208,23 +424,48 @@ fn await_using_var_with_var_and_no_using_declaration_tree() {
 #[test]
 fn using_var_with_declaration_multiple_variables_tree() {
     let src = r#"using T a = b, c = d;"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestUsingVarWithDeclarationMultipleVariablesTree", 9, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "TestUsingVarWithDeclarationMultipleVariablesTree",
+                    9,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestUsingVarWithDeclarationMultipleVariablesTree", 9, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "TestUsingVarWithDeclarationMultipleVariablesTree",
+                    9,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestUsingVarWithDeclarationMultipleVariablesTree", 9, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "statement_parsing_tests",
+            "StatementParsingTests",
+            "TestUsingVarWithDeclarationMultipleVariablesTree",
+            9,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -232,23 +473,48 @@ fn using_var_with_declaration_multiple_variables_tree() {
 #[test]
 fn using_var_special_case_1_tree() {
     let src = r#"using var x = f ? a : b;"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestUsingVarSpecialCase1Tree", 10, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "TestUsingVarSpecialCase1Tree",
+                    10,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestUsingVarSpecialCase1Tree", 10, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "TestUsingVarSpecialCase1Tree",
+                    10,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestUsingVarSpecialCase1Tree", 10, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "statement_parsing_tests",
+            "StatementParsingTests",
+            "TestUsingVarSpecialCase1Tree",
+            10,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -256,23 +522,48 @@ fn using_var_special_case_1_tree() {
 #[test]
 fn using_var_special_case_2_tree() {
     let src = r#"using f ? x = a;"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestUsingVarSpecialCase2Tree", 11, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "TestUsingVarSpecialCase2Tree",
+                    11,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestUsingVarSpecialCase2Tree", 11, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "TestUsingVarSpecialCase2Tree",
+                    11,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestUsingVarSpecialCase2Tree", 11, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "statement_parsing_tests",
+            "StatementParsingTests",
+            "TestUsingVarSpecialCase2Tree",
+            11,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -280,23 +571,48 @@ fn using_var_special_case_2_tree() {
 #[test]
 fn using_var_special_case_3_tree() {
     let src = r#"using f? x, y;"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestUsingVarSpecialCase3Tree", 12, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "TestUsingVarSpecialCase3Tree",
+                    12,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestUsingVarSpecialCase3Tree", 12, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "TestUsingVarSpecialCase3Tree",
+                    12,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestUsingVarSpecialCase3Tree", 12, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "statement_parsing_tests",
+            "StatementParsingTests",
+            "TestUsingVarSpecialCase3Tree",
+            12,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -304,23 +620,48 @@ fn using_var_special_case_3_tree() {
 #[test]
 fn using_var_ref_tree() {
     let src = r#"using ref int x = ref y;"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestUsingVarRefTree", 13, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "TestUsingVarRefTree",
+                    13,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestUsingVarRefTree", 13, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "TestUsingVarRefTree",
+                    13,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestUsingVarRefTree", 13, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "statement_parsing_tests",
+            "StatementParsingTests",
+            "TestUsingVarRefTree",
+            13,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -328,23 +669,48 @@ fn using_var_ref_tree() {
 #[test]
 fn using_var_ref_readonly_tree() {
     let src = r#"using ref readonly int x = ref y;"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestUsingVarRefReadonlyTree", 14, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "TestUsingVarRefReadonlyTree",
+                    14,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestUsingVarRefReadonlyTree", 14, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "TestUsingVarRefReadonlyTree",
+                    14,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestUsingVarRefReadonlyTree", 14, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "statement_parsing_tests",
+            "StatementParsingTests",
+            "TestUsingVarRefReadonlyTree",
+            14,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -352,23 +718,48 @@ fn using_var_ref_readonly_tree() {
 #[test]
 fn using_var_ref_var_tree() {
     let src = r#"using ref var x = ref y;"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestUsingVarRefVarTree", 15, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "TestUsingVarRefVarTree",
+                    15,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestUsingVarRefVarTree", 15, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "TestUsingVarRefVarTree",
+                    15,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestUsingVarRefVarTree", 15, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "statement_parsing_tests",
+            "StatementParsingTests",
+            "TestUsingVarRefVarTree",
+            15,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -376,23 +767,48 @@ fn using_var_ref_var_tree() {
 #[test]
 fn using_var_ref_var_is_ytree() {
     let src = r#"using ref var x = y;"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestUsingVarRefVarIsYTree", 16, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "TestUsingVarRefVarIsYTree",
+                    16,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestUsingVarRefVarIsYTree", 16, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "TestUsingVarRefVarIsYTree",
+                    16,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestUsingVarRefVarIsYTree", 16, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "statement_parsing_tests",
+            "StatementParsingTests",
+            "TestUsingVarRefVarIsYTree",
+            16,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -400,23 +816,51 @@ fn using_var_ref_var_is_ytree() {
 #[test]
 fn using_var_readonly_multiple_declarations() {
     let src = r#"using readonly var x, y = ref z;"#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestUsingVarReadonlyMultipleDeclarations", 17, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "TestUsingVarReadonlyMultipleDeclarations",
+                    17,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestUsingVarReadonlyMultipleDeclarations", 17, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "TestUsingVarReadonlyMultipleDeclarations",
+                    17,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestUsingVarReadonlyMultipleDeclarations", 17, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "statement_parsing_tests",
+            "StatementParsingTests",
+            "TestUsingVarReadonlyMultipleDeclarations",
+            17,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -424,23 +868,51 @@ fn using_var_readonly_multiple_declarations() {
 #[test]
 fn null_exception_in_labeled_statement() {
     let src = r#"{ label: public"#;
-    let expected = Some(ExpectedDiagnostics { count: 3, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 3,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "NullExceptionInLabeledStatement", 18, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "NullExceptionInLabeledStatement",
+                    18,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "NullExceptionInLabeledStatement", 18, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "NullExceptionInLabeledStatement",
+                    18,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "NullExceptionInLabeledStatement", 18, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "statement_parsing_tests",
+            "StatementParsingTests",
+            "NullExceptionInLabeledStatement",
+            18,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -448,23 +920,51 @@ fn null_exception_in_labeled_statement() {
 #[test]
 fn parse_else_without_preceding_if_statement() {
     let src = r#"else {}"#;
-    let expected = Some(ExpectedDiagnostics { count: 6, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 6,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseElseWithoutPrecedingIfStatement", 19, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "ParseElseWithoutPrecedingIfStatement",
+                    19,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseElseWithoutPrecedingIfStatement", 19, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "ParseElseWithoutPrecedingIfStatement",
+                    19,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseElseWithoutPrecedingIfStatement", 19, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "statement_parsing_tests",
+            "StatementParsingTests",
+            "ParseElseWithoutPrecedingIfStatement",
+            19,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -472,23 +972,51 @@ fn parse_else_without_preceding_if_statement() {
 #[test]
 fn parse_else_and_else_without_preceding_if_statement() {
     let src = r#"{ else {} else {} }"#;
-    let expected = Some(ExpectedDiagnostics { count: 12, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 12,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseElseAndElseWithoutPrecedingIfStatement", 20, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "ParseElseAndElseWithoutPrecedingIfStatement",
+                    20,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseElseAndElseWithoutPrecedingIfStatement", 20, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "ParseElseAndElseWithoutPrecedingIfStatement",
+                    20,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseElseAndElseWithoutPrecedingIfStatement", 20, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "statement_parsing_tests",
+            "StatementParsingTests",
+            "ParseElseAndElseWithoutPrecedingIfStatement",
+            20,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -496,23 +1024,51 @@ fn parse_else_and_else_without_preceding_if_statement() {
 #[test]
 fn parse_subsequent_else_without_preceding_if_statement() {
     let src = r#"{ if (a) { } else { } else { } }"#;
-    let expected = Some(ExpectedDiagnostics { count: 6, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 6,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseSubsequentElseWithoutPrecedingIfStatement", 21, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "ParseSubsequentElseWithoutPrecedingIfStatement",
+                    21,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseSubsequentElseWithoutPrecedingIfStatement", 21, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "ParseSubsequentElseWithoutPrecedingIfStatement",
+                    21,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseSubsequentElseWithoutPrecedingIfStatement", 21, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "statement_parsing_tests",
+            "StatementParsingTests",
+            "ParseSubsequentElseWithoutPrecedingIfStatement",
+            21,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -520,23 +1076,51 @@ fn parse_subsequent_else_without_preceding_if_statement() {
 #[test]
 fn parse_else_keyword_placed_as_if_embedded_statement() {
     let src = r#"if (a) else {}"#;
-    let expected = Some(ExpectedDiagnostics { count: 6, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 6,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseElseKeywordPlacedAsIfEmbeddedStatement", 22, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "ParseElseKeywordPlacedAsIfEmbeddedStatement",
+                    22,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseElseKeywordPlacedAsIfEmbeddedStatement", 22, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "ParseElseKeywordPlacedAsIfEmbeddedStatement",
+                    22,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseElseKeywordPlacedAsIfEmbeddedStatement", 22, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "statement_parsing_tests",
+            "StatementParsingTests",
+            "ParseElseKeywordPlacedAsIfEmbeddedStatement",
+            22,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -544,23 +1128,51 @@ fn parse_else_keyword_placed_as_if_embedded_statement() {
 #[test]
 fn parse_switch_01() {
     let src = r#"switch 1+2 {}"#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseSwitch01", 23, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "ParseSwitch01",
+                    23,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseSwitch01", 23, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "ParseSwitch01",
+                    23,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseSwitch01", 23, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "statement_parsing_tests",
+            "StatementParsingTests",
+            "ParseSwitch01",
+            23,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -568,23 +1180,51 @@ fn parse_switch_01() {
 #[test]
 fn parse_switch_02() {
     let src = r#"switch (a: 0) {}"#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseSwitch02", 24, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "ParseSwitch02",
+                    24,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseSwitch02", 24, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "ParseSwitch02",
+                    24,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseSwitch02", 24, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "statement_parsing_tests",
+            "StatementParsingTests",
+            "ParseSwitch02",
+            24,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -592,23 +1232,48 @@ fn parse_switch_02() {
 #[test]
 fn parse_switch_03() {
     let src = r#"switch (a: 0, b: 4) {}"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseSwitch03", 25, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "ParseSwitch03",
+                    25,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseSwitch03", 25, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "ParseSwitch03",
+                    25,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseSwitch03", 25, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "statement_parsing_tests",
+            "StatementParsingTests",
+            "ParseSwitch03",
+            25,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -616,23 +1281,51 @@ fn parse_switch_03() {
 #[test]
 fn parse_switch_04() {
     let src = r#"switch (1) + (2) {}"#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseSwitch04", 26, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "ParseSwitch04",
+                    26,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseSwitch04", 26, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "ParseSwitch04",
+                    26,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseSwitch04", 26, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "statement_parsing_tests",
+            "StatementParsingTests",
+            "ParseSwitch04",
+            26,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -640,23 +1333,48 @@ fn parse_switch_04() {
 #[test]
 fn parse_create_nullable_tuple_01() {
     let src = r#"_ = new (int, int)? {};"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseCreateNullableTuple_01", 27, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "ParseCreateNullableTuple_01",
+                    27,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseCreateNullableTuple_01", 27, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "ParseCreateNullableTuple_01",
+                    27,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseCreateNullableTuple_01", 27, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "statement_parsing_tests",
+            "StatementParsingTests",
+            "ParseCreateNullableTuple_01",
+            27,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -664,23 +1382,51 @@ fn parse_create_nullable_tuple_01() {
 #[test]
 fn parse_create_nullable_tuple_02() {
     let src = r#"_ = new (int, int) ? (x) : (y);"#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseCreateNullableTuple_02", 28, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "ParseCreateNullableTuple_02",
+                    28,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseCreateNullableTuple_02", 28, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "ParseCreateNullableTuple_02",
+                    28,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseCreateNullableTuple_02", 28, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "statement_parsing_tests",
+            "StatementParsingTests",
+            "ParseCreateNullableTuple_02",
+            28,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -688,23 +1434,48 @@ fn parse_create_nullable_tuple_02() {
 #[test]
 fn parse_pointer_to_array() {
     let src = r#"int []* p;"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParsePointerToArray", 29, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "ParsePointerToArray",
+                    29,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParsePointerToArray", 29, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "ParsePointerToArray",
+                    29,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParsePointerToArray", 29, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "statement_parsing_tests",
+            "StatementParsingTests",
+            "ParsePointerToArray",
+            29,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -712,23 +1483,48 @@ fn parse_pointer_to_array() {
 #[test]
 fn parse_pointer_to_nullable_type() {
     let src = r#"int?* p;"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParsePointerToNullableType", 30, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "ParsePointerToNullableType",
+                    30,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParsePointerToNullableType", 30, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "ParsePointerToNullableType",
+                    30,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParsePointerToNullableType", 30, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "statement_parsing_tests",
+            "StatementParsingTests",
+            "ParsePointerToNullableType",
+            30,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -736,23 +1532,48 @@ fn parse_pointer_to_nullable_type() {
 #[test]
 fn parse_new_nullable_with_initializer() {
     let src = r#"_ = new int? {};"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseNewNullableWithInitializer", 31, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "ParseNewNullableWithInitializer",
+                    31,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseNewNullableWithInitializer", 31, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "ParseNewNullableWithInitializer",
+                    31,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseNewNullableWithInitializer", 31, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "statement_parsing_tests",
+            "StatementParsingTests",
+            "ParseNewNullableWithInitializer",
+            31,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -771,22 +1592,54 @@ fn parse_case_without_switch() {
                     }
                 }
                 "#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseCaseWithoutSwitch", 32, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "ParseCaseWithoutSwitch",
+                    32,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseCaseWithoutSwitch", 32, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "ParseCaseWithoutSwitch",
+                    32,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseCaseWithoutSwitch", 32, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_parsing_tests",
+            "StatementParsingTests",
+            "ParseCaseWithoutSwitch",
+            32,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -809,22 +1662,54 @@ fn parse_errant_statement_in_case_1() {
                     }
                 }
                 "#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseErrantStatementInCase1", 33, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "ParseErrantStatementInCase1",
+                    33,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseErrantStatementInCase1", 33, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "ParseErrantStatementInCase1",
+                    33,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseErrantStatementInCase1", 33, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_parsing_tests",
+            "StatementParsingTests",
+            "ParseErrantStatementInCase1",
+            33,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -847,22 +1732,54 @@ fn parse_errant_statement_in_case_2() {
                     }
                 }
                 "#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseErrantStatementInCase2", 34, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "ParseErrantStatementInCase2",
+                    34,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseErrantStatementInCase2", 34, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "ParseErrantStatementInCase2",
+                    34,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseErrantStatementInCase2", 34, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "statement_parsing_tests",
+            "StatementParsingTests",
+            "ParseErrantStatementInCase2",
+            34,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -877,23 +1794,51 @@ fn parse_switch_statement_with_unclosed_recursive_pattern_1() {
                        break;
                 }
                 "#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseSwitchStatementWithUnclosedRecursivePattern1", 35, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "ParseSwitchStatementWithUnclosedRecursivePattern1",
+                    35,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseSwitchStatementWithUnclosedRecursivePattern1", 35, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "ParseSwitchStatementWithUnclosedRecursivePattern1",
+                    35,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseSwitchStatementWithUnclosedRecursivePattern1", 35, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "statement_parsing_tests",
+            "StatementParsingTests",
+            "ParseSwitchStatementWithUnclosedRecursivePattern1",
+            35,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -908,23 +1853,51 @@ fn parse_switch_statement_with_unclosed_recursive_pattern_2() {
                        break;
                 }
                 "#;
-    let expected = Some(ExpectedDiagnostics { count: 4, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 4,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseSwitchStatementWithUnclosedRecursivePattern2", 36, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "ParseSwitchStatementWithUnclosedRecursivePattern2",
+                    36,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseSwitchStatementWithUnclosedRecursivePattern2", 36, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "ParseSwitchStatementWithUnclosedRecursivePattern2",
+                    36,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseSwitchStatementWithUnclosedRecursivePattern2", 36, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "statement_parsing_tests",
+            "StatementParsingTests",
+            "ParseSwitchStatementWithUnclosedRecursivePattern2",
+            36,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -939,23 +1912,51 @@ fn parse_switch_statement_with_unclosed_recursive_pattern_3() {
                        break;
                 }
                 "#;
-    let expected = Some(ExpectedDiagnostics { count: 6, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 6,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseSwitchStatementWithUnclosedRecursivePattern3", 37, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "ParseSwitchStatementWithUnclosedRecursivePattern3",
+                    37,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseSwitchStatementWithUnclosedRecursivePattern3", 37, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "ParseSwitchStatementWithUnclosedRecursivePattern3",
+                    37,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseSwitchStatementWithUnclosedRecursivePattern3", 37, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "statement_parsing_tests",
+            "StatementParsingTests",
+            "ParseSwitchStatementWithUnclosedRecursivePattern3",
+            37,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -970,23 +1971,51 @@ fn parse_switch_statement_with_unclosed_list_pattern_1() {
                        break;
                 }
                 "#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseSwitchStatementWithUnclosedListPattern1", 38, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "ParseSwitchStatementWithUnclosedListPattern1",
+                    38,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseSwitchStatementWithUnclosedListPattern1", 38, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "ParseSwitchStatementWithUnclosedListPattern1",
+                    38,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseSwitchStatementWithUnclosedListPattern1", 38, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "statement_parsing_tests",
+            "StatementParsingTests",
+            "ParseSwitchStatementWithUnclosedListPattern1",
+            38,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -1001,23 +2030,51 @@ fn parse_switch_statement_with_unclosed_list_pattern_2() {
                        break;
                 }
                 "#;
-    let expected = Some(ExpectedDiagnostics { count: 4, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 4,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseSwitchStatementWithUnclosedListPattern2", 39, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "ParseSwitchStatementWithUnclosedListPattern2",
+                    39,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseSwitchStatementWithUnclosedListPattern2", 39, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "ParseSwitchStatementWithUnclosedListPattern2",
+                    39,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseSwitchStatementWithUnclosedListPattern2", 39, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "statement_parsing_tests",
+            "StatementParsingTests",
+            "ParseSwitchStatementWithUnclosedListPattern2",
+            39,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -1032,23 +2089,51 @@ fn parse_switch_statement_with_unclosed_list_pattern_3() {
                        break;
                 }
                 "#;
-    let expected = Some(ExpectedDiagnostics { count: 6, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 6,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseSwitchStatementWithUnclosedListPattern3", 40, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "ParseSwitchStatementWithUnclosedListPattern3",
+                    40,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseSwitchStatementWithUnclosedListPattern3", 40, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "ParseSwitchStatementWithUnclosedListPattern3",
+                    40,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseSwitchStatementWithUnclosedListPattern3", 40, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "statement_parsing_tests",
+            "StatementParsingTests",
+            "ParseSwitchStatementWithUnclosedListPattern3",
+            40,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -1064,23 +2149,51 @@ fn parse_switch_statement_with_unclosed_pattern_and_arrow() {
                         break;
                 }
                 "#;
-    let expected = Some(ExpectedDiagnostics { count: 6, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 6,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseSwitchStatementWithUnclosedPatternAndArrow", 41, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "ParseSwitchStatementWithUnclosedPatternAndArrow",
+                    41,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseSwitchStatementWithUnclosedPatternAndArrow", 41, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "ParseSwitchStatementWithUnclosedPatternAndArrow",
+                    41,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "ParseSwitchStatementWithUnclosedPatternAndArrow", 41, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "statement_parsing_tests",
+            "StatementParsingTests",
+            "ParseSwitchStatementWithUnclosedPatternAndArrow",
+            41,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -1094,23 +2207,48 @@ fn switch_statement_with_nullable_type_in_pattern_1() {
                         break;
                 }
                 "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestSwitchStatementWithNullableTypeInPattern1", 42, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "TestSwitchStatementWithNullableTypeInPattern1",
+                    42,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestSwitchStatementWithNullableTypeInPattern1", 42, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "TestSwitchStatementWithNullableTypeInPattern1",
+                    42,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestSwitchStatementWithNullableTypeInPattern1", 42, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "statement_parsing_tests",
+            "StatementParsingTests",
+            "TestSwitchStatementWithNullableTypeInPattern1",
+            42,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -1124,23 +2262,51 @@ fn switch_statement_with_nullable_type_in_pattern_2() {
                         break;
                 }
                 "#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestSwitchStatementWithNullableTypeInPattern2", 43, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "TestSwitchStatementWithNullableTypeInPattern2",
+                    43,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestSwitchStatementWithNullableTypeInPattern2", 43, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "TestSwitchStatementWithNullableTypeInPattern2",
+                    43,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestSwitchStatementWithNullableTypeInPattern2", 43, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "statement_parsing_tests",
+            "StatementParsingTests",
+            "TestSwitchStatementWithNullableTypeInPattern2",
+            43,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -1154,23 +2320,48 @@ fn switch_statement_with_nullable_type_in_pattern_3() {
                         break;
                 }
                 "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestSwitchStatementWithNullableTypeInPattern3", 44, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "TestSwitchStatementWithNullableTypeInPattern3",
+                    44,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestSwitchStatementWithNullableTypeInPattern3", 44, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "TestSwitchStatementWithNullableTypeInPattern3",
+                    44,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestSwitchStatementWithNullableTypeInPattern3", 44, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "statement_parsing_tests",
+            "StatementParsingTests",
+            "TestSwitchStatementWithNullableTypeInPattern3",
+            44,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -1184,23 +2375,48 @@ fn switch_statement_with_nullable_type_in_pattern_4() {
                         break;
                 }
                 "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestSwitchStatementWithNullableTypeInPattern4", 45, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "TestSwitchStatementWithNullableTypeInPattern4",
+                    45,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestSwitchStatementWithNullableTypeInPattern4", 45, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "TestSwitchStatementWithNullableTypeInPattern4",
+                    45,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestSwitchStatementWithNullableTypeInPattern4", 45, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "statement_parsing_tests",
+            "StatementParsingTests",
+            "TestSwitchStatementWithNullableTypeInPattern4",
+            45,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -1214,23 +2430,48 @@ fn switch_statement_with_nullable_type_in_pattern_5() {
                         break;
                 }
                 "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestSwitchStatementWithNullableTypeInPattern5", 46, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "TestSwitchStatementWithNullableTypeInPattern5",
+                    46,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestSwitchStatementWithNullableTypeInPattern5", 46, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "TestSwitchStatementWithNullableTypeInPattern5",
+                    46,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestSwitchStatementWithNullableTypeInPattern5", 46, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "statement_parsing_tests",
+            "StatementParsingTests",
+            "TestSwitchStatementWithNullableTypeInPattern5",
+            46,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -1244,7 +2485,10 @@ fn yield_return_tokens_after_pattern() {
                     return res;
                 }
                 "#;
-    let expected = Some(ExpectedDiagnostics { count: 3, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 3,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { 
                 void M()
@@ -1258,16 +2502,45 @@ fn yield_return_tokens_after_pattern() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestYieldReturnTokensAfterPattern", 47, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "TestYieldReturnTokensAfterPattern",
+                    47,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestYieldReturnTokensAfterPattern", 47, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "TestYieldReturnTokensAfterPattern",
+                    47,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestYieldReturnTokensAfterPattern", 47, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "statement_parsing_tests",
+            "StatementParsingTests",
+            "TestYieldReturnTokensAfterPattern",
+            47,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1281,7 +2554,10 @@ fn yield_break_tokens_after_pattern() {
                     break;
                 }
                 "#;
-    let expected = Some(ExpectedDiagnostics { count: 3, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 3,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { 
                 void M()
@@ -1295,16 +2571,44 @@ fn yield_break_tokens_after_pattern() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestYieldBreakTokensAfterPattern", 48, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "TestYieldBreakTokensAfterPattern",
+                    48,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestYieldBreakTokensAfterPattern", 48, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "statement_parsing_tests",
+                    "StatementParsingTests",
+                    "TestYieldBreakTokensAfterPattern",
+                    48,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("statement_parsing_tests", "StatementParsingTests", "TestYieldBreakTokensAfterPattern", 48, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "statement_parsing_tests",
+            "StatementParsingTests",
+            "TestYieldBreakTokensAfterPattern",
+            48,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
-

@@ -9,8 +9,8 @@ use crate::parser::types::type_parser::parse_type_expression;
 use crate::syntax::comment_parser::ws;
 use crate::syntax::errors::BResult;
 use crate::syntax::list_parser::parse_list0;
-use nom::combinator::cut;
 use nom::Parser;
+use nom::combinator::cut;
 use nom::{
     branch::alt,
     combinator::{map, opt},
@@ -30,16 +30,11 @@ fn parse_for_initializer(input: Span) -> BResult<ForInitializer> {
         map(
             (
                 // Optionally parse "const"
-                opt(delimited(ws, kw_const(), ws))
-                    .context("optional const modifier"),
+                opt(delimited(ws, kw_const(), ws)).context("optional const modifier"),
                 // Parse type name
-                delimited(ws, parse_type_expression, ws)
-                    .context("variable type"),
+                delimited(ws, parse_type_expression, ws).context("variable type"),
                 // Parse declarators (name and initializer)
-                separated_list1(
-                    delimited(ws, tok_comma(), ws),
-                    parse_variable_declarator,
-                )
+                separated_list1(delimited(ws, tok_comma(), ws), parse_variable_declarator)
                     .context("variable declarators"),
             ),
             |(const_modifier, ty, declarators)| {
@@ -57,12 +52,12 @@ fn parse_for_initializer(input: Span) -> BResult<ForInitializer> {
                 delimited(ws, tok_comma(), ws),
                 delimited(ws, parse_expression, ws),
             )
-                .context("expression list"),
+            .context("expression list"),
             ForInitializer::Expressions,
         ),
     ))
-        .context("for loop initializer")
-        .parse(input)
+    .context("for loop initializer")
+    .parse(input)
 }
 
 // Original parse_for_statement function from statement_parser.rs
@@ -115,8 +110,8 @@ pub fn parse_for_statement(input: Span) -> BResult<Statement> {
             })),
         ))
     })
-        .context("for statement")
-        .parse(input)
+    .context("for statement")
+    .parse(input)
 }
 use crate::syntax::span::Span;
 use crate::tokens::delimiters::{tok_l_paren, tok_r_paren};

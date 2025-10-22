@@ -27,7 +27,9 @@ pub fn extract_structure_tests(content: &str) -> Vec<ExtractedStructureTest> {
     let mut total_hits = 0usize;
     for (idx, _) in content.match_indices("UsingTree(") {
         total_hits += 1;
-        if verbose { eprintln!("[structure][dsl] UsingTree hit at byte {}", idx); }
+        if verbose {
+            eprintln!("[structure][dsl] UsingTree hit at byte {}", idx);
+        }
         // Extract source snippet: var text = "..."; immediately preceding the UsingTree call
         let prefix = &content[..idx];
         let mut src_code = String::new();
@@ -57,7 +59,13 @@ pub fn extract_structure_tests(content: &str) -> Vec<ExtractedStructureTest> {
             // Enrich with method name for nicer test names
             let method_name = find_enclosing_method_name(&methods, idx);
 
-            if verbose { eprintln!("[structure][dsl] parsed expected tree: root={} children={}", expected.root.kind, expected.root.children.len()); }
+            if verbose {
+                eprintln!(
+                    "[structure][dsl] parsed expected tree: root={} children={}",
+                    expected.root.kind,
+                    expected.root.children.len()
+                );
+            }
             out.push(ExtractedStructureTest {
                 method_name,
                 src_code,
@@ -66,11 +74,24 @@ pub fn extract_structure_tests(content: &str) -> Vec<ExtractedStructureTest> {
             });
         } else if verbose {
             // Log a small excerpt to help debugging
-            let excerpt = &dsl_segment[..dsl_segment.char_indices().nth(1200).map(|(i,_)| i).unwrap_or_else(|| dsl_segment.len())];
-            eprintln!("[structure][dsl] parse_expected_tree_from_dsl returned None. Excerpt start:\n{}\n---", excerpt);
+            let excerpt = &dsl_segment[..dsl_segment
+                .char_indices()
+                .nth(1200)
+                .map(|(i, _)| i)
+                .unwrap_or_else(|| dsl_segment.len())];
+            eprintln!(
+                "[structure][dsl] parse_expected_tree_from_dsl returned None. Excerpt start:\n{}\n---",
+                excerpt
+            );
         }
     }
-    if verbose { eprintln!("[structure][dsl] UsingTree total hits: {} -> extracted: {}", total_hits, out.len()); }
+    if verbose {
+        eprintln!(
+            "[structure][dsl] UsingTree total hits: {} -> extracted: {}",
+            total_hits,
+            out.len()
+        );
+    }
     out
 }
 
@@ -90,7 +111,9 @@ struct DslParser<'a> {
 }
 
 impl<'a> DslParser<'a> {
-    fn new(s: &'a str) -> Self { Self { s, pos: 0 } }
+    fn new(s: &'a str) -> Self {
+        Self { s, pos: 0 }
+    }
 
     #[inline]
     fn advance_one_char(&mut self) {
@@ -105,10 +128,16 @@ impl<'a> DslParser<'a> {
 
     fn parse(&mut self) -> Option<ExpectedTree> {
         // Fast-forward to the first N( occurrence following the UsingTree call
-        if let Some(start) = self.find_token("N(") { self.pos = start; } else { return None; }
+        if let Some(start) = self.find_token("N(") {
+            self.pos = start;
+        } else {
+            return None;
+        }
 
         let verbose = std::env::var("BSHARP_LOG").is_ok();
-        if verbose { eprintln!("[structure][dsl] parse begin at offset {}", self.pos); }
+        if verbose {
+            eprintln!("[structure][dsl] parse begin at offset {}", self.pos);
+        }
         let t0 = std::time::Instant::now();
         let mut last_log_pos = self.pos;
 
@@ -122,12 +151,18 @@ impl<'a> DslParser<'a> {
                 if self.pos.saturating_sub(last_log_pos) > 50_000 {
                     let end = (self.pos + 40).min(self.s.len());
                     let excerpt = &self.s[self.pos..end];
-                    eprintln!("[structure][dsl] pos={} next='{}'", self.pos, excerpt.replace('\n', "\\n"));
+                    eprintln!(
+                        "[structure][dsl] pos={} next='{}'",
+                        self.pos,
+                        excerpt.replace('\n', "\\n")
+                    );
                     last_log_pos = self.pos;
                 }
             }
 
-            if self.peek_str("EOF()") { break; }
+            if self.peek_str("EOF()") {
+                break;
+            }
 
             if self.peek_str("M(") {
                 // Skip missing entries entirely, including their argument list and optional semicolon
@@ -156,7 +191,9 @@ impl<'a> DslParser<'a> {
                         }
                     }
                     continue;
-                } else { break; }
+                } else {
+                    break;
+                }
             }
 
             if self.eat_char('}') {
@@ -179,28 +216,48 @@ impl<'a> DslParser<'a> {
 
         self.skip_ws();
         if self.peek_str("EOF()") {
-            if verbose { eprintln!("[structure][dsl] EOF() detected at pos {} (elapsed {:?})", self.pos, t0.elapsed()); }
+            if verbose {
+                eprintln!(
+                    "[structure][dsl] EOF() detected at pos {} (elapsed {:?})",
+                    self.pos,
+                    t0.elapsed()
+                );
+            }
             // Close any remaining open parents
             while let Some(done) = parents.pop() {
-                if let Some(parent) = parents.last_mut() { parent.children.push(done); }
-                else if root.is_none() { root = Some(done); }
-                else if let Some(r) = root.as_mut() { r.children.push(done); }
+                if let Some(parent) = parents.last_mut() {
+                    parent.children.push(done);
+                } else if root.is_none() {
+                    root = Some(done);
+                } else if let Some(r) = root.as_mut() {
+                    r.children.push(done);
+                }
             }
             let out = root.map(|r| ExpectedTree { root: r });
-            if verbose { eprintln!("[structure][dsl] parse end (elapsed {:?})", t0.elapsed()); }
+            if verbose {
+                eprintln!("[structure][dsl] parse end (elapsed {:?})", t0.elapsed());
+            }
             out
-        } else { None }
+        } else {
+            None
+        }
     }
 
     fn parse_n_call(&mut self) -> Option<ExpectedNode> {
         // Expect: N(SyntaxKind.KindName[, "token"]) ;
-        if !self.peek_str("N(") { return None; }
+        if !self.peek_str("N(") {
+            return None;
+        }
         self.pos += 2; // skip N(
         self.skip_ws();
-        if !self.peek_str("SyntaxKind.") { return None; }
+        if !self.peek_str("SyntaxKind.") {
+            return None;
+        }
         self.pos += "SyntaxKind.".len();
         let kind = self.read_ident();
-        if kind.is_empty() { return None; }
+        if kind.is_empty() {
+            return None;
+        }
 
         self.skip_ws();
         let mut token_value: Option<String> = None;
@@ -216,7 +273,11 @@ impl<'a> DslParser<'a> {
         self.skip_ws();
         self.eat_char(';');
 
-        Some(ExpectedNode { kind, token_value, children: vec![] })
+        Some(ExpectedNode {
+            kind,
+            token_value,
+            children: vec![],
+        })
     }
 
     fn find_token(&self, needle: &str) -> Option<usize> {
@@ -226,10 +287,15 @@ impl<'a> DslParser<'a> {
     fn skip_ws(&mut self) {
         while self.pos < self.s.len() {
             let b = self.s.as_bytes()[self.pos];
-            if b == b' ' || b == b'\n' || b == b'\r' || b == b'\t' { self.pos += 1; continue; }
+            if b == b' ' || b == b'\n' || b == b'\r' || b == b'\t' {
+                self.pos += 1;
+                continue;
+            }
             // line comment
             if self.s[self.pos..].starts_with("//") {
-                while self.pos < self.s.len() && self.s.as_bytes()[self.pos] != b'\n' { self.pos += 1; }
+                while self.pos < self.s.len() && self.s.as_bytes()[self.pos] != b'\n' {
+                    self.pos += 1;
+                }
                 continue;
             }
             break;
@@ -237,7 +303,9 @@ impl<'a> DslParser<'a> {
     }
 
     fn peek_str(&self, s2: &str) -> bool {
-        if self.pos > self.s.len() { return false; }
+        if self.pos > self.s.len() {
+            return false;
+        }
         self.s[self.pos..].starts_with(s2)
     }
 
@@ -245,11 +313,15 @@ impl<'a> DslParser<'a> {
         if self.pos < self.s.len() && self.s[self.pos..].chars().next() == Some(ch) {
             self.pos += ch.len_utf8();
             true
-        } else { false }
+        } else {
+            false
+        }
     }
 
     fn skip_paren_group(&mut self) {
-        if !self.eat_char('(') { return; }
+        if !self.eat_char('(') {
+            return;
+        }
         let mut depth = 1i32;
         while self.pos < self.s.len() && depth > 0 {
             let c = self.s[self.pos..].chars().next().unwrap();
@@ -257,7 +329,9 @@ impl<'a> DslParser<'a> {
             match c {
                 '(' => depth += 1,
                 ')' => depth -= 1,
-                '"' => { self.skip_string_body(); }
+                '"' => {
+                    self.skip_string_body();
+                }
                 _ => {}
             }
         }
@@ -267,7 +341,12 @@ impl<'a> DslParser<'a> {
         let mut out = String::new();
         while self.pos < self.s.len() {
             let c = self.s[self.pos..].chars().next().unwrap();
-            if c.is_ascii_alphanumeric() || c == '_' { out.push(c); self.pos += c.len_utf8(); } else { break; }
+            if c.is_ascii_alphanumeric() || c == '_' {
+                out.push(c);
+                self.pos += c.len_utf8();
+            } else {
+                break;
+            }
         }
         out
     }
@@ -283,7 +362,14 @@ impl<'a> DslParser<'a> {
                     if self.pos < self.s.len() {
                         let n = self.s[self.pos..].chars().next().unwrap();
                         self.pos += n.len_utf8();
-                        out.push(match n { '\\' => '\\', '"' => '"', 'n' => '\n', 'r' => '\r', 't' => '\t', other => other });
+                        out.push(match n {
+                            '\\' => '\\',
+                            '"' => '"',
+                            'n' => '\n',
+                            'r' => '\r',
+                            't' => '\t',
+                            other => other,
+                        });
                     }
                 }
                 '"' => break,
@@ -298,7 +384,12 @@ impl<'a> DslParser<'a> {
             let c = self.s[self.pos..].chars().next().unwrap();
             self.pos += c.len_utf8();
             match c {
-                '\\' => { if self.pos < self.s.len() { let n = self.s[self.pos..].chars().next().unwrap(); self.pos += n.len_utf8(); } }
+                '\\' => {
+                    if self.pos < self.s.len() {
+                        let n = self.s[self.pos..].chars().next().unwrap();
+                        self.pos += n.len_utf8();
+                    }
+                }
                 '"' => break,
                 _ => {}
             }

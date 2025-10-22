@@ -6,8 +6,8 @@ use crate::syntax::errors::BResult;
 use nom::Parser;
 use nom::{combinator::map, sequence::delimited};
 use nom_supreme::ParserExt;
-use syntax::statements::statement::Statement;
 use syntax::statements::UnsafeStatement;
+use syntax::statements::statement::Statement;
 
 /// Parse an unsafe statement: unsafe { ... }
 pub fn parse_unsafe_statement(input: Span) -> BResult<Statement> {
@@ -22,7 +22,7 @@ pub fn parse_unsafe_statement(input: Span) -> BResult<Statement> {
             }))
         },
     )
-        .context("unsafe statement")
-        .parse(input)
+    .context("unsafe statement")
+    .parse(input)
 }
 use crate::syntax::span::Span;

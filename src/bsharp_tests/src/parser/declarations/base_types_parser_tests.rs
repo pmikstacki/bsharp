@@ -1,8 +1,8 @@
 #![cfg(test)]
 
-use std::any::Any;
 use nom::Offset;
 use parser::expressions::declarations::base_types_parser::*;
+use std::any::Any;
 use syntax::types::Type;
 
 #[test]

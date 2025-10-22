@@ -1,11 +1,11 @@
 use crate::syntax::comment_parser::ws;
 use crate::syntax::errors::BResult;
+use nom::Parser;
 use nom::branch::alt;
 use nom::bytes::complete::is_not;
 use nom::character::complete::{char as nom_char, line_ending, space0};
 use nom::combinator::{map, opt};
 use nom::sequence::delimited;
-use nom::Parser;
 use nom_supreme::ParserExt;
 use syntax::trivia::preprocessor::PreprocessorDirective;
 
@@ -22,7 +22,11 @@ pub fn parse_preprocessor_directive(input: Span) -> BResult<PreprocessorDirectiv
         let (i, directive) = cut(alt((
             // #define SYMBOL
             map(
-                (kw_define(), space0, cut(delimited(ws, parse_identifier, ws))),
+                (
+                    kw_define(),
+                    space0,
+                    cut(delimited(ws, parse_identifier, ws)),
+                ),
                 |(_, _, sym)| PreprocessorDirective::Define { symbol: sym },
             ),
             // #undef SYMBOL
@@ -31,27 +35,21 @@ pub fn parse_preprocessor_directive(input: Span) -> BResult<PreprocessorDirectiv
                 |(_, _, sym)| PreprocessorDirective::Undef { symbol: sym },
             ),
             // #if CONDITION (rest of line)
-            map(
-                (kw_if(), space0, opt(is_not("\r\n"))),
-                |(_, _, cond)| PreprocessorDirective::If {
+            map((kw_if(), space0, opt(is_not("\r\n"))), |(_, _, cond)| {
+                PreprocessorDirective::If {
                     condition: cond
                         .map(|s: Span| *s.fragment())
                         .unwrap_or("")
                         .trim()
                         .to_string(),
-                },
-            ),
+                }
+            }),
             // #elif CONDITION (rest of line)
-            map(
-                (kw_elif(), space0, opt(is_not("\r\n"))),
-                |(_, _, cond)| PreprocessorDirective::Elif {
-                    condition: cond
-                        .map(|s| *s.fragment())
-                        .unwrap_or("")
-                        .trim()
-                        .to_string(),
-                },
-            ),
+            map((kw_elif(), space0, opt(is_not("\r\n"))), |(_, _, cond)| {
+                PreprocessorDirective::Elif {
+                    condition: cond.map(|s| *s.fragment()).unwrap_or("").trim().to_string(),
+                }
+            }),
             // #else
             map(kw_else(), |_| PreprocessorDirective::Else),
             // #endif
@@ -66,25 +64,20 @@ pub fn parse_preprocessor_directive(input: Span) -> BResult<PreprocessorDirectiv
             // #endregion
             map(kw_endregion(), |_| PreprocessorDirective::EndRegion),
             // #error message
-            map(
-                (kw_error(), space0, opt(is_not("\r\n"))),
-                |(_, _, msg)| PreprocessorDirective::Error {
+            map((kw_error(), space0, opt(is_not("\r\n"))), |(_, _, msg)| {
+                PreprocessorDirective::Error {
                     message: msg
                         .map(|s: Span| *s.fragment())
                         .unwrap_or("")
                         .trim()
                         .to_string(),
-                },
-            ),
+                }
+            }),
             // #warning message
             map(
                 (kw_warning(), space0, opt(is_not("\r\n"))),
                 |(_, _, msg)| PreprocessorDirective::Warning {
-                    message: msg
-                        .map(|s| *s.fragment())
-                        .unwrap_or("")
-                        .trim()
-                        .to_string(),
+                    message: msg.map(|s| *s.fragment()).unwrap_or("").trim().to_string(),
                 },
             ),
             // #pragma ...
@@ -120,14 +113,14 @@ pub fn parse_preprocessor_directive(input: Span) -> BResult<PreprocessorDirectiv
                 }
             }),
         )))
-            .parse(i)?;
+        .parse(i)?;
 
         // Consume optional trailing newline to fully skip the directive line
         let (i, _) = opt(line_ending).parse(i)?;
 
         Ok((i, directive))
     })
-        .context("preprocessor directive")
-        .parse(input)
+    .context("preprocessor directive")
+    .parse(input)
 }
 use crate::syntax::span::Span;

@@ -4,10 +4,10 @@
 use crate::syntax::comment_parser::ws;
 use crate::syntax::errors::BResult;
 use crate::syntax::span::Span;
+use nom::Parser;
 use nom::character::complete::satisfy;
 use nom::combinator::{map, not, peek};
 use nom::sequence::{delimited, terminated};
-use nom::Parser;
 use nom_supreme::tag::complete::tag;
 use syntax::declarations::Modifier;
 
@@ -34,7 +34,8 @@ where
                 peek(not(satisfy(|c: char| c.is_alphanumeric() || c == '_'))),
             ),
             |s: Span<'a>| *s.fragment(),
-        ).parse(i)
+        )
+        .parse(i)
     };
 
     move |input: Span<'a>| {
@@ -47,4 +48,3 @@ where
         Ok((input, (modifiers, keyword_result)))
     }
 }
- 

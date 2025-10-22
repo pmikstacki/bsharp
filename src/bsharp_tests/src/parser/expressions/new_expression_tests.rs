@@ -255,7 +255,11 @@ fn test_parse_new_with_indexer_object_initializer() {
 
     let code = "new Dictionary<int, string> { [1] = \"a\", [2] = \"b\" }";
     let (rest, expr) = parse_expression(code.into()).expect("parse ok");
-    assert!(rest.fragment().trim().is_empty(), "unparsed: {}", rest.fragment());
+    assert!(
+        rest.fragment().trim().is_empty(),
+        "unparsed: {}",
+        rest.fragment()
+    );
 
     match expr {
         Expression::New(new_expr_box) => {

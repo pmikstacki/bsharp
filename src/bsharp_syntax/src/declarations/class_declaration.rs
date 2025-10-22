@@ -1,9 +1,9 @@
+use crate::Identifier;
 use crate::declarations::{
     AttributeList, ClassBodyDeclaration, Modifier, TypeParameterConstraintClause,
 };
 use crate::trivia::xml_documentation::XmlDocumentationComment;
 use crate::types::{Parameter, Type, TypeParameter};
-use crate::Identifier;
 use bsharp_syntax_derive::AstNode;
 use serde::{Deserialize, Serialize};
 

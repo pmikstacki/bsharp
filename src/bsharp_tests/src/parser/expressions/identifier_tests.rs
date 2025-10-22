@@ -30,7 +30,11 @@ fn test_parse_qualified_name() {
     let input = "System.Collections.Generic";
     let (rest, parts) = parse_qualified_name(input.into()).unwrap();
     let actual: Vec<String> = parts.iter().map(|p| p.to_string()).collect();
-    let expected = vec!["System".to_string(), "Collections".to_string(), "Generic".to_string()];
+    let expected = vec![
+        "System".to_string(),
+        "Collections".to_string(),
+        "Generic".to_string(),
+    ];
     assert_eq!(actual, expected);
     assert_eq!(*rest.fragment(), "");
 }

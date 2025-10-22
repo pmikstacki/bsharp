@@ -1,21 +1,24 @@
-mod tests_writer;
 mod generator;
+mod tests_writer;
 
-use clap::{Parser, ArgAction};
+use clap::{ArgAction, Parser};
 use std::path::PathBuf;
 use tests_writer::utility;
 
 /// Generate Rust parser compliance tests from Roslyn C# syntax tests.
 #[derive(Debug, Parser)]
-#[command(name = "bsharp-compliance" )]
+#[command(name = "bsharp-compliance")]
 #[command(about = "Generates Rust tests from Roslyn C# syntax tests", long_about = None)]
 struct Args {
     /// Source directory with Roslyn Parsing tests
-    #[arg(long, default_value = "roslyn_repo/src/Compilers/CSharp/Test/Syntax/Parsing")] 
+    #[arg(
+        long,
+        default_value = "roslyn_repo/src/Compilers/CSharp/Test/Syntax/Parsing"
+    )]
     src: PathBuf,
 
     /// Destination directory for generated Rust tests
-    #[arg(long, default_value = "../bsharp_compliance_testing/src/generated")] 
+    #[arg(long, default_value = "../bsharp_compliance_testing/src/generated")]
     dst: PathBuf,
 
     /// Include glob patterns (repeatable)
@@ -79,7 +82,11 @@ fn main() {
         skip_overrides: args.skip_overrides,
         skip_diagnostics: args.skip_diagnostics,
         use_new_emitter: args.new_emitter,
-        prevalidate: if args.structure { false } else { args.prevalidate },
+        prevalidate: if args.structure {
+            false
+        } else {
+            args.prevalidate
+        },
         structure_mode: args.structure,
     };
 

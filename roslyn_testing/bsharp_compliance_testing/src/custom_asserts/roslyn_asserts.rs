@@ -40,11 +40,9 @@ pub fn assert_diagnostics_count(expected: &ExpectedDiagnostics, actual_count: Op
     match actual_count {
         Some(n) => {
             assert_eq!(
-                n,
-                expected.count,
+                n, expected.count,
                 "Expected {} diagnostic(s) but got {}",
-                expected.count,
-                n
+                expected.count, n
             );
         }
         None => {

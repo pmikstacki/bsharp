@@ -1,5 +1,5 @@
-use crate::emitters::emit_trait::{Emit, EmitCtx, EmitError};
 use crate::declarations::TypeDeclaration;
+use crate::emitters::emit_trait::{Emit, EmitCtx, EmitError};
 
 impl Emit for TypeDeclaration {
     fn emit<W: std::fmt::Write>(&self, w: &mut W, cx: &mut EmitCtx) -> Result<(), EmitError> {

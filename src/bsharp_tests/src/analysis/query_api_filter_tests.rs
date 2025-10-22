@@ -1,6 +1,6 @@
 use analysis::context::AnalysisContext;
-use analysis::framework::{AnalysisSession, AnalyzerPipeline};
 use analysis::framework::Query;
+use analysis::framework::{AnalysisSession, AnalyzerPipeline};
 use parser::facade::Parser;
 
 #[test]
@@ -24,7 +24,10 @@ public class C {
 
     // Count If statements via filter on Dyn NodeRef
     let if_count_filter = Query::from(&cu)
-        .filter(|n| n.of::<analysis::syntax::statements::if_statement::IfStatement>().is_some())
+        .filter(|n| {
+            n.of::<analysis::syntax::statements::if_statement::IfStatement>()
+                .is_some()
+        })
         .count();
 
     assert_eq!(if_count, if_count_filter);

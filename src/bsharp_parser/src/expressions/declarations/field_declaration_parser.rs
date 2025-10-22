@@ -5,8 +5,8 @@ use crate::parser::types::type_parser::parse_type_expression;
 use crate::syntax::errors::BResult;
 
 use crate::syntax::comment_parser::ws;
-use nom::sequence::delimited;
 use nom::Parser;
+use nom::sequence::delimited;
 use nom::{combinator::opt, sequence::preceded};
 use nom_supreme::ParserExt;
 use syntax::declarations::FieldDeclaration;
@@ -16,12 +16,10 @@ use syntax::expressions::Expression;
 // Parse the optional initializer part: "= Expression"
 fn parse_field_initializer(input: Span) -> BResult<Option<Expression>> {
     opt(preceded(
-        delimited(ws, tok_assign(), ws)
-            .context("field initializer"),
-        delimited(ws, parse_expression, ws)
-            .context("field initializer expression"),
+        delimited(ws, tok_assign(), ws).context("field initializer"),
+        delimited(ws, parse_expression, ws).context("field initializer expression"),
     ))
-        .parse(input)
+    .parse(input)
 }
 
 // Parse a field declaration

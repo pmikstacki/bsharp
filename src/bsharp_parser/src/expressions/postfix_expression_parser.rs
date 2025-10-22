@@ -166,14 +166,7 @@ fn simple_postfix_operations(input: Span) -> BResult<PostfixOpKind> {
                 PostfixOpKind::PostfixDecrement
             }),
             map(
-                delimited(
-                    ws,
-                    (
-                        nom_char('!'),
-                        nom::combinator::not(nom_char('='))
-                    ),
-                    ws,
-                ),
+                delimited(ws, (nom_char('!'), nom::combinator::not(nom_char('='))), ws),
                 |_| PostfixOpKind::NullForgiving,
             ),
         )),

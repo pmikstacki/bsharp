@@ -13,7 +13,9 @@ impl Emit for WithInitializerEntry {
             WithInitializerEntry::Indexer { indices, value } => {
                 w.write_char('[')?;
                 for (i, idx) in indices.iter().enumerate() {
-                    if i != 0 { w.write_str(", ")?; }
+                    if i != 0 {
+                        w.write_str(", ")?;
+                    }
                     idx.emit(w, cx)?;
                 }
                 w.write_str("] = ")?;
@@ -28,12 +30,13 @@ impl Emit for CollectionElement {
         use crate::emitters::emit_trait::Emit as _;
         match self {
             CollectionElement::Expr(e) => e.emit(w, cx),
-            CollectionElement::Spread(e) => { w.write_str("..")?; e.emit(w, cx) }
+            CollectionElement::Spread(e) => {
+                w.write_str("..")?;
+                e.emit(w, cx)
+            }
         }
     }
 }
-
- 
 
 impl Emit for ObjectInitializerEntry {
     fn emit<W: std::fmt::Write>(&self, w: &mut W, cx: &mut EmitCtx) -> Result<(), EmitError> {
@@ -46,7 +49,9 @@ impl Emit for ObjectInitializerEntry {
             ObjectInitializerEntry::Indexer { indices, value } => {
                 w.write_char('[')?;
                 for (i, idx) in indices.iter().enumerate() {
-                    if i != 0 { w.write_str(", ")?; }
+                    if i != 0 {
+                        w.write_str(", ")?;
+                    }
                     idx.emit(w, cx)?;
                 }
                 w.write_str("] = ")?;

@@ -1,9 +1,9 @@
 // Auto-generated from Roslyn: DeclarationParsingTests_MissingIdentifiers
-use bsharp_parser::syntax::span::Span;
 use crate::custom_asserts::after_parse;
 use crate::custom_asserts::after_parse::CaseData;
-use bsharp_parser::bsharp::parse_csharp_source_strict;
 use crate::custom_asserts::roslyn_asserts::ExpectedDiagnostics;
+use bsharp_parser::bsharp::parse_csharp_source_strict;
+use bsharp_parser::syntax::span::Span;
 /// Roslyn: DeclarationParsingTests_MissingIdentifiers.DefiniteStatementAfterGenericType_Fixed (case 1)
 #[test]
 fn definite_statement_after_generic_type_fixed() {
@@ -14,7 +14,10 @@ fn definite_statement_after_generic_type_fixed() {
                     fixed
                 }
                 "#;
-    let expected = Some(ExpectedDiagnostics { count: 10, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 10,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { 
                 void M()
@@ -28,16 +31,45 @@ fn definite_statement_after_generic_type_fixed() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_Fixed", 1, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "declaration_parsing_tests_missing_identifiers",
+                    "DeclarationParsingTests_MissingIdentifiers",
+                    "DefiniteStatementAfterGenericType_Fixed",
+                    1,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_Fixed", 1, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "declaration_parsing_tests_missing_identifiers",
+                    "DeclarationParsingTests_MissingIdentifiers",
+                    "DefiniteStatementAfterGenericType_Fixed",
+                    1,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_Fixed", 1, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "declaration_parsing_tests_missing_identifiers",
+            "DeclarationParsingTests_MissingIdentifiers",
+            "DefiniteStatementAfterGenericType_Fixed",
+            1,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -51,7 +83,10 @@ fn definite_statement_after_generic_type_fixed_double_generic() {
                     fixed
                 }
                 "#;
-    let expected = Some(ExpectedDiagnostics { count: 10, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 10,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { 
                 void M()
@@ -65,16 +100,45 @@ fn definite_statement_after_generic_type_fixed_double_generic() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_Fixed_DoubleGeneric", 2, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "declaration_parsing_tests_missing_identifiers",
+                    "DeclarationParsingTests_MissingIdentifiers",
+                    "DefiniteStatementAfterGenericType_Fixed_DoubleGeneric",
+                    2,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_Fixed_DoubleGeneric", 2, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "declaration_parsing_tests_missing_identifiers",
+                    "DeclarationParsingTests_MissingIdentifiers",
+                    "DefiniteStatementAfterGenericType_Fixed_DoubleGeneric",
+                    2,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_Fixed_DoubleGeneric", 2, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "declaration_parsing_tests_missing_identifiers",
+            "DeclarationParsingTests_MissingIdentifiers",
+            "DefiniteStatementAfterGenericType_Fixed_DoubleGeneric",
+            2,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -88,7 +152,10 @@ fn definite_statement_after_generic_type_break() {
                     break
                 }
                 "#;
-    let expected = Some(ExpectedDiagnostics { count: 3, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 3,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { 
                 void M()
@@ -102,16 +169,45 @@ fn definite_statement_after_generic_type_break() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_Break", 3, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "declaration_parsing_tests_missing_identifiers",
+                    "DeclarationParsingTests_MissingIdentifiers",
+                    "DefiniteStatementAfterGenericType_Break",
+                    3,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_Break", 3, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "declaration_parsing_tests_missing_identifiers",
+                    "DeclarationParsingTests_MissingIdentifiers",
+                    "DefiniteStatementAfterGenericType_Break",
+                    3,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_Break", 3, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "declaration_parsing_tests_missing_identifiers",
+            "DeclarationParsingTests_MissingIdentifiers",
+            "DefiniteStatementAfterGenericType_Break",
+            3,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -125,7 +221,10 @@ fn definite_statement_after_generic_type_continue() {
                     continue
                 }
                 "#;
-    let expected = Some(ExpectedDiagnostics { count: 3, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 3,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { 
                 void M()
@@ -139,16 +238,45 @@ fn definite_statement_after_generic_type_continue() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_Continue", 4, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "declaration_parsing_tests_missing_identifiers",
+                    "DeclarationParsingTests_MissingIdentifiers",
+                    "DefiniteStatementAfterGenericType_Continue",
+                    4,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_Continue", 4, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "declaration_parsing_tests_missing_identifiers",
+                    "DeclarationParsingTests_MissingIdentifiers",
+                    "DefiniteStatementAfterGenericType_Continue",
+                    4,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_Continue", 4, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "declaration_parsing_tests_missing_identifiers",
+            "DeclarationParsingTests_MissingIdentifiers",
+            "DefiniteStatementAfterGenericType_Continue",
+            4,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -162,7 +290,10 @@ fn definite_statement_after_generic_type_try() {
                     try
                 }
                 "#;
-    let expected = Some(ExpectedDiagnostics { count: 4, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 4,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { 
                 void M()
@@ -176,16 +307,45 @@ fn definite_statement_after_generic_type_try() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_Try", 5, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "declaration_parsing_tests_missing_identifiers",
+                    "DeclarationParsingTests_MissingIdentifiers",
+                    "DefiniteStatementAfterGenericType_Try",
+                    5,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_Try", 5, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "declaration_parsing_tests_missing_identifiers",
+                    "DeclarationParsingTests_MissingIdentifiers",
+                    "DefiniteStatementAfterGenericType_Try",
+                    5,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_Try", 5, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "declaration_parsing_tests_missing_identifiers",
+            "DeclarationParsingTests_MissingIdentifiers",
+            "DefiniteStatementAfterGenericType_Try",
+            5,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -199,7 +359,10 @@ fn definite_statement_after_generic_type_do() {
                     do
                 }
                 "#;
-    let expected = Some(ExpectedDiagnostics { count: 9, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 9,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { 
                 void M()
@@ -213,16 +376,45 @@ fn definite_statement_after_generic_type_do() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_Do", 6, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "declaration_parsing_tests_missing_identifiers",
+                    "DeclarationParsingTests_MissingIdentifiers",
+                    "DefiniteStatementAfterGenericType_Do",
+                    6,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_Do", 6, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "declaration_parsing_tests_missing_identifiers",
+                    "DeclarationParsingTests_MissingIdentifiers",
+                    "DefiniteStatementAfterGenericType_Do",
+                    6,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_Do", 6, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "declaration_parsing_tests_missing_identifiers",
+            "DeclarationParsingTests_MissingIdentifiers",
+            "DefiniteStatementAfterGenericType_Do",
+            6,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -236,7 +428,10 @@ fn definite_statement_after_generic_type_for() {
                     for
                 }
                 "#;
-    let expected = Some(ExpectedDiagnostics { count: 11, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 11,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { 
                 void M()
@@ -250,16 +445,45 @@ fn definite_statement_after_generic_type_for() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_For", 7, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "declaration_parsing_tests_missing_identifiers",
+                    "DeclarationParsingTests_MissingIdentifiers",
+                    "DefiniteStatementAfterGenericType_For",
+                    7,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_For", 7, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "declaration_parsing_tests_missing_identifiers",
+                    "DeclarationParsingTests_MissingIdentifiers",
+                    "DefiniteStatementAfterGenericType_For",
+                    7,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_For", 7, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "declaration_parsing_tests_missing_identifiers",
+            "DeclarationParsingTests_MissingIdentifiers",
+            "DefiniteStatementAfterGenericType_For",
+            7,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -273,7 +497,10 @@ fn definite_statement_after_generic_type_foreach() {
                     foreach
                 }
                 "#;
-    let expected = Some(ExpectedDiagnostics { count: 10, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 10,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { 
                 void M()
@@ -287,16 +514,45 @@ fn definite_statement_after_generic_type_foreach() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_Foreach", 8, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "declaration_parsing_tests_missing_identifiers",
+                    "DeclarationParsingTests_MissingIdentifiers",
+                    "DefiniteStatementAfterGenericType_Foreach",
+                    8,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_Foreach", 8, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "declaration_parsing_tests_missing_identifiers",
+                    "DeclarationParsingTests_MissingIdentifiers",
+                    "DefiniteStatementAfterGenericType_Foreach",
+                    8,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_Foreach", 8, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "declaration_parsing_tests_missing_identifiers",
+            "DeclarationParsingTests_MissingIdentifiers",
+            "DefiniteStatementAfterGenericType_Foreach",
+            8,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -310,7 +566,10 @@ fn definite_statement_after_generic_type_goto() {
                     goto
                 }
                 "#;
-    let expected = Some(ExpectedDiagnostics { count: 4, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 4,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { 
                 void M()
@@ -324,16 +583,45 @@ fn definite_statement_after_generic_type_goto() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_Goto", 9, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "declaration_parsing_tests_missing_identifiers",
+                    "DeclarationParsingTests_MissingIdentifiers",
+                    "DefiniteStatementAfterGenericType_Goto",
+                    9,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_Goto", 9, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "declaration_parsing_tests_missing_identifiers",
+                    "DeclarationParsingTests_MissingIdentifiers",
+                    "DefiniteStatementAfterGenericType_Goto",
+                    9,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_Goto", 9, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "declaration_parsing_tests_missing_identifiers",
+            "DeclarationParsingTests_MissingIdentifiers",
+            "DefiniteStatementAfterGenericType_Goto",
+            9,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -347,7 +635,10 @@ fn definite_statement_after_generic_type_if() {
                     if
                 }
                 "#;
-    let expected = Some(ExpectedDiagnostics { count: 7, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 7,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { 
                 void M()
@@ -361,16 +652,45 @@ fn definite_statement_after_generic_type_if() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_If", 10, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "declaration_parsing_tests_missing_identifiers",
+                    "DeclarationParsingTests_MissingIdentifiers",
+                    "DefiniteStatementAfterGenericType_If",
+                    10,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_If", 10, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "declaration_parsing_tests_missing_identifiers",
+                    "DeclarationParsingTests_MissingIdentifiers",
+                    "DefiniteStatementAfterGenericType_If",
+                    10,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_If", 10, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "declaration_parsing_tests_missing_identifiers",
+            "DeclarationParsingTests_MissingIdentifiers",
+            "DefiniteStatementAfterGenericType_If",
+            10,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -384,7 +704,10 @@ fn definite_statement_after_generic_type_else() {
                     else
                 }
                 "#;
-    let expected = Some(ExpectedDiagnostics { count: 10, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 10,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { 
                 void M()
@@ -398,16 +721,45 @@ fn definite_statement_after_generic_type_else() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_Else", 11, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "declaration_parsing_tests_missing_identifiers",
+                    "DeclarationParsingTests_MissingIdentifiers",
+                    "DefiniteStatementAfterGenericType_Else",
+                    11,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_Else", 11, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "declaration_parsing_tests_missing_identifiers",
+                    "DeclarationParsingTests_MissingIdentifiers",
+                    "DefiniteStatementAfterGenericType_Else",
+                    11,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_Else", 11, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "declaration_parsing_tests_missing_identifiers",
+            "DeclarationParsingTests_MissingIdentifiers",
+            "DefiniteStatementAfterGenericType_Else",
+            11,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -421,7 +773,10 @@ fn definite_statement_after_generic_type_lock() {
                     lock
                 }
                 "#;
-    let expected = Some(ExpectedDiagnostics { count: 7, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 7,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { 
                 void M()
@@ -435,16 +790,45 @@ fn definite_statement_after_generic_type_lock() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_Lock", 12, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "declaration_parsing_tests_missing_identifiers",
+                    "DeclarationParsingTests_MissingIdentifiers",
+                    "DefiniteStatementAfterGenericType_Lock",
+                    12,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_Lock", 12, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "declaration_parsing_tests_missing_identifiers",
+                    "DeclarationParsingTests_MissingIdentifiers",
+                    "DefiniteStatementAfterGenericType_Lock",
+                    12,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_Lock", 12, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "declaration_parsing_tests_missing_identifiers",
+            "DeclarationParsingTests_MissingIdentifiers",
+            "DefiniteStatementAfterGenericType_Lock",
+            12,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -458,7 +842,10 @@ fn definite_statement_after_generic_type_return() {
                     return
                 }
                 "#;
-    let expected = Some(ExpectedDiagnostics { count: 4, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 4,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { 
                 void M()
@@ -472,16 +859,45 @@ fn definite_statement_after_generic_type_return() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_Return", 13, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "declaration_parsing_tests_missing_identifiers",
+                    "DeclarationParsingTests_MissingIdentifiers",
+                    "DefiniteStatementAfterGenericType_Return",
+                    13,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_Return", 13, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "declaration_parsing_tests_missing_identifiers",
+                    "DeclarationParsingTests_MissingIdentifiers",
+                    "DefiniteStatementAfterGenericType_Return",
+                    13,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_Return", 13, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "declaration_parsing_tests_missing_identifiers",
+            "DeclarationParsingTests_MissingIdentifiers",
+            "DefiniteStatementAfterGenericType_Return",
+            13,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -495,7 +911,10 @@ fn definite_statement_after_generic_type_switch() {
                     switch
                 }
                 "#;
-    let expected = Some(ExpectedDiagnostics { count: 6, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 6,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { 
                 void M()
@@ -509,16 +928,45 @@ fn definite_statement_after_generic_type_switch() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_Switch", 14, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "declaration_parsing_tests_missing_identifiers",
+                    "DeclarationParsingTests_MissingIdentifiers",
+                    "DefiniteStatementAfterGenericType_Switch",
+                    14,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_Switch", 14, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "declaration_parsing_tests_missing_identifiers",
+                    "DeclarationParsingTests_MissingIdentifiers",
+                    "DefiniteStatementAfterGenericType_Switch",
+                    14,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_Switch", 14, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "declaration_parsing_tests_missing_identifiers",
+            "DeclarationParsingTests_MissingIdentifiers",
+            "DefiniteStatementAfterGenericType_Switch",
+            14,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -532,7 +980,10 @@ fn definite_statement_after_generic_type_unsafe() {
                     unsafe
                 }
                 "#;
-    let expected = Some(ExpectedDiagnostics { count: 8, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 8,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { 
                 void M()
@@ -546,16 +997,45 @@ fn definite_statement_after_generic_type_unsafe() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_Unsafe", 15, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "declaration_parsing_tests_missing_identifiers",
+                    "DeclarationParsingTests_MissingIdentifiers",
+                    "DefiniteStatementAfterGenericType_Unsafe",
+                    15,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_Unsafe", 15, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "declaration_parsing_tests_missing_identifiers",
+                    "DeclarationParsingTests_MissingIdentifiers",
+                    "DefiniteStatementAfterGenericType_Unsafe",
+                    15,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_Unsafe", 15, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "declaration_parsing_tests_missing_identifiers",
+            "DeclarationParsingTests_MissingIdentifiers",
+            "DefiniteStatementAfterGenericType_Unsafe",
+            15,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -569,7 +1049,10 @@ fn definite_statement_after_generic_type_using() {
                     using
                 }
                 "#;
-    let expected = Some(ExpectedDiagnostics { count: 7, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 7,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { 
                 void M()
@@ -583,16 +1066,45 @@ fn definite_statement_after_generic_type_using() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_Using", 16, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "declaration_parsing_tests_missing_identifiers",
+                    "DeclarationParsingTests_MissingIdentifiers",
+                    "DefiniteStatementAfterGenericType_Using",
+                    16,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_Using", 16, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "declaration_parsing_tests_missing_identifiers",
+                    "DeclarationParsingTests_MissingIdentifiers",
+                    "DefiniteStatementAfterGenericType_Using",
+                    16,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_Using", 16, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "declaration_parsing_tests_missing_identifiers",
+            "DeclarationParsingTests_MissingIdentifiers",
+            "DefiniteStatementAfterGenericType_Using",
+            16,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -606,7 +1118,10 @@ fn definite_statement_after_generic_type_while() {
                     while
                 }
                 "#;
-    let expected = Some(ExpectedDiagnostics { count: 7, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 7,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { 
                 void M()
@@ -620,16 +1135,45 @@ fn definite_statement_after_generic_type_while() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_While", 17, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "declaration_parsing_tests_missing_identifiers",
+                    "DeclarationParsingTests_MissingIdentifiers",
+                    "DefiniteStatementAfterGenericType_While",
+                    17,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_While", 17, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "declaration_parsing_tests_missing_identifiers",
+                    "DeclarationParsingTests_MissingIdentifiers",
+                    "DefiniteStatementAfterGenericType_While",
+                    17,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_While", 17, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "declaration_parsing_tests_missing_identifiers",
+            "DeclarationParsingTests_MissingIdentifiers",
+            "DefiniteStatementAfterGenericType_While",
+            17,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -643,7 +1187,10 @@ fn definite_statement_after_generic_type_volatile() {
                     volatile
                 }
                 "#;
-    let expected = Some(ExpectedDiagnostics { count: 8, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 8,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { 
                 void M()
@@ -657,16 +1204,45 @@ fn definite_statement_after_generic_type_volatile() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_Volatile", 18, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "declaration_parsing_tests_missing_identifiers",
+                    "DeclarationParsingTests_MissingIdentifiers",
+                    "DefiniteStatementAfterGenericType_Volatile",
+                    18,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_Volatile", 18, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "declaration_parsing_tests_missing_identifiers",
+                    "DeclarationParsingTests_MissingIdentifiers",
+                    "DefiniteStatementAfterGenericType_Volatile",
+                    18,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_Volatile", 18, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "declaration_parsing_tests_missing_identifiers",
+            "DeclarationParsingTests_MissingIdentifiers",
+            "DefiniteStatementAfterGenericType_Volatile",
+            18,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -680,7 +1256,10 @@ fn definite_statement_after_generic_type_extern() {
                     extern
                 }
                 "#;
-    let expected = Some(ExpectedDiagnostics { count: 8, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 8,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { 
                 void M()
@@ -694,16 +1273,45 @@ fn definite_statement_after_generic_type_extern() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_Extern", 19, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "declaration_parsing_tests_missing_identifiers",
+                    "DeclarationParsingTests_MissingIdentifiers",
+                    "DefiniteStatementAfterGenericType_Extern",
+                    19,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_Extern", 19, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "declaration_parsing_tests_missing_identifiers",
+                    "DeclarationParsingTests_MissingIdentifiers",
+                    "DefiniteStatementAfterGenericType_Extern",
+                    19,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_Extern", 19, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "declaration_parsing_tests_missing_identifiers",
+            "DeclarationParsingTests_MissingIdentifiers",
+            "DefiniteStatementAfterGenericType_Extern",
+            19,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -717,7 +1325,10 @@ fn definite_statement_after_generic_type_case() {
                     case
                 }
                 "#;
-    let expected = Some(ExpectedDiagnostics { count: 6, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 6,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { 
                 void M()
@@ -731,16 +1342,44 @@ fn definite_statement_after_generic_type_case() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_Case", 20, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "declaration_parsing_tests_missing_identifiers",
+                    "DeclarationParsingTests_MissingIdentifiers",
+                    "DefiniteStatementAfterGenericType_Case",
+                    20,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_Case", 20, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "declaration_parsing_tests_missing_identifiers",
+                    "DeclarationParsingTests_MissingIdentifiers",
+                    "DefiniteStatementAfterGenericType_Case",
+                    20,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("declaration_parsing_tests_missing_identifiers", "DeclarationParsingTests_MissingIdentifiers", "DefiniteStatementAfterGenericType_Case", 20, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "declaration_parsing_tests_missing_identifiers",
+            "DeclarationParsingTests_MissingIdentifiers",
+            "DefiniteStatementAfterGenericType_Case",
+            20,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
-

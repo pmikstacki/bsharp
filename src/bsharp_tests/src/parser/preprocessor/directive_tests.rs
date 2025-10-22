@@ -67,7 +67,8 @@ fn test_parse_region() {
 #[test]
 fn test_parse_region_no_name() {
     let code = "#region";
-    let (_, dir) = parse_preprocessor_directive(code.into()).expect("should parse #region without name");
+    let (_, dir) =
+        parse_preprocessor_directive(code.into()).expect("should parse #region without name");
     assert!(matches!(dir, PreprocessorDirective::Region { name } if name.is_none()));
 }
 

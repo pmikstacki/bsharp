@@ -1,8 +1,8 @@
 use parser::expressions::primary_expression_parser::parse_expression;
+use syntax::expressions::UnaryOperator;
 use syntax::expressions::expression::Expression;
 use syntax::expressions::literal::Literal;
 use syntax::expressions::range_expression::{IndexExpression, RangeExpression};
-use syntax::expressions::UnaryOperator;
 use syntax::identifier::Identifier;
 
 fn check_expr(input: &str, expected_expr: Expression) {

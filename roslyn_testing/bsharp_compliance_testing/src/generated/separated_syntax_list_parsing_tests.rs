@@ -1,9 +1,9 @@
 // Auto-generated from Roslyn: SeparatedSyntaxListParsingTests
-use bsharp_parser::syntax::span::Span;
 use crate::custom_asserts::after_parse;
 use crate::custom_asserts::after_parse::CaseData;
-use bsharp_parser::bsharp::parse_csharp_source_strict;
 use crate::custom_asserts::roslyn_asserts::ExpectedDiagnostics;
+use bsharp_parser::bsharp::parse_csharp_source_strict;
+use bsharp_parser::syntax::span::Span;
 /// Roslyn: SeparatedSyntaxListParsingTests.TypeArguments (case 1)
 #[test]
 fn type_arguments() {
@@ -20,22 +20,54 @@ class C
     A<T U,,> a8;
 }
 "#;
-    let expected = Some(ExpectedDiagnostics { count: 6, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 6,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("separated_syntax_list_parsing_tests", "SeparatedSyntaxListParsingTests", "TypeArguments", 1, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "separated_syntax_list_parsing_tests",
+                    "SeparatedSyntaxListParsingTests",
+                    "TypeArguments",
+                    1,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("separated_syntax_list_parsing_tests", "SeparatedSyntaxListParsingTests", "TypeArguments", 1, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "separated_syntax_list_parsing_tests",
+                    "SeparatedSyntaxListParsingTests",
+                    "TypeArguments",
+                    1,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("separated_syntax_list_parsing_tests", "SeparatedSyntaxListParsingTests", "TypeArguments", 1, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "separated_syntax_list_parsing_tests",
+            "SeparatedSyntaxListParsingTests",
+            "TypeArguments",
+            1,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -55,22 +87,51 @@ class C
 
 class M<,> { }
 "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("separated_syntax_list_parsing_tests", "SeparatedSyntaxListParsingTests", "TypeArguments2", 2, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "separated_syntax_list_parsing_tests",
+                    "SeparatedSyntaxListParsingTests",
+                    "TypeArguments2",
+                    2,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("separated_syntax_list_parsing_tests", "SeparatedSyntaxListParsingTests", "TypeArguments2", 2, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "separated_syntax_list_parsing_tests",
+                    "SeparatedSyntaxListParsingTests",
+                    "TypeArguments2",
+                    2,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("separated_syntax_list_parsing_tests", "SeparatedSyntaxListParsingTests", "TypeArguments2", 2, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "separated_syntax_list_parsing_tests",
+            "SeparatedSyntaxListParsingTests",
+            "TypeArguments2",
+            2,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -90,22 +151,53 @@ class C
     object a1 = new int[1 1 ,,];
 }
 "#;
-    let expected = Some(ExpectedDiagnostics { count: 6, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 6,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("separated_syntax_list_parsing_tests", "SeparatedSyntaxListParsingTests", "ArrayRankSpecifiers", 3, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "separated_syntax_list_parsing_tests",
+                    "SeparatedSyntaxListParsingTests",
+                    "ArrayRankSpecifiers",
+                    3,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("separated_syntax_list_parsing_tests", "SeparatedSyntaxListParsingTests", "ArrayRankSpecifiers", 3, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "separated_syntax_list_parsing_tests",
+                    "SeparatedSyntaxListParsingTests",
+                    "ArrayRankSpecifiers",
+                    3,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("separated_syntax_list_parsing_tests", "SeparatedSyntaxListParsingTests", "ArrayRankSpecifiers", 3, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "separated_syntax_list_parsing_tests",
+            "SeparatedSyntaxListParsingTests",
+            "ArrayRankSpecifiers",
+            3,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
-

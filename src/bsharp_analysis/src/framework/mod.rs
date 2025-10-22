@@ -12,9 +12,9 @@ pub mod session;
 pub mod visit;
 pub mod walker;
 
+pub use bsharp_syntax::node::ast_node::NodeRef;
 pub use fqn::{class_fqn, method_fqn, namespace_fqn};
 pub use lookup::{find_symbols_by_name, find_symbols_with_locations};
-pub use bsharp_syntax::node::ast_node::NodeRef;
 // Minimal re-exports for ergonomic use
 pub use passes::{AnalyzerPass, Phase};
 pub use pipeline::AnalyzerPipeline;

@@ -28,6 +28,7 @@ pub mod tuple_expression;
 pub mod typeof_expression;
 pub mod unary_operator;
 pub mod unchecked_expression;
+pub use crate::node::dyn_node_ref::DynNodeRef;
 pub use anonymous_object_creation_expression::{
     AnonymousObjectCreationExpression, AnonymousObjectMember,
 };
@@ -59,4 +60,3 @@ pub use tuple_expression::{TupleElement, TupleExpression};
 pub use typeof_expression::TypeofExpression;
 pub use unary_operator::UnaryOperator;
 pub use unchecked_expression::UncheckedExpression;
-pub use crate::node::dyn_node_ref::DynNodeRef;

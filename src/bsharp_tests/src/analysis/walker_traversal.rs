@@ -1,11 +1,11 @@
 use analysis::context::AnalysisContext;
+use analysis::framework::NodeRef;
 use analysis::framework::visit::Visit;
 use analysis::framework::{session::AnalysisSession, walker::AstWalker};
+use analysis::syntax::statements::statement::Statement;
 use parser::facade::Parser;
 use std::cell::RefCell;
 use std::rc::Rc;
-use analysis::framework::NodeRef;
-use analysis::syntax::statements::statement::Statement;
 
 #[test]
 fn walker_traverses_nested_statements_depth_first() {

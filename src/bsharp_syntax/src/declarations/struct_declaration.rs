@@ -9,8 +9,8 @@ use super::operator_declaration::OperatorDeclaration;
 use super::property_declaration::PropertyDeclaration;
 use super::type_parameter_constraint::TypeParameterConstraintClause;
 use super::{ClassDeclaration, EnumDeclaration, InterfaceDeclaration, RecordDeclaration};
-use crate::types::{Parameter, Type, TypeParameter};
 use crate::Identifier;
+use crate::types::{Parameter, Type, TypeParameter};
 use serde::{Deserialize, Serialize};
 
 #[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]

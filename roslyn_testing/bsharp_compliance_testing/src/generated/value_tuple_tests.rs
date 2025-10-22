@@ -1,10 +1,10 @@
 // Auto-generated from Roslyn: ValueTupleTests
-use bsharp_parser::syntax::span::Span;
 use crate::custom_asserts::after_parse;
 use crate::custom_asserts::after_parse::CaseData;
+use crate::custom_asserts::roslyn_asserts::ExpectedDiagnostics;
 use bsharp_parser::bsharp::parse_csharp_source_strict;
 use bsharp_parser::statement_parser::parse_statement_ws;
-use crate::custom_asserts::roslyn_asserts::ExpectedDiagnostics;
+use bsharp_parser::syntax::span::Span;
 /// Roslyn: ValueTupleTests.SimpleTuple (case 1)
 #[test]
 fn simple_tuple() {
@@ -16,22 +16,51 @@ class C
         return (1, ""Alice"");
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("value_tuple_tests", "ValueTupleTests", "SimpleTuple", 1, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "value_tuple_tests",
+                    "ValueTupleTests",
+                    "SimpleTuple",
+                    1,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("value_tuple_tests", "ValueTupleTests", "SimpleTuple", 1, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "value_tuple_tests",
+                    "ValueTupleTests",
+                    "SimpleTuple",
+                    1,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("value_tuple_tests", "ValueTupleTests", "SimpleTuple", 1, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "value_tuple_tests",
+            "ValueTupleTests",
+            "SimpleTuple",
+            1,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -45,22 +74,51 @@ class C
     {
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("value_tuple_tests", "ValueTupleTests", "LongTuple", 2, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "value_tuple_tests",
+                    "ValueTupleTests",
+                    "LongTuple",
+                    2,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("value_tuple_tests", "ValueTupleTests", "LongTuple", 2, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "value_tuple_tests",
+                    "ValueTupleTests",
+                    "LongTuple",
+                    2,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("value_tuple_tests", "ValueTupleTests", "LongTuple", 2, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "value_tuple_tests",
+            "ValueTupleTests",
+            "LongTuple",
+            2,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -72,22 +130,51 @@ class C
 {
     var x = ((string, string) a, (int, int) b) => { };
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("value_tuple_tests", "ValueTupleTests", "TuplesInLambda", 3, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "value_tuple_tests",
+                    "ValueTupleTests",
+                    "TuplesInLambda",
+                    3,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("value_tuple_tests", "ValueTupleTests", "TuplesInLambda", 3, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "value_tuple_tests",
+                    "ValueTupleTests",
+                    "TuplesInLambda",
+                    3,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("value_tuple_tests", "ValueTupleTests", "TuplesInLambda", 3, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "value_tuple_tests",
+            "ValueTupleTests",
+            "TuplesInLambda",
+            3,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -99,22 +186,51 @@ class C
 {
     var x = ((string a, string) a, (int, int b) b) => { };
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("value_tuple_tests", "ValueTupleTests", "TuplesWithNamesInLambda", 4, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "value_tuple_tests",
+                    "ValueTupleTests",
+                    "TuplesWithNamesInLambda",
+                    4,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("value_tuple_tests", "ValueTupleTests", "TuplesWithNamesInLambda", 4, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "value_tuple_tests",
+                    "ValueTupleTests",
+                    "TuplesWithNamesInLambda",
+                    4,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("value_tuple_tests", "ValueTupleTests", "TuplesWithNamesInLambda", 4, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "value_tuple_tests",
+            "ValueTupleTests",
+            "TuplesWithNamesInLambda",
+            4,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -128,22 +244,51 @@ class C
     {
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("value_tuple_tests", "ValueTupleTests", "TupleInParameters", 5, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "value_tuple_tests",
+                    "ValueTupleTests",
+                    "TupleInParameters",
+                    5,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("value_tuple_tests", "ValueTupleTests", "TupleInParameters", 5, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "value_tuple_tests",
+                    "ValueTupleTests",
+                    "TupleInParameters",
+                    5,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("value_tuple_tests", "ValueTupleTests", "TupleInParameters", 5, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "value_tuple_tests",
+            "ValueTupleTests",
+            "TupleInParameters",
+            5,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -155,22 +300,54 @@ class C
 {
     void M(int x, () y, (int a) z) { }
 }"#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("value_tuple_tests", "ValueTupleTests", "TupleTypeWithTooFewElements", 6, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "value_tuple_tests",
+                    "ValueTupleTests",
+                    "TupleTypeWithTooFewElements",
+                    6,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("value_tuple_tests", "ValueTupleTests", "TupleTypeWithTooFewElements", 6, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "value_tuple_tests",
+                    "ValueTupleTests",
+                    "TupleTypeWithTooFewElements",
+                    6,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("value_tuple_tests", "ValueTupleTests", "TupleTypeWithTooFewElements", 6, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "value_tuple_tests",
+            "ValueTupleTests",
+            "TupleTypeWithTooFewElements",
+            6,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -182,22 +359,54 @@ class C
 {
     object x = ((Alice: 1), ());
 }"#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("value_tuple_tests", "ValueTupleTests", "TupleExpressionWithTooFewElements", 7, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "value_tuple_tests",
+                    "ValueTupleTests",
+                    "TupleExpressionWithTooFewElements",
+                    7,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("value_tuple_tests", "ValueTupleTests", "TupleExpressionWithTooFewElements", 7, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "value_tuple_tests",
+                    "ValueTupleTests",
+                    "TupleExpressionWithTooFewElements",
+                    7,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("value_tuple_tests", "ValueTupleTests", "TupleExpressionWithTooFewElements", 7, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "value_tuple_tests",
+            "ValueTupleTests",
+            "TupleExpressionWithTooFewElements",
+            7,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -205,23 +414,48 @@ class C
 #[test]
 fn ternary_versus_declaration_01() {
     let src = r#"return (i, isValid ? Errors.IsValid : Errors.HasErrors);"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("value_tuple_tests", "ValueTupleTests", "TernaryVersusDeclaration_01", 8, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "value_tuple_tests",
+                    "ValueTupleTests",
+                    "TernaryVersusDeclaration_01",
+                    8,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("value_tuple_tests", "ValueTupleTests", "TernaryVersusDeclaration_01", 8, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "value_tuple_tests",
+                    "ValueTupleTests",
+                    "TernaryVersusDeclaration_01",
+                    8,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("value_tuple_tests", "ValueTupleTests", "TernaryVersusDeclaration_01", 8, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "value_tuple_tests",
+            "ValueTupleTests",
+            "TernaryVersusDeclaration_01",
+            8,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -229,23 +463,48 @@ fn ternary_versus_declaration_01() {
 #[test]
 fn ternary_versus_declaration_02() {
     let src = r#"return (isValid ? Errors.IsValid : Errors.HasErrors, i);"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("value_tuple_tests", "ValueTupleTests", "TernaryVersusDeclaration_02", 9, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "value_tuple_tests",
+                    "ValueTupleTests",
+                    "TernaryVersusDeclaration_02",
+                    9,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("value_tuple_tests", "ValueTupleTests", "TernaryVersusDeclaration_02", 9, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "value_tuple_tests",
+                    "ValueTupleTests",
+                    "TernaryVersusDeclaration_02",
+                    9,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("value_tuple_tests", "ValueTupleTests", "TernaryVersusDeclaration_02", 9, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "value_tuple_tests",
+            "ValueTupleTests",
+            "TernaryVersusDeclaration_02",
+            9,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -253,23 +512,48 @@ fn ternary_versus_declaration_02() {
 #[test]
 fn ternary_versus_declaration_03() {
     let src = r#"return (i, a < b, c > d);"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("value_tuple_tests", "ValueTupleTests", "TernaryVersusDeclaration_03", 10, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "value_tuple_tests",
+                    "ValueTupleTests",
+                    "TernaryVersusDeclaration_03",
+                    10,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("value_tuple_tests", "ValueTupleTests", "TernaryVersusDeclaration_03", 10, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "value_tuple_tests",
+                    "ValueTupleTests",
+                    "TernaryVersusDeclaration_03",
+                    10,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("value_tuple_tests", "ValueTupleTests", "TernaryVersusDeclaration_03", 10, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "value_tuple_tests",
+            "ValueTupleTests",
+            "TernaryVersusDeclaration_03",
+            10,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -277,23 +561,48 @@ fn ternary_versus_declaration_03() {
 #[test]
 fn ternary_versus_declaration_04() {
     let src = r#"return (i, a < b, c > d.x);"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("value_tuple_tests", "ValueTupleTests", "TernaryVersusDeclaration_04", 11, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "value_tuple_tests",
+                    "ValueTupleTests",
+                    "TernaryVersusDeclaration_04",
+                    11,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("value_tuple_tests", "ValueTupleTests", "TernaryVersusDeclaration_04", 11, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "value_tuple_tests",
+                    "ValueTupleTests",
+                    "TernaryVersusDeclaration_04",
+                    11,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("value_tuple_tests", "ValueTupleTests", "TernaryVersusDeclaration_04", 11, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "value_tuple_tests",
+            "ValueTupleTests",
+            "TernaryVersusDeclaration_04",
+            11,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -301,23 +610,47 @@ fn ternary_versus_declaration_04() {
 #[test]
 fn ternary_versus_declaration_05() {
     let src = r#"return (i, a < b, c > d && x);"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("value_tuple_tests", "ValueTupleTests", "TernaryVersusDeclaration_05", 12, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "value_tuple_tests",
+                    "ValueTupleTests",
+                    "TernaryVersusDeclaration_05",
+                    12,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("value_tuple_tests", "ValueTupleTests", "TernaryVersusDeclaration_05", 12, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "value_tuple_tests",
+                    "ValueTupleTests",
+                    "TernaryVersusDeclaration_05",
+                    12,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("value_tuple_tests", "ValueTupleTests", "TernaryVersusDeclaration_05", 12, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "value_tuple_tests",
+            "ValueTupleTests",
+            "TernaryVersusDeclaration_05",
+            12,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
-

@@ -1,8 +1,8 @@
+use crate::Identifier;
 use crate::declarations::{AttributeList, Modifier};
 use crate::expressions::Expression;
 use crate::statements::statement::Statement;
 use crate::types::Type;
-use crate::Identifier;
 use serde::{Deserialize, Serialize};
 
 /// Represents a getter or setter accessors for a property

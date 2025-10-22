@@ -1,11 +1,11 @@
 // Tests for parsing assignment expressions
 
 use parser::expressions::primary_expression_parser::parse_expression;
+use syntax::Identifier;
+use syntax::expressions::BinaryOperator;
 use syntax::expressions::assignment_expression::AssignmentExpression;
 use syntax::expressions::expression::Expression;
 use syntax::expressions::literal::Literal;
-use syntax::expressions::BinaryOperator;
-use syntax::Identifier;
 
 fn parse_assignment_expr_helper(code: &str) -> Result<AssignmentExpression, String> {
     match parse_expression(code.into()) {

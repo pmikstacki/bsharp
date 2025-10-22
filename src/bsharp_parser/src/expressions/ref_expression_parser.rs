@@ -2,9 +2,9 @@ use crate::parser::expressions::primary_expression_parser::parse_expression;
 use crate::parser::keywords::parameter_modifier_keywords::kw_ref;
 use crate::syntax::comment_parser::ws;
 use crate::syntax::errors::BResult;
+use nom::Parser;
 use nom::combinator::map;
 use nom::sequence::delimited;
-use nom::Parser;
 use nom_supreme::ParserExt;
 use syntax::expressions::Expression;
 
@@ -24,7 +24,7 @@ pub fn parse_ref_expression(input: Span) -> BResult<Expression> {
         ),
         |(_, expr)| Expression::Ref(Box::new(expr)),
     )
-        .context("ref expression")
-        .parse(input)
+    .context("ref expression")
+    .parse(input)
 }
 use crate::syntax::span::Span;

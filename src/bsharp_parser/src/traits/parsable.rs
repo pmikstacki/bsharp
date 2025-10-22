@@ -1,4 +1,3 @@
-
 use crate::syntax::errors::BResult;
 use crate::syntax::span::Span;
 

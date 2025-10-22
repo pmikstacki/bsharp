@@ -1,10 +1,10 @@
 // Auto-generated from Roslyn: DeconstructionTests
-use bsharp_parser::syntax::span::Span;
 use crate::custom_asserts::after_parse;
 use crate::custom_asserts::after_parse::CaseData;
+use crate::custom_asserts::roslyn_asserts::ExpectedDiagnostics;
 use bsharp_parser::bsharp::parse_csharp_source_strict;
 use bsharp_parser::statement_parser::parse_statement_ws;
-use crate::custom_asserts::roslyn_asserts::ExpectedDiagnostics;
+use bsharp_parser::syntax::span::Span;
 /// Roslyn: DeconstructionTests.ParenExpression (case 1)
 #[test]
 fn paren_expression() {
@@ -16,22 +16,51 @@ class C
         (x).ToString();
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "ParenExpression", 1, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "ParenExpression",
+                    1,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "ParenExpression", 1, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "ParenExpression",
+                    1,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "ParenExpression", 1, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "deconstruction_tests",
+            "DeconstructionTests",
+            "ParenExpression",
+            1,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -46,22 +75,51 @@ class C
         (Int32 a, Int64 b) x;
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "TupleTypeWithElementNames", 2, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "TupleTypeWithElementNames",
+                    2,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "TupleTypeWithElementNames", 2, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "TupleTypeWithElementNames",
+                    2,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "TupleTypeWithElementNames", 2, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "deconstruction_tests",
+            "DeconstructionTests",
+            "TupleTypeWithElementNames",
+            2,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -76,22 +134,51 @@ class C
         (Int32, Int64) x;
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "TupleType", 3, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "TupleType",
+                    3,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "TupleType", 3, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "TupleType",
+                    3,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "TupleType", 3, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "deconstruction_tests",
+            "DeconstructionTests",
+            "TupleType",
+            3,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -106,22 +193,51 @@ class C
         (Int32, Int64)[] x;
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "TupleTypeArray", 4, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "TupleTypeArray",
+                    4,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "TupleTypeArray", 4, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "TupleTypeArray",
+                    4,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "TupleTypeArray", 4, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "deconstruction_tests",
+            "DeconstructionTests",
+            "TupleTypeArray",
+            4,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -136,22 +252,51 @@ class C
         (Int32, Int64).Goo();
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "TupleLiteral", 5, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "TupleLiteral",
+                    5,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "TupleLiteral", 5, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "TupleLiteral",
+                    5,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "TupleLiteral", 5, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "deconstruction_tests",
+            "DeconstructionTests",
+            "TupleLiteral",
+            5,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -166,22 +311,51 @@ class C
         (x, y) = goo;
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "DeconstructionAssignment", 6, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "DeconstructionAssignment",
+                    6,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "DeconstructionAssignment", 6, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "DeconstructionAssignment",
+                    6,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "DeconstructionAssignment", 6, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "deconstruction_tests",
+            "DeconstructionTests",
+            "DeconstructionAssignment",
+            6,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -196,22 +370,51 @@ class C
         for(Int32 x = goo; ; ) { }
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "SimpleDeclaration", 7, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "SimpleDeclaration",
+                    7,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "SimpleDeclaration", 7, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "SimpleDeclaration",
+                    7,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "SimpleDeclaration", 7, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "deconstruction_tests",
+            "DeconstructionTests",
+            "SimpleDeclaration",
+            7,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -226,22 +429,51 @@ class C
         (x, (y, z)) = goo;
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "NestedDeconstructionAssignment", 8, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "NestedDeconstructionAssignment",
+                    8,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "NestedDeconstructionAssignment", 8, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "NestedDeconstructionAssignment",
+                    8,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "NestedDeconstructionAssignment", 8, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "deconstruction_tests",
+            "DeconstructionTests",
+            "NestedDeconstructionAssignment",
+            8,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -256,22 +488,51 @@ class C
         (Int32 a, Int64 b) = goo;
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "DeconstructionDeclaration", 9, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "DeconstructionDeclaration",
+                    9,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "DeconstructionDeclaration", 9, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "DeconstructionDeclaration",
+                    9,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "DeconstructionDeclaration", 9, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "deconstruction_tests",
+            "DeconstructionTests",
+            "DeconstructionDeclaration",
+            9,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -286,22 +547,51 @@ class C
         ((Int32 a, Int64 b), Int32 c) = goo;
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "NestedDeconstructionDeclaration", 10, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "NestedDeconstructionDeclaration",
+                    10,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "NestedDeconstructionDeclaration", 10, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "NestedDeconstructionDeclaration",
+                    10,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "NestedDeconstructionDeclaration", 10, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "deconstruction_tests",
+            "DeconstructionTests",
+            "NestedDeconstructionDeclaration",
+            10,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -316,22 +606,51 @@ class C
         var (a, b) = goo;
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "VarDeconstructionDeclaration", 11, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "VarDeconstructionDeclaration",
+                    11,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "VarDeconstructionDeclaration", 11, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "VarDeconstructionDeclaration",
+                    11,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "VarDeconstructionDeclaration", 11, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "deconstruction_tests",
+            "DeconstructionTests",
+            "VarDeconstructionDeclaration",
+            11,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -346,22 +665,51 @@ fn var_nested_deconstruction_declaration() {
                 var ((a, b), c) = goo;
             }
         }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "VarNestedDeconstructionDeclaration", 12, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "VarNestedDeconstructionDeclaration",
+                    12,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "VarNestedDeconstructionDeclaration", 12, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "VarNestedDeconstructionDeclaration",
+                    12,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "VarNestedDeconstructionDeclaration", 12, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "deconstruction_tests",
+            "DeconstructionTests",
+            "VarNestedDeconstructionDeclaration",
+            12,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -376,22 +724,51 @@ class C
         var(a, b);
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "VarMethodCall", 13, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "VarMethodCall",
+                    13,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "VarMethodCall", 13, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "VarMethodCall",
+                    13,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "VarMethodCall", 13, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "deconstruction_tests",
+            "DeconstructionTests",
+            "VarMethodCall",
+            13,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -406,22 +783,51 @@ class C
         (Int32 x, var (y, z)) = goo;
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "MixedDeconstructionVariables", 14, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "MixedDeconstructionVariables",
+                    14,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "MixedDeconstructionVariables", 14, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "MixedDeconstructionVariables",
+                    14,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "MixedDeconstructionVariables", 14, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "deconstruction_tests",
+            "DeconstructionTests",
+            "MixedDeconstructionVariables",
+            14,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -436,22 +842,51 @@ fn deconstruction_for() {
                 for ((Int32 x, Int64 y) = goo; ; ) { }
             }
         }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "DeconstructionFor", 15, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "DeconstructionFor",
+                    15,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "DeconstructionFor", 15, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "DeconstructionFor",
+                    15,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "DeconstructionFor", 15, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "deconstruction_tests",
+            "DeconstructionTests",
+            "DeconstructionFor",
+            15,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -466,22 +901,51 @@ fn var_deconstruction_for() {
                 for (var (x, y) = goo; ; ) { }
             }
         }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "VarDeconstructionFor", 16, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "VarDeconstructionFor",
+                    16,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "VarDeconstructionFor", 16, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "VarDeconstructionFor",
+                    16,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "VarDeconstructionFor", 16, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "deconstruction_tests",
+            "DeconstructionTests",
+            "VarDeconstructionFor",
+            16,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -496,22 +960,51 @@ fn deconstruction_foreach() {
                 foreach ((int x, var y) in goo) { }
             }
         }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "DeconstructionForeach", 17, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "DeconstructionForeach",
+                    17,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "DeconstructionForeach", 17, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "DeconstructionForeach",
+                    17,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "DeconstructionForeach", 17, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "deconstruction_tests",
+            "DeconstructionTests",
+            "DeconstructionForeach",
+            17,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -526,22 +1019,51 @@ fn var_deconstruction_foreach() {
                 foreach (var (x, y) in goo) { }
             }
         }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "VarDeconstructionForeach", 18, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "VarDeconstructionForeach",
+                    18,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "VarDeconstructionForeach", 18, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "VarDeconstructionForeach",
+                    18,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "VarDeconstructionForeach", 18, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "deconstruction_tests",
+            "DeconstructionTests",
+            "VarDeconstructionForeach",
+            18,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -549,22 +1071,51 @@ fn var_deconstruction_foreach() {
 #[test]
 fn deconstruction_in_script() {
     let src = r#" (int x, int y) = (1, 2); "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "DeconstructionInScript", 19, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "DeconstructionInScript",
+                    19,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "DeconstructionInScript", 19, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "DeconstructionInScript",
+                    19,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "DeconstructionInScript", 19, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "deconstruction_tests",
+            "DeconstructionTests",
+            "DeconstructionInScript",
+            19,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -572,22 +1123,51 @@ fn deconstruction_in_script() {
 #[test]
 fn deconstruction_for_each_in_script() {
     let src = r#" foreach ((int x, int y) in new[] { (1, 2) }) { }; "#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "DeconstructionForEachInScript", 20, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "DeconstructionForEachInScript",
+                    20,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "DeconstructionForEachInScript", 20, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "DeconstructionForEachInScript",
+                    20,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "DeconstructionForEachInScript", 20, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "deconstruction_tests",
+            "DeconstructionTests",
+            "DeconstructionForEachInScript",
+            20,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -602,22 +1182,51 @@ class C
         (int _, var _, var (_, _), _) = e;
     }
 }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "DeconstructionDeclarationWithDiscard", 21, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "DeconstructionDeclarationWithDiscard",
+                    21,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "DeconstructionDeclarationWithDiscard", 21, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "DeconstructionDeclarationWithDiscard",
+                    21,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "DeconstructionDeclarationWithDiscard", 21, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "deconstruction_tests",
+            "DeconstructionTests",
+            "DeconstructionDeclarationWithDiscard",
+            21,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -625,22 +1234,51 @@ class C
 #[test]
 fn discards_in_deconstruction_01() {
     let src = r#"void M() { var (x, _) = e; }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "DiscardsInDeconstruction_01", 22, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "DiscardsInDeconstruction_01",
+                    22,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "DiscardsInDeconstruction_01", 22, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "DiscardsInDeconstruction_01",
+                    22,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "DiscardsInDeconstruction_01", 22, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "deconstruction_tests",
+            "DeconstructionTests",
+            "DiscardsInDeconstruction_01",
+            22,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -648,22 +1286,51 @@ fn discards_in_deconstruction_01() {
 #[test]
 fn discards_in_deconstruction_02() {
     let src = r#"void M() { (var x, var _) = e; }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "DiscardsInDeconstruction_02", 23, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "DiscardsInDeconstruction_02",
+                    23,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "DiscardsInDeconstruction_02", 23, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "DiscardsInDeconstruction_02",
+                    23,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "DiscardsInDeconstruction_02", 23, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "deconstruction_tests",
+            "DeconstructionTests",
+            "DiscardsInDeconstruction_02",
+            23,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -671,22 +1338,51 @@ fn discards_in_deconstruction_02() {
 #[test]
 fn discards_in_out_01() {
     let src = r#"void M() { M(out var _); }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "DiscardsInOut_01", 24, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "DiscardsInOut_01",
+                    24,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "DiscardsInOut_01", 24, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "DiscardsInOut_01",
+                    24,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "DiscardsInOut_01", 24, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "deconstruction_tests",
+            "DeconstructionTests",
+            "DiscardsInOut_01",
+            24,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -694,22 +1390,51 @@ fn discards_in_out_01() {
 #[test]
 fn discards_in_out_02() {
     let src = r#"void M() { M(out int _); }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "DiscardsInOut_02", 25, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "DiscardsInOut_02",
+                    25,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "DiscardsInOut_02", 25, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "DiscardsInOut_02",
+                    25,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "DiscardsInOut_02", 25, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "deconstruction_tests",
+            "DeconstructionTests",
+            "DiscardsInOut_02",
+            25,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -717,22 +1442,51 @@ fn discards_in_out_02() {
 #[test]
 fn discards_in_pattern_01() {
     let src = r#"void M() { if (e is int _) {} }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "DiscardsInPattern_01", 26, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "DiscardsInPattern_01",
+                    26,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "DiscardsInPattern_01", 26, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "DiscardsInPattern_01",
+                    26,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "DiscardsInPattern_01", 26, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "deconstruction_tests",
+            "DeconstructionTests",
+            "DiscardsInPattern_01",
+            26,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -740,22 +1494,51 @@ fn discards_in_pattern_01() {
 #[test]
 fn discards_in_pattern_02() {
     let src = r#"void M() { if (e is var _) {} }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "DiscardsInPattern_02", 27, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "DiscardsInPattern_02",
+                    27,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "DiscardsInPattern_02", 27, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "DiscardsInPattern_02",
+                    27,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "DiscardsInPattern_02", 27, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "deconstruction_tests",
+            "DeconstructionTests",
+            "DiscardsInPattern_02",
+            27,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -763,22 +1546,51 @@ fn discards_in_pattern_02() {
 #[test]
 fn discards_in_pattern_03() {
     let src = r#"void M() { switch (e) { case int _: break; } }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "DiscardsInPattern_03", 28, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "DiscardsInPattern_03",
+                    28,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "DiscardsInPattern_03", 28, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "DiscardsInPattern_03",
+                    28,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "DiscardsInPattern_03", 28, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "deconstruction_tests",
+            "DeconstructionTests",
+            "DiscardsInPattern_03",
+            28,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -786,22 +1598,51 @@ fn discards_in_pattern_03() {
 #[test]
 fn discards_in_pattern_04() {
     let src = r#"void M() { switch (e) { case var _: break; } }"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_csharp_source_strict(span);
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "DiscardsInPattern_04", 29, Some(expected.clone()), CaseData::File { unit: &unit, src, original: None });
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "DiscardsInPattern_04",
+                    29,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src,
+                        original: None,
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "DiscardsInPattern_04", 29, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "DiscardsInPattern_04",
+                    29,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "DiscardsInPattern_04", 29, None, CaseData::File { unit: &unit, src, original: None });
+        after_parse::after_parse_with_expected(
+            "deconstruction_tests",
+            "DeconstructionTests",
+            "DiscardsInPattern_04",
+            29,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src,
+                original: None,
+            },
+        );
     }
 }
 
@@ -809,23 +1650,48 @@ fn discards_in_pattern_04() {
 #[test]
 fn bad_type_for_deconstruct_00() {
     let src = r#"var (x, y) = e;"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "BadTypeForDeconstruct_00", 30, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "BadTypeForDeconstruct_00",
+                    30,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "BadTypeForDeconstruct_00", 30, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "BadTypeForDeconstruct_00",
+                    30,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "BadTypeForDeconstruct_00", 30, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "deconstruction_tests",
+            "DeconstructionTests",
+            "BadTypeForDeconstruct_00",
+            30,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -833,23 +1699,48 @@ fn bad_type_for_deconstruct_00() {
 #[test]
 fn bad_type_for_deconstruct_01() {
     let src = r#"var::var (x, y) = e;"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "BadTypeForDeconstruct_01", 31, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "BadTypeForDeconstruct_01",
+                    31,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "BadTypeForDeconstruct_01", 31, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "BadTypeForDeconstruct_01",
+                    31,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "BadTypeForDeconstruct_01", 31, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "deconstruction_tests",
+            "DeconstructionTests",
+            "BadTypeForDeconstruct_01",
+            31,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -857,23 +1748,48 @@ fn bad_type_for_deconstruct_01() {
 #[test]
 fn bad_type_for_deconstruct_02() {
     let src = r#"var.var (x, y) = e;"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "BadTypeForDeconstruct_02", 32, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "BadTypeForDeconstruct_02",
+                    32,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "BadTypeForDeconstruct_02", 32, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "BadTypeForDeconstruct_02",
+                    32,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "BadTypeForDeconstruct_02", 32, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "deconstruction_tests",
+            "DeconstructionTests",
+            "BadTypeForDeconstruct_02",
+            32,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -881,23 +1797,48 @@ fn bad_type_for_deconstruct_02() {
 #[test]
 fn bad_type_for_deconstruct_03() {
     let src = r#"var<var> (x, y) = e;"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "BadTypeForDeconstruct_03", 33, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "BadTypeForDeconstruct_03",
+                    33,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "BadTypeForDeconstruct_03", 33, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "BadTypeForDeconstruct_03",
+                    33,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "BadTypeForDeconstruct_03", 33, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "deconstruction_tests",
+            "DeconstructionTests",
+            "BadTypeForDeconstruct_03",
+            33,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -905,23 +1846,51 @@ fn bad_type_for_deconstruct_03() {
 #[test]
 fn bad_type_for_deconstruct_04() {
     let src = r#"var[] (x, y) = e;"#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "BadTypeForDeconstruct_04", 34, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "BadTypeForDeconstruct_04",
+                    34,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "BadTypeForDeconstruct_04", 34, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "BadTypeForDeconstruct_04",
+                    34,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "BadTypeForDeconstruct_04", 34, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "deconstruction_tests",
+            "DeconstructionTests",
+            "BadTypeForDeconstruct_04",
+            34,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -929,23 +1898,48 @@ fn bad_type_for_deconstruct_04() {
 #[test]
 fn bad_type_for_deconstruct_05() {
     let src = r#"var* (x, y) = e;"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "BadTypeForDeconstruct_05", 35, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "BadTypeForDeconstruct_05",
+                    35,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "BadTypeForDeconstruct_05", 35, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "BadTypeForDeconstruct_05",
+                    35,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "BadTypeForDeconstruct_05", 35, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "deconstruction_tests",
+            "DeconstructionTests",
+            "BadTypeForDeconstruct_05",
+            35,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -953,23 +1947,51 @@ fn bad_type_for_deconstruct_05() {
 #[test]
 fn bad_type_for_deconstruct_06() {
     let src = r#"var? (x, y) = e;"#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "BadTypeForDeconstruct_06", 36, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "BadTypeForDeconstruct_06",
+                    36,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "BadTypeForDeconstruct_06", 36, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "BadTypeForDeconstruct_06",
+                    36,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "BadTypeForDeconstruct_06", 36, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "deconstruction_tests",
+            "DeconstructionTests",
+            "BadTypeForDeconstruct_06",
+            36,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
 
@@ -977,23 +1999,47 @@ fn bad_type_for_deconstruct_06() {
 #[test]
 fn bad_type_for_deconstruct_07() {
     let src = r#"var?.var (x, y) = e;"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let r = parse_statement_ws(span);
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "BadTypeForDeconstruct_07", 37, Some(expected.clone()), CaseData::Statement { ast: &ast, src });
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "BadTypeForDeconstruct_07",
+                    37,
+                    Some(expected.clone()),
+                    CaseData::Statement { ast: &ast, src },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "BadTypeForDeconstruct_07", 37, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "deconstruction_tests",
+                    "DeconstructionTests",
+                    "BadTypeForDeconstruct_07",
+                    37,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (rest, ast) = r.unwrap();
-        assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-        after_parse::after_parse_with_expected("deconstruction_tests", "DeconstructionTests", "BadTypeForDeconstruct_07", 37, None, CaseData::Statement { ast: &ast, src });
+        assert!(
+            rest.fragment().trim().is_empty(),
+            "Unconsumed input: {}",
+            rest.fragment()
+        );
+        after_parse::after_parse_with_expected(
+            "deconstruction_tests",
+            "DeconstructionTests",
+            "BadTypeForDeconstruct_07",
+            37,
+            None,
+            CaseData::Statement { ast: &ast, src },
+        );
     }
 }
-

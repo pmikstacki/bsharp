@@ -2,7 +2,8 @@ use crate::emitters::emit_trait::{Emit, EmitCtx, EmitError};
 use crate::types::PrimitiveType;
 
 impl Emit for PrimitiveType {
-    fn emit<W: std::fmt::Write>(&self, w:&mut W, _cx:&mut EmitCtx)->Result<(),EmitError>{
-        write!(w, "{}", self)?; Ok(())
+    fn emit<W: std::fmt::Write>(&self, w: &mut W, _cx: &mut EmitCtx) -> Result<(), EmitError> {
+        write!(w, "{}", self)?;
+        Ok(())
     }
 }

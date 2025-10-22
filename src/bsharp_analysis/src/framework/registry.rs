@@ -1,5 +1,5 @@
-use crate::framework::{AnalyzerPass, RuleSet};
 use crate::AnalysisConfig;
+use crate::framework::{AnalyzerPass, RuleSet};
 
 pub struct AnalyzerRegistry {
     passes: Vec<Box<dyn AnalyzerPass>>,

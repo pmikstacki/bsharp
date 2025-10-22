@@ -3,9 +3,9 @@
 use crate::parser::expressions::assignment_expression_parser::parse_assignment_expression_or_higher;
 use crate::syntax::comment_parser::ws;
 use crate::syntax::errors::BResult;
+use nom::Parser;
 use nom::combinator::cut;
 use nom::sequence::delimited;
-use nom::Parser;
 use nom_supreme::ParserExt;
 use syntax::statements::statement::Statement;
 
@@ -21,8 +21,8 @@ pub fn parse_expression_statement(input: Span) -> BResult<Statement> {
             .parse(after_expr)?;
         Ok((rest, Statement::Expression(expr)))
     })
-        .context("expression statement")
-        .parse(input)
+    .context("expression statement")
+    .parse(input)
 }
 use crate::syntax::span::Span;
 use crate::tokens::separators::tok_semicolon;

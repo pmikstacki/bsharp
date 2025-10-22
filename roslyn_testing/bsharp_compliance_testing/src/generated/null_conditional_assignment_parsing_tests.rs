@@ -1,8 +1,8 @@
 // Auto-generated from Roslyn: NullConditionalAssignmentParsingTests
-use bsharp_parser::syntax::span::Span;
 use crate::custom_asserts::after_parse;
 use crate::custom_asserts::after_parse::CaseData;
 use bsharp_parser::bsharp::parse_csharp_source_strict;
+use bsharp_parser::syntax::span::Span;
 /// Roslyn: NullConditionalAssignmentParsingTests.Parentheses_Assignment_LHS_01 (case 1)
 #[test]
 fn parentheses_assignment_lhs_01() {
@@ -13,7 +13,18 @@ fn parentheses_assignment_lhs_01() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("null_conditional_assignment_parsing_tests", "NullConditionalAssignmentParsingTests", "Parentheses_Assignment_LHS_01", 1, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "null_conditional_assignment_parsing_tests",
+                "NullConditionalAssignmentParsingTests",
+                "Parentheses_Assignment_LHS_01",
+                1,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -29,7 +40,18 @@ fn invocation_01() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("null_conditional_assignment_parsing_tests", "NullConditionalAssignmentParsingTests", "Invocation_01", 2, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "null_conditional_assignment_parsing_tests",
+                "NullConditionalAssignmentParsingTests",
+                "Invocation_01",
+                2,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -45,7 +67,18 @@ fn ref_assignment_01() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("null_conditional_assignment_parsing_tests", "NullConditionalAssignmentParsingTests", "RefAssignment_01", 3, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "null_conditional_assignment_parsing_tests",
+                "NullConditionalAssignmentParsingTests",
+                "RefAssignment_01",
+                3,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -61,7 +94,18 @@ fn ref_returning_lambda_01() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("null_conditional_assignment_parsing_tests", "NullConditionalAssignmentParsingTests", "RefReturningLambda_01", 4, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "null_conditional_assignment_parsing_tests",
+                "NullConditionalAssignmentParsingTests",
+                "RefReturningLambda_01",
+                4,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -77,9 +121,19 @@ fn suppression_01() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("null_conditional_assignment_parsing_tests", "NullConditionalAssignmentParsingTests", "Suppression_01", 5, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "null_conditional_assignment_parsing_tests",
+                "NullConditionalAssignmentParsingTests",
+                "Suppression_01",
+                5,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
 }
-

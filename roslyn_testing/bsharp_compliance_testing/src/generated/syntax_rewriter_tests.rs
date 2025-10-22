@@ -1,9 +1,9 @@
 // Auto-generated from Roslyn: SyntaxRewriterTests
-use bsharp_parser::syntax::span::Span;
 use crate::custom_asserts::after_parse;
 use crate::custom_asserts::after_parse::CaseData;
 use bsharp_parser::bsharp::parse_csharp_source_strict;
 use bsharp_parser::statement_parser::parse_statement_ws;
+use bsharp_parser::syntax::span::Span;
 /// Roslyn: SyntaxRewriterTests.TestSyntaxTreeForParsedSyntaxNode (case 1)
 #[test]
 fn syntax_tree_for_parsed_syntax_node() {
@@ -12,7 +12,18 @@ fn syntax_tree_for_parsed_syntax_node() {
     let r = parse_csharp_source_strict(span);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_rewriter_tests", "SyntaxRewriterTests", "TestSyntaxTreeForParsedSyntaxNode", 1, None, CaseData::File { unit: &unit, src, original: None });
+            after_parse::after_parse_with_expected(
+                "syntax_rewriter_tests",
+                "SyntaxRewriterTests",
+                "TestSyntaxTreeForParsedSyntaxNode",
+                1,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src,
+                    original: None,
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -28,7 +39,18 @@ fn syntax_tree_for_parsed_syntax_node_case_2() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_rewriter_tests", "SyntaxRewriterTests", "TestSyntaxTreeForParsedSyntaxNode", 2, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_rewriter_tests",
+                "SyntaxRewriterTests",
+                "TestSyntaxTreeForParsedSyntaxNode",
+                2,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -44,7 +66,18 @@ fn syntax_tree_for_syntax_tree_with_replaced_node() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_rewriter_tests", "SyntaxRewriterTests", "TestSyntaxTreeForSyntaxTreeWithReplacedNode", 3, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_rewriter_tests",
+                "SyntaxRewriterTests",
+                "TestSyntaxTreeForSyntaxTreeWithReplacedNode",
+                3,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -60,7 +93,18 @@ fn replace_node_in_list_should_not_lose_parse_options() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_rewriter_tests", "SyntaxRewriterTests", "TestReplaceNodeInListShouldNotLoseParseOptions", 4, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_rewriter_tests",
+                "SyntaxRewriterTests",
+                "TestReplaceNodeInListShouldNotLoseParseOptions",
+                4,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -76,7 +120,18 @@ fn replace_node_in_list_should_not_lose_parse_options_case_2() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_rewriter_tests", "SyntaxRewriterTests", "TestReplaceNodeInListShouldNotLoseParseOptions", 5, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_rewriter_tests",
+                "SyntaxRewriterTests",
+                "TestReplaceNodeInListShouldNotLoseParseOptions",
+                5,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -92,7 +147,18 @@ fn insert_node_should_not_lose_parse_options() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_rewriter_tests", "SyntaxRewriterTests", "TestInsertNodeShouldNotLoseParseOptions", 6, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_rewriter_tests",
+                "SyntaxRewriterTests",
+                "TestInsertNodeShouldNotLoseParseOptions",
+                6,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -108,7 +174,18 @@ fn insert_node_should_not_lose_parse_options_case_2() {
     let r = parse_csharp_source_strict(span2);
     match r {
         Ok((_rest, unit)) => {
-            after_parse::after_parse_with_expected("syntax_rewriter_tests", "SyntaxRewriterTests", "TestInsertNodeShouldNotLoseParseOptions", 7, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+            after_parse::after_parse_with_expected(
+                "syntax_rewriter_tests",
+                "SyntaxRewriterTests",
+                "TestInsertNodeShouldNotLoseParseOptions",
+                7,
+                None,
+                CaseData::File {
+                    unit: &unit,
+                    src: src2,
+                    original: Some(src),
+                },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
@@ -122,10 +199,20 @@ fn rewrite_missing_identifier_in_expression_statement_implicitly_created_syntax_
     let r = parse_statement_ws(span);
     match r {
         Ok((rest, ast)) => {
-            assert!(rest.fragment().trim().is_empty(), "Unconsumed input: {}", rest.fragment());
-            after_parse::after_parse_with_expected("syntax_rewriter_tests", "SyntaxRewriterTests", "RewriteMissingIdentifierInExpressionStatement_ImplicitlyCreatedSyntaxTree", 8, None, CaseData::Statement { ast: &ast, src });
+            assert!(
+                rest.fragment().trim().is_empty(),
+                "Unconsumed input: {}",
+                rest.fragment()
+            );
+            after_parse::after_parse_with_expected(
+                "syntax_rewriter_tests",
+                "SyntaxRewriterTests",
+                "RewriteMissingIdentifierInExpressionStatement_ImplicitlyCreatedSyntaxTree",
+                8,
+                None,
+                CaseData::Statement { ast: &ast, src },
+            );
         }
         Err(e) => panic!("parse failed: {:?}", e),
     }
 }
-

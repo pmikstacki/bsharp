@@ -1,8 +1,8 @@
+use crate::Identifier;
 use crate::declarations::{Attribute, Modifier};
 use crate::statements::statement::Statement;
-use crate::Identifier;
-use serde::{Deserialize, Serialize};
 use bsharp_syntax_derive::AstNode;
+use serde::{Deserialize, Serialize};
 
 #[derive(AstNode, Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct DestructorDeclaration {

@@ -48,10 +48,9 @@ pub fn parse_top_level_statements(input: Span) -> BResult<Vec<Statement>> {
             }
         }
         Ok((current, statements))
-    }
-    )
-        .context("top-level statements")
-        .parse(input)
+    })
+    .context("top-level statements")
+    .parse(input)
 }
 
 /// Parse a single top-level statement

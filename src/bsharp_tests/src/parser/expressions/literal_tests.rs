@@ -57,7 +57,8 @@ fn test_char_escapes() {
 #[test]
 fn test_verbatim_and_raw_strings() {
     // Verbatim with doubled quotes
-    let (rest, lit) = parse_literal("@\"C:\\\\Dir\\\\\"\"Foo\"\"\"\"\"".into()).expect("parse verbatim");
+    let (rest, lit) =
+        parse_literal("@\"C:\\\\Dir\\\\\"\"Foo\"\"\"\"\"".into()).expect("parse verbatim");
     assert!(rest.fragment().trim().is_empty());
     match lit {
         Literal::VerbatimString(s) => assert!(s.contains("\"Foo\"")),

@@ -5,14 +5,10 @@ use crate::syntax::comment_parser::ws;
 use crate::syntax::errors::BResult;
 
 use nom::combinator::cut;
-use nom::{
-    combinator::map,
-    sequence::{delimited},
-    Parser,
-};
+use nom::{Parser, combinator::map, sequence::delimited};
 use nom_supreme::ParserExt;
-use syntax::statements::statement::Statement;
 use syntax::statements::LockStatement;
+use syntax::statements::statement::Statement;
 
 /// Parse a lock statement: lock (expression) statement
 pub fn parse_lock_statement(input: Span) -> BResult<Statement> {
@@ -24,7 +20,7 @@ pub fn parse_lock_statement(input: Span) -> BResult<Statement> {
                 parse_expression.context("lock object expression"),
                 cut(delimited(ws, tok_r_paren(), ws)).context("closing parenthesis"),
             )
-                .context("lock object in parentheses"),
+            .context("lock object in parentheses"),
             cut(delimited(ws, parse_statement_ws, ws)).context("lock body"),
         ),
         |(_, lock_object, body)| {
@@ -34,8 +30,8 @@ pub fn parse_lock_statement(input: Span) -> BResult<Statement> {
             }))
         },
     )
-        .context("lock statement")
-        .parse(input)
+    .context("lock statement")
+    .parse(input)
 }
 use crate::syntax::span::Span;
 use crate::tokens::delimiters::{tok_l_paren, tok_r_paren};

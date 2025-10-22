@@ -583,7 +583,8 @@ fn collect_class_member_spans(
                         spans.insert(key, range);
                     }
                     ClassBodyDeclaration::Property(p) => {
-                        let key = format!("property::{}::{}", owner_prefix, ident_to_string(&p.name));
+                        let key =
+                            format!("property::{}::{}", owner_prefix, ident_to_string(&p.name));
                         spans.insert(key, range);
                     }
                     _ => {}

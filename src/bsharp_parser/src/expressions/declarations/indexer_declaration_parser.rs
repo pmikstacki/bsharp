@@ -11,10 +11,10 @@ use crate::parser::types::type_parser::parse_type_expression;
 use crate::syntax::comment_parser::ws;
 use crate::syntax::errors::BResult;
 use crate::syntax::list_parser::parse_delimited_list0;
+use nom::Parser;
 use nom::character::complete::satisfy;
 use nom::combinator::{cut, peek};
 use nom::sequence::delimited;
-use nom::Parser;
 use nom_supreme::ParserExt;
 use syntax::declarations::{IndexerAccessor, IndexerAccessorList, IndexerDeclaration};
 use syntax::types::Parameter;
@@ -69,8 +69,8 @@ fn parse_indexer_parameters(input: Span) -> BResult<Vec<Parameter>> {
         false,
         true,
     )
-        .context("indexer parameters")
-        .parse(input)
+    .context("indexer parameters")
+    .parse(input)
 }
 
 /// Parse the indexer accessor list
@@ -98,9 +98,7 @@ fn parse_indexer_accessor_list(input: Span) -> BResult<IndexerAccessorList> {
 }
 
 /// Parse get and/or set accessors
-fn parse_accessors(
-    input: Span,
-) -> BResult<(Option<IndexerAccessor>, Option<IndexerAccessor>)> {
+fn parse_accessors(input: Span) -> BResult<(Option<IndexerAccessor>, Option<IndexerAccessor>)> {
     // Two accessor parsers with lookahead over optional attrs/modifiers
     let get_branch = |i| {
         let (i, _) = peek(|ii| {
@@ -108,7 +106,8 @@ fn parse_accessors(
             let (ii, _) = delimited(ws, parse_modifiers, ws).parse(ii)?;
             let (ii, _) = delimited(ws, kw_get(), ws).parse(ii)?;
             Ok((ii, ()))
-        }).parse(i)?;
+        })
+        .parse(i)?;
         parse_get_accessor_declaration(i)
     };
     let set_branch = |i| {
@@ -117,7 +116,8 @@ fn parse_accessors(
             let (ii, _) = delimited(ws, parse_modifiers, ws).parse(ii)?;
             let (ii, _) = delimited(ws, kw_set(), ws).parse(ii)?;
             Ok((ii, ()))
-        }).parse(i)?;
+        })
+        .parse(i)?;
         parse_set_accessor_declaration(i)
     };
 
@@ -126,7 +126,7 @@ fn parse_accessors(
             map(get_branch, |a| (true, a)),
             map(set_branch, |a| (false, a)),
         ))
-            .parse(i)
+        .parse(i)
     };
 
     let (cur, pairs) = many0(one_accessor).parse(input)?;
@@ -159,8 +159,7 @@ fn parse_get_accessor_declaration(input: Span) -> BResult<IndexerAccessor> {
     let (input, body) = alt((
         // Semicolon (auto-accessor)
         map(
-            delimited(ws, tok_semicolon(), ws)
-                .context("get accessor semicolon"),
+            delimited(ws, tok_semicolon(), ws).context("get accessor semicolon"),
             |_| None,
         ),
         // Block body
@@ -169,7 +168,7 @@ fn parse_get_accessor_declaration(input: Span) -> BResult<IndexerAccessor> {
             Some,
         ),
     ))
-        .parse(input)?;
+    .parse(input)?;
 
     Ok((
         input,
@@ -197,8 +196,7 @@ fn parse_set_accessor_declaration(input: Span) -> BResult<IndexerAccessor> {
     let (input, body) = alt((
         // Semicolon (auto-accessor)
         map(
-            delimited(ws, tok_semicolon(), ws)
-                .context("set accessor semicolon"),
+            delimited(ws, tok_semicolon(), ws).context("set accessor semicolon"),
             |_| None,
         ),
         // Block body
@@ -207,7 +205,7 @@ fn parse_set_accessor_declaration(input: Span) -> BResult<IndexerAccessor> {
             Some,
         ),
     ))
-        .parse(input)?;
+    .parse(input)?;
 
     Ok((
         input,

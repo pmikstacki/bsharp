@@ -7,14 +7,14 @@ use crate::parser::keywords::expression_keywords::kw_await;
 use crate::parser::statement_parser::parse_statement_ws;
 use crate::syntax::comment_parser::ws;
 use crate::syntax::errors::BResult;
+use nom::Parser;
 use nom::combinator::cut;
 use nom::combinator::opt;
 use nom::combinator::peek;
 use nom::sequence::delimited;
-use nom::Parser;
 use nom_supreme::ParserExt;
-use syntax::statements::statement::Statement;
 use syntax::statements::UsingStatement;
+use syntax::statements::statement::Statement;
 
 /// Parse a using statement for resource management
 /// Format: using (resource_declaration_or_expression) statement
@@ -30,9 +30,7 @@ pub fn parse_using_statement(input: Span) -> BResult<Statement> {
         };
 
         // Mandatory 'using'
-        let (input, _) = kw_using()
-            .context("using keyword")
-            .parse(input)?;
+        let (input, _) = kw_using().context("using keyword").parse(input)?;
 
         // Two forms: ( ... ) statement  OR  declaration ;
         if peek(delimited(ws, tok_l_paren(), ws)).parse(input).is_ok() {
@@ -94,8 +92,8 @@ pub fn parse_using_statement(input: Span) -> BResult<Statement> {
             ))
         }
     })
-        .context("using statement or declaration")
-        .parse(input)
+    .context("using statement or declaration")
+    .parse(input)
 }
 use crate::syntax::span::Span;
 use crate::tokens::delimiters::{tok_l_paren, tok_r_paren};

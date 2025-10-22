@@ -8,7 +8,8 @@ use syntax::declarations::Modifier;
 #[test]
 fn test_base_type_declaration() {
     let input = "public class MyClass<T> : IComparable<T> {";
-    let (input, result) = parse_type_declaration_header_span(input.into(), "class", "class").unwrap();
+    let (input, result) =
+        parse_type_declaration_header_span(input.into(), "class", "class").unwrap();
 
     assert_eq!(result.modifiers, vec![Modifier::Public]);
     assert_eq!(result.name.to_string(), "MyClass");

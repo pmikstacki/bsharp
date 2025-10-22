@@ -3,15 +3,12 @@ use crate::syntax::comment_parser::ws;
 use crate::syntax::errors::BResult;
 
 use crate::syntax::list_parser::parse_delimited_list0;
+use nom::Parser;
 use nom::character::complete::char as nom_char;
 use nom::sequence::delimited;
-use nom::Parser;
-use nom::{
-    combinator::map,
-    sequence::preceded,
-};
-use syntax::expressions::expression::CollectionElement;
+use nom::{combinator::map, sequence::preceded};
 use syntax::expressions::Expression;
+use syntax::expressions::expression::CollectionElement;
 
 /// Parse a collection expression: [elem1, ..spread, elem2]
 /// Elements can be regular expressions or spread elements starting with `..` followed by an expression
@@ -23,14 +20,14 @@ pub fn parse_collection_expression(input: Span) -> BResult<Expression> {
 pub fn parse_collection_expression_or_brackets(input: Span) -> BResult<Expression> {
     fn parse_elements(i: Span) -> BResult<Vec<CollectionElement>> {
         parse_delimited_list0::<_, _, _, _, char, char, char, CollectionElement>(
-            |i| delimited(ws,tok_l_brack(), ws).parse(i),
+            |i| delimited(ws, tok_l_brack(), ws).parse(i),
             |i| delimited(ws, parse_collection_element, ws).parse(i),
             |i| delimited(ws, tok_comma(), ws).parse(i),
             |i| delimited(ws, tok_r_brack(), ws).parse(i),
             false,
             true,
         )
-            .parse(i)
+        .parse(i)
     }
     map(parse_elements, Expression::Collection).parse(input)
 }

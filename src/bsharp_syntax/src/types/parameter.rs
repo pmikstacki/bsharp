@@ -1,8 +1,8 @@
 // Import TypeSyntax from the same directory's mod.rs (which will re-export it)
 use super::Type;
+use crate::Identifier;
 use crate::declarations::{Attribute, Modifier};
 use crate::expressions::Expression;
-use crate::Identifier;
 use serde::{Deserialize, Serialize};
 
 #[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]

@@ -1,14 +1,14 @@
 // Auto-generated from Roslyn: PatternParsingTests_ListPatterns
-use bsharp_parser::syntax::span::Span;
 use crate::custom_asserts::after_parse;
 use crate::custom_asserts::after_parse::CaseData;
-use bsharp_parser::bsharp::parse_csharp_source_strict;
 use crate::custom_asserts::roslyn_asserts::ExpectedDiagnostics;
+use bsharp_parser::bsharp::parse_csharp_source_strict;
+use bsharp_parser::syntax::span::Span;
 /// Roslyn: PatternParsingTests_ListPatterns.ListPattern_00 (case 1)
 #[test]
 fn list_pattern_00() {
     let src = r#"c is [[]]"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { c is [[]]; } }"#;
     let span2 = Span::new(src2);
@@ -16,16 +16,45 @@ fn list_pattern_00() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "ListPattern_00", 1, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "ListPattern_00",
+                    1,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "ListPattern_00", 1, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "ListPattern_00",
+                    1,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "ListPattern_00", 1, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "pattern_parsing_tests_list_patterns",
+            "PatternParsingTests_ListPatterns",
+            "ListPattern_00",
+            1,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -33,7 +62,7 @@ fn list_pattern_00() {
 #[test]
 fn list_pattern_00_case_2() {
     let src = r#"c is [[]]"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { c is [[]]; } }"#;
     let span2 = Span::new(src2);
@@ -41,16 +70,45 @@ fn list_pattern_00_case_2() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "ListPattern_00", 2, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "ListPattern_00",
+                    2,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "ListPattern_00", 2, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "ListPattern_00",
+                    2,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "ListPattern_00", 2, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "pattern_parsing_tests_list_patterns",
+            "PatternParsingTests_ListPatterns",
+            "ListPattern_00",
+            2,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -58,7 +116,7 @@ fn list_pattern_00_case_2() {
 #[test]
 fn list_pattern_01() {
     let src = r#"c is [[],] v"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { c is [[],] v; } }"#;
     let span2 = Span::new(src2);
@@ -66,16 +124,45 @@ fn list_pattern_01() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "ListPattern_01", 3, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "ListPattern_01",
+                    3,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "ListPattern_01", 3, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "ListPattern_01",
+                    3,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "ListPattern_01", 3, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "pattern_parsing_tests_list_patterns",
+            "PatternParsingTests_ListPatterns",
+            "ListPattern_01",
+            3,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -83,7 +170,7 @@ fn list_pattern_01() {
 #[test]
 fn list_pattern_01_case_2() {
     let src = r#"c is [[],] v"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { c is [[],] v; } }"#;
     let span2 = Span::new(src2);
@@ -91,16 +178,45 @@ fn list_pattern_01_case_2() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "ListPattern_01", 4, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "ListPattern_01",
+                    4,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "ListPattern_01", 4, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "ListPattern_01",
+                    4,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "ListPattern_01", 4, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "pattern_parsing_tests_list_patterns",
+            "PatternParsingTests_ListPatterns",
+            "ListPattern_01",
+            4,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -108,7 +224,10 @@ fn list_pattern_01_case_2() {
 #[test]
 fn list_pattern_02() {
     let src = r#"c is [ 1, prop: 0 ]"#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { c is [ 1, prop: 0 ]; } }"#;
     let span2 = Span::new(src2);
@@ -116,16 +235,45 @@ fn list_pattern_02() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "ListPattern_02", 5, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "ListPattern_02",
+                    5,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "ListPattern_02", 5, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "ListPattern_02",
+                    5,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "ListPattern_02", 5, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "pattern_parsing_tests_list_patterns",
+            "PatternParsingTests_ListPatterns",
+            "ListPattern_02",
+            5,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -133,7 +281,10 @@ fn list_pattern_02() {
 #[test]
 fn list_pattern_03() {
     let src = r#"c is [ , ]"#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { c is [ , ]; } }"#;
     let span2 = Span::new(src2);
@@ -141,16 +292,45 @@ fn list_pattern_03() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "ListPattern_03", 6, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "ListPattern_03",
+                    6,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "ListPattern_03", 6, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "ListPattern_03",
+                    6,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "ListPattern_03", 6, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "pattern_parsing_tests_list_patterns",
+            "PatternParsingTests_ListPatterns",
+            "ListPattern_03",
+            6,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -158,7 +338,10 @@ fn list_pattern_03() {
 #[test]
 fn list_pattern_04() {
     let src = r#"c is ()[]"#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { c is ()[]; } }"#;
     let span2 = Span::new(src2);
@@ -166,16 +349,45 @@ fn list_pattern_04() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "ListPattern_04", 7, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "ListPattern_04",
+                    7,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "ListPattern_04", 7, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "ListPattern_04",
+                    7,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "ListPattern_04", 7, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "pattern_parsing_tests_list_patterns",
+            "PatternParsingTests_ListPatterns",
+            "ListPattern_04",
+            7,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -183,7 +395,10 @@ fn list_pattern_04() {
 #[test]
 fn list_pattern_05() {
     let src = r#"c is {}[]"#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { c is {}[]; } }"#;
     let span2 = Span::new(src2);
@@ -191,16 +406,45 @@ fn list_pattern_05() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "ListPattern_05", 8, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "ListPattern_05",
+                    8,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "ListPattern_05", 8, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "ListPattern_05",
+                    8,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "ListPattern_05", 8, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "pattern_parsing_tests_list_patterns",
+            "PatternParsingTests_ListPatterns",
+            "ListPattern_05",
+            8,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -208,7 +452,7 @@ fn list_pattern_05() {
 #[test]
 fn list_pattern_06() {
     let src = r#"c is [List<int>]"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { c is [List<int>]; } }"#;
     let span2 = Span::new(src2);
@@ -216,16 +460,45 @@ fn list_pattern_06() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "ListPattern_06", 9, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "ListPattern_06",
+                    9,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "ListPattern_06", 9, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "ListPattern_06",
+                    9,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "ListPattern_06", 9, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "pattern_parsing_tests_list_patterns",
+            "PatternParsingTests_ListPatterns",
+            "ListPattern_06",
+            9,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -233,7 +506,7 @@ fn list_pattern_06() {
 #[test]
 fn list_pattern_07() {
     let src = r#"c is [string[]]"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { c is [string[]]; } }"#;
     let span2 = Span::new(src2);
@@ -241,16 +514,45 @@ fn list_pattern_07() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "ListPattern_07", 10, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "ListPattern_07",
+                    10,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "ListPattern_07", 10, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "ListPattern_07",
+                    10,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "ListPattern_07", 10, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "pattern_parsing_tests_list_patterns",
+            "PatternParsingTests_ListPatterns",
+            "ListPattern_07",
+            10,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -258,7 +560,7 @@ fn list_pattern_07() {
 #[test]
 fn list_pattern_08() {
     let src = r#"c is [var(x,y)]"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { c is [var(x,y)]; } }"#;
     let span2 = Span::new(src2);
@@ -266,16 +568,45 @@ fn list_pattern_08() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "ListPattern_08", 11, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "ListPattern_08",
+                    11,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "ListPattern_08", 11, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "ListPattern_08",
+                    11,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "ListPattern_08", 11, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "pattern_parsing_tests_list_patterns",
+            "PatternParsingTests_ListPatterns",
+            "ListPattern_08",
+            11,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -283,7 +614,7 @@ fn list_pattern_08() {
 #[test]
 fn list_pattern_09() {
     let src = r#"c is [>0]"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { c is [>0]; } }"#;
     let span2 = Span::new(src2);
@@ -291,16 +622,45 @@ fn list_pattern_09() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "ListPattern_09", 12, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "ListPattern_09",
+                    12,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "ListPattern_09", 12, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "ListPattern_09",
+                    12,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "ListPattern_09", 12, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "pattern_parsing_tests_list_patterns",
+            "PatternParsingTests_ListPatterns",
+            "ListPattern_09",
+            12,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -308,7 +668,7 @@ fn list_pattern_09() {
 #[test]
 fn no_regression_on_array_type_pattern_01() {
     let src = r#"c is string[]"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { c is string[]; } }"#;
     let span2 = Span::new(src2);
@@ -316,16 +676,45 @@ fn no_regression_on_array_type_pattern_01() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "NoRegressionOnArrayTypePattern_01", 13, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "NoRegressionOnArrayTypePattern_01",
+                    13,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "NoRegressionOnArrayTypePattern_01", 13, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "NoRegressionOnArrayTypePattern_01",
+                    13,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "NoRegressionOnArrayTypePattern_01", 13, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "pattern_parsing_tests_list_patterns",
+            "PatternParsingTests_ListPatterns",
+            "NoRegressionOnArrayTypePattern_01",
+            13,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -333,7 +722,7 @@ fn no_regression_on_array_type_pattern_01() {
 #[test]
 fn no_regression_on_array_type_pattern_02() {
     let src = r#"c is a[0]"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { c is a[0]; } }"#;
     let span2 = Span::new(src2);
@@ -341,16 +730,45 @@ fn no_regression_on_array_type_pattern_02() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "NoRegressionOnArrayTypePattern_02", 14, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "NoRegressionOnArrayTypePattern_02",
+                    14,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "NoRegressionOnArrayTypePattern_02", 14, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "NoRegressionOnArrayTypePattern_02",
+                    14,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "NoRegressionOnArrayTypePattern_02", 14, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "pattern_parsing_tests_list_patterns",
+            "PatternParsingTests_ListPatterns",
+            "NoRegressionOnArrayTypePattern_02",
+            14,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -358,7 +776,7 @@ fn no_regression_on_array_type_pattern_02() {
 #[test]
 fn slice_pattern_01() {
     let src = r#"c is [..]"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { c is [..]; } }"#;
     let span2 = Span::new(src2);
@@ -366,16 +784,45 @@ fn slice_pattern_01() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_01", 15, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_01",
+                    15,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_01", 15, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_01",
+                    15,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_01", 15, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "pattern_parsing_tests_list_patterns",
+            "PatternParsingTests_ListPatterns",
+            "SlicePattern_01",
+            15,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -383,7 +830,7 @@ fn slice_pattern_01() {
 #[test]
 fn slice_pattern_01_case_2() {
     let src = r#"c is [..]"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { c is [..]; } }"#;
     let span2 = Span::new(src2);
@@ -391,16 +838,45 @@ fn slice_pattern_01_case_2() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_01", 16, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_01",
+                    16,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_01", 16, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_01",
+                    16,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_01", 16, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "pattern_parsing_tests_list_patterns",
+            "PatternParsingTests_ListPatterns",
+            "SlicePattern_01",
+            16,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -408,7 +884,7 @@ fn slice_pattern_01_case_2() {
 #[test]
 fn slice_pattern_02() {
     let src = r#"c is [.. var x]"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { c is [.. var x]; } }"#;
     let span2 = Span::new(src2);
@@ -416,16 +892,45 @@ fn slice_pattern_02() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_02", 17, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_02",
+                    17,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_02", 17, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_02",
+                    17,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_02", 17, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "pattern_parsing_tests_list_patterns",
+            "PatternParsingTests_ListPatterns",
+            "SlicePattern_02",
+            17,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -433,7 +938,7 @@ fn slice_pattern_02() {
 #[test]
 fn slice_pattern_03() {
     let src = r#"c is .."#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { c is ..; } }"#;
     let span2 = Span::new(src2);
@@ -441,16 +946,45 @@ fn slice_pattern_03() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_03", 18, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_03",
+                    18,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_03", 18, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_03",
+                    18,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_03", 18, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "pattern_parsing_tests_list_patterns",
+            "PatternParsingTests_ListPatterns",
+            "SlicePattern_03",
+            18,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -458,7 +992,10 @@ fn slice_pattern_03() {
 #[test]
 fn slice_pattern_04() {
     let src = r#"c is ...."#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { c is ....; } }"#;
     let span2 = Span::new(src2);
@@ -466,16 +1003,45 @@ fn slice_pattern_04() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_04", 19, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_04",
+                    19,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_04", 19, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_04",
+                    19,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_04", 19, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "pattern_parsing_tests_list_patterns",
+            "PatternParsingTests_ListPatterns",
+            "SlicePattern_04",
+            19,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -483,7 +1049,7 @@ fn slice_pattern_04() {
 #[test]
 fn slice_pattern_05() {
     let src = r#"c is [..[]]"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { c is [..[]]; } }"#;
     let span2 = Span::new(src2);
@@ -491,16 +1057,45 @@ fn slice_pattern_05() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_05", 20, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_05",
+                    20,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_05", 20, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_05",
+                    20,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_05", 20, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "pattern_parsing_tests_list_patterns",
+            "PatternParsingTests_ListPatterns",
+            "SlicePattern_05",
+            20,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -508,7 +1103,7 @@ fn slice_pattern_05() {
 #[test]
 fn slice_pattern_06() {
     let src = r#"c is [.. not p]"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { c is [.. not p]; } }"#;
     let span2 = Span::new(src2);
@@ -516,16 +1111,45 @@ fn slice_pattern_06() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_06", 21, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_06",
+                    21,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_06", 21, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_06",
+                    21,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_06", 21, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "pattern_parsing_tests_list_patterns",
+            "PatternParsingTests_ListPatterns",
+            "SlicePattern_06",
+            21,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -533,7 +1157,7 @@ fn slice_pattern_06() {
 #[test]
 fn slice_pattern_07() {
     let src = r#"c is [.. p or q]"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { c is [.. p or q]; } }"#;
     let span2 = Span::new(src2);
@@ -541,16 +1165,45 @@ fn slice_pattern_07() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_07", 22, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_07",
+                    22,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_07", 22, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_07",
+                    22,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_07", 22, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "pattern_parsing_tests_list_patterns",
+            "PatternParsingTests_ListPatterns",
+            "SlicePattern_07",
+            22,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -558,7 +1211,7 @@ fn slice_pattern_07() {
 #[test]
 fn slice_pattern_08() {
     let src = r#"c is [.. p or .. q]"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { c is [.. p or .. q]; } }"#;
     let span2 = Span::new(src2);
@@ -566,16 +1219,45 @@ fn slice_pattern_08() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_08", 23, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_08",
+                    23,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_08", 23, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_08",
+                    23,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_08", 23, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "pattern_parsing_tests_list_patterns",
+            "PatternParsingTests_ListPatterns",
+            "SlicePattern_08",
+            23,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -583,7 +1265,7 @@ fn slice_pattern_08() {
 #[test]
 fn slice_pattern_09() {
     let src = r#"c is .. var x"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { c is .. var x; } }"#;
     let span2 = Span::new(src2);
@@ -591,16 +1273,45 @@ fn slice_pattern_09() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_09", 24, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_09",
+                    24,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_09", 24, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_09",
+                    24,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_09", 24, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "pattern_parsing_tests_list_patterns",
+            "PatternParsingTests_ListPatterns",
+            "SlicePattern_09",
+            24,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -608,7 +1319,7 @@ fn slice_pattern_09() {
 #[test]
 fn slice_pattern_10() {
     let src = r#"c is .. Type"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { c is .. Type; } }"#;
     let span2 = Span::new(src2);
@@ -616,16 +1327,45 @@ fn slice_pattern_10() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_10", 25, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_10",
+                    25,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_10", 25, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_10",
+                    25,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_10", 25, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "pattern_parsing_tests_list_patterns",
+            "PatternParsingTests_ListPatterns",
+            "SlicePattern_10",
+            25,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -633,7 +1373,10 @@ fn slice_pattern_10() {
 #[test]
 fn slice_pattern_11() {
     let src = r#"c is [var x ..]"#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { c is [var x ..]; } }"#;
     let span2 = Span::new(src2);
@@ -641,16 +1384,45 @@ fn slice_pattern_11() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_11", 26, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_11",
+                    26,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_11", 26, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_11",
+                    26,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_11", 26, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "pattern_parsing_tests_list_patterns",
+            "PatternParsingTests_ListPatterns",
+            "SlicePattern_11",
+            26,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -658,7 +1430,10 @@ fn slice_pattern_11() {
 #[test]
 fn slice_pattern_12() {
     let src = r#"c is var x .."#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { c is var x ..; } }"#;
     let span2 = Span::new(src2);
@@ -666,16 +1441,45 @@ fn slice_pattern_12() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_12", 27, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_12",
+                    27,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_12", 27, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_12",
+                    27,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_12", 27, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "pattern_parsing_tests_list_patterns",
+            "PatternParsingTests_ListPatterns",
+            "SlicePattern_12",
+            27,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -683,7 +1487,10 @@ fn slice_pattern_12() {
 #[test]
 fn slice_pattern_13() {
     let src = r#"c is [[]..]"#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { c is [[]..]; } }"#;
     let span2 = Span::new(src2);
@@ -691,16 +1498,45 @@ fn slice_pattern_13() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_13", 28, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_13",
+                    28,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_13", 28, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_13",
+                    28,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_13", 28, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "pattern_parsing_tests_list_patterns",
+            "PatternParsingTests_ListPatterns",
+            "SlicePattern_13",
+            28,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -708,7 +1544,10 @@ fn slice_pattern_13() {
 #[test]
 fn slice_pattern_14() {
     let src = r#"c is not p .."#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { c is not p ..; } }"#;
     let span2 = Span::new(src2);
@@ -716,16 +1555,45 @@ fn slice_pattern_14() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_14", 29, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_14",
+                    29,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_14", 29, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_14",
+                    29,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_14", 29, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "pattern_parsing_tests_list_patterns",
+            "PatternParsingTests_ListPatterns",
+            "SlicePattern_14",
+            29,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -733,7 +1601,7 @@ fn slice_pattern_14() {
 #[test]
 fn slice_pattern_15() {
     let src = r#"c is not .."#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { c is not ..; } }"#;
     let span2 = Span::new(src2);
@@ -741,16 +1609,45 @@ fn slice_pattern_15() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_15", 30, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_15",
+                    30,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_15", 30, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_15",
+                    30,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_15", 30, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "pattern_parsing_tests_list_patterns",
+            "PatternParsingTests_ListPatterns",
+            "SlicePattern_15",
+            30,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -758,7 +1655,10 @@ fn slice_pattern_15() {
 #[test]
 fn slice_pattern_16() {
     let src = r#"c is [..] .."#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { c is [..] ..; } }"#;
     let span2 = Span::new(src2);
@@ -766,16 +1666,45 @@ fn slice_pattern_16() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_16", 31, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_16",
+                    31,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_16", 31, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_16",
+                    31,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_16", 31, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "pattern_parsing_tests_list_patterns",
+            "PatternParsingTests_ListPatterns",
+            "SlicePattern_16",
+            31,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -783,7 +1712,10 @@ fn slice_pattern_16() {
 #[test]
 fn slice_pattern_17() {
     let src = r#"c is a .. or b .."#;
-    let expected = Some(ExpectedDiagnostics { count: 2, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 2,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { c is a .. or b ..; } }"#;
     let span2 = Span::new(src2);
@@ -791,16 +1723,45 @@ fn slice_pattern_17() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_17", 32, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_17",
+                    32,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_17", 32, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_17",
+                    32,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_17", 32, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "pattern_parsing_tests_list_patterns",
+            "PatternParsingTests_ListPatterns",
+            "SlicePattern_17",
+            32,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -808,7 +1769,10 @@ fn slice_pattern_17() {
 #[test]
 fn slice_pattern_18() {
     let src = r#"c is (var x) .. > 0"#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { c is (var x) .. > 0; } }"#;
     let span2 = Span::new(src2);
@@ -816,16 +1780,45 @@ fn slice_pattern_18() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_18", 33, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_18",
+                    33,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_18", 33, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_18",
+                    33,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_18", 33, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "pattern_parsing_tests_list_patterns",
+            "PatternParsingTests_ListPatterns",
+            "SlicePattern_18",
+            33,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -833,7 +1826,7 @@ fn slice_pattern_18() {
 #[test]
 fn slice_pattern_19() {
     let src = r#"c is [..>5]"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { c is [..>5]; } }"#;
     let span2 = Span::new(src2);
@@ -841,16 +1834,45 @@ fn slice_pattern_19() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_19", 34, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_19",
+                    34,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_19", 34, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_19",
+                    34,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_19", 34, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "pattern_parsing_tests_list_patterns",
+            "PatternParsingTests_ListPatterns",
+            "SlicePattern_19",
+            34,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -858,7 +1880,7 @@ fn slice_pattern_19() {
 #[test]
 fn slice_pattern_20() {
     let src = r#"c is [.. string?]"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { c is [.. string?]; } }"#;
     let span2 = Span::new(src2);
@@ -866,16 +1888,45 @@ fn slice_pattern_20() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_20", 35, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_20",
+                    35,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_20", 35, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_20",
+                    35,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_20", 35, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "pattern_parsing_tests_list_patterns",
+            "PatternParsingTests_ListPatterns",
+            "SlicePattern_20",
+            35,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -883,7 +1934,7 @@ fn slice_pattern_20() {
 #[test]
 fn slice_pattern_21() {
     let src = r#"c is [.. string? slice]"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { c is [.. string? slice]; } }"#;
     let span2 = Span::new(src2);
@@ -891,16 +1942,45 @@ fn slice_pattern_21() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_21", 36, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_21",
+                    36,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_21", 36, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_21",
+                    36,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_21", 36, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "pattern_parsing_tests_list_patterns",
+            "PatternParsingTests_ListPatterns",
+            "SlicePattern_21",
+            36,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -908,7 +1988,7 @@ fn slice_pattern_21() {
 #[test]
 fn slice_pattern_22() {
     let src = r#"c is [.. string? slice, ')']"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { c is [.. string? slice, ')']; } }"#;
     let span2 = Span::new(src2);
@@ -916,16 +1996,45 @@ fn slice_pattern_22() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_22", 37, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_22",
+                    37,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_22", 37, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_22",
+                    37,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_22", 37, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "pattern_parsing_tests_list_patterns",
+            "PatternParsingTests_ListPatterns",
+            "SlicePattern_22",
+            37,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -933,7 +2042,7 @@ fn slice_pattern_22() {
 #[test]
 fn slice_pattern_23() {
     let src = r#"c is [.. string? slice ')']"#;
-    let expected: Option<ExpectedDiagnostics> = None; 
+    let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
     let src2 = r#"class C { void M() { c is [.. string? slice ')']; } }"#;
     let span2 = Span::new(src2);
@@ -941,16 +2050,45 @@ fn slice_pattern_23() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_23", 38, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_23",
+                    38,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_23", 38, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_23",
+                    38,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_23", 38, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "pattern_parsing_tests_list_patterns",
+            "PatternParsingTests_ListPatterns",
+            "SlicePattern_23",
+            38,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -958,7 +2096,10 @@ fn slice_pattern_23() {
 #[test]
 fn slice_pattern_24() {
     let src = r#"c is [.. string[]? slice "")""]"#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { c is [.. string[]? slice "")""]; } }"#;
     let span2 = Span::new(src2);
@@ -966,16 +2107,45 @@ fn slice_pattern_24() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_24", 39, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_24",
+                    39,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_24", 39, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_24",
+                    39,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_24", 39, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "pattern_parsing_tests_list_patterns",
+            "PatternParsingTests_ListPatterns",
+            "SlicePattern_24",
+            39,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -983,7 +2153,10 @@ fn slice_pattern_24() {
 #[test]
 fn slice_pattern_25() {
     let src = r#"c is [.. int[]? slice 5]"#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { c is [.. int[]? slice 5]; } }"#;
     let span2 = Span::new(src2);
@@ -991,16 +2164,45 @@ fn slice_pattern_25() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_25", 40, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_25",
+                    40,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_25", 40, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_25",
+                    40,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_25", 40, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "pattern_parsing_tests_list_patterns",
+            "PatternParsingTests_ListPatterns",
+            "SlicePattern_25",
+            40,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1008,7 +2210,10 @@ fn slice_pattern_25() {
 #[test]
 fn slice_pattern_26() {
     let src = r#"c is [.. int[]? slice int i]"#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { c is [.. int[]? slice int i]; } }"#;
     let span2 = Span::new(src2);
@@ -1016,16 +2221,45 @@ fn slice_pattern_26() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_26", 41, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_26",
+                    41,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_26", 41, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_26",
+                    41,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_26", 41, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "pattern_parsing_tests_list_patterns",
+            "PatternParsingTests_ListPatterns",
+            "SlicePattern_26",
+            41,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1033,7 +2267,10 @@ fn slice_pattern_26() {
 #[test]
 fn slice_pattern_27() {
     let src = r#"c is [.. string[]? slice string s]"#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { c is [.. string[]? slice string s]; } }"#;
     let span2 = Span::new(src2);
@@ -1041,16 +2278,45 @@ fn slice_pattern_27() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_27", 42, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_27",
+                    42,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_27", 42, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_27",
+                    42,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_27", 42, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "pattern_parsing_tests_list_patterns",
+            "PatternParsingTests_ListPatterns",
+            "SlicePattern_27",
+            42,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
 
@@ -1058,7 +2324,10 @@ fn slice_pattern_27() {
 #[test]
 fn slice_pattern_28() {
     let src = r#"c is [.. char[]? slice char ch]"#;
-    let expected = Some(ExpectedDiagnostics { count: 1, items: vec![] });
+    let expected = Some(ExpectedDiagnostics {
+        count: 1,
+        items: vec![],
+    });
     let span = Span::new(src);
     let src2 = r#"class C { void M() { c is [.. char[]? slice char ch]; } }"#;
     let span2 = Span::new(src2);
@@ -1066,16 +2335,44 @@ fn slice_pattern_28() {
     if let Some(expected) = expected {
         match r {
             Ok((_rest, unit)) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_28", 43, Some(expected.clone()), CaseData::File { unit: &unit, src: src2, original: Some(src) });
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_28",
+                    43,
+                    Some(expected.clone()),
+                    CaseData::File {
+                        unit: &unit,
+                        src: src2,
+                        original: Some(src),
+                    },
+                );
             }
             Err(_) => {
-                after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_28", 43, Some(expected.clone()), CaseData::Empty);
+                after_parse::after_parse_with_expected(
+                    "pattern_parsing_tests_list_patterns",
+                    "PatternParsingTests_ListPatterns",
+                    "SlicePattern_28",
+                    43,
+                    Some(expected.clone()),
+                    CaseData::Empty,
+                );
             }
         }
     } else {
         assert!(r.is_ok(), "parse failed: {:?}", r.err());
         let (_rest, unit) = r.unwrap();
-        after_parse::after_parse_with_expected("pattern_parsing_tests_list_patterns", "PatternParsingTests_ListPatterns", "SlicePattern_28", 43, None, CaseData::File { unit: &unit, src: src2, original: Some(src) });
+        after_parse::after_parse_with_expected(
+            "pattern_parsing_tests_list_patterns",
+            "PatternParsingTests_ListPatterns",
+            "SlicePattern_28",
+            43,
+            None,
+            CaseData::File {
+                unit: &unit,
+                src: src2,
+                original: Some(src),
+            },
+        );
     }
 }
-

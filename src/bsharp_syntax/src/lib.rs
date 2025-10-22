@@ -8,12 +8,12 @@ pub use identifier::Identifier;
 // Ergonomic re-exports for dynamic traversal and queries
 pub use node::ast_node::AstNode;
 
+pub mod emitters;
+pub mod formatter;
+pub mod node;
+pub mod query;
 pub mod root;
 pub mod trivia;
-pub mod node;
-pub mod emitters;
-pub mod query;
-pub mod formatter;
 pub use formatter::formatter::FormatOptions;
 pub use formatter::formatter::Formatter;
 // Added for XML documentation

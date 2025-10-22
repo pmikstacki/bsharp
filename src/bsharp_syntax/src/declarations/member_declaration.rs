@@ -1,8 +1,8 @@
+use crate::Identifier;
 use crate::declarations::{ConstructorInitializer, Modifier, TypeParameterConstraintClause};
 use crate::expressions::Expression;
 use crate::statements::statement::Statement;
 use crate::types::{Parameter, Type, TypeParameter};
-use crate::Identifier;
 use serde::{Deserialize, Serialize};
 
 /// Unified member declaration that handles both methods and constructors

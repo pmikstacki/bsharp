@@ -36,29 +36,81 @@ pub fn emit_tests_for_group(
 
     // Conditional imports
     if has_non_stmt {
-        writeln!(out, "use bsharp_parser::bsharp::parse_csharp_source_strict;").ok();
+        writeln!(
+            out,
+            "use bsharp_parser::bsharp::parse_csharp_source_strict;"
+        )
+        .ok();
     }
 
-fn is_rust_keyword(s: &str) -> bool {
-    matches!(
-        s,
-        "as" | "break" | "const" | "continue" | "crate" | "else" | "enum" | "extern" | "false" | "fn" | "for"
-            | "if" | "impl" | "in" | "let" | "loop" | "match" | "mod" | "move" | "mut" | "pub" | "ref" | "return"
-            | "Self" | "self" | "static" | "struct" | "super" | "trait" | "true" | "type" | "unsafe" | "use"
-            | "where" | "while" | "async" | "await" | "dyn" | "abstract" | "become" | "box" | "do" | "final"
-            | "macro" | "override" | "priv" | "typeof" | "unsized" | "virtual" | "yield"
-    )
-}
-
-fn sanitize_rust_ident(s: &str) -> String {
-    if is_rust_keyword(s) {
-        format!("{}_", s)
-    } else {
-        s.to_string()
+    fn is_rust_keyword(s: &str) -> bool {
+        matches!(
+            s,
+            "as" | "break"
+                | "const"
+                | "continue"
+                | "crate"
+                | "else"
+                | "enum"
+                | "extern"
+                | "false"
+                | "fn"
+                | "for"
+                | "if"
+                | "impl"
+                | "in"
+                | "let"
+                | "loop"
+                | "match"
+                | "mod"
+                | "move"
+                | "mut"
+                | "pub"
+                | "ref"
+                | "return"
+                | "Self"
+                | "self"
+                | "static"
+                | "struct"
+                | "super"
+                | "trait"
+                | "true"
+                | "type"
+                | "unsafe"
+                | "use"
+                | "where"
+                | "while"
+                | "async"
+                | "await"
+                | "dyn"
+                | "abstract"
+                | "become"
+                | "box"
+                | "do"
+                | "final"
+                | "macro"
+                | "override"
+                | "priv"
+                | "typeof"
+                | "unsized"
+                | "virtual"
+                | "yield"
+        )
     }
-}
+
+    fn sanitize_rust_ident(s: &str) -> String {
+        if is_rust_keyword(s) {
+            format!("{}_", s)
+        } else {
+            s.to_string()
+        }
+    }
     if has_stmt {
-        writeln!(out, "use bsharp_parser::statement_parser::parse_statement_ws;").ok();
+        writeln!(
+            out,
+            "use bsharp_parser::statement_parser::parse_statement_ws;"
+        )
+        .ok();
     }
     if any_diag {
         writeln!(
@@ -77,17 +129,30 @@ fn sanitize_rust_ident(s: &str) -> String {
         let base = if let Some(m) = &t.method_name {
             let stripped = strip_leading_test(m);
             let snake = to_snake_case(stripped);
-            let snake = if snake.is_empty() { format!("case_{}", idx1) } else { snake };
+            let snake = if snake.is_empty() {
+                format!("case_{}", idx1)
+            } else {
+                snake
+            };
             sanitize_rust_ident(&snake)
         } else {
             sanitize_rust_ident(&format!("case_{}", idx1))
         };
         let entry = occurrences.entry(base.clone()).or_insert(0);
         *entry += 1;
-        let fn_name = if *entry == 1 { base.clone() } else { sanitize_rust_ident(&format!("{}_case_{}", base, *entry)) };
+        let fn_name = if *entry == 1 {
+            base.clone()
+        } else {
+            sanitize_rust_ident(&format!("{}_case_{}", base, *entry))
+        };
         let roslyn_method = t.method_name.as_deref().unwrap_or("");
 
-        writeln!(out, "/// Roslyn: {}.{} (case {})", source_stem, roslyn_method, idx1).ok();
+        writeln!(
+            out,
+            "/// Roslyn: {}.{} (case {})",
+            source_stem, roslyn_method, idx1
+        )
+        .ok();
         writeln!(out, "#[test]").ok();
         writeln!(out, "fn {}() {{", fn_name).ok();
 
@@ -118,14 +183,24 @@ fn sanitize_rust_ident(s: &str) -> String {
             if has_expected {
                 writeln!(out, "{}", expected_str).ok();
             } else {
-                writeln!(out, "    let expected: Option<ExpectedDiagnostics> = None; ").ok();
+                writeln!(
+                    out,
+                    "    let expected: Option<ExpectedDiagnostics> = None; "
+                )
+                .ok();
             }
         }
 
         writeln!(out, "    let span = Span::new(src);").ok();
 
         match t.category {
-            TestCategory::Tree | TestCategory::Declaration | TestCategory::Expression | TestCategory::Name | TestCategory::Type | TestCategory::ParameterList | TestCategory::AttributeList => {
+            TestCategory::Tree
+            | TestCategory::Declaration
+            | TestCategory::Expression
+            | TestCategory::Name
+            | TestCategory::Type
+            | TestCategory::ParameterList
+            | TestCategory::AttributeList => {
                 match t.category {
                     TestCategory::Tree => {
                         writeln!(out, "    let r = parse_csharp_source_strict(span);").ok();
@@ -193,7 +268,11 @@ fn sanitize_rust_ident(s: &str) -> String {
                     writeln!(out, "            }}").ok();
                     writeln!(out, "        }}").ok();
                     writeln!(out, "{}", "    } else {").ok();
-                    writeln!(out, "        assert!(r.is_ok(), \"parse failed: {{:?}}\", r.err());").ok();
+                    writeln!(
+                        out,
+                        "        assert!(r.is_ok(), \"parse failed: {{:?}}\", r.err());"
+                    )
+                    .ok();
                     writeln!(out, "        let (_rest, unit) = r.unwrap();").ok();
                     if matches!(t.category, TestCategory::Tree) {
                         writeln!(out, "        after_parse::after_parse_with_expected(\"{}\", \"{}\", \"{}\", {}, None, CaseData::File {{ unit: &unit, src, original: None }});",
@@ -215,7 +294,11 @@ fn sanitize_rust_ident(s: &str) -> String {
                                 module_name, source_stem, roslyn_method, idx1).ok();
                     }
                     writeln!(out, "        }}").ok();
-                    writeln!(out, "        Err(e) => panic!(\"parse failed: {{:?}}\", e),").ok();
+                    writeln!(
+                        out,
+                        "        Err(e) => panic!(\"parse failed: {{:?}}\", e),"
+                    )
+                    .ok();
                     writeln!(out, "    }}").ok();
                 }
             }
@@ -234,7 +317,11 @@ fn sanitize_rust_ident(s: &str) -> String {
                     writeln!(out, "            }}").ok();
                     writeln!(out, "        }}").ok();
                     writeln!(out, "    }} else {{").ok();
-                    writeln!(out, "        assert!(r.is_ok(), \"parse failed: {{:?}}\", r.err());").ok();
+                    writeln!(
+                        out,
+                        "        assert!(r.is_ok(), \"parse failed: {{:?}}\", r.err());"
+                    )
+                    .ok();
                     writeln!(out, "        let (rest, ast) = r.unwrap();").ok();
                     writeln!(out, "        assert!(rest.fragment().trim().is_empty(), \"Unconsumed input: {{}}\", rest.fragment());").ok();
                     writeln!(out, "        after_parse::after_parse_with_expected(\"{}\", \"{}\", \"{}\", {}, None, CaseData::Statement {{ ast: &ast, src }});",
@@ -247,7 +334,11 @@ fn sanitize_rust_ident(s: &str) -> String {
                     writeln!(out, "            after_parse::after_parse_with_expected(\"{}\", \"{}\", \"{}\", {}, None, CaseData::Statement {{ ast: &ast, src }});",
                             module_name, source_stem, roslyn_method, idx1).ok();
                     writeln!(out, "        }}").ok();
-                    writeln!(out, "        Err(e) => panic!(\"parse failed: {{:?}}\", e),").ok();
+                    writeln!(
+                        out,
+                        "        Err(e) => panic!(\"parse failed: {{:?}}\", e),"
+                    )
+                    .ok();
                     writeln!(out, "    }}").ok();
                 }
             }

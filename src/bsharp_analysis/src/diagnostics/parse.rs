@@ -423,7 +423,7 @@ pub fn render_pretty_parse_error(input: &str, err: &ErrorTree<&str>) -> String {
                     " ".repeat(col.saturating_sub(1))
                 )
             }
-        }
+        };
     }
 
     // Fallback: deepest non top-level

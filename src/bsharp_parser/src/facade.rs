@@ -1,5 +1,5 @@
-use crate::parser::bsharp::{parse_csharp_source, parse_csharp_source_with_spans};
 use crate::parser::SpanTable;
+use crate::parser::bsharp::{parse_csharp_source, parse_csharp_source_with_spans};
 use nom::Finish;
 use syntax::ast::CompilationUnit;
 
