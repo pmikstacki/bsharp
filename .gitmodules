@@ -1,0 +1,8 @@
+[submodule "dependencies/nom_supreme"]
+	path = dependencies/nom_supreme
+	url = https://github.com/nobie-org/nom-supreme.git
+	branch = matt/chore/upgrade-to-nom-v8
+[submodule "roslyn_testing/roslyn_repo"]
+	path = roslyn_testing/roslyn_repo
+	url = https://github.com/dotnet/roslyn.git
+	branch = main
