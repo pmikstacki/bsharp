@@ -3,6 +3,7 @@ use std::io::{Write as IoWrite};
 use std::collections::VecDeque;
 use std::time::{SystemTime, UNIX_EPOCH};
 use crate::emitters::policy;
+use crate::statements::statement::Statement;
 use serde::Serialize;
 
 #[derive(Debug)]
@@ -97,6 +98,11 @@ impl EmitCtx {
         if !self.policy_blank_line_between_members { return Ok(()); }
         if self.instrument { self.log_action("policy", &[("name", "between_members".to_string()), ("blank_line_between_members", self.policy_blank_line_between_members.to_string())]); }
         policy::between_members(&mut self.clone_for_policy(), w)
+    }
+
+    pub fn between_block_items<W: Write>(&mut self, w: &mut W, prev: &Statement, next: &Statement) -> Result<(), EmitError> {
+        if self.instrument { self.log_action("policy", &[("name", "between_block_items".to_string())]); }
+        policy::between_block_items(&mut self.clone_for_policy(), w, prev, next)
     }
 
     // Internal: provide a temporary mutable view for policy functions

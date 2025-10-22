@@ -1,7 +1,7 @@
 use crate::parser::identifier_parser::parse_identifier;
 use crate::parser::keywords::declaration_keywords::{kw_class, kw_struct};
 use crate::parser::keywords::linq_query_keywords::kw_where;
-use crate::parser::keywords::parameter_modifier_keywords::{kw_in, kw_out};
+use crate::parser::keywords::parameter_modifier_keywords::{kw_in, kw_out, kw_ref};
 use crate::parser::types::type_parser::parse_type_expression;
 use crate::syntax::comment_parser::ws;
 use crate::syntax::errors::BResult;
@@ -81,6 +81,18 @@ pub fn opt_parse_type_parameter_list(input: Span) -> BResult<Option<Vec<TypePara
 // Parse a single constraint (e.g., 'class', 'struct', 'new()', 'BaseType', 'T')
 fn parse_type_parameter_constraint(input: Span) -> BResult<TypeParameterConstraint> {
     // Try each constraint type individually
+
+    // Try "allows ref struct" contextual constraint
+    if let Ok((rest, _)) = nom::combinator::map(
+        (
+            delimited(ws, crate::parser::keywords::constraint_keywords::kw_allows(), ws),
+            delimited(ws, kw_ref(), ws),
+            delimited(ws, kw_struct(), ws),
+        ),
+        |_| (),
+    ).parse(input) {
+        return Ok((rest, TypeParameterConstraint::AllowsRefStruct));
+    }
 
     // Try "class" keyword
     if let Ok((rest, _)) = kw_class().parse(input) {

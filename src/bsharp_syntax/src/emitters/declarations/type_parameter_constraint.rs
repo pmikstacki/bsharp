@@ -12,6 +12,7 @@ impl Emit for TypeParameterConstraint {
             TypeParameterConstraint::Constructor => w.write_str("new()")?,
             TypeParameterConstraint::SpecificType(t) => t.emit(w, cx)?,
             TypeParameterConstraint::SpecificParameter(id) => write!(w, "{}", id)?,
+            TypeParameterConstraint::AllowsRefStruct => w.write_str("allows ref struct")?,
         }
         Ok(())
     }

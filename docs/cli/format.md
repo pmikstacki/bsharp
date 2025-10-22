@@ -7,7 +7,7 @@ The `format` command formats C# code using the built-in formatter and syntax emi
 ## Usage
 
 ```bash
-bsharp format <INPUT> [--write <BOOL>] [--newline-mode lf|crlf] \
+bsharp format <INPUT> [--write <BOOL>] [--print] [--newline-mode lf|crlf] \
   [--max-consecutive-blank-lines <N>] [--blank-line-between-members <BOOL>] \
   [--trim-trailing-whitespace <BOOL>] [--emit-trace] [--emit-trace-file <FILE>]
 ```
@@ -26,6 +26,10 @@ bsharp format <INPUT> [--write <BOOL>] [--newline-mode lf|crlf] \
 - Default: `true`
 - When `false` and `<INPUT>` is a single file, the formatted content is printed to stdout
 - When `false` and formatting differences are found for multiple files, exits with code `2`
+
+**`--print`**
+- Always print formatted output for a single-file input and exit
+- Useful for piping to other tools; does not write to disk regardless of `--write`
 
 **`--newline-mode <MODE>`**
 - Newline mode: `lf` (default) or `crlf`
@@ -57,6 +61,9 @@ bsharp format Program.cs
 # Print formatted output to stdout (do not write)
 bsharp format Program.cs --write false
 
+# Force printing formatted output even if --write is not set
+bsharp format Program.cs --print
+
 # Format a directory recursively
 bsharp format src/
 
@@ -74,6 +81,7 @@ bsharp format Program.cs --emit-trace --emit-trace-file format_trace.jsonl
 - **Command:** `src/bsharp_cli/src/commands/format.rs`
 - **Formatter:** `bsharp_syntax::Formatter` with `FormatOptions`
 - Emission tracing is controlled by CLI flags or `BSHARP_EMIT_TRACE` and recorded as JSONL.
+- Files that fail to parse are skipped; a summary is printed and they are not modified.
 
 ---
 

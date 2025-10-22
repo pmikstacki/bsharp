@@ -8,27 +8,27 @@ impl Emit for CompilationUnit {
 
         let mut wrote_anything = false;
 
-        // Global attributes
-        for ga in &self.global_attributes {
+        // Global attributes (one per line, no trailing newline here)
+        for (i, ga) in self.global_attributes.iter().enumerate() {
+            if i != 0 { cx.nl(w)?; }
             cx.write_indent(w)?;
             ga.emit(w, cx)?;
-            cx.nl(w)?;
             wrote_anything = true;
         }
 
-        // Global using directives
-        for gu in &self.global_using_directives {
+        // Global using directives (separated by newlines)
+        for (i, gu) in self.global_using_directives.iter().enumerate() {
+            if i != 0 || !self.global_attributes.is_empty() { cx.nl(w)?; }
             cx.write_indent(w)?;
             gu.emit(w, cx)?;
-            cx.nl(w)?;
             wrote_anything = true;
         }
 
-        // Regular using directives
-        for u in &self.using_directives {
+        // Regular using directives (separated by newlines)
+        for (i, u) in self.using_directives.iter().enumerate() {
+            if i != 0 || !self.global_attributes.is_empty() || !self.global_using_directives.is_empty() { cx.nl(w)?; }
             cx.write_indent(w)?;
             u.emit(w, cx)?;
-            cx.nl(w)?;
             wrote_anything = true;
         }
 
@@ -48,10 +48,10 @@ impl Emit for CompilationUnit {
 
             // Usings inside file-scoped namespace
             let mut any_ns_uses = false;
-            for u in &ns.using_directives {
+            for (i, u) in ns.using_directives.iter().enumerate() {
+                if i != 0 { cx.nl(w)?; }
                 cx.write_indent(w)?;
                 u.emit(w, cx)?;
-                cx.nl(w)?;
                 any_ns_uses = true;
             }
             if any_ns_uses && !ns.declarations.is_empty() {
@@ -97,9 +97,12 @@ impl Emit for CompilationUnit {
                 if i != 0 { cx.nl(w)?; }
                 cx.write_indent(w)?;
                 s.emit(w, cx)?;
-                cx.nl(w)?;
+                wrote_anything = true;
             }
         }
+
+        // Ensure exactly one final newline at EOF if any content was written
+        if wrote_anything { cx.nl(w)?; }
 
         Ok(())
     }

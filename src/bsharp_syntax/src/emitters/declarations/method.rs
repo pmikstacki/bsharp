@@ -1,6 +1,7 @@
 use std::fmt::Write;
 use crate::declarations::MethodDeclaration;
 use crate::emitters::emit_trait::{Emit, EmitCtx, EmitError};
+use crate::statements::statement::Statement;
 
 impl Emit for MethodDeclaration{
     fn emit<W: Write>(&self, w: &mut W, cx: &mut EmitCtx) -> Result<(), EmitError> {
@@ -25,10 +26,24 @@ impl Emit for MethodDeclaration{
         // Header completed (method may or may not have a body)
         cx.trace_event("header_done", &[("has_body", self.body.is_some().to_string()), ("allman", "true".to_string())]);
         if let Some(body) = &self.body {
-            cx.nl(w)?;
-            cx.write_indent(w)?;
-            cx.trace_event("before_open_brace", &[("has_body", "true".to_string()), ("allman", "true".to_string())]);
-            body.emit(w, cx)
+            match body {
+                Statement::Block(stmts) => {
+                    cx.nl(w)?; cx.write_indent(w)?;
+                    cx.trace_event("before_open_brace", &[("has_body", "true".to_string()), ("allman", "true".to_string())]);
+                    cx.open_brace(w)?;
+                    for (i, s) in stmts.iter().enumerate() {
+                        cx.write_indent(w)?;
+                        s.emit(w, cx)?;
+                        cx.nl(w)?;
+                        if i + 1 < stmts.len() {
+                            let next = &stmts[i + 1];
+                            cx.between_block_items(w, s, next)?;
+                        }
+                    }
+                    cx.close_brace(w)
+                }
+                other => { w.write_char(' ')?; other.emit(w, cx) }
+            }
         } else { w.write_char(';')?; Ok(()) }
     }
 }

@@ -1,12 +1,12 @@
 use anyhow::{Context, Result};
 use bsharp_parser::bsharp::parse_csharp_source_strict;
 use bsharp_parser::syntax::span::Span;
-use bsharp_syntax::{FormatOptions, Formatter};
 use clap::{arg, Args, ValueEnum};
 use log::{info, warn};
 use std::env;
 use std::fs;
 use std::path::{Path, PathBuf};
+use bsharp_syntax::{FormatOptions, Formatter};
 
 #[derive(Args, Debug, Clone)]
 pub struct FormatArgs {
@@ -84,6 +84,7 @@ pub fn execute(args: FormatArgs) -> Result<()> {
         // Build options per-file (newline preservation)
         let mut opts = FormatOptions {
             max_consecutive_blank_lines: args.max_consecutive_blank_lines.unwrap_or(1),
+            // Default to true to match CSharpier unless explicitly disabled
             blank_line_between_members: args.blank_line_between_members.unwrap_or(true),
             trim_trailing_whitespace: args.trim_trailing_whitespace.unwrap_or(true),
             ..Default::default()

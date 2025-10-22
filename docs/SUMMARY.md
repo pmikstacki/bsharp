@@ -76,6 +76,10 @@
 - [bsharp_tests Overview](./development/bsharp_tests.md)
 - [Extending Syntax (New Nodes)](./development/extending-syntax.md)
 - [Writing Parsers](./development/writing-parsers.md)
+- [Compliance](./development/compliance/README.md)
+  - [Overview](./development/compliance/overview.md)
+  - [Compliance Guide](./development/compliance/compliance_guide.md)
+  - [Generator](./development/compliance/Generator.md)
 
 # Research & Development
 

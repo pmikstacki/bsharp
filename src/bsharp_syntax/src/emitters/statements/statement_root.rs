@@ -41,7 +41,15 @@ impl Emit for Statement {
             Statement::Block(stmts) => {
                 if stmts.is_empty() { w.write_str("{ }")?; return Ok(()); }
                 w.write_char('{')?; cx.nl(w)?; cx.push_indent();
-                for s in stmts { cx.write_indent(w)?; s.emit(w, cx)?; cx.nl(w)?; }
+                for (i, s) in stmts.iter().enumerate() {
+                    cx.write_indent(w)?;
+                    s.emit(w, cx)?;
+                    cx.nl(w)?;
+                    if i + 1 < stmts.len() {
+                        let next = &stmts[i + 1];
+                        cx.between_block_items(w, s, next)?;
+                    }
+                }
                 cx.pop_indent(); cx.write_indent(w)?; w.write_char('}')?; Ok(())
             }
             Statement::Empty => { w.write_char(';')?; Ok(()) }

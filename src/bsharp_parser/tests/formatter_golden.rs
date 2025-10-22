@@ -1,7 +1,6 @@
 use bsharp_parser::bsharp::parse_csharp_source_strict;
 use bsharp_parser::syntax::span::Span;
-use syntax::{FormatOptions, Formatter};
-
+use syntax::formatter::formatter::{FormatOptions, Formatter};
 fn format_src(src: &str, opts: FormatOptions) -> String {
     let (_rest, cu) = parse_csharp_source_strict(Span::new(src)).expect("parse ok");
     let fmt = Formatter::new(opts);

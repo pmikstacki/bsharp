@@ -77,6 +77,7 @@ pub mod preprocessor_keywords;
 pub mod selection_and_switch_keywords;
 pub mod type_keywords;
 pub mod global_keywords;
+pub mod constraint_keywords;
 
 // Centralized keyword membership check for identifier filtering
 static KEYWORDS: phf::Set<&'static str> = phf::phf_set! {

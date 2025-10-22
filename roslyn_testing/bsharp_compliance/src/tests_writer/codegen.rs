@@ -9,7 +9,17 @@ pub fn build_globs(include: &[String], exclude: &[String]) -> anyhow::Result<(gl
         // default include everything
         ib.add(Glob::new("**/*.cs")?);
     } else {
-        for pat in include { ib.add(Glob::new(pat)?); }
+        for pat in include {
+            let has_sep = pat.contains('/') || pat.contains('\\');
+            let has_glob = pat.contains('*') || pat.contains('?') || pat.contains('[');
+            if !has_sep && !has_glob {
+                // Treat bare filename like a basename match anywhere under src
+                let expanded = format!("**/{}", pat);
+                ib.add(Glob::new(&expanded)?);
+            } else {
+                ib.add(Glob::new(pat)?);
+            }
+        }
     }
     let mut eb = GlobSetBuilder::new();
     for pat in exclude { eb.add(Glob::new(pat)?); }

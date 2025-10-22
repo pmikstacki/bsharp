@@ -24,8 +24,31 @@ impl Emit for OperatorDeclaration {
         // Parameters
         for (i, p) in self.parameters.iter().enumerate(){ if i!=0 { cx.token(w, ", ")?; } p.emit(w, cx)?; }
         cx.token(w, ")")?;
-        // Body string (already includes braces/semicolon per AST design)
-        cx.space(w)?; cx.token(w, &self.body)?;
-        Ok(())
+        // Body handling
+        let body_trimmed = self.body.trim();
+        if body_trimmed.starts_with('{') {
+            // Allman: newline + indent + open brace; indent each inner line; close brace
+            cx.trace_event("header_done", &[("has_body", "true".to_string()), ("allman", "true".to_string())]);
+            // Extract inner region between first '{' and last '}'
+            let s = body_trimmed;
+            let start_idx = s.find('{').unwrap_or(0) + 1;
+            let end_idx = if s.ends_with('}') && s.len() >= 2 { s.len() - 1 } else { s.len() };
+            let mut inner = &s[start_idx..end_idx];
+            if inner.starts_with('\n') { inner = &inner[1..]; }
+            cx.nl(w)?; cx.write_indent(w)?; cx.trace_event("before_open_brace", &[("has_body", "true".to_string()), ("allman", "true".to_string())]);
+            cx.open_brace(w)?;
+            if !inner.is_empty() {
+                for (_i, line) in inner.split('\n').enumerate() {
+                    cx.write_indent(w)?;
+                    cx.token(w, line)?;
+                    cx.nl(w)?;
+                }
+            }
+            cx.close_brace(w)
+        } else {
+            // Expression-bodied or semicolon form stays inline
+            cx.trace_event("header_done", &[("has_body", "false".to_string()), ("allman", "false".to_string())]);
+            cx.space(w)?; cx.token(w, &self.body)?; Ok(())
+        }
     }
 }

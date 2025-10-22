@@ -3,30 +3,41 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace TestApp{
+namespace TestApp
+{
     public interface IRepository<T>
     {
         T GetById(int id);
 
         IEnumerable<T> GetAll();
+
         void Add(T entity);
+
         void Update(T entity);
-        void Delete(int id);    }
 
-    public class Product    {
-                public int Id { get; set; }
+        void Delete(int id);
+    }
 
-                public string Name { get; set; }
-                public decimal Price { get; set; }    }
+    public class Product
+    {
+        public int Id { get; set; }
 
-    public class ProductRepository : IRepository<Product>    {
+        public string Name { get; set; }
+
+        public decimal Price { get; set; }
+    }
+
+    public class ProductRepository : IRepository<Product>
+    {
         private readonly List<Product> _products = new List<Product>();
 
-        public void Add(Product entity)        {
+        public void Add(Product entity)
+        {
             _products.Add(entity);
         }
 
-        public void Delete(int id)        {
+        public void Delete(int id)
+        {
             var product = GetById(id);
             if (product! = null)
             {
@@ -34,15 +45,18 @@ namespace TestApp{
             }
         }
 
-        public IEnumerable<Product> GetAll()        {
+        public IEnumerable<Product> GetAll()
+        {
             return _products;
         }
 
-        public Product GetById(int id)        {
+        public Product GetById(int id)
+        {
             return _products.FirstOrDefault(p => p.Id == id);
         }
 
-        public void Update(Product entity)        {
+        public void Update(Product entity)
+        {
             var product = GetById(entity.Id);
             if (product! = null)
             {
@@ -52,14 +66,16 @@ namespace TestApp{
         }
     }
 
-    public class AsyncExample    {
+    public class AsyncExample
+    {
         public async Task<string> FetchDataAsync()
         {
             await Task.Delay(1000);
             return "Data fetched successfully";
         }
 
-        public async Task ProcessDataAsync()        {
+        public async Task ProcessDataAsync()
+        {
             try
             {
                 string data = await FetchDataAsync();
@@ -76,4 +92,3 @@ namespace TestApp{
         }
     }
 }
-

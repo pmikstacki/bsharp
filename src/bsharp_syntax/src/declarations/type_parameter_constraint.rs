@@ -17,4 +17,5 @@ pub enum TypeParameterConstraint {
     Constructor,
     SpecificType(Type),
     SpecificParameter(Identifier),
+    AllowsRefStruct,
 }

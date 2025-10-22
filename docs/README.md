@@ -99,6 +99,26 @@ bsharp analyze MyProject.csproj --out report.json
 bsharp format input.cs --write true
 ```
 
+## Formatter Quickstart
+
+Use the built-in formatter from the CLI or integrate the `Formatter` directly.
+
+- CLI usage and options: see [Format Command](./cli/format.md)
+- Formatter design and policies: see [Formatter and Emitters](./syntax/formatter.md)
+
+Quick examples:
+
+```bash
+# Format a single file in-place
+bsharp format Program.cs
+
+# Print formatted output (do not write)
+bsharp format Program.cs --write false
+
+# Enable emission tracing to a JSONL file
+bsharp format Program.cs --emit-trace --emit-trace-file format_trace.jsonl
+```
+
 ## Use Cases
 
 BSharp is designed for:
