@@ -85,9 +85,10 @@ fn gen_push_for_type(ty: &Type, access: proc_macro2::TokenStream) -> proc_macro2
             if let Some(seg) = tp.path.segments.last() {
                 let ident = &seg.ident;
                 let args = &seg.arguments;
-                // Handle Option<T>
-                if ident == "Option" {
-                    if let PathArguments::AngleBracketed(ab) = args {
+                let ident_str = ident.to_string();
+                match (ident_str.as_str(), args) {
+                    // Handle Option<T>
+                    ("Option", PathArguments::AngleBracketed(ab)) => {
                         if let Some(GenericArgument::Type(inner_ty)) = ab.args.first() {
                             let v = format_ident!("__v");
                             let inner = gen_push_for_type(inner_ty, quote! { #v });
@@ -96,10 +97,8 @@ fn gen_push_for_type(ty: &Type, access: proc_macro2::TokenStream) -> proc_macro2
                             };
                         }
                     }
-                }
-                // Handle Vec<T>
-                if ident == "Vec" {
-                    if let PathArguments::AngleBracketed(ab) = args {
+                    // Handle Vec<T>
+                    ("Vec", PathArguments::AngleBracketed(ab)) => {
                         if let Some(GenericArgument::Type(inner_ty)) = ab.args.first() {
                             let v = format_ident!("__it");
                             let inner = gen_push_for_type(inner_ty, quote! { #v });
@@ -109,16 +108,15 @@ fn gen_push_for_type(ty: &Type, access: proc_macro2::TokenStream) -> proc_macro2
                             };
                         }
                     }
-                }
-                // Handle Box<T>
-                if ident == "Box" {
-                    if let PathArguments::AngleBracketed(ab) = args {
+                    // Handle Box<T>
+                    ("Box", PathArguments::AngleBracketed(ab)) => {
                         if let Some(GenericArgument::Type(inner_ty)) = ab.args.first() {
                             // Borrow inner: &Box<T> -> &T
                             let inner = gen_push_for_type(inner_ty, quote! { (#access).as_ref() });
                             return quote! { #inner };
                         }
                     }
+                    _ => {}
                 }
                 // Skip primitives and String and internal primitive enums
                 if is_primitive_like(ident) {
