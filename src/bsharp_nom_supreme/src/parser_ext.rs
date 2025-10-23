@@ -63,7 +63,7 @@ where
     /// ```
     #[inline]
     #[must_use = "Parsers do nothing unless used"]
-    fn by_ref(&mut self) -> RefParser<Self> {
+    fn by_ref(&mut self) -> RefParser<'_, Self> {
         must_be_a_parser(RefParser { parser: self })
     }
     /// Create a parser that must consume all of the input, or else return an
