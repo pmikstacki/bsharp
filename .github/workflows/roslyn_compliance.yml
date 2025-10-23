@@ -1,0 +1,38 @@
+name: Roslyn Compliance
+
+on:
+  workflow_dispatch:
+
+jobs:
+  roslyn_compliance:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Init submodules (shallow)
+        run: git submodule update --init --recursive --depth 1 --filter=blob:none
+
+      - name: Configure sparse-checkout for roslyn submodule (C# Syntax tests only)
+        run: |
+          if [ -e roslyn_testing/roslyn_repo/.git ]; then
+            git -C roslyn_testing/roslyn_repo sparse-checkout init --cone
+            git -C roslyn_testing/roslyn_repo sparse-checkout set src/Compilers/CSharp/Test/Syntax
+          fi
+
+      - name: Install Rust (stable)
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@v2
+        with:
+          cache-on-failure: true
+
+      - name: Generate compliance tests from Roslyn
+        run: cargo run -p bsharp_compliance --release
+
+      - name: Run compliance test suite
+        run: cargo test -p bsharp_compliance_testing --release --all-features

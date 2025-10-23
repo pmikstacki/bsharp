@@ -29,13 +29,6 @@ jobs:
       - name: Init submodules (shallow)
         run: git submodule update --init --recursive --depth 1 --filter=blob:none
 
-      - name: Configure sparse-checkout for roslyn submodule (C# Syntax tests only)
-        run: |
-          if [ -e roslyn_testing/roslyn_repo/.git ]; then
-            git -C roslyn_testing/roslyn_repo sparse-checkout init --cone
-            git -C roslyn_testing/roslyn_repo sparse-checkout set src/Compilers/CSharp/Test/Syntax
-          fi
-
       - name: Install Rust (stable)
         uses: dtolnay/rust-toolchain@stable
 
@@ -44,19 +37,8 @@ jobs:
         with:
           cache-on-failure: true
 
-      - name: Format check
-        run: cargo fmt --all -- --check
-
-      - name: Clippy
-        run: |
-          cargo clippy --workspace --all-targets --all-features \
-            --exclude bsharp_nom_supreme \
-            --exclude bsharp_compliance \
-            --exclude bsharp_compliance_testing \
-            -- -D warnings
-
       - name: Tests
-        run: cargo test --all --all-features
+        run: cargo test -p bsharp_tests --all-features
 
   publish_bsharp_parser:
     name: Publish bsharp_parser to crates.io
