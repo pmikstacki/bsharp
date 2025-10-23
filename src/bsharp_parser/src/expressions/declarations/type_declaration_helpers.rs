@@ -112,7 +112,7 @@ pub fn at_end_of_body(input: Span) -> bool {
 ///
 /// This helper is designed to be called from type declaration bodies (classes, structs, records, interfaces)
 /// at the point where a member failed to parse, to avoid cascading errors and continue with subsequent members.
-pub fn skip_to_member_boundary_top_level(input: Span) -> &str {
+pub fn skip_to_member_boundary_top_level(input: Span<'_>) -> &str {
     use std::cmp::min;
 
     // Guardrails: discourage calling when already at a closing brace for the current body.

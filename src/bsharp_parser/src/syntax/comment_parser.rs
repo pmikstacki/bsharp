@@ -46,7 +46,7 @@ pub fn parse_whitespace_or_comments<'a>(input: Span<'a>) -> BResult<'a, &'a str>
 }
 
 /// Parses optional whitespace and comments, returns the consumed string
-pub fn ws(input: Span) -> BResult<&str> {
+pub fn ws(input: Span<'_>) -> BResult<'_, &str> {
     match parse_whitespace_or_comments(input) {
         Ok((rest, _matched)) if rest.fragment().len() == input.fragment().len() => Ok((rest, "")),
         other => other,

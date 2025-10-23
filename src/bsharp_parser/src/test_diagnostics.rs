@@ -16,7 +16,7 @@ pub mod exposed {
     }
 
     pub fn parse_csharp_source_with_diags(
-        input: Span,
+        input: Span<'_>,
     ) -> (
         BResult<'_, crate::syntax::ast::CompilationUnit>,
         Vec<ParserDiag>,
@@ -26,7 +26,7 @@ pub mod exposed {
     }
 
     pub fn parse_statement_with_diags(
-        input: Span,
+        input: Span<'_>,
     ) -> (
         BResult<'_, crate::syntax::statements::statement::Statement>,
         Vec<ParserDiag>,
