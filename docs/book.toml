@@ -12,8 +12,8 @@ build-dir = "book"
 
 [output.html]
 additional-css = ["custom.css", "./mdbook-admonish.css", "theme/pagetoc.css"]
-git-repository-url = "https://github.com/mikserek/bsharp"
-edit-url-template = "https://github.com/mikserek/bsharp/edit/main/docs/{path}"
+git-repository-url = "https://github.com/pmikstacki/bsharp"
+edit-url-template = "https://github.com/pmikstacki/bsharp/edit/main/docs/{path}"
 additional-js = ["mermaid.min.js", "mermaid-init.js", "theme/pagetoc.js"]
 
 [output.html.search]
