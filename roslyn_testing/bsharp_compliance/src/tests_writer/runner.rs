@@ -155,7 +155,7 @@ pub fn run(cfg: Config) -> Result<()> {
         let mut tests = pipeline::extract_tests_facade(&content, &methods, cfg.skip_diagnostics);
         // Optionally filter to tests that our parser currently accepts under the selected wrappers
         if cfg.prevalidate {
-            tests.retain(|t| utility::prevalidate(t));
+            tests.retain(utility::prevalidate);
         }
         if tests.is_empty() {
             continue;

@@ -175,7 +175,7 @@ impl<'a> DslParser<'a> {
             }
 
             if self.peek_str("N(") {
-                if let Some(mut node) = self.parse_n_call() {
+                if let Some(node) = self.parse_n_call() {
                     self.skip_ws();
                     if self.eat_char('{') {
                         // Opening a child block: push node as current parent
@@ -310,7 +310,7 @@ impl<'a> DslParser<'a> {
     }
 
     fn eat_char(&mut self, ch: char) -> bool {
-        if self.pos < self.s.len() && self.s[self.pos..].chars().next() == Some(ch) {
+        if self.pos < self.s.len() && self.s[self.pos..].starts_with(ch) {
             self.pos += ch.len_utf8();
             true
         } else {

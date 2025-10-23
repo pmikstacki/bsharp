@@ -53,7 +53,7 @@ pub fn find_next_call(content: &str, from: usize) -> Option<CallHit> {
             }
             if idx < content.len() && content.as_bytes()[idx] == b'(' {
                 let start_args = idx + 1;
-                let call_pos = rewind_ident_start(content, (from + pos));
+                let call_pos = rewind_ident_start(content, from + pos);
                 candidates.push((start_args, *kind, call_pos));
             }
         }
@@ -85,7 +85,7 @@ pub fn find_next_call(content: &str, from: usize) -> Option<CallHit> {
             }
             if idx < content.len() && content.as_bytes()[idx] == b'(' {
                 let start_args = idx + 1;
-                let call_pos = rewind_qualified_start(content, (from + pos));
+                let call_pos = rewind_qualified_start(content, from + pos);
                 candidates.push((start_args, *kind, call_pos));
             }
         }

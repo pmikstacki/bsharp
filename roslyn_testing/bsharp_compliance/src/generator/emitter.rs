@@ -1,4 +1,4 @@
-use crate::generator::model::{ExpectedDiagnostics, ExtractedTest, TestCategory};
+use crate::generator::model::{ExtractedTest, TestCategory};
 
 #[allow(dead_code)]
 pub fn emit_tests_for_group(
@@ -251,9 +251,9 @@ pub fn emit_tests_for_group(
                 }
 
                 if any_diag {
-                    writeln!(out, "{}", "    if let Some(expected) = expected {").ok();
-                    writeln!(out, "{}", "        match r {").ok();
-                    writeln!(out, "{}", "            Ok((_rest, unit)) => {").ok();
+                    writeln!(out, "    if let Some(expected) = expected {{").ok();
+                    writeln!(out, "        match r {{").ok();
+                    writeln!(out, "            Ok((_rest, unit)) => {{").ok();
                     if matches!(t.category, TestCategory::Tree) {
                         writeln!(out, "                after_parse::after_parse_with_expected(\"{}\", \"{}\", \"{}\", {}, Some(expected.clone()), CaseData::File {{ unit: &unit, src, original: None }});",
                                 module_name, source_stem, roslyn_method, idx1).ok();
@@ -262,12 +262,12 @@ pub fn emit_tests_for_group(
                                 module_name, source_stem, roslyn_method, idx1).ok();
                     }
                     writeln!(out, "            }}").ok();
-                    writeln!(out, "{}", "            Err(_) => {").ok();
+                    writeln!(out, "            Err(_) => {{").ok();
                     writeln!(out, "                after_parse::after_parse_with_expected(\"{}\", \"{}\", \"{}\", {}, Some(expected.clone()), CaseData::Empty);",
                             module_name, source_stem, roslyn_method, idx1).ok();
                     writeln!(out, "            }}").ok();
                     writeln!(out, "        }}").ok();
-                    writeln!(out, "{}", "    } else {").ok();
+                    writeln!(out, "    }} else {{").ok();
                     writeln!(
                         out,
                         "        assert!(r.is_ok(), \"parse failed: {{:?}}\", r.err());"
@@ -284,8 +284,8 @@ pub fn emit_tests_for_group(
                     writeln!(out, "    }}").ok();
                 } else {
                     // No diagnostics import; use None directly to avoid type reference
-                    writeln!(out, "{}", "    match r {").ok();
-                    writeln!(out, "{}", "        Ok((_rest, unit)) => {").ok();
+                    writeln!(out, "    match r {{").ok();
+                    writeln!(out, "        Ok((_rest, unit)) => {{").ok();
                     if matches!(t.category, TestCategory::Tree) {
                         writeln!(out, "            after_parse::after_parse_with_expected(\"{}\", \"{}\", \"{}\", {}, None, CaseData::File {{ unit: &unit, src, original: None }});",
                                 module_name, source_stem, roslyn_method, idx1).ok();
@@ -305,9 +305,9 @@ pub fn emit_tests_for_group(
             TestCategory::Statement => {
                 writeln!(out, "    let r = parse_statement_ws(span);").ok();
                 if any_diag {
-                    writeln!(out, "{}", "    if let Some(expected) = expected {").ok();
-                    writeln!(out, "{}", "        match r {").ok();
-                    writeln!(out, "{}", "            Ok((rest, ast)) => {").ok();
+                    writeln!(out, "    if let Some(expected) = expected {{").ok();
+                    writeln!(out, "        match r {{").ok();
+                    writeln!(out, "            Ok((rest, ast)) => {{").ok();
                     writeln!(out, "                after_parse::after_parse_with_expected(\"{}\", \"{}\", \"{}\", {}, Some(expected.clone()), CaseData::Statement {{ ast: &ast, src }});",
                             module_name, source_stem, roslyn_method, idx1).ok();
                     writeln!(out, "            }}").ok();
@@ -328,8 +328,8 @@ pub fn emit_tests_for_group(
                             module_name, source_stem, roslyn_method, idx1).ok();
                     writeln!(out, "    }}").ok();
                 } else {
-                    writeln!(out, "{}", "    match r {").ok();
-                    writeln!(out, "{}", "        Ok((rest, ast)) => {").ok();
+                    writeln!(out, "    match r {{").ok();
+                    writeln!(out, "        Ok((rest, ast)) => {{").ok();
                     writeln!(out, "            assert!(rest.fragment().trim().is_empty(), \"Unconsumed input: {{}}\", rest.fragment());").ok();
                     writeln!(out, "            after_parse::after_parse_with_expected(\"{}\", \"{}\", \"{}\", {}, None, CaseData::Statement {{ ast: &ast, src }});",
                             module_name, source_stem, roslyn_method, idx1).ok();

@@ -13,16 +13,13 @@ pub enum TestCategory {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Default)]
 pub enum ParseContext {
+    #[default]
     Regular,
     Script,
 }
 
-impl Default for ParseContext {
-    fn default() -> Self {
-        ParseContext::Regular
-    }
-}
 
 #[derive(Debug, Clone, Default)]
 pub struct TestOptions {

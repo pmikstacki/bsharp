@@ -47,7 +47,7 @@ fn write_if_changed(path: &Path, new_contents: &str) -> Result<()> {
 }
 
 fn tmp_path_for(path: &Path) -> PathBuf {
-    let mut p = path.as_os_str().to_owned();
+    let p = path.as_os_str().to_owned();
     let mut s = p.to_string_lossy().to_string();
     s.push_str(".tmp");
     PathBuf::from(s)

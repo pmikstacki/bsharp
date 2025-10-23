@@ -99,7 +99,7 @@ pub fn map_kind(roslyn_kind: &str) -> Option<MatchSpec> {
 pub fn translate_expected_tree(
     t: &crate::generator::structure_dsl::ExpectedTree,
 ) -> crate::generator::structure_dsl::ExpectedTree {
-    use crate::generator::structure_dsl::{ExpectedNode, ExpectedTree};
+    use crate::generator::structure_dsl::ExpectedNode;
     fn is_trivia_token(kind: &str) -> bool {
         kind.ends_with("Token") || kind.ends_with("Keyword")
     }

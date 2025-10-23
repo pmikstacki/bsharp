@@ -1,7 +1,7 @@
 use crate::tests_writer::utility;
 use crate::tests_writer::utility::{Category, ExtractedTest};
 use globset::{Glob, GlobSetBuilder};
-use std::path::{Path, PathBuf};
+use std::path::Path;
 
 pub fn build_globs(
     include: &[String],
