@@ -352,12 +352,10 @@ impl EmitCtx {
             details: det,
             tail,
         };
-        if let Some(w) = self.trace.as_mut() {
-            if let Ok(line) = serde_json::to_string(&ev) {
-                let _ = w.write_all(line.as_bytes());
-                let _ = w.write_all(b"\n");
-                let _ = w.flush();
-            }
+        if let (Some(w), Ok(line)) = (self.trace.as_mut(), serde_json::to_string(&ev)) {
+            let _ = w.write_all(line.as_bytes());
+            let _ = w.write_all(b"\n");
+            let _ = w.flush();
         }
     }
 }

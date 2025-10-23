@@ -64,11 +64,9 @@ impl Emit for MemberDeclaration {
         }
         w.write_char(')')?;
         // Initializer (only for constructors)
-        if is_ctor {
-            if let Some(init) = &self.initializer {
-                w.write_char(' ')?;
-                init.emit(w, cx)?;
-            }
+        if let (true, Some(init)) = (is_ctor, &self.initializer) {
+            w.write_char(' ')?;
+            init.emit(w, cx)?;
         }
         // Constraints
         if let Some(cs) = &self.constraints {

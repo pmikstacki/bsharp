@@ -61,11 +61,9 @@ pub(crate) fn between_block_items<W: Write>(
             | Statement::Switch(_)
             | Statement::Block(_)
     );
-    if prev_is_block_like {
-        if let Statement::Declaration(_) = next {
-            // One additional newline -> results in a visible blank line given the prior nl
-            return cx.nl(w);
-        }
+    if let (true, &Statement::Declaration(_)) = (prev_is_block_like, next) {
+        // One additional newline -> results in a visible blank line given the prior nl
+        return cx.nl(w);
     }
     Ok(())
 }
