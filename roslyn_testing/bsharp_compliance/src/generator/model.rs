@@ -12,14 +12,12 @@ pub enum TestCategory {
     AttributeList,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-#[derive(Default)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum ParseContext {
     #[default]
     Regular,
     Script,
 }
-
 
 #[derive(Debug, Clone, Default)]
 pub struct TestOptions {
