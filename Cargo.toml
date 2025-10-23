@@ -1,5 +1,6 @@
 [workspace]
 members = [
+    "src/bsharp_nom_supreme",
     "src/bsharp_parser",
     "src/bsharp_analysis",
     "src/bsharp_cli",

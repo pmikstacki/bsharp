@@ -74,7 +74,7 @@ impl Emit for NamespaceBodyDeclaration {
 }
 
 impl Emit for FileScopedNamespaceDeclaration {
-    fn emit<W: std::fmt::Write>(&self, w: &mut W, cx: &mut EmitCtx) -> Result<(), EmitError> {
+    fn emit<W: std::fmt::Write>(&self, w: &mut W, _cx: &mut EmitCtx) -> Result<(), EmitError> {
         // Only emit the header here; the CompilationUnit emitter will emit inner content
         write!(w, "namespace {};", self.name)?;
         Ok(())

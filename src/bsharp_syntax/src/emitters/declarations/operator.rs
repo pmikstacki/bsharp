@@ -88,7 +88,7 @@ impl Emit for OperatorDeclaration {
             );
             cx.open_brace(w)?;
             if !inner.is_empty() {
-                for (_i, line) in inner.split('\n').enumerate() {
+                for line in inner.split('\n') {
                     cx.write_indent(w)?;
                     cx.token(w, line)?;
                     cx.nl(w)?;

@@ -14,8 +14,8 @@ pub mod node;
 pub mod query;
 pub mod root;
 pub mod trivia;
-pub use formatter::formatter::FormatOptions;
-pub use formatter::formatter::Formatter;
+pub use formatter::FormatOptions;
+pub use formatter::Formatter;
 // Added for XML documentation
 
 // Optional: Re-export all public items from submodules for easier access
