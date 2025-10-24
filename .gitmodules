@@ -2,3 +2,4 @@
 	path = roslyn_testing/roslyn_repo
 	url = https://github.com/dotnet/roslyn.git
 	branch = main
+	ignore = dirty
