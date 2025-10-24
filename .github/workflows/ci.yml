@@ -37,7 +37,23 @@ jobs:
         with:
           cache-on-failure: true
 
+      - name: Install .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Add dotnet tools to PATH
+        run: echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+
+      - name: Install CSharpier
+        run: dotnet tool install -g csharpier
+
+      - name: Build CLI binary for tests
+        run: cargo build -p bsharp_cli --all-features
+
       - name: Tests
+        env:
+          BSHARP_AUTO_INSTALL_CSHARPIER: '1'
         run: cargo test -p bsharp_tests --all-features
 
   publish_bsharp_parser:
