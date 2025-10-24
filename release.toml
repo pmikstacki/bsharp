@@ -1,0 +1,16 @@
+# cargo-release configuration
+# Use a single, shared workspace version sourced from [workspace.package]
+shared-version = true
+# Squash all release changes into a single commit
+consolidate-commits = true
+# If internal crates depend on each other, bump them appropriately
+dependent-version = "upgrade"
+# Create a tag that matches your CI publish filter
+# CI is set to trigger on tags: bsharp_parser-*
+tag-name = "bsharp_parser-v{{version}}"
+# Only allow releases from main
+allow-branch = ["main"]
+# Push commits and tags created by cargo-release
+push = true
+# Do not publish from local; CI handles publish on tag
+publish = false
