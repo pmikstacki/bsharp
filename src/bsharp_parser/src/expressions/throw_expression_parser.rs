@@ -1,7 +1,7 @@
 use crate::parser::expressions::primary_expression_parser::parse_expression;
 use crate::parser::keywords::exception_and_safety_keywords::kw_throw;
-use crate::syntax::comment_parser::ws;
-use crate::syntax::errors::BResult;
+use crate::trivia::comment_parser::ws;
+use crate::errors::BResult;
 
 use nom::{
     Parser,
@@ -24,4 +24,5 @@ pub fn parse_throw_expression(input: Span) -> BResult<Expression> {
     .context("throw expression")
     .parse(input)
 }
-use crate::syntax::span::Span;
+use syntax::span::Span;
+

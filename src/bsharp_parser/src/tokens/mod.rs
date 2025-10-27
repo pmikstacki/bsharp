@@ -2,7 +2,7 @@
 macro_rules! define_token_pair_str {
     ($tok_fn:ident, $peek_fn:ident, $lit:literal) => {
         pub fn $tok_fn()
-        -> impl FnMut($crate::syntax::span::Span) -> $crate::syntax::errors::BResult<&str> {
+        -> impl FnMut($crate::syntax::span::Span) -> $crate::errors::BResult<&str> {
             use nom::Parser as _;
             (|i: $crate::syntax::span::Span| {
                 nom::combinator::map(
@@ -13,7 +13,7 @@ macro_rules! define_token_pair_str {
             })
         }
         pub fn $peek_fn()
-        -> impl FnMut($crate::syntax::span::Span) -> $crate::syntax::errors::BResult<&str> {
+        -> impl FnMut($crate::syntax::span::Span) -> $crate::errors::BResult<&str> {
             use nom::Parser as _;
             (|i: $crate::syntax::span::Span| nom::combinator::peek($tok_fn()).parse(i))
         }
@@ -24,12 +24,12 @@ macro_rules! define_token_pair_str {
 macro_rules! define_token_pair_chr {
     ($tok_fn:ident, $peek_fn:ident, $ch:literal) => {
         pub fn $tok_fn()
-        -> impl FnMut($crate::syntax::span::Span) -> $crate::syntax::errors::BResult<char> {
+        -> impl FnMut($crate::syntax::span::Span) -> $crate::errors::BResult<char> {
             use nom::Parser as _;
             (|i: $crate::syntax::span::Span| nom::character::complete::char($ch).parse(i))
         }
         pub fn $peek_fn()
-        -> impl FnMut($crate::syntax::span::Span) -> $crate::syntax::errors::BResult<char> {
+        -> impl FnMut($crate::syntax::span::Span) -> $crate::errors::BResult<char> {
             use nom::Parser as _;
             (|i: $crate::syntax::span::Span| {
                 nom::combinator::peek(nom::character::complete::char($ch)).parse(i)

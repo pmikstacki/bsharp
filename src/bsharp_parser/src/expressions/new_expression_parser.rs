@@ -2,8 +2,8 @@ use crate::parser::expressions::primary_expression_parser::parse_expression;
 use crate::parser::identifier_parser::parse_identifier;
 use crate::parser::keywords::expression_keywords::kw_new;
 use crate::parser::types::type_parser::parse_type_expression;
-use crate::syntax::comment_parser::ws;
-use crate::syntax::errors::BResult;
+use crate::trivia::comment_parser::ws;
+use crate::errors::BResult;
 
 use crate::syntax::list_parser::parse_delimited_list0;
 use nom::Parser;
@@ -28,7 +28,8 @@ enum InitializerKind {
     Collection(Vec<Expression>),
 }
 
-use crate::syntax::span::Span;
+use syntax::span::Span;
+
 use crate::tokens::assignment::tok_assign;
 use crate::tokens::delimiters::{
     tok_l_brace, tok_l_brack, tok_l_paren, tok_r_brace, tok_r_brack, tok_r_paren,

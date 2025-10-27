@@ -15,6 +15,7 @@ pub mod types;
 
 // Test-only diagnostics exposure (behind feature)
 pub mod test_diagnostics;
+pub mod errors;
 
 use std::collections::HashMap;
 

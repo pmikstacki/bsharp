@@ -4,7 +4,7 @@ use crate::custom_asserts::after_parse::CaseData;
 use crate::custom_asserts::roslyn_asserts::ExpectedDiagnostics;
 use bsharp_parser::bsharp::parse_csharp_source_strict;
 use bsharp_parser::statement_parser::parse_statement_ws;
-use bsharp_parser::syntax::span::Span;
+use bsharp_syntax::span::Span;
 /// Roslyn: SwitchExpressionParsingTests.TestErrantCaseInSwitchExpression1 (case 1)
 #[test]
 fn errant_case_in_switch_expression_1() {

@@ -1,8 +1,9 @@
 use crate::parser::expressions::logical_expression_parser;
-use crate::syntax::errors::BResult;
+use crate::errors::BResult;
 
-use crate::syntax::comment_parser::ws;
-use crate::syntax::span::Span;
+use crate::trivia::comment_parser::ws;
+use syntax::span::Span;
+
 use crate::tokens::assignment::tok_assign;
 use nom::Parser;
 use nom::character::complete::char as nom_char;

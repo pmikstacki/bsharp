@@ -1,4 +1,5 @@
-use crate::syntax::span::Span;
+use syntax::span::Span;
+
 use nom::IResult;
 use nom_supreme::error::{BaseErrorKind, ErrorTree, StackContext};
 

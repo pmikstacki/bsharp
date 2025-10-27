@@ -1,9 +1,9 @@
 use crate::tests_writer::codegen;
 use bsharp_parser::bsharp::parse_csharp_source_strict;
 use bsharp_parser::statement_parser::parse_statement_ws;
-use bsharp_parser::syntax::span::Span;
 use regex::Regex;
 use std::path::PathBuf;
+use bsharp_parser::syntax::span::Span;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Category {

@@ -1,6 +1,6 @@
 use crate::parser::expressions::deconstruction_expression_parser::parse_deconstruction_expression;
-use crate::syntax::comment_parser::ws;
-use crate::syntax::errors::BResult;
+use crate::trivia::comment_parser::ws;
+use crate::errors::BResult;
 use nom::Parser;
 use nom::sequence::delimited;
 use nom::{combinator::map, sequence::terminated};
@@ -19,5 +19,6 @@ pub fn parse_deconstruction_statement(input: Span) -> BResult<Statement> {
     .context("deconstruction statement")
     .parse(input)
 }
-use crate::syntax::span::Span;
+use syntax::span::Span;
+
 use crate::tokens::separators::tok_semicolon;

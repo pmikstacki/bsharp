@@ -3,8 +3,8 @@ use crate::parser::keywords::declaration_keywords::{kw_class, kw_struct};
 use crate::parser::keywords::linq_query_keywords::kw_where;
 use crate::parser::keywords::parameter_modifier_keywords::{kw_in, kw_out, kw_ref};
 use crate::parser::types::type_parser::parse_type_expression;
-use crate::syntax::comment_parser::ws;
-use crate::syntax::errors::BResult;
+use crate::trivia::comment_parser::ws;
+use crate::errors::BResult;
 use crate::syntax::list_parser::{parse_delimited_list1, parse_list0};
 use nom::Parser;
 use nom::sequence::delimited;
@@ -200,7 +200,8 @@ pub fn parse_type_parameter_constraints_clauses(
 
     Ok((current_input, clauses))
 }
-use crate::syntax::span::Span;
+use syntax::span::Span;
+
 
 // Local keyword helpers for constraints not covered elsewhere
 use crate::keywords::literal_keywords::kw_null;

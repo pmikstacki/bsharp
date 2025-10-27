@@ -2,7 +2,7 @@
 use crate::custom_asserts::after_parse;
 use crate::custom_asserts::after_parse::CaseData;
 use bsharp_parser::bsharp::parse_csharp_source_strict;
-use bsharp_parser::syntax::span::Span;
+use bsharp_syntax::span::Span;
 /// Roslyn: LambdaUtilitiesTests.AreEquivalentIgnoringLambdaBodies1 (case 1)
 #[test]
 fn are_equivalent_ignoring_lambda_bodies_1() {

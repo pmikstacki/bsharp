@@ -1,5 +1,5 @@
-use crate::syntax::comment_parser::ws;
-use crate::syntax::errors::BResult;
+use crate::trivia::comment_parser::ws;
+use crate::errors::BResult;
 use nom::Parser;
 use nom::branch::alt;
 use nom::bytes::complete::is_not;
@@ -123,4 +123,5 @@ pub fn parse_preprocessor_directive(input: Span) -> BResult<PreprocessorDirectiv
     .context("preprocessor directive")
     .parse(input)
 }
-use crate::syntax::span::Span;
+use syntax::span::Span;
+

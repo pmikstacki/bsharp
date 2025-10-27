@@ -6,7 +6,7 @@ use bsharp_analysis::framework::session::AnalysisSession;
 use bsharp_analysis::report::AnalysisReport;
 use bsharp_analysis::workspace::WorkspaceLoader;
 use bsharp_parser::facade::Parser;
-use bsharp_parser::syntax::span::Span;
+use bsharp_syntax::span::Span;
 use clap::Args;
 use serde_json;
 use std::fs;

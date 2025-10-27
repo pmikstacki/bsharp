@@ -3,10 +3,11 @@ use crate::parser::expressions::precedence::left_chain;
 use crate::parser::expressions::range_expression_parser::parse_range_expression_or_higher;
 use crate::parser::keywords::expression_keywords::{kw_as, kw_is};
 use crate::parser::types::type_parser::parse_type_expression;
-use crate::syntax::errors::BResult;
+use crate::errors::BResult;
 
-use crate::syntax::comment_parser::ws;
-use crate::syntax::span::Span;
+use crate::trivia::comment_parser::ws;
+use syntax::span::Span;
+
 use crate::tokens::assignment::tok_assign;
 use crate::tokens::nullish::tok_not;
 use crate::tokens::relational::{tok_gt, tok_lt};

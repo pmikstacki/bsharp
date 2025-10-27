@@ -1,7 +1,7 @@
 use crate::parser::identifier_parser::parse_identifier;
 use crate::parser::keywords::expression_keywords::kw_nameof;
-use crate::syntax::comment_parser::ws;
-use crate::syntax::errors::BResult;
+use crate::trivia::comment_parser::ws;
+use crate::errors::BResult;
 
 use nom::Parser;
 use nom::character::complete::char as nom_char;
@@ -56,5 +56,6 @@ pub fn parse_nameof_expression(input: Span) -> BResult<Expression> {
     .context("nameof expression")
     .parse(input)
 }
-use crate::syntax::span::Span;
+use syntax::span::Span;
+
 use crate::tokens::delimiters::{tok_l_paren, tok_r_paren};

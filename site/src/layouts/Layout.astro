@@ -1,0 +1,41 @@
+---
+import '../styles/tailwind.css';
+const { title = 'BSharp' } = Astro.props;
+const base = import.meta.env.BASE_URL || '/';
+---
+<!doctype html>
+<html lang="en" class="dark scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="color-scheme" content="light dark" />
+    <title>{title}</title>
+  </head>
+  <body class="relative min-h-dvh bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+    <div class="fixed inset-0 -z-10 hero-gradient mesh-gradient animate-mesh"></div>
+    <div class="blob blob-blue animate-pulse-slow -z-10 left-[10%] top-[-6%] h-80 w-80"></div>
+    <div class="blob blob-pink animate-pulse-slow -z-10 right-[12%] top-[8%] h-72 w-72"></div>
+    <div class="blob blob-amber animate-pulse-slow -z-10 left-[50%] top-[60%] h-96 w-96"></div>
+    <div class="pointer-events-none fixed inset-0 -z-10 vignette"></div>
+    <header class="sticky top-0 z-40 border-b border-white/10 bg-white/5 backdrop-blur-xl shadow-[0_1px_0_0_rgba(255,255,255,0.06)]">
+      <nav class="mx-auto flex max-w-7xl items-center justify-between gap-6 px-4 py-3">
+        <a href={base} class="font-semibold tracking-tight text-slate-900 hover:text-brand-600 dark:text-slate-100 dark:hover:text-brand-400">BSharp</a>
+        <ul class="flex items-center gap-5 text-sm">
+          <li><a class="hover:text-brand-600 dark:hover:text-brand-400" href="#parser">Parser</a></li>
+          <li><a class="hover:text-brand-600 dark:hover:text-brand-400" href="#formatter">Formatter</a></li>
+          <li><a class="hover:text-brand-600 dark:hover:text-brand-400" href="#analysis">Analysis</a></li>
+          <li><a class="hover:text-brand-600 dark:hover:text-brand-400" href="#compiler">Compiler</a></li>
+          <li><a class="inline-flex items-center rounded-md border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium backdrop-blur hover:bg-white/10" href={`${base}docs/`}>Docs</a></li>
+        </ul>
+      </nav>
+    </header>
+    <main class="mx-auto max-w-7xl px-4 py-10">
+      <slot />
+    </main>
+    <footer class="border-t border-slate-200/60 px-4 py-8 text-center text-xs text-slate-500 dark:border-slate-800/60">
+      <p>© {new Date().getFullYear()} BSharp</p>
+    </footer>
+  </body>
+</html>

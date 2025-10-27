@@ -3,9 +3,10 @@ use crate::parser::expressions::primary_expression_parser::{
 };
 use crate::parser::identifier_parser::parse_identifier;
 use crate::parser::keywords::expression_keywords::kw_with;
-use crate::syntax::comment_parser::ws;
-use crate::syntax::errors::BResult;
-use crate::syntax::span::Span;
+use crate::trivia::comment_parser::ws;
+use crate::errors::BResult;
+use syntax::span::Span;
+
 
 use crate::syntax::list_parser::parse_delimited_list0;
 use crate::tokens::assignment::tok_assign;

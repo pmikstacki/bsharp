@@ -1,6 +1,7 @@
 use crate::parser::expressions::declarations::method_declaration_parser::parse_member_declaration;
-use crate::syntax::errors::BResult;
-use crate::syntax::span::Span;
+use crate::errors::BResult;
+use syntax::span::Span;
+
 use syntax::declarations::MemberDeclaration;
 
 /// Parse any member declaration and let the analyzer handle semantic validation

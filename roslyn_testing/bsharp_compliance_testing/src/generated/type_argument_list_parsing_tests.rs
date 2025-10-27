@@ -3,7 +3,7 @@ use crate::custom_asserts::after_parse;
 use crate::custom_asserts::after_parse::CaseData;
 use crate::custom_asserts::roslyn_asserts::ExpectedDiagnostics;
 use bsharp_parser::bsharp::parse_csharp_source_strict;
-use bsharp_parser::syntax::span::Span;
+use bsharp_syntax::span::Span;
 /// Roslyn: TypeArgumentListParsingTests.TestPredefinedType (case 1)
 #[test]
 fn predefined_type() {

@@ -13,13 +13,14 @@ use crate::parser::expressions::throw_expression_parser::parse_throw_expression;
 use crate::parser::identifier_parser::parse_identifier;
 use crate::parser::keywords::contextual_misc_keywords::{kw_base, kw_this};
 use crate::parser::types::type_parser::parse_type_expression;
-use crate::syntax::comment_parser::ws;
-use crate::syntax::errors::BResult;
+use crate::trivia::comment_parser::ws;
+use crate::errors::BResult;
 use nom_supreme::ParserExt;
 
 use crate::parser::expressions::assignment_expression_parser;
 use crate::syntax::list_parser::parse_delimited_list0;
-use crate::syntax::span::Span;
+use syntax::span::Span;
+
 use crate::tokens::relational::{tok_gt, tok_lt};
 use crate::tokens::separators::tok_comma;
 use nom::{

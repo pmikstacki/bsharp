@@ -7,7 +7,7 @@ use std::path::PathBuf;
 use bsharp_parser::bsharp::parse_csharp_source;
 use bsharp_parser::parse_mode;
 use bsharp_parser::syntax::node::render;
-use bsharp_parser::syntax::span::Span;
+use bsharp_syntax::span::Span;
 use std::sync::{Mutex, OnceLock};
 
 #[derive(Args, Debug, Clone)]

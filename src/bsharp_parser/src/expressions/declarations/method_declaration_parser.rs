@@ -7,7 +7,7 @@ use crate::parser::expressions::primary_expression_parser::parse_expression;
 use crate::parser::expressions::statements::block_statement_parser::parse_block_statement;
 use crate::parser::identifier_parser::parse_identifier;
 use crate::parser::types::type_parser::parse_type_expression;
-use crate::syntax::errors::BResult;
+use crate::errors::BResult;
 use nom::branch::alt;
 use nom::combinator::{map, opt};
 use nom_supreme::tag::complete::tag;
@@ -18,7 +18,7 @@ use syntax::expressions::Expression;
 use syntax::statements::statement::Statement;
 
 // use nom_supreme::ParserExt for .context()
-use crate::syntax::comment_parser::ws;
+use crate::trivia::comment_parser::ws;
 use nom::Parser;
 use nom::character::complete::satisfy;
 use nom::combinator::peek;
@@ -256,7 +256,8 @@ pub fn parse_member_declaration(input: Span) -> BResult<MemberDeclaration> {
         },
     ))
 }
-use crate::syntax::span::Span;
+use syntax::span::Span;
+
 use crate::tokens::delimiters::{tok_l_paren, tok_r_paren};
 use crate::tokens::lambda::tok_lambda;
 use crate::tokens::separators::{tok_colon, tok_comma, tok_semicolon};

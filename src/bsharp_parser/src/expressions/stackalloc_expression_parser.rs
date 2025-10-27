@@ -1,8 +1,8 @@
 use crate::parser::expressions::primary_expression_parser::parse_expression;
 use crate::parser::keywords::expression_keywords::kw_stackalloc;
 use crate::parser::types::type_parser::parse_type_expression;
-use crate::syntax::comment_parser::ws;
-use crate::syntax::errors::BResult;
+use crate::trivia::comment_parser::ws;
+use crate::errors::BResult;
 use crate::syntax::list_parser::parse_delimited_list0;
 use nom::Parser;
 use nom::combinator::cut;
@@ -104,6 +104,7 @@ pub fn parse_stackalloc_expression(input: Span) -> BResult<Expression> {
     .context("stackalloc expression")
     .parse(input)
 }
-use crate::syntax::span::Span;
+use syntax::span::Span;
+
 use crate::tokens::delimiters::{tok_l_brace, tok_l_brack, tok_r_brace, tok_r_brack};
 use crate::tokens::separators::tok_comma;

@@ -1,8 +1,9 @@
 use crate::parser::expressions::conditional_expression_parser;
-use crate::syntax::errors::BResult;
+use crate::errors::BResult;
 
-use crate::syntax::comment_parser::ws;
-use crate::syntax::span::Span;
+use crate::trivia::comment_parser::ws;
+use syntax::span::Span;
+
 use nom::Parser;
 use nom::branch::alt;
 use nom::combinator::{map, opt};

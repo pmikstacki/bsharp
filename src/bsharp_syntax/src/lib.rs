@@ -14,6 +14,8 @@ pub mod node;
 pub mod query;
 pub mod root;
 pub mod trivia;
+pub mod span;
+
 pub use formatter::FormatOptions;
 pub use formatter::Formatter;
 // Added for XML documentation

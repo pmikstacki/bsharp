@@ -86,7 +86,7 @@ pub fn after_parse_with_expected(
     // Compute actual diagnostics count (when available) before moving `case`.
     let mut actual_count: Option<usize> = None;
     {
-        use bsharp_parser::syntax::span::Span;
+        use bsharp_syntax::span::Span;
         use bsharp_parser::test_diagnostics::exposed as diag;
         if diag::diagnostics_supported() {
             actual_count = match &case {

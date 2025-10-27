@@ -53,24 +53,31 @@ jobs:
         run: mdbook-admonish install .
         working-directory: .
 
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: '1.1.30'
+
+      - name: Install Astro dependencies (Bun)
+        run: bun install
+        working-directory: site
+
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5
-      
-      - name: Build docs (mdBook)
-        run: mdbook build
+
+      - name: Build docs (mdBook) into Astro public/docs
+        run: mdbook build -d site/public/docs
         working-directory: .
 
-      - name: Upload book artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: mdbook
-          path: docs/book
+      - name: Build Astro (Bun)
+        run: bun run build
+        working-directory: site
 
-      - name: Upload artifact
+      - name: Upload artifact (Astro dist)
         uses: actions/upload-pages-artifact@v3
         with:
-          path: docs/book
+          path: site/dist
 
   # Deployment job
   deploy:

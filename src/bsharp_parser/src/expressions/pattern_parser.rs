@@ -3,8 +3,8 @@ use crate::parser::identifier_parser::parse_identifier;
 use crate::parser::keywords::contextual_misc_keywords::kw_var;
 use crate::parser::keywords::pattern_keywords::{kw_and, kw_not, kw_or};
 use crate::parser::types::type_parser::parse_type_expression;
-use crate::syntax::comment_parser::ws;
-use crate::syntax::errors::BResult;
+use crate::trivia::comment_parser::ws;
+use crate::errors::BResult;
 
 use crate::syntax::list_parser::parse_delimited_list0;
 use nom::Parser;
@@ -342,7 +342,8 @@ fn parse_parenthesized_pattern(input: Span) -> BResult<Pattern> {
 fn parse_constant_pattern(input: Span) -> BResult<Pattern> {
     map(parse_pattern_expression, Pattern::Constant).parse(input)
 }
-use crate::syntax::span::Span;
+use syntax::span::Span;
+
 use crate::tokens::delimiters::{
     tok_l_brace, tok_l_brack, tok_l_paren, tok_r_brace, tok_r_brack, tok_r_paren,
 };

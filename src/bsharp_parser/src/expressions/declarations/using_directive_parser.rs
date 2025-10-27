@@ -1,8 +1,8 @@
 use crate::parser::identifier_parser::parse_qualified_name;
 use crate::parser::keywords::declaration_keywords::kw_using;
 use crate::parser::keywords::modifier_keywords::kw_static;
-use crate::syntax::comment_parser::ws;
-use crate::syntax::errors::BResult;
+use crate::trivia::comment_parser::ws;
+use crate::errors::BResult;
 use nom::Parser;
 use nom::character::complete::char as nom_char;
 use nom::combinator::peek;
@@ -77,5 +77,6 @@ pub fn parse_using_directive(input: Span) -> BResult<UsingDirective> {
     .context("using directive")
     .parse(input)
 }
-use crate::syntax::span::Span;
+use syntax::span::Span;
+
 use crate::tokens::assignment::tok_assign;

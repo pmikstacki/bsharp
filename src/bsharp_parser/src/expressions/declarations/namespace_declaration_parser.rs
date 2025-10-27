@@ -8,10 +8,10 @@ use crate::parser::expressions::declarations::using_directive_parser::parse_usin
 // use nom::multi::many0; // replaced by manual loop to support directive skipping
 use crate::parser::helpers::directives::skip_preprocessor_directives;
 use crate::parser::identifier_parser::parse_qualified_name;
-use crate::syntax::errors::BResult;
+use crate::errors::BResult;
 
 use crate::parser::keywords::declaration_keywords::{kw_namespace, kw_using};
-use crate::syntax::comment_parser::ws;
+use crate::trivia::comment_parser::ws;
 use log::trace;
 use nom::Parser;
 use nom::branch::alt;
@@ -171,4 +171,5 @@ pub fn parse_namespace_declaration(input: Span) -> BResult<NamespaceDeclaration>
 //     // For now, let's assume it consumes nothing and returns a dummy member or an error.
 //     Err(nom::Err::Error(syntax::errors::BSharpParseError::new(input, crate::syntax::errors::CustomErrorKind::NotYetImplemented("NamespaceBodyDeclaration"))))
 // }
-use crate::syntax::span::Span;
+use syntax::span::Span;
+

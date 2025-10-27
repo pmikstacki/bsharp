@@ -1,8 +1,9 @@
 use crate::parser::keywords::expression_keywords::kw_typeof;
 use crate::parser::types::type_parser::parse_type_expression;
-use crate::syntax::comment_parser::ws;
-use crate::syntax::errors::BResult;
-use crate::syntax::span::Span;
+use crate::trivia::comment_parser::ws;
+use crate::errors::BResult;
+use syntax::span::Span;
+
 
 use crate::tokens::delimiters::{tok_l_paren, tok_r_paren};
 use nom::combinator::cut;

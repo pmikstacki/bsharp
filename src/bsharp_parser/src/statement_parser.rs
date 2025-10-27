@@ -1,6 +1,6 @@
 use crate::parser::expressions::declarations::variable_declaration_parser::parse_local_variable_declaration_statement;
-use crate::syntax::comment_parser::parse_whitespace_or_comments;
-use crate::syntax::errors::BResult;
+use crate::trivia::comment_parser::parse_whitespace_or_comments;
+use crate::errors::BResult;
 use syntax::statements::statement::Statement;
 
 use nom::Parser;
@@ -284,4 +284,5 @@ pub fn parse_statement_ws(input: Span) -> BResult<Statement> {
     parse_statement(input)
 }
 
-use crate::syntax::span::Span;
+use syntax::span::Span;
+

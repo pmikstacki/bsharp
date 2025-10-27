@@ -5,8 +5,8 @@ use crate::parser::expressions::primary_expression_parser::parse_expression;
 use crate::parser::keywords::declaration_keywords::kw_using;
 use crate::parser::keywords::expression_keywords::kw_await;
 use crate::parser::statement_parser::parse_statement_ws;
-use crate::syntax::comment_parser::ws;
-use crate::syntax::errors::BResult;
+use crate::trivia::comment_parser::ws;
+use crate::errors::BResult;
 use nom::Parser;
 use nom::combinator::cut;
 use nom::combinator::opt;
@@ -95,5 +95,6 @@ pub fn parse_using_statement(input: Span) -> BResult<Statement> {
     .context("using statement or declaration")
     .parse(input)
 }
-use crate::syntax::span::Span;
+use syntax::span::Span;
+
 use crate::tokens::delimiters::{tok_l_paren, tok_r_paren};

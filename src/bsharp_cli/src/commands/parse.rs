@@ -7,9 +7,9 @@ use std::path::{Path, PathBuf};
 use bsharp_parser::bsharp::{parse_csharp_source, parse_csharp_source_strict};
 use bsharp_parser::helpers::brace_tracker;
 use bsharp_parser::parse_mode;
-use bsharp_parser::syntax::errors as perr;
+use bsharp_parser::errors as perr;
 use bsharp_parser::syntax::node::render;
-use bsharp_parser::syntax::span::Span;
+use bsharp_syntax::span::Span;
 use nom_supreme::error::{BaseErrorKind, ErrorTree, Expectation};
 use std::env;
 

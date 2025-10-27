@@ -1,7 +1,7 @@
 use crate::parser::keywords::modifier_keywords::kw_unsafe;
 use crate::parser::statement_parser::parse_statement_ws;
-use crate::syntax::comment_parser::ws;
-use crate::syntax::errors::BResult;
+use crate::trivia::comment_parser::ws;
+use crate::errors::BResult;
 
 use nom::Parser;
 use nom::{combinator::map, sequence::delimited};
@@ -25,4 +25,5 @@ pub fn parse_unsafe_statement(input: Span) -> BResult<Statement> {
     .context("unsafe statement")
     .parse(input)
 }
-use crate::syntax::span::Span;
+use syntax::span::Span;
+

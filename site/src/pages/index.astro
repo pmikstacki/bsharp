@@ -1,0 +1,109 @@
+---
+import Layout from '../layouts/Layout.astro';
+import FormattingDemo from '../components/FormattingDemo.astro';
+import Hero from '../components/Hero.astro';
+import FeaturesGrid from '../components/FeaturesGrid.astro';
+import InstallSection from '../components/InstallSection.astro';
+import ParserDiagram from '../components/ParserDiagram.astro';
+const base = import.meta.env.BASE_URL || '/';
+---
+
+<Layout title="BSharp — C# Platform">
+  <Hero base={base} />
+  <FeaturesGrid />
+
+  <section id="parser" class="mx-auto w-full px-4 py-16 md:px-8">
+    <div class="glass reveal reveal-right mx-auto max-w-5xl p-8 md:p-10">
+      <div class="prose prose-slate dark:prose-invert">
+        <h2>Parser</h2>
+        <p>The BSharp parser provides a solid foundation for downstream tooling, ensuring correctness and performance across large codebases.</p>
+      </div>
+      <div class="mx-auto mt-8 max-w-5xl">
+        <ParserDiagram />
+      </div>
+    </div>
+  </section>
+
+  <section id="formatter" class="mx-auto w-full px-4 py-16 md:px-8">
+    <div class="glass reveal reveal-left mx-auto max-w-5xl p-8 md:p-10">
+      <div class="prose prose-slate dark:prose-invert">
+        <h2>Formatter</h2>
+        <p>Consistent formatting enhances readability and keeps diffs stable.</p>
+      </div>
+      <div class="mx-auto mt-16 max-w-7xl">
+        <FormattingDemo />
+      </div>
+    </div>
+  </section>
+
+  <section id="analysis" class="mx-auto w-full px-4 py-16 md:px-8">
+    <div class="glass reveal reveal-right mx-auto max-w-5xl p-8 md:p-10">
+      <div class="prose prose-slate dark:prose-invert">
+        <h2>Analysis Pipeline</h2>
+        <p>A modular analysis pipeline captures accurate control-flow and dependency information for advanced insights.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="compiler" class="mx-auto w-full px-4 py-16 md:px-8">
+    <div class="glass reveal reveal-left mx-auto max-w-5xl p-8 md:p-10">
+      <div class="prose prose-slate dark:prose-invert">
+        <h2>LLVM-based Compiler (planned)</h2>
+        <p>We aim to provide an LLVM-based backend for high-performance native targets.</p>
+      </div>
+    </div>
+  </section>
+
+  <InstallSection />
+
+  <script is:inline>
+    const parallaxEls = Array.from(document.querySelectorAll('[data-parallax]'));
+    let lastY = 0;
+    let ticking = false;
+    function onScroll() {
+      lastY = window.scrollY || window.pageYOffset;
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const maxShift = Math.max(80, Math.min(160, window.innerWidth * 0.12));
+          parallaxEls.forEach((el) => {
+            const speed = parseFloat(el.getAttribute('data-parallax') || '0');
+            const rect = el.getBoundingClientRect();
+            let offset = ((rect.top + rect.height * 0.5) - window.innerHeight * 0.5) * speed;
+            if (offset > maxShift) offset = maxShift; else if (offset < -maxShift) offset = -maxShift;
+            el.style.transform = `translateX(${offset.toFixed(1)}px)`;
+          });
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    onScroll();
+
+    const revealEls = Array.from(document.querySelectorAll('.reveal'));
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          e.target.classList.add('in-view');
+          io.unobserve(e.target);
+        }
+      });
+    }, { rootMargin: '0px', threshold: 0 });
+    revealEls.forEach((el) => io.observe(el));
+
+    revealEls.forEach((el) => {
+      const r = el.getBoundingClientRect();
+      if (r.top < window.innerHeight * 0.9) el.classList.add('in-view');
+    });
+
+    const glowTargets = Array.from(document.querySelectorAll('.glass'));
+    glowTargets.forEach((el) => {
+      el.addEventListener('pointermove', (e) => {
+        const r = el.getBoundingClientRect();
+        el.style.setProperty('--mx', `${e.clientX - r.left}px`);
+        el.style.setProperty('--my', `${e.clientY - r.top}px`);
+      });
+    });
+  </script>
+</Layout>

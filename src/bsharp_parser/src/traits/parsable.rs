@@ -1,5 +1,6 @@
-use crate::syntax::errors::BResult;
-use crate::syntax::span::Span;
+use crate::errors::BResult;
+use syntax::span::Span;
+
 
 // Minimal, focused trait for one-shot parsing
 pub trait Parsable<'a>: Sized {
@@ -16,7 +17,7 @@ pub trait ParsableSpanned<'a>: Sized {
 macro_rules! impl_parsable {
     ($ty:path => $parser:path) => {
         impl<'a> $crate::traits::parsable::Parsable<'a> for $ty {
-            fn parse(input: Span<'a>) -> $crate::syntax::errors::BResult<'a, Self> {
+            fn parse(input: Span<'a>) -> $crate::errors::BResult<'a, Self> {
                 $parser(input)
             }
         }
@@ -30,7 +31,7 @@ macro_rules! impl_parsable_spanned {
         impl<'a> $crate::traits::parsable::ParsableSpanned<'a> for $ty {
             fn parse_with_span(
                 input: Span<'a>,
-            ) -> $crate::syntax::errors::BResult<'a, (Self, std::ops::Range<usize>)> {
+            ) -> $crate::errors::BResult<'a, (Self, std::ops::Range<usize>)> {
                 use nom::Parser as _;
                 use nom_supreme::ParserExt as _;
                 let (rest, (recognized, out)) = ($parser).with_recognized().parse(input)?;

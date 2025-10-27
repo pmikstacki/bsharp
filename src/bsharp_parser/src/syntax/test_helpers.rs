@@ -1,5 +1,5 @@
 use crate::parser::helpers::brace_tracker;
-use crate::syntax::errors::{BResult, format_error_tree};
+use crate::errors::{BResult, format_error_tree};
 use nom::Err as NomErr;
 use syntax::statements::statement::Statement;
 
@@ -69,4 +69,5 @@ pub fn expect_ok<'a, T>(input: &'a str, res: BResult<'a, T>) -> (Span<'a>, T) {
 
 // If parse_input_unwrap is also intended to be here, it can be added.
 // For now, focusing on making parse_all and parse_all_statement available.
-use crate::syntax::span::Span;
+use syntax::span::Span;
+

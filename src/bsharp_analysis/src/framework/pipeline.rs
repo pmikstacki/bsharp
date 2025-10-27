@@ -6,7 +6,7 @@ use crate::syntax::ast::CompilationUnit;
 use crate::workspace::model::{ProjectFileKind, Workspace};
 use crate::{AnalysisContext, AnalysisReport, AstAnalysis, DiagnosticCollection};
 use bsharp_parser::facade::Parser;
-use bsharp_parser::syntax::span::Span;
+use bsharp_syntax::span::Span;
 #[cfg(feature = "parallel_analysis")]
 use rayon::prelude::*;
 

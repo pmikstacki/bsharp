@@ -1,0 +1,89 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light dark;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center rounded-lg px-4 py-2 font-medium transition-colors;
+  }
+  .btn-primary {
+    @apply bg-brand-600 text-white hover:bg-brand-700 dark:bg-brand-500 dark:hover:bg-brand-400;
+  }
+  .btn-outline {
+    @apply border border-slate-300/60 hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-900;
+  }
+  .btn-sm {
+    @apply px-3 py-1 text-xs;
+  }
+
+  .reveal {
+    @apply opacity-0 will-change-transform transition-all duration-700 ease-out;
+  }
+  .reveal-left {
+    @apply -translate-x-16;
+  }
+  .reveal-right {
+    @apply translate-x-16;
+  }
+  .reveal.in-view {
+    @apply opacity-100 translate-x-0;
+  }
+
+  .slogan {
+    @apply font-extrabold tracking-tight leading-none select-none;
+  }
+  .slogan-left {
+    @apply text-6xl sm:text-7xl md:text-8xl bg-gradient-to-r from-brand-500 to-brand-700 bg-clip-text text-transparent drop-shadow;
+  }
+  .slogan-right {
+    @apply text-5xl sm:text-6xl md:text-7xl text-slate-900 dark:text-slate-100 drop-shadow;
+  }
+
+  /* Glass card with cursor glow */
+  .glass {
+    @apply relative rounded-2xl border border-white/20 bg-white/60 shadow-lg backdrop-blur-md transition-transform duration-300 ease-out dark:border-white/10 dark:bg-white/10 ring-1 ring-white/10;
+    background-image: radial-gradient(600px circle at var(--mx, 50%) var(--my, 50%), rgba(59, 130, 246, 0.15), transparent 40%);
+  }
+  .glass:hover { @apply -translate-y-1; }
+}
+
+@layer utilities {
+  .hero-gradient {
+    background: linear-gradient(to bottom, rgba(59,130,246,0.10), transparent 35%),
+      radial-gradient(1200px 600px at 50% -10%, rgba(59,130,246,0.20), transparent 60%);
+  }
+  .blob { @apply absolute rounded-full blur-3xl opacity-60 pointer-events-none; }
+  .blob-blue { background: radial-gradient(circle, rgba(59,130,246,0.45), transparent 60%); }
+  .blob-pink { background: radial-gradient(circle, rgba(236,72,153,0.35), transparent 60%); }
+  .blob-amber { background: radial-gradient(circle, rgba(245,158,11,0.30), transparent 60%); }
+
+  @keyframes pulseFloat {
+    0%, 100% { transform: translateY(0) scale(1); opacity: .7; }
+    50% { transform: translateY(-12px) scale(1.05); opacity: 1; }
+  }
+  .animate-pulse-slow { animation: pulseFloat 8s ease-in-out infinite; }
+
+  /* Animated mesh/aurora background */
+  .mesh-gradient {
+    background-image:
+      radial-gradient(800px 500px at 15% 10%, rgba(59,130,246,0.18), transparent 60%),
+      radial-gradient(700px 480px at 85% 20%, rgba(236,72,153,0.14), transparent 60%),
+      radial-gradient(900px 520px at 50% 95%, rgba(245,158,11,0.12), transparent 60%);
+    will-change: background-position, filter, opacity;
+  }
+  @keyframes meshMove {
+    0%   { filter: hue-rotate(0deg) saturate(1); }
+    50%  { filter: hue-rotate(8deg) saturate(1.05); }
+    100% { filter: hue-rotate(16deg) saturate(1); }
+  }
+  .animate-mesh { animation: meshMove 22s ease-in-out infinite alternate; }
+
+  /* Subtle vignette overlay */
+  .vignette { background: radial-gradient(120% 120% at 50% 30%, transparent 0%, transparent 55%, rgba(0,0,0,0.25) 100%); pointer-events: none; }
+}

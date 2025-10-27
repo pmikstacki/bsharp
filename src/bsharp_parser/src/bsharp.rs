@@ -14,9 +14,10 @@ use crate::parser::keywords::contextual_misc_keywords::kw_global;
 use crate::parser::keywords::declaration_keywords::{kw_namespace, kw_using};
 // parser_helpers imported selectively in sub-parser; this module only needs ws
 use crate::parser::SpanTable;
-use crate::syntax::comment_parser::ws;
-use crate::syntax::errors::BResult;
-use crate::syntax::span::Span;
+use crate::trivia::comment_parser::ws;
+use crate::errors::BResult;
+use syntax::span::Span;
+
 use log::trace;
 use nom::Parser;
 use nom::combinator::peek;
@@ -550,7 +551,7 @@ fn collect_class_member_spans(
 
     // Manually iterate class members
     use crate::parser::expressions::declarations::type_declaration_parser::parse_class_member_for_spans as parse_member;
-    use crate::syntax::comment_parser::parse_whitespace_or_comments as ws_comments;
+    use crate::trivia::comment_parser::parse_whitespace_or_comments as ws_comments;
 
     // Skip the opening '{'
     let mut cur = body_input.strip_prefix('{').unwrap_or(body_input);

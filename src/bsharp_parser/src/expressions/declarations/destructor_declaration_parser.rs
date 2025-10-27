@@ -3,11 +3,11 @@ use crate::parser::expressions::declarations::modifier_parser::parse_modifiers;
 use crate::parser::expressions::declarations::type_declaration_parser::convert_attributes;
 use crate::parser::expressions::statements::block_statement_parser::parse_block_statement;
 use crate::parser::identifier_parser::parse_identifier;
-use crate::syntax::errors::BResult;
+use crate::errors::BResult;
 use nom::combinator::cut;
 use nom::{branch::alt, combinator::map};
 
-use crate::syntax::comment_parser::ws;
+use crate::trivia::comment_parser::ws;
 use nom::Parser;
 use nom::sequence::delimited;
 use nom_supreme::ParserExt;
@@ -74,7 +74,8 @@ fn parse_destructor_body(input: Span) -> BResult<Option<Statement>> {
     .context("destructor body")
     .parse(input)
 }
-use crate::syntax::span::Span;
+use syntax::span::Span;
+
 use crate::tokens::bitwise::tok_tilde;
 use crate::tokens::delimiters::{tok_l_paren, tok_r_paren};
 use crate::tokens::separators::tok_semicolon;

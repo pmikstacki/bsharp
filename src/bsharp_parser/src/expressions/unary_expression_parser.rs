@@ -6,10 +6,11 @@ use crate::parser::expressions::stackalloc_expression_parser::parse_stackalloc_e
 use crate::parser::expressions::typeof_expression_parser::parse_typeof_expression;
 use crate::parser::keywords::exception_and_safety_keywords::{kw_checked, kw_unchecked};
 use crate::parser::types::type_parser::parse_type_expression;
-use crate::syntax::comment_parser::ws;
-use crate::syntax::errors::BResult;
+use crate::trivia::comment_parser::ws;
+use crate::errors::BResult;
 
-use crate::syntax::span::Span;
+use syntax::span::Span;
+
 use crate::tokens::delimiters::{tok_l_paren, tok_r_paren};
 use crate::tokens::nullish::tok_not;
 use nom::{

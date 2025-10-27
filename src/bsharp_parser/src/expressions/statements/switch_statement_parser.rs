@@ -6,10 +6,10 @@ use crate::parser::keywords::selection_and_switch_keywords::{
     kw_case, kw_default, kw_switch, kw_when,
 };
 use crate::parser::statement_parser::parse_statement;
-use crate::syntax::errors::BResult;
+use crate::errors::BResult;
 // Need this for statements within sections
 
-use crate::syntax::comment_parser::ws;
+use crate::trivia::comment_parser::ws;
 use nom::Parser;
 use nom::branch::alt;
 use nom::combinator::map;
@@ -154,6 +154,7 @@ pub fn parse_switch_statement(input: Span) -> BResult<Statement> {
     .context("switch statement")
     .parse(input)
 }
-use crate::syntax::span::Span;
+use syntax::span::Span;
+
 use crate::tokens::delimiters::{tok_l_brace, tok_l_paren, tok_r_brace, tok_r_paren};
 use crate::tokens::separators::tok_colon;

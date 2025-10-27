@@ -1,18 +1,18 @@
 // Improved whitespace handling for declaration parser
 // This module provides common helpers for parsing C# declarations with robust whitespace handling
 
-use crate::syntax::comment_parser::ws;
-use crate::syntax::errors::BResult;
-use crate::syntax::span::Span;
+use crate::trivia::comment_parser::ws;
+use crate::errors::BResult;
 use nom::Parser;
 use nom::character::complete::satisfy;
 use nom::combinator::{map, not, peek};
 use nom::sequence::{delimited, terminated};
 use nom_supreme::tag::complete::tag;
 use syntax::declarations::Modifier;
+use syntax::span::Span;
 
 /// Helper for consuming optional whitespace
-pub fn optional_whitespace(input: Span) -> BResult<&str> {
+pub fn optional_whitespace(input: Span<'_>) -> BResult<'_, &str> {
     // Consume whitespace and comments without returning the slice (consistent with ws signature)
     let (input, consumed) = ws(input)?;
     Ok((input, consumed))

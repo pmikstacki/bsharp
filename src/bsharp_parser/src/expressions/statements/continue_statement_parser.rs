@@ -1,8 +1,8 @@
 // Parser for continue statements
 
 use crate::parser::keywords::flow_control_keywords::kw_continue;
-use crate::syntax::comment_parser::ws;
-use crate::syntax::errors::BResult;
+use crate::trivia::comment_parser::ws;
+use crate::errors::BResult;
 
 use nom::Parser;
 use nom::combinator::cut;
@@ -24,5 +24,6 @@ pub fn parse_continue_statement(input: Span) -> BResult<Statement> {
     .context("continue statement")
     .parse(input)
 }
-use crate::syntax::span::Span;
+use syntax::span::Span;
+
 use crate::tokens::separators::tok_semicolon;

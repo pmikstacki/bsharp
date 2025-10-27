@@ -1,7 +1,8 @@
 #[cfg(feature = "expose_parser_diagnostics")]
 pub mod exposed {
-    use crate::syntax::errors::BResult;
-    use crate::syntax::span::Span;
+    use crate::errors::BResult;
+    use syntax::span::Span;
+
 
     #[derive(Debug, Clone)]
     pub struct ParserDiag {

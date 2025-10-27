@@ -1,7 +1,7 @@
 // Auto-generated STRUCTURE tests from Roslyn: ExtensionsParsingTests
 use crate::custom_asserts::structure_assert;
 use bsharp_parser::bsharp::parse_csharp_source_strict;
-use bsharp_parser::syntax::span::Span;
+use bsharp_syntax::span::Span;
 #[test]
 fn lang_ver_01() {
     let src = r#""#;

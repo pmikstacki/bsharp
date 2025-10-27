@@ -5,8 +5,8 @@ use crate::parser::keywords::expression_keywords::kw_is;
 use crate::parser::keywords::selection_and_switch_keywords::{
     kw_case, kw_default, kw_switch, kw_when,
 };
-use crate::syntax::comment_parser::ws;
-use crate::syntax::errors::BResult;
+use crate::trivia::comment_parser::ws;
+use crate::errors::BResult;
 use nom::Parser;
 
 use crate::syntax::list_parser::parse_delimited_list1;
@@ -290,7 +290,8 @@ pub fn parse_switch_case(input: Span) -> BResult<PatternCase> {
     )
     .parse(input)
 }
-use crate::syntax::span::Span;
+use syntax::span::Span;
+
 use crate::tokens::delimiters::{tok_l_brace, tok_l_paren, tok_r_brace, tok_r_paren};
 use crate::tokens::equality::{tok_equal, tok_not_equal};
 use crate::tokens::lambda::tok_lambda;

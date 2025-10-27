@@ -1,16 +1,17 @@
 use crate::parser::expressions::primary_expression_parser::parse_expression;
 use crate::parser::keywords::expression_keywords::kw_await;
-use crate::syntax::errors::BResult;
+use crate::errors::BResult;
 use nom::combinator::{cut, map};
 use nom::sequence::preceded;
 use syntax::expressions::{AwaitExpression, Expression};
 
-use crate::syntax::comment_parser::ws;
+use crate::trivia::comment_parser::ws;
 use nom::Parser;
 use nom::sequence::delimited;
 use nom_supreme::ParserExt;
 
-use crate::syntax::span::Span;
+use syntax::span::Span;
+
 
 /// Enhanced await expression syntax using robust Nom combinators
 /// Handles complex patterns like: await _userRepository.GetByEmailAsync(email)

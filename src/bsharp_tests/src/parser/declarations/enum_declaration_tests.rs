@@ -2,8 +2,9 @@
 
 use parser::Parsable;
 use parser::expressions::declarations::enum_declaration_parser::parse_enum_declaration;
-use parser::syntax::errors;
-use parser::syntax::span::Span;
+use bsharp_parser::errors;
+use syntax::span::Span;
+
 use serde::de::IntoDeserializer;
 use syntax::declarations::{EnumDeclaration, Modifier};
 use syntax::expressions::expression::Expression;

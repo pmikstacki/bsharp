@@ -1,4 +1,4 @@
-use crate::syntax::comment_parser::ws;
+use crate::trivia::comment_parser::ws;
 use nom::Parser;
 use nom::branch::alt;
 use nom::bytes::complete::take_until;
@@ -9,7 +9,7 @@ use nom::combinator::peek;
 use nom::sequence::delimited;
 use std::marker::PhantomData;
 
-use crate::syntax::errors::BResult;
+use crate::errors::BResult;
 
 use syntax::declarations::{
     Attribute, ClassBodyDeclaration, ClassDeclaration, ConstructorDeclaration, EventDeclaration,
@@ -713,6 +713,7 @@ pub fn parse_class_declaration<'a>(input: Span<'a>) -> BResult<'a, ClassDeclarat
         },
     ))
 }
-use crate::syntax::span::Span;
+use syntax::span::Span;
+
 use crate::tokens::delimiters::{tok_l_brace, tok_r_brace};
 use crate::tokens::separators::tok_semicolon;

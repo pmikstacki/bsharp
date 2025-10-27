@@ -3,7 +3,7 @@ use crate::custom_asserts::after_parse;
 use crate::custom_asserts::after_parse::CaseData;
 use crate::custom_asserts::roslyn_asserts::ExpectedDiagnostics;
 use bsharp_parser::statement_parser::parse_statement_ws;
-use bsharp_parser::syntax::span::Span;
+use bsharp_syntax::span::Span;
 /// Roslyn: DeclarationExpressionTests.NullaboutOutDeclaration (case 1)
 #[test]
 fn nullabout_out_declaration() {

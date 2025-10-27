@@ -1,5 +1,6 @@
-use crate::syntax::errors::BResult;
-use crate::syntax::span::Span;
+use crate::errors::BResult;
+use syntax::span::Span;
+
 use nom::Parser;
 use nom::branch::alt;
 use nom::bytes::complete::{tag, take_until};

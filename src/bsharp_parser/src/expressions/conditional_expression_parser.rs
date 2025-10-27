@@ -1,9 +1,10 @@
 use crate::parser::expressions;
 use crate::parser::expressions::null_coalescing_expression_parser;
-use crate::syntax::comment_parser::ws;
-use crate::syntax::errors::BResult;
+use crate::trivia::comment_parser::ws;
+use crate::errors::BResult;
 
-use crate::syntax::span::Span;
+use syntax::span::Span;
+
 use nom::Parser;
 use nom::branch::alt;
 use nom::character::complete::char as nom_char;

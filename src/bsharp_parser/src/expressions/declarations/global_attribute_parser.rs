@@ -1,7 +1,8 @@
 use crate::parser::expressions::declarations::attribute_parser::parse_attribute;
-use crate::syntax::comment_parser::ws;
-use crate::syntax::errors::BResult;
-use crate::syntax::span::Span;
+use crate::trivia::comment_parser::ws;
+use crate::errors::BResult;
+use syntax::span::Span;
+
 
 use nom::Parser;
 use nom::branch::alt;

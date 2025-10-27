@@ -2,7 +2,7 @@
 
 use parser::Parsable;
 use parser::expressions::declarations::namespace_declaration_parser::parse_namespace_declaration;
-use parser::syntax::errors::BResult;
+use bsharp_parser::errors::BResult;
 use syntax::declarations::NamespaceDeclaration;
 
 // Local test helper to avoid import issues

@@ -1,4 +1,5 @@
-use parser::syntax::span::Span;
+use syntax::span::Span;
+
 use std::path::PathBuf;
 
 /// Test helper equivalent of CLI parse command. Reads C# file, parses, writes JSON AST.

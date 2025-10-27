@@ -20,7 +20,7 @@
 macro_rules! define_keyword_pair {
     ($kw_fn:ident, $peek_fn:ident, $lit:literal) => {
         pub fn $kw_fn()
-        -> impl FnMut($crate::syntax::span::Span) -> $crate::syntax::errors::BResult<&str> {
+        -> impl FnMut($crate::syntax::span::Span) -> $crate::errors::BResult<&str> {
             use nom::Parser as _;
             (|i: $crate::syntax::span::Span| {
                 nom::combinator::map(
@@ -38,13 +38,13 @@ macro_rules! define_keyword_pair {
             })
         }
         pub fn $peek_fn()
-        -> impl FnMut($crate::syntax::span::Span) -> $crate::syntax::errors::BResult<&str> {
+        -> impl FnMut($crate::syntax::span::Span) -> $crate::errors::BResult<&str> {
             use nom::Parser as _;
             (|i: $crate::syntax::span::Span| {
                 // Peek keyword with word boundary, tolerating surrounding whitespace/comments.
                 // Non-consuming due to peek.
                 nom::combinator::peek(nom::sequence::delimited(
-                    $crate::syntax::comment_parser::ws,
+                    $crate::trivia::comment_parser::ws,
                     nom::combinator::map(
                         nom::sequence::terminated(
                             nom_supreme::tag::complete::tag($lit),
@@ -56,7 +56,7 @@ macro_rules! define_keyword_pair {
                         ),
                         |_| $lit,
                     ),
-                    $crate::syntax::comment_parser::ws,
+                    $crate::trivia::comment_parser::ws,
                 ))
                 .parse(i)
             })

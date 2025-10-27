@@ -6,10 +6,11 @@ use crate::parser::keywords::modifier_keywords::{
     kw_required, kw_sealed, kw_static, kw_unsafe, kw_virtual, kw_volatile,
 };
 use crate::parser::keywords::parameter_modifier_keywords::{kw_in, kw_out, kw_params, kw_ref};
-use crate::syntax::errors::BResult;
+use crate::errors::BResult;
 
-use crate::syntax::comment_parser::ws;
-use crate::syntax::span::Span;
+use crate::trivia::comment_parser::ws;
+use syntax::span::Span;
+
 use nom::Parser;
 use nom::{branch::alt, combinator::value, multi::many0, sequence::delimited};
 use nom_supreme::ParserExt;

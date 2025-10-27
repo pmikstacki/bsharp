@@ -6,11 +6,12 @@ use crate::parser::expressions::declarations::type_declaration_helpers::{
 use crate::parser::expressions::primary_expression_parser::parse_expression;
 use crate::parser::identifier_parser::parse_identifier;
 use crate::parser::types::type_parser::parse_type_expression;
-use crate::syntax::errors::BResult;
-use crate::syntax::span::Span;
+use crate::errors::BResult;
+use syntax::span::Span;
+
 
 use crate::keywords::declaration_keywords::kw_enum;
-use crate::syntax::comment_parser::ws;
+use crate::trivia::comment_parser::ws;
 use crate::tokens::assignment::tok_assign;
 use crate::tokens::separators::{tok_colon, tok_comma};
 use log::trace;

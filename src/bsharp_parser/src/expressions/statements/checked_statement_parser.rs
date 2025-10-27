@@ -1,7 +1,7 @@
 use crate::parser::keywords::exception_and_safety_keywords::{kw_checked, kw_unchecked};
 use crate::parser::statement_parser::parse_statement_ws;
-use crate::syntax::comment_parser::ws;
-use crate::syntax::errors::BResult;
+use crate::trivia::comment_parser::ws;
+use crate::errors::BResult;
 use nom::Parser;
 use nom::sequence::delimited;
 use nom::{branch::alt, combinator::map};
@@ -49,4 +49,5 @@ pub fn parse_checked_unchecked_statement(input: Span) -> BResult<Statement> {
         .context("checked or unchecked statement")
         .parse(input)
 }
-use crate::syntax::span::Span;
+use syntax::span::Span;
+

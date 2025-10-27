@@ -1,7 +1,8 @@
 use super::csharpier_installer::ensure_csharpier_bin;
 use assert_cmd::prelude::*;
 use parser::bsharp::parse_csharp_source_strict;
-use parser::syntax::span::Span;
+use syntax::span::Span;
+
 use similar::TextDiff;
 use std::path::PathBuf;
 use std::process::Command;

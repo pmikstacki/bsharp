@@ -7,8 +7,8 @@ use crate::parser::keywords::declaration_keywords::kw_delegate;
 use crate::parser::keywords::modifier_keywords::kw_async;
 use crate::parser::keywords::parameter_modifier_keywords::{kw_in, kw_out, kw_ref};
 use crate::parser::types::type_parser::parse_type_expression;
-use crate::syntax::comment_parser::ws;
-use crate::syntax::errors::BResult;
+use crate::trivia::comment_parser::ws;
+use crate::errors::BResult;
 use crate::syntax::list_parser::parse_delimited_list0;
 use nom::Parser;
 use nom::character::complete::satisfy;
@@ -205,7 +205,8 @@ pub fn parse_lambda_or_anonymous_method(input: Span) -> BResult<Expression> {
     .context("lambda or anonymous method")
     .parse(input)
 }
-use crate::syntax::span::Span;
+use syntax::span::Span;
+
 use crate::tokens::assignment::tok_assign;
 use crate::tokens::delimiters::{tok_l_paren, tok_r_paren};
 use crate::tokens::separators::tok_comma;

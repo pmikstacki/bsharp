@@ -10,8 +10,8 @@ use crate::parser::keywords::type_keywords::{
     kw_bool, kw_byte, kw_char, kw_decimal, kw_double, kw_int, kw_long, kw_object, kw_sbyte,
     kw_short, kw_string, kw_uint, kw_ulong, kw_ushort,
 };
-use crate::syntax::comment_parser::ws;
-use crate::syntax::errors::BResult;
+use crate::trivia::comment_parser::ws;
+use crate::errors::BResult;
 
 use nom::Parser;
 use nom::sequence::delimited;
@@ -294,6 +294,7 @@ fn parse_query_continuation(input: Span) -> BResult<QueryContinuation> {
     )
     .parse(input)
 }
-use crate::syntax::span::Span;
+use syntax::span::Span;
+
 use crate::tokens::assignment::tok_assign;
 use crate::tokens::separators::tok_comma;

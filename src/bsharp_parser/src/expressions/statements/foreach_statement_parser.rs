@@ -7,8 +7,8 @@ use crate::parser::keywords::iteration_keywords::kw_foreach;
 use crate::parser::keywords::parameter_modifier_keywords::kw_in;
 use crate::parser::statement_parser::parse_statement_ws;
 use crate::parser::types::type_parser::parse_type_expression;
-use crate::syntax::comment_parser::ws;
-use crate::syntax::errors::BResult;
+use crate::trivia::comment_parser::ws;
+use crate::errors::BResult;
 use nom::Parser;
 use nom::combinator::cut;
 use nom::{combinator::map, sequence::delimited};
@@ -64,5 +64,6 @@ pub fn parse_foreach_statement(input: Span) -> BResult<Statement> {
     .context("foreach statement")
     .parse(input)
 }
-use crate::syntax::span::Span;
+use syntax::span::Span;
+
 use crate::tokens::delimiters::{tok_l_paren, tok_r_paren};

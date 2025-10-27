@@ -6,8 +6,8 @@ use crate::parser::keywords::exception_and_safety_keywords::{kw_catch, kw_finall
 use crate::parser::keywords::selection_and_switch_keywords::kw_when;
 use crate::parser::statement_parser::parse_statement_ws;
 use crate::parser::types::type_parser::parse_type_expression;
-use crate::syntax::comment_parser::ws;
-use crate::syntax::errors::BResult;
+use crate::trivia::comment_parser::ws;
+use crate::errors::BResult;
 use nom::Parser;
 use nom::combinator::cut;
 use nom::sequence::preceded;
@@ -99,5 +99,6 @@ pub fn parse_try_statement(input: Span) -> BResult<Statement> {
     .context("try statement")
     .parse(input)
 }
-use crate::syntax::span::Span;
+use syntax::span::Span;
+
 use crate::tokens::delimiters::{tok_l_paren, tok_r_paren};

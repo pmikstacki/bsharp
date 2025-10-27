@@ -2,7 +2,7 @@
 use crate::custom_asserts::after_parse;
 use crate::custom_asserts::after_parse::CaseData;
 use bsharp_parser::bsharp::parse_csharp_source_strict;
-use bsharp_parser::syntax::span::Span;
+use bsharp_syntax::span::Span;
 /// Roslyn: NullConditionalAssignmentParsingTests.Parentheses_Assignment_LHS_01 (case 1)
 #[test]
 fn parentheses_assignment_lhs_01() {

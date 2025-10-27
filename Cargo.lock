@@ -301,6 +301,7 @@ name = "bsharp_syntax"
 version = "0.1.1"
 dependencies = [
  "bsharp_syntax_derive",
+ "nom_locate",
  "serde",
  "serde_json",
 ]

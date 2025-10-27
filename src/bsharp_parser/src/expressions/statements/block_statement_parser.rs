@@ -1,6 +1,6 @@
 use crate::parser::statement_parser::parse_statement_ws;
-use crate::syntax::comment_parser::ws;
-use crate::syntax::errors::BResult;
+use crate::trivia::comment_parser::ws;
+use crate::errors::BResult;
 use nom::Parser;
 use nom::combinator::map;
 use nom::combinator::{cut, not, peek};
@@ -39,5 +39,6 @@ pub fn parse_block_statement(input: Span) -> BResult<Statement> {
     .context("block statement")
     .parse(input)
 }
-use crate::syntax::span::Span;
+use syntax::span::Span;
+
 use crate::tokens::delimiters::{tok_l_brace, tok_r_brace};

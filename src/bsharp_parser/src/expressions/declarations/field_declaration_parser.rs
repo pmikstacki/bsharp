@@ -2,9 +2,9 @@ use crate::parser::expressions::declarations::modifier_parser::parse_modifiers;
 use crate::parser::expressions::primary_expression_parser::parse_expression;
 use crate::parser::identifier_parser::parse_identifier;
 use crate::parser::types::type_parser::parse_type_expression;
-use crate::syntax::errors::BResult;
+use crate::errors::BResult;
 
-use crate::syntax::comment_parser::ws;
+use crate::trivia::comment_parser::ws;
 use nom::Parser;
 use nom::sequence::delimited;
 use nom::{combinator::opt, sequence::preceded};
@@ -48,6 +48,7 @@ pub fn parse_field_declaration(input: Span) -> BResult<FieldDeclaration> {
         },
     ))
 }
-use crate::syntax::span::Span;
+use syntax::span::Span;
+
 use crate::tokens::assignment::tok_assign;
 use crate::tokens::separators::tok_semicolon;

@@ -1,8 +1,8 @@
 use crate::parser::expressions::primary_expression_parser::parse_expression;
 // This is used by parse_interpolation
 use crate::keywords::literal_keywords::{kw_false, kw_null, kw_true};
-use crate::syntax::comment_parser::ws;
-use crate::syntax::errors::BResult;
+use crate::trivia::comment_parser::ws;
+use crate::errors::BResult;
 use nom::Input;
 use nom::Parser;
 use nom::error::{ErrorKind, make_error};
@@ -723,7 +723,8 @@ fn trim_raw_content_roslyn(content_raw: &str) -> String {
 
     out_lines.join("\n")
 }
-use crate::syntax::span::Span;
+use syntax::span::Span;
+
 use crate::tokens::delimiters::{tok_l_brace, tok_r_brace};
 use crate::tokens::quotes::{tok_double_quote, tok_single_quote};
 use crate::tokens::separators::{tok_colon, tok_comma};

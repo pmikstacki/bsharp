@@ -1,7 +1,7 @@
 use crate::parser::identifier_parser::parse_identifier;
 use crate::parser::keywords::flow_control_keywords::kw_goto;
-use crate::syntax::comment_parser::ws;
-use crate::syntax::errors::BResult;
+use crate::trivia::comment_parser::ws;
+use crate::errors::BResult;
 use nom::Parser;
 use nom::combinator::cut;
 use nom::combinator::map;
@@ -23,5 +23,6 @@ pub fn parse_goto_statement(input: Span) -> BResult<Statement> {
     .context("goto statement")
     .parse(input)
 }
-use crate::syntax::span::Span;
+use syntax::span::Span;
+
 use crate::tokens::separators::tok_semicolon;

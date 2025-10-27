@@ -1,8 +1,8 @@
 use crate::parser::expressions::primary_expression_parser::parse_expression;
 use crate::parser::identifier_parser::parse_identifier;
 use crate::parser::types::type_parser::parse_type_expression;
-use crate::syntax::comment_parser::ws;
-use crate::syntax::errors::BResult;
+use crate::trivia::comment_parser::ws;
+use crate::errors::BResult;
 use nom::Parser;
 use nom::multi::separated_list1;
 use nom::sequence::delimited;
@@ -84,6 +84,7 @@ pub fn parse_local_variable_declaration_statement(
     use crate::syntax::statements::statement::Statement;
     map(parse_local_variable_declaration, Statement::Declaration).parse(input)
 }
-use crate::syntax::span::Span;
+use syntax::span::Span;
+
 use crate::tokens::assignment::tok_assign;
 use crate::tokens::separators::{tok_comma, tok_semicolon};

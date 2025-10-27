@@ -6,11 +6,11 @@ use crate::parser::expressions::declarations::base_types_parser::parse_base_type
 use crate::parser::expressions::declarations::modifier_parser::parse_modifiers_for_decl_type;
 use crate::parser::expressions::declarations::type_parameter_parser::opt_parse_type_parameter_list;
 use crate::parser::identifier_parser::parse_identifier;
-use crate::syntax::errors::BResult;
+use crate::errors::BResult;
 #[cfg(feature = "parser_recovery_trace")]
 use log::trace;
 
-use crate::syntax::comment_parser::ws;
+use crate::trivia::comment_parser::ws;
 use nom::Parser;
 use nom::bytes::complete::tag;
 use nom::character::complete::satisfy;
@@ -245,4 +245,5 @@ pub fn skip_to_member_boundary_top_level(input: Span<'_>) -> &str {
     trace!("recovery reached EOF without boundary");
     ""
 }
-use crate::syntax::span::Span;
+use syntax::span::Span;
+

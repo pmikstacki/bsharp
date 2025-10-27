@@ -6,14 +6,14 @@ use crate::parser::expressions::statements::block_statement_parser::parse_block_
 use crate::parser::keywords::declaration_keywords::{kw_explicit, kw_implicit, kw_operator};
 use crate::parser::keywords::literal_keywords::{kw_false, kw_true};
 use crate::parser::types::type_parser::parse_type_expression;
-use crate::syntax::errors::BResult;
+use crate::errors::BResult;
 use nom::{branch::alt, combinator::map};
 use syntax::Identifier;
 use syntax::declarations::{
     Attribute, ConversionKind, Modifier, OperatorDeclaration, OperatorKind,
 };
 
-use crate::syntax::comment_parser::ws;
+use crate::trivia::comment_parser::ws;
 use nom::Parser;
 use nom::sequence::delimited;
 use nom_supreme::ParserExt;
@@ -170,7 +170,8 @@ fn parse_operator_body(input: Span) -> BResult<String> {
     .context("operator body")
     .parse(input)
 }
-use crate::syntax::span::Span;
+use syntax::span::Span;
+
 use crate::tokens::arithmetic::{
     tok_decrement, tok_divide, tok_increment, tok_minus, tok_mod, tok_multiply, tok_plus,
 };

@@ -5,9 +5,9 @@ use crate::parser::keywords::accessor_keywords::{kw_add, kw_remove};
 use crate::parser::keywords::declaration_keywords::kw_event;
 use crate::parser::statement_parser::parse_statement;
 use crate::parser::types::type_parser::parse_type_expression;
-use crate::syntax::errors::BResult;
+use crate::errors::BResult;
 
-use crate::syntax::comment_parser::ws;
+use crate::trivia::comment_parser::ws;
 
 use nom::Parser;
 use nom::character::complete::satisfy;
@@ -144,5 +144,6 @@ pub fn parse_event_declaration(input: Span) -> BResult<EventDeclaration> {
     .context("event declaration")
     .parse(input)
 }
-use crate::syntax::span::Span;
+use syntax::span::Span;
+
 use crate::tokens::separators::tok_semicolon;

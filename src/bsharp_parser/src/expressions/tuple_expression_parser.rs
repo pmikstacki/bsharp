@@ -1,7 +1,7 @@
 use crate::parser::expressions::primary_expression_parser::parse_expression;
 use crate::parser::identifier_parser::parse_identifier;
-use crate::syntax::comment_parser::ws;
-use crate::syntax::errors::BResult;
+use crate::trivia::comment_parser::ws;
+use crate::errors::BResult;
 use nom_supreme::ParserExt;
 
 use nom::combinator::cut;
@@ -66,6 +66,7 @@ fn parse_tuple_element(input: Span) -> BResult<TupleElement> {
     })
     .parse(input)
 }
-use crate::syntax::span::Span;
+use syntax::span::Span;
+
 use crate::tokens::delimiters::{tok_l_paren, tok_r_paren};
 use crate::tokens::separators::{tok_colon, tok_comma};

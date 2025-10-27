@@ -1,6 +1,7 @@
-use crate::syntax::comment_parser::ws;
-use crate::syntax::errors::BResult;
-use crate::syntax::span::Span;
+use crate::trivia::comment_parser::ws;
+use crate::errors::BResult;
+use syntax::span::Span;
+
 use nom::Parser;
 use nom::combinator::{cut, opt, peek};
 use nom::multi::{many0, separated_list0};

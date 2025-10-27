@@ -1,6 +1,6 @@
 use crate::parser::keywords::is_keyword;
-use crate::syntax::comment_parser::ws;
-use crate::syntax::errors::BResult;
+use crate::trivia::comment_parser::ws;
+use crate::errors::BResult;
 use nom::{
     Parser,
     branch::alt,
@@ -50,4 +50,5 @@ pub fn parse_qualified_name(input: Span) -> BResult<Vec<Identifier>> {
     })
     .parse(input)
 }
-use crate::syntax::span::Span;
+use syntax::span::Span;
+

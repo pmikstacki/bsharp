@@ -8,10 +8,11 @@ use crate::parser::keywords::type_keywords::{
     kw_bool, kw_byte, kw_char, kw_decimal, kw_double, kw_float, kw_int, kw_long, kw_nint, kw_nuint,
     kw_object, kw_sbyte, kw_short, kw_string, kw_uint, kw_ulong, kw_ushort, kw_void,
 };
-use crate::syntax::comment_parser::ws;
-use crate::syntax::errors::BResult;
+use crate::trivia::comment_parser::ws;
+use crate::errors::BResult;
 use crate::syntax::list_parser::parse_delimited_list0;
-use crate::syntax::span::Span;
+use syntax::span::Span;
+
 use crate::tokens::arithmetic::tok_multiply;
 use crate::tokens::delimiters::{tok_l_brack, tok_r_brack};
 use crate::tokens::relational::{tok_gt, tok_lt};

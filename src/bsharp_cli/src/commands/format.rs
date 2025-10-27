@@ -1,6 +1,6 @@
 use anyhow::{Context, Result};
 use bsharp_parser::bsharp::parse_csharp_source_strict;
-use bsharp_parser::syntax::span::Span;
+use bsharp_syntax::span::Span;
 use bsharp_syntax::{FormatOptions, Formatter};
 use clap::{Args, ValueEnum, arg};
 use log::{info, warn};

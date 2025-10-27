@@ -8,8 +8,8 @@ use crate::parser::expressions::declarations::type_declaration_parser::{
 use crate::parser::expressions::declarations::using_directive_parser::parse_using_directive;
 use crate::parser::identifier_parser::parse_qualified_name;
 use crate::parser::keywords::declaration_keywords::{kw_namespace, kw_using};
-use crate::syntax::comment_parser::ws;
-use crate::syntax::errors::BResult;
+use crate::trivia::comment_parser::ws;
+use crate::errors::BResult;
 use log::trace;
 use nom::Parser;
 use nom::branch::alt;
@@ -58,7 +58,7 @@ pub fn parse_file_scoped_namespace_declaration(
 
     loop {
         // Consume whitespace/comments between items
-        let (rest, _) = crate::syntax::comment_parser::parse_whitespace_or_comments(current)?;
+        let (rest, _) = crate::trivia::comment_parser::parse_whitespace_or_comments(current)?;
         current = rest;
 
         if current.is_empty() {
@@ -168,5 +168,6 @@ pub fn parse_global_using(input: Span) -> BResult<GlobalUsing> {
 pub struct GlobalUsing {
     pub namespace: Vec<Identifier>,
 }
-use crate::syntax::span::Span;
+use syntax::span::Span;
+
 use crate::tokens::separators::tok_semicolon;

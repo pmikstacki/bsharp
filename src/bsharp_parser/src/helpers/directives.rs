@@ -1,5 +1,6 @@
-use crate::syntax::comment_parser::ws;
-use crate::syntax::span::Span;
+use crate::trivia::comment_parser::ws;
+use syntax::span::Span;
+
 use crate::trivia::preprocessor_directive_parser::parse_preprocessor_directive;
 
 /// Skip preprocessor directives starting at the current position.

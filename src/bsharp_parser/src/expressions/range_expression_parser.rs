@@ -1,7 +1,8 @@
 use crate::parser::expressions::unary_expression_parser::parse_unary_expression_or_higher;
-use crate::syntax::comment_parser::ws;
-use crate::syntax::errors::BResult;
-use crate::syntax::span::Span;
+use crate::trivia::comment_parser::ws;
+use crate::errors::BResult;
+use syntax::span::Span;
+
 use nom::Parser;
 use nom::character::complete::char as nom_char;
 use nom::combinator::opt;

@@ -3,7 +3,7 @@ use crate::custom_asserts::after_parse;
 use crate::custom_asserts::after_parse::CaseData;
 use bsharp_parser::bsharp::parse_csharp_source_strict;
 use bsharp_parser::statement_parser::parse_statement_ws;
-use bsharp_parser::syntax::span::Span;
+use bsharp_syntax::span::Span;
 /// Roslyn: SyntaxNodeTests.TestQualifiedNameSyntaxWith (case 1)
 #[test]
 fn qualified_name_syntax_with() {

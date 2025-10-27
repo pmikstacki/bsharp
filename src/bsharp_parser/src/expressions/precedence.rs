@@ -1,5 +1,6 @@
-use crate::syntax::errors::BResult;
-use crate::syntax::span::Span;
+use crate::errors::BResult;
+use syntax::span::Span;
+
 
 use nom::Err;
 use nom::Parser;

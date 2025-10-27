@@ -2,7 +2,7 @@
 
 use nom::Err as NomErr;
 use parser::expressions::primary_expression_parser::parse_expression;
-use parser::syntax::errors::format_error_tree;
+use bsharp_parser::errors::format_error_tree;
 
 #[test]
 fn invalid_incomplete_ternary_pretty() {

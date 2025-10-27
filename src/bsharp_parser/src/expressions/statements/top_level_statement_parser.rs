@@ -1,6 +1,6 @@
 use crate::parser::statement_parser::{parse_statement, parse_statement_ws};
-use crate::syntax::comment_parser::ws;
-use crate::syntax::errors::BResult;
+use crate::trivia::comment_parser::ws;
+use crate::errors::BResult;
 use syntax::statements::statement::Statement;
 
 use nom::Parser;
@@ -60,4 +60,5 @@ pub fn parse_top_level_statement(input: Span) -> BResult<Statement> {
         .context("top-level statement")
         .parse(input)
 }
-use crate::syntax::span::Span;
+use syntax::span::Span;
+
