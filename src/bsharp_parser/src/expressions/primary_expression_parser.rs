@@ -20,6 +20,8 @@ use nom_supreme::ParserExt;
 use crate::parser::expressions::assignment_expression_parser;
 use crate::syntax::list_parser::parse_delimited_list0;
 use syntax::span::Span;
+use crate::span::Spanned;
+use crate::span_ext::ParserExt as _;
 
 use crate::tokens::relational::{tok_gt, tok_lt};
 use crate::tokens::separators::tok_comma;
@@ -41,6 +43,11 @@ pub fn parse_expression(input: Span) -> BResult<Expression> {
     )
     .context("expression")
     .parse(input)
+}
+
+pub fn parse_expression_spanned(input: Span) -> BResult<Spanned<Expression>> {
+    let mut p = |i: Span| parse_expression(i);
+    p.spanned()(input)
 }
 
 pub fn parse_primary_expression(input: Span) -> BResult<Expression> {

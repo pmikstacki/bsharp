@@ -17,6 +17,10 @@ pub mod types;
 pub mod test_diagnostics;
 pub mod errors;
 
+// Sidecar span types and parser extension
+pub mod span;
+pub mod span_ext;
+
 use std::collections::HashMap;
 
 pub type SpanTable = HashMap<String, std::ops::Range<usize>>;
@@ -28,3 +32,7 @@ pub mod parser {
 
 // Optional, minimal public API surface for traits
 pub use traits::parsable::{Parsable, ParsableSpanned};
+
+// Re-export span API
+pub use span::{Spanned, ByteRange, LineOffset, TextRange, HasSpan};
+pub use span_ext::ParserExt as SpannedParserExt;

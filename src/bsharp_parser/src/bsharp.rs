@@ -27,6 +27,8 @@ use nom_supreme::error::{BaseErrorKind, ErrorTree, Expectation};
 use syntax::Identifier as SynIdentifier;
 use syntax::ast::{CompilationUnit, TopLevelDeclaration};
 use syntax::declarations::{ClassBodyDeclaration, GlobalUsingDirective, TypeDeclaration};
+use crate::span::Spanned;
+use crate::span_ext::ParserExt as _;
 
 fn ident_to_string(id: &SynIdentifier) -> String {
     match id {
@@ -34,6 +36,12 @@ fn ident_to_string(id: &SynIdentifier) -> String {
         SynIdentifier::QualifiedIdentifier(segs) => segs.join("."),
         SynIdentifier::OperatorOverrideIdentifier(_) => "operator".to_string(),
     }
+}
+
+/// Variant of parse_csharp_source that also returns the span of the recognized root node.
+pub fn parse_csharp_source_spanned<'a>(input: Span<'a>) -> BResult<'a, Spanned<CompilationUnit>> {
+    let mut p = |i: Span<'a>| parse_csharp_source(i);
+    p.spanned()(input)
 }
 
 /// Parse a C# source file following Roslyn's model where a source file contains:
