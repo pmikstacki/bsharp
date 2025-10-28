@@ -15,6 +15,8 @@ use nom::{
     sequence::{delimited, preceded},
 };
 use nom_supreme::ParserExt;
+use crate::span::Spanned;
+use crate::span_ext::ParserExt as _;
 use syntax::expressions::literal::InterpolatedStringPart;
 use syntax::expressions::literal::{IntegerSuffix, InterpolatedStringLiteral};
 use syntax::expressions::{Expression, Literal};
@@ -28,6 +30,24 @@ pub fn parse_boolean(input: Span) -> BResult<Literal> {
     ))
     .context("boolean literal (expected 'true' or 'false')")
     .parse(input)
+}
+
+pub fn parse_literal_spanned(input: Span) -> BResult<Spanned<Literal>> {
+    use nom::{branch::alt, combinator::map};
+    let core = alt((
+        parse_boolean,
+        map(kw_null(), |_| Literal::Null),
+        parse_decimal_literal,
+        parse_float,
+        parse_integer,
+        parse_raw_interpolated_string,
+        parse_interpolated_string,
+        parse_verbatim_string,
+        parse_raw_string,
+        parse_string,
+        parse_char_literal,
+    ));
+    nom::sequence::delimited(ws, core.spanned(), ws).parse(input)
 }
 
 // Parse a raw interpolated string literal: $""" ... {expr} ... """ or with multiple $ and N quotes

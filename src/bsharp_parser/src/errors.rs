@@ -1,4 +1,5 @@
 use syntax::span::Span;
+use miette::{LabeledSpan, NamedSource, Report, SourceSpan};
 
 use nom::IResult;
 use nom_supreme::error::{BaseErrorKind, ErrorTree, StackContext};
@@ -20,6 +21,44 @@ pub fn format_error_tree(input: &str, error: &ErrorTree<Span<'_>>) -> String {
             .unwrap_or("")
             .to_string()
     }
+
+// ===== miette integration (minimal adapter) =====
+fn best_base<'a>(e: &'a ErrorTree<Span<'a>>) -> (usize, String) {
+    match e {
+        ErrorTree::Base { location, kind } => {
+            let msg = match kind {
+                BaseErrorKind::Expected(msg) => format!("expected {}", msg),
+                other => format!("{:?}", other),
+            };
+            (location.location_offset(), msg)
+        }
+        ErrorTree::Stack { base, .. } => best_base(base),
+        ErrorTree::Alt(list) => {
+            // Choose the alternative with the greatest offset
+            let mut best: Option<(usize, String)> = None;
+            let mut best_off = 0usize;
+            for alt in list {
+                let (off, msg) = best_base(alt);
+                if best.is_none() || off > best_off {
+                    best = Some((off, msg));
+                    best_off = off;
+                }
+            }
+            best.unwrap_or_else(|| {
+                // Fallback to a dummy at start
+                (0usize, "parse error".to_string())
+            })
+        }
+    }
+}
+
+pub fn to_miette_report<'a>(src_name: &str, src: &'a str, error: &ErrorTree<Span<'a>>) -> Report {
+    let (offset, msg) = best_base(error);
+    let span = SourceSpan::new((offset).into(), 1usize.into());
+    let label = LabeledSpan::at(span, msg.clone());
+    miette::miette!(labels = vec![label], "{}", msg)
+        .with_source_code(NamedSource::new(src_name.to_string(), src.to_string()))
+}
 
     fn format_stack_contexts<E: std::fmt::Display + std::fmt::Debug>(
         contexts: &[(Span<'_>, StackContext<E>)],

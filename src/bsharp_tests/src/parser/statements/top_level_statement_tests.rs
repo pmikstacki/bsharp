@@ -3,7 +3,6 @@
 use parser::expressions::statements::top_level_statement_parser::{
     parse_top_level_statement, parse_top_level_statements,
 };
-use bsharp_parser::errors::format_error_tree;
 use syntax::statements::statement::Statement;
 
 fn parse_top_level_statements_helper(code: &str) -> Result<Vec<Statement>, String> {

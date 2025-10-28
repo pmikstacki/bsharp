@@ -40,8 +40,8 @@ fn ident_to_string(id: &SynIdentifier) -> String {
 
 /// Variant of parse_csharp_source that also returns the span of the recognized root node.
 pub fn parse_csharp_source_spanned<'a>(input: Span<'a>) -> BResult<'a, Spanned<CompilationUnit>> {
-    let mut p = |i: Span<'a>| parse_csharp_source(i);
-    p.spanned()(input)
+    use nom::sequence::delimited;
+    delimited(ws, (|i| parse_csharp_source(i)).spanned(), ws).parse(input)
 }
 
 /// Parse a C# source file following Roslyn's model where a source file contains:

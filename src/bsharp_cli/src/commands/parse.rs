@@ -11,6 +11,7 @@ use bsharp_parser::errors as perr;
 use bsharp_parser::syntax::node::render;
 use bsharp_syntax::span::Span;
 use nom_supreme::error::{BaseErrorKind, ErrorTree, Expectation};
+use miette::{NamedSource, LabeledSpan, SourceSpan, miette};
 use std::env;
 
 // Select deepest location span from an ErrorTree<Span>
@@ -93,12 +94,16 @@ pub fn execute(args: ParseArgs) -> Result<()> {
                             })
                         );
                     } else {
-                        print_pretty_error(&args.input, &pretty, args.no_color);
+                        let offset = 0usize;
+                        let span = SourceSpan::new((offset).into(), 1usize.into());
+                        let label = LabeledSpan::at(span, "expected EOF");
+                        let report = miette!(labels = vec![label], "parse error")
+                            .with_source_code(NamedSource::new(args.input.display().to_string(), source_code.clone()));
+                        eprintln!("{}", report);
                     }
                     std::process::exit(1);
                 }
             };
-            // Pretty body for stderr or message field
             let pretty = perr::format_error_tree(&source_code, err_tree);
             if args.errors_json {
                 let loc = deepest_span(err_tree);
@@ -125,7 +130,13 @@ pub fn execute(args: ParseArgs) -> Result<()> {
                 });
                 println!("{}", serde_json::to_string(&payload).unwrap_or_else(|_| "{\"error\":{\"message\":\"parse error\"}}".to_string()));
             } else {
-                print_pretty_error(&args.input, &pretty, args.no_color);
+                let loc = deepest_span(err_tree);
+                let offset = loc.location_offset();
+                let span = SourceSpan::new((offset).into(), 1usize.into());
+                let label = LabeledSpan::at(span, "parse error");
+                let report = miette!(labels = vec![label], "parse error")
+                    .with_source_code(NamedSource::new(args.input.display().to_string(), source_code.clone()));
+                eprintln!("{}", report);
             }
             std::process::exit(1);
         }
@@ -169,7 +180,12 @@ pub fn execute(args: ParseArgs) -> Result<()> {
                         })
                     );
                 } else {
-                    print_pretty_error(&args.input, &pretty, args.no_color);
+                    let offset = offset;
+                    let span = SourceSpan::new((offset).into(), 1usize.into());
+                    let label = LabeledSpan::at(span, "expected '}'");
+                    let report = miette!(labels = vec![label], "parse error")
+                        .with_source_code(NamedSource::new(args.input.display().to_string(), source_code.clone()));
+                    eprintln!("{}", report);
                 }
             } else {
                 // Build a synthetic EOF-expected error at the remaining location

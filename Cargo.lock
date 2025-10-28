@@ -236,6 +236,7 @@ dependencies = [
  "clap",
  "env_logger",
  "log",
+ "miette 5.10.0",
  "nom",
  "serde",
  "serde_json",
@@ -291,6 +292,7 @@ dependencies = [
  "bsharp_nom_supreme",
  "bsharp_syntax",
  "log",
+ "miette 5.10.0",
  "nom",
  "nom_locate",
  "phf 0.13.1",
@@ -1165,6 +1167,18 @@ dependencies = [
 
 [[package]]
 name = "miette"
+version = "5.10.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "59bb584eaeeab6bd0226ccf3509a69d7936d148cf3d036ad350abe35e8c6856e"
+dependencies = [
+ "miette-derive 5.10.0",
+ "once_cell",
+ "thiserror 1.0.69",
+ "unicode-width 0.1.14",
+]
+
+[[package]]
+name = "miette"
 version = "7.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1a955165f87b37fd1862df2a59547ac542c77ef6d17c666f619d1ad22dd89484"
@@ -1172,7 +1186,7 @@ dependencies = [
  "backtrace",
  "backtrace-ext",
  "cfg-if",
- "miette-derive",
+ "miette-derive 7.5.0",
  "owo-colors",
  "supports-color",
  "supports-hyperlinks",
@@ -1181,6 +1195,17 @@ dependencies = [
  "textwrap",
  "thiserror 1.0.69",
  "unicode-width 0.1.14",
+]
+
+[[package]]
+name = "miette-derive"
+version = "5.10.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "49e7bc1560b95a3c4a25d03de42fe76ca718ab92d1a22a55b9b4cf67b3ae635c"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
 ]
 
 [[package]]
@@ -1825,7 +1850,7 @@ dependencies = [
  "jwalk",
  "lalrpop",
  "lalrpop-util",
- "miette",
+ "miette 7.5.0",
  "nom",
  "num_cpus",
  "phf 0.11.3",

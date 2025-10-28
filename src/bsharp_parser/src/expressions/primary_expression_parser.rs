@@ -2,7 +2,7 @@
 use crate::parser::expressions::collection_expression_parser::parse_collection_expression_or_brackets;
 use crate::parser::expressions::default_expression_parser::parse_default_expression;
 use crate::parser::expressions::lambda_expression_parser::parse_lambda_or_anonymous_method;
-use crate::parser::expressions::literal_parser::parse_literal;
+use crate::parser::expressions::literal_parser::{parse_literal, parse_literal_spanned};
 use crate::parser::expressions::nameof_expression_parser::parse_nameof_expression;
 use crate::parser::expressions::new_expression_parser::parse_new_expression;
 use crate::parser::expressions::paren_tuple_primary_parser::parse_paren_or_tuple_primary;
@@ -10,7 +10,7 @@ use crate::parser::expressions::query_expression_parser::parse_query_expression;
 use crate::parser::expressions::stackalloc_expression_parser::parse_stackalloc_expression;
 use crate::parser::expressions::switch_expression_parser::parse_switch_expression;
 use crate::parser::expressions::throw_expression_parser::parse_throw_expression;
-use crate::parser::identifier_parser::parse_identifier;
+use crate::parser::identifier_parser::{parse_identifier, parse_identifier_spanned};
 use crate::parser::keywords::contextual_misc_keywords::{kw_base, kw_this};
 use crate::parser::types::type_parser::parse_type_expression;
 use crate::trivia::comment_parser::ws;
@@ -45,9 +45,98 @@ pub fn parse_expression(input: Span) -> BResult<Expression> {
     .parse(input)
 }
 
+pub fn parse_primary_literal_spanned(input: Span) -> BResult<Spanned<Expression>> {
+    let (rest, s) = parse_literal_spanned(input)?;
+    Ok((rest, s.map(Expression::Literal)))
+}
+
+pub fn parse_primary_variable_spanned(input: Span) -> BResult<Spanned<Expression>> {
+    let (rest, s) = parse_identifier_spanned(input)?;
+    Ok((rest, s.map(Expression::Variable)))
+}
+
+pub fn parse_paren_or_tuple_primary_spanned(input: Span) -> BResult<Spanned<Expression>> {
+    (|i| parse_paren_or_tuple_primary(i)).spanned().parse(input)
+}
+
+pub fn parse_collection_expression_or_brackets_spanned(input: Span) -> BResult<Spanned<Expression>> {
+    (|i| parse_collection_expression_or_brackets(i)).spanned().parse(input)
+}
+
+pub fn parse_generic_name_primary_spanned(input: Span) -> BResult<Spanned<Expression>> {
+    (|i| parse_generic_name_primary(i)).spanned().parse(input)
+}
+
+pub fn parse_query_expression_spanned(input: Span) -> BResult<Spanned<Expression>> {
+    (|i| parse_query_expression(i)).spanned().parse(input)
+}
+
+pub fn parse_switch_expression_spanned(input: Span) -> BResult<Spanned<Expression>> {
+    (|i| parse_switch_expression(i)).spanned().parse(input)
+}
+
+pub fn parse_throw_expression_spanned(input: Span) -> BResult<Spanned<Expression>> {
+    (|i| parse_throw_expression(i)).spanned().parse(input)
+}
+
+pub fn parse_nameof_expression_spanned(input: Span) -> BResult<Spanned<Expression>> {
+    (|i| parse_nameof_expression(i)).spanned().parse(input)
+}
+
+pub fn parse_default_expression_spanned(input: Span) -> BResult<Spanned<Expression>> {
+    (|i| parse_default_expression(i)).spanned().parse(input)
+}
+
+pub fn parse_new_expression_spanned(input: Span) -> BResult<Spanned<Expression>> {
+    (|i| parse_new_expression(i)).spanned().parse(input)
+}
+
+pub fn parse_lambda_or_anonymous_method_spanned(input: Span) -> BResult<Spanned<Expression>> {
+    (|i| parse_lambda_or_anonymous_method(i)).spanned().parse(input)
+}
+
+pub fn parse_stackalloc_expression_spanned(input: Span) -> BResult<Spanned<Expression>> {
+    (|i| parse_stackalloc_expression(i)).spanned().parse(input)
+}
+
+pub fn parse_this_spanned(input: Span) -> BResult<Spanned<Expression>> {
+    let (rest, s) = kw_this().spanned().parse(input)?;
+    Ok((rest, s.map(|_| Expression::This)))
+}
+
+pub fn parse_base_spanned(input: Span) -> BResult<Spanned<Expression>> {
+    let (rest, s) = kw_base().spanned().parse(input)?;
+    Ok((rest, s.map(|_| Expression::Base)))
+}
+
+pub fn parse_primary_expression_spanned(input: Span) -> BResult<Spanned<Expression>> {
+    use nom::branch::alt;
+    let core = alt((
+        // Keep order consistent with non-spanned primary parser
+        parse_paren_or_tuple_primary_spanned,
+        parse_collection_expression_or_brackets_spanned,
+        parse_generic_name_primary_spanned,
+        parse_query_expression_spanned,
+        parse_switch_expression_spanned,
+        parse_throw_expression_spanned,
+        parse_nameof_expression_spanned,
+        parse_default_expression_spanned,
+        parse_primary_literal_spanned,
+        parse_this_spanned,
+        parse_base_spanned,
+        parse_new_expression_spanned,
+        parse_lambda_or_anonymous_method_spanned,
+        parse_primary_variable_spanned,
+        parse_stackalloc_expression_spanned,
+        // Fallback
+        (|i| parse_primary_expression(i)).spanned(),
+    ));
+    nom::sequence::delimited(ws, core, ws).parse(input)
+}
+
 pub fn parse_expression_spanned(input: Span) -> BResult<Spanned<Expression>> {
-    let mut p = |i: Span| parse_expression(i);
-    p.spanned()(input)
+    use crate::parser::expressions::assignment_expression_parser::parse_assignment_expression_or_higher_spanned as core_spanned;
+    delimited(ws, |i| core_spanned(i), ws).parse(input)
 }
 
 pub fn parse_primary_expression(input: Span) -> BResult<Expression> {

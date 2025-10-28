@@ -38,7 +38,10 @@ mod tests {
     fn column_and_line_offsets() {
         let src = "abc\nxyz";
         let input = Span::new(src);
-        let (_rest, s) = tag("abc").spanned().parse(input).unwrap();
+        let (_rest, s) = nom::bytes::complete::tag::<&str, Span<'_>, nom_supreme::error::ErrorTree<Span<'_>>>("abc")
+            .spanned()
+            .parse(input)
+            .unwrap();
         assert_eq!(s.rel.start.line, 1);
         assert_eq!(s.rel.start.offset, 0);
         assert_eq!(s.rel.end.line, 1);

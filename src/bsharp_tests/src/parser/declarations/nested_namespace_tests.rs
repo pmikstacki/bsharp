@@ -17,9 +17,9 @@ namespace N1 {
     let result = CompilationUnit::parse(code.into());
     assert!(result.is_ok());
     let (_, cu) = result.unwrap();
-    assert_eq!(cu.declarations.len(), 1);
+    assert_eq!(cu.node.declarations.len(), 1);
 
-    match &cu.declarations[0] {
+    match &cu.node.declarations[0] {
         TopLevelDeclaration::Namespace(ns1) => {
             assert_eq!(ns1.name.to_string(), "N1");
             assert_eq!(ns1.declarations.len(), 1);
@@ -49,9 +49,9 @@ namespace N1 {
     let result = CompilationUnit::parse(code.into());
     assert!(result.is_ok());
     let (_, cu) = result.unwrap();
-    assert_eq!(cu.declarations.len(), 1);
+    assert_eq!(cu.node.declarations.len(), 1);
 
-    match &cu.declarations[0] {
+    match &cu.node.declarations[0] {
         TopLevelDeclaration::Namespace(ns1) => {
             assert_eq!(ns1.name.to_string(), "N1");
             match &ns1.declarations[0] {
@@ -82,9 +82,9 @@ namespace N1.N2.N3 {
     let result = CompilationUnit::parse(code.into());
     assert!(result.is_ok());
     let (_, cu) = result.unwrap();
-    assert_eq!(cu.declarations.len(), 1);
+    assert_eq!(cu.node.declarations.len(), 1);
 
-    match &cu.declarations[0] {
+    match &cu.node.declarations[0] {
         TopLevelDeclaration::Namespace(ns) => {
             assert_eq!(ns.name.to_string(), "N1.N2.N3");
             assert_eq!(ns.declarations.len(), 1);
@@ -107,9 +107,9 @@ namespace Outer {
     let result = CompilationUnit::parse(code.into());
     assert!(result.is_ok());
     let (_, cu) = result.unwrap();
-    assert_eq!(cu.declarations.len(), 1);
+    assert_eq!(cu.node.declarations.len(), 1);
 
-    match &cu.declarations[0] {
+    match &cu.node.declarations[0] {
         TopLevelDeclaration::Namespace(ns_outer) => {
             assert_eq!(ns_outer.name.to_string(), "Outer");
             assert_eq!(ns_outer.using_directives.len(), 1);
@@ -142,9 +142,9 @@ namespace Parent {
     let result = CompilationUnit::parse(code.into());
     assert!(result.is_ok());
     let (_, cu) = result.unwrap();
-    assert_eq!(cu.declarations.len(), 1);
+    assert_eq!(cu.node.declarations.len(), 1);
 
-    match &cu.declarations[0] {
+    match &cu.node.declarations[0] {
         TopLevelDeclaration::Namespace(parent) => {
             assert_eq!(parent.name.to_string(), "Parent");
             assert_eq!(parent.declarations.len(), 2);
@@ -166,9 +166,9 @@ namespace Outer {
     let result = CompilationUnit::parse(code.into());
     assert!(result.is_ok());
     let (_, cu) = result.unwrap();
-    assert_eq!(cu.declarations.len(), 1);
+    assert_eq!(cu.node.declarations.len(), 1);
 
-    match &cu.declarations[0] {
+    match &cu.node.declarations[0] {
         TopLevelDeclaration::Namespace(outer) => {
             assert_eq!(outer.name.to_string(), "Outer");
             assert_eq!(outer.declarations.len(), 2);
@@ -205,6 +205,6 @@ namespace L1 {
     let result = CompilationUnit::parse(code.into());
     assert!(result.is_ok());
     let (_, cu) = result.unwrap();
-    assert_eq!(cu.declarations.len(), 1);
+    assert_eq!(cu.node.declarations.len(), 1);
     // Just verify it parses without error
 }
