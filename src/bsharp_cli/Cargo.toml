@@ -19,7 +19,7 @@ argfile = "0.2.1"
 nom = "8.0.0"
 nom-supreme = { package = "bsharp_nom_supreme", path = "../bsharp_nom_supreme" }
 serde = { version = "1.0.219", features = ["derive", "serde_derive"] }
-miette = "5"
+miette = { version = "5", features = ["fancy"] }
 
 [dev-dependencies]
 assert_cmd = "2"

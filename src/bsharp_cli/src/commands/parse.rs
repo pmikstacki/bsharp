@@ -94,12 +94,12 @@ pub fn execute(args: ParseArgs) -> Result<()> {
                             })
                         );
                     } else {
-                        let offset = 0usize;
+                        let offset = source_code.len();
                         let span = SourceSpan::new((offset).into(), 1usize.into());
                         let label = LabeledSpan::at(span, "expected EOF");
                         let report = miette!(labels = vec![label], "parse error")
                             .with_source_code(NamedSource::new(args.input.display().to_string(), source_code.clone()));
-                        eprintln!("{}", report);
+                        eprintln!("{:?}", report);
                     }
                     std::process::exit(1);
                 }
@@ -136,7 +136,7 @@ pub fn execute(args: ParseArgs) -> Result<()> {
                 let label = LabeledSpan::at(span, "parse error");
                 let report = miette!(labels = vec![label], "parse error")
                     .with_source_code(NamedSource::new(args.input.display().to_string(), source_code.clone()));
-                eprintln!("{}", report);
+                eprintln!("{:?}", report);
             }
             std::process::exit(1);
         }
@@ -185,7 +185,7 @@ pub fn execute(args: ParseArgs) -> Result<()> {
                     let label = LabeledSpan::at(span, "expected '}'");
                     let report = miette!(labels = vec![label], "parse error")
                         .with_source_code(NamedSource::new(args.input.display().to_string(), source_code.clone()));
-                    eprintln!("{}", report);
+                    eprintln!("{:?}", report);
                 }
             } else {
                 // Build a synthetic EOF-expected error at the remaining location
@@ -223,7 +223,13 @@ pub fn execute(args: ParseArgs) -> Result<()> {
                         })
                     );
                 } else {
-                    print_pretty_error(&args.input, &pretty, args.no_color);
+                    let loc = deepest_span(&tree);
+                    let offset = loc.location_offset();
+                    let span = SourceSpan::new((offset).into(), 1usize.into());
+                    let label = LabeledSpan::at(span, "expected EOF");
+                    let report = miette!(labels = vec![label], "parse error")
+                        .with_source_code(NamedSource::new(args.input.display().to_string(), source_code.clone()));
+                    eprintln!("{:?}", report);
                 }
             }
         } else {
@@ -257,7 +263,13 @@ pub fn execute(args: ParseArgs) -> Result<()> {
                 });
                 println!("{}", serde_json::to_string(&payload).unwrap_or_else(|_| "{\"error\":{\"message\":\"parse error\"}}".to_string()));
             } else {
-                print_pretty_error(&args.input, &pretty, args.no_color);
+                let loc = deepest_span(&tree);
+                let offset = loc.location_offset();
+                let span = SourceSpan::new((offset).into(), 1usize.into());
+                let label = LabeledSpan::at(span, "expected EOF");
+                let report = miette!(labels = vec![label], "parse error")
+                    .with_source_code(NamedSource::new(args.input.display().to_string(), source_code.clone()));
+                eprintln!("{:?}", report);
             }
         }
         std::process::exit(1);
