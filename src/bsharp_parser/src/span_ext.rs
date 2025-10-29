@@ -1,4 +1,3 @@
-use nom::IResult;
 use crate::span::{Spanned, ByteRange, LineOffset, TextRange};
 use syntax::span::Span;
 

@@ -7,10 +7,8 @@ use crate::trivia::preprocessor_directive_parser::parse_preprocessor_directive;
 /// If `ws_first` is true, consumes whitespace/comments before scanning directives.
 /// Returns the remaining slice after skipping zero or more directives and trailing whitespace.
 pub fn skip_preprocessor_directives(mut input: Span, ws_first: bool) -> Span {
-    if ws_first {
-        if let Ok((r, _)) = ws(input) {
-            input = r;
-        }
+    if ws_first && let Ok((r, _)) = ws(input) {
+        input = r;
     }
     loop {
         // Always consume whitespace/comments between attempts

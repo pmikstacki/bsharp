@@ -127,6 +127,34 @@ fn build_group1_parser<'a>(allow_block: bool) -> impl Fn(Span<'a>) -> BResult<'a
     }
 }
 
+/// Core: full statement (groups 1-4), used by spanned entrypoints
+fn parse_statement_core(input: Span) -> BResult<Statement> {
+    if let Ok(r) = parse_group1_with_block(input) {
+        return Ok(r);
+    }
+    if let Ok(r) = parse_group2_special(input) {
+        return Ok(r);
+    }
+    if let Ok(r) = parse_group3_jump(input) {
+        return Ok(r);
+    }
+    parse_group4_misc(input)
+}
+
+/// Core: inside-block statement (no block statements), used by spanned entrypoints
+fn parse_statement_for_block_core(input: Span) -> BResult<Statement> {
+    if let Ok(r) = parse_group1_without_block(input) {
+        return Ok(r);
+    }
+    if let Ok(r) = parse_group2_special(input) {
+        return Ok(r);
+    }
+    if let Ok(r) = parse_group3_jump(input) {
+        return Ok(r);
+    }
+    parse_group4_misc(input)
+}
+
 /// Group 1 with block statements allowed
 fn parse_group1_with_block(input: Span) -> BResult<Statement> {
     build_group1_parser(true)(input)
@@ -242,36 +270,16 @@ fn parse_group4_misc(input: Span) -> BResult<Statement> {
         .parse(input)
 }
 
-/// Main statement syntax - Enhanced VerboseError with specific diagnostics
-/// Following Microsoft's Roslyn approach but using Nom's VerboseError for detailed error reporting
+/// Main statement syntax (deprecated unspanned wrapper)
 #[deprecated(note = "Use parse_statement_spanned/parse_statement_ws_spanned or Parsable<'a>::parse -> Spanned<_>")]
 pub fn parse_statement(input: Span) -> BResult<Statement> {
-    if let Ok(r) = parse_group1_with_block(input) {
-        return Ok(r);
-    }
-    if let Ok(r) = parse_group2_special(input) {
-        return Ok(r);
-    }
-    if let Ok(r) = parse_group3_jump(input) {
-        return Ok(r);
-    }
-    parse_group4_misc(input)
+    parse_statement_spanned(input).map(|(rest, s)| (rest, s.node))
 }
 
-/// Statement syntax for use inside blocks - EXCLUDES block statements to prevent recursion
-/// Enhanced with VerboseError diagnostics explaining the recursive exclusion
+/// Inside-block statement (deprecated unspanned wrapper)
 #[deprecated(note = "Use parse_statement_for_block_spanned or Parsable<'a>::parse -> Spanned<_>")]
 pub fn parse_statement_for_block(input: Span) -> BResult<Statement> {
-    if let Ok(r) = parse_group1_without_block(input) {
-        return Ok(r);
-    }
-    if let Ok(r) = parse_group2_special(input) {
-        return Ok(r);
-    }
-    if let Ok(r) = parse_group3_jump(input) {
-        return Ok(r);
-    }
-    parse_group4_misc(input)
+    parse_statement_for_block_spanned(input).map(|(rest, s)| (rest, s.node))
 }
 
 /// Parse a statement for use inside blocks, consuming any leading whitespace or comments.
@@ -279,21 +287,20 @@ pub fn parse_statement_for_block(input: Span) -> BResult<Statement> {
 #[deprecated(note = "Use parse_statement_for_block_spanned or Parsable<'a>::parse -> Spanned<_>")]
 pub fn parse_statement_for_block_ws(input: Span) -> BResult<Statement> {
     let (input, _) = parse_whitespace_or_comments(input)?;
-    parse_statement_for_block(input)
+    parse_statement_for_block_spanned(input).map(|(rest, s)| (rest, s.node))
 }
 
 /// Parse a statement, consuming any leading whitespace or comments.
 #[deprecated(note = "Use parse_statement_ws_spanned or Parsable<'a>::parse -> Spanned<_>")]
 pub fn parse_statement_ws(input: Span) -> BResult<Statement> {
     let (input, _) = parse_whitespace_or_comments(input)?;
-    parse_statement(input)
+    parse_statement_spanned(input).map(|(rest, s)| (rest, s.node))
 }
 
-#[allow(deprecated)]
 pub fn parse_statement_spanned(input: Span) -> BResult<Spanned<Statement>> {
     let start_abs = input.location_offset();
     let start_lo = LineOffset { line: input.location_line(), offset: input.get_utf8_column().saturating_sub(1) };
-    let (rest, node) = parse_statement(input)?;
+    let (rest, node) = parse_statement_core(input)?;
     let end_abs = rest.location_offset();
     let end_lo = LineOffset { line: rest.location_line(), offset: rest.get_utf8_column().saturating_sub(1) };
     let abs = ByteRange { start: start_abs, end: end_abs };
@@ -301,11 +308,10 @@ pub fn parse_statement_spanned(input: Span) -> BResult<Spanned<Statement>> {
     Ok((rest, Spanned { node, abs, rel }))
 }
 
-#[allow(deprecated)]
 pub fn parse_statement_for_block_spanned(input: Span) -> BResult<Spanned<Statement>> {
     let start_abs = input.location_offset();
     let start_lo = LineOffset { line: input.location_line(), offset: input.get_utf8_column().saturating_sub(1) };
-    let (rest, node) = parse_statement_for_block(input)?;
+    let (rest, node) = parse_statement_for_block_core(input)?;
     let end_abs = rest.location_offset();
     let end_lo = LineOffset { line: rest.location_line(), offset: rest.get_utf8_column().saturating_sub(1) };
     let abs = ByteRange { start: start_abs, end: end_abs };
@@ -313,12 +319,11 @@ pub fn parse_statement_for_block_spanned(input: Span) -> BResult<Spanned<Stateme
     Ok((rest, Spanned { node, abs, rel }))
 }
 
-#[allow(deprecated)]
 pub fn parse_statement_ws_spanned(input: Span) -> BResult<Spanned<Statement>> {
     let (input_core, _) = parse_whitespace_or_comments(input)?;
     let start_abs = input_core.location_offset();
     let start_lo = LineOffset { line: input_core.location_line(), offset: input_core.get_utf8_column().saturating_sub(1) };
-    let (rest_after_core, node) = parse_statement(input_core)?;
+    let (rest_after_core, node) = parse_statement_core(input_core)?;
     let end_abs = rest_after_core.location_offset();
     let end_lo = LineOffset { line: rest_after_core.location_line(), offset: rest_after_core.get_utf8_column().saturating_sub(1) };
     let abs = ByteRange { start: start_abs, end: end_abs };

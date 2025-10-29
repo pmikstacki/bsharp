@@ -37,8 +37,8 @@ pub use lambda_expression_parser::{
 };
 pub use literal_parser::parse_literal;
 pub use nameof_expression_parser::parse_nameof_expression;
-pub use primary_expression_parser::parse_expression;
-pub use primary_expression_parser::parse_primary_expression;
+pub use primary_expression_parser::parse_expression_spanned;
+pub use primary_expression_parser::parse_primary_expression_spanned;
 pub use sizeof_expression_parser::parse_sizeof_expression;
 pub use throw_expression_parser::parse_throw_expression;
 pub use typeof_expression_parser::parse_typeof_expression;
