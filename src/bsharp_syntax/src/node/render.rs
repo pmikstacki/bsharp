@@ -31,6 +31,39 @@ fn traverse<'a>(
             stack.push(child);
         });
     }
+
+}
+
+fn short_kind(n: &dyn AstNode) -> &str {
+    let full = n.node_kind();
+    match full.rsplit("::").next() {
+        Some(last) if !last.is_empty() => last,
+        _ => full,
+    }
+}
+
+fn label_for(n: &dyn AstNode) -> String {
+    if let Some(v) = n.node_label_value() {
+        format!("{}:{}", short_kind(n), v)
+    } else {
+        short_kind(n).to_string()
+    }
+}
+
+fn escape_mermaid_label(s: &str) -> String {
+    let mut out = String::with_capacity(s.len());
+    for ch in s.chars() {
+        match ch {
+            '\\' => out.push_str("\\\\"),
+            '"' => out.push_str("\\\""),
+            '[' => out.push_str("\\["),
+            ']' => out.push_str("\\]"),
+            '&' => out.push_str("\\&"),
+            '|' => out.push_str("\\|"),
+            _ => out.push(ch),
+        }
+    }
+    out
 }
 
 pub fn to_mermaid(root: &impl AstNode) -> String {
@@ -43,7 +76,7 @@ pub fn to_mermaid(root: &impl AstNode) -> String {
         DynNodeRef(root),
         |a, b| edges.push((a, b)),
         |i, n| {
-            nodes.entry(i).or_insert_with(|| n.node_label());
+            nodes.entry(i).or_insert_with(|| label_for(n));
         },
     );
 
@@ -52,7 +85,8 @@ pub fn to_mermaid(root: &impl AstNode) -> String {
     ids.sort_unstable();
     for i in ids {
         let label = nodes.get(&i).cloned().unwrap_or_else(|| format!("n{}", i));
-        out.push_str(&format!("n{}[\"{}\"]\n", i, label.replace('"', "\\\"")));
+        let label = escape_mermaid_label(&label);
+        out.push_str(&format!("n{}[\"{}\"]\n", i, label));
     }
     // Emit edges
     for (a, b) in edges {
@@ -73,7 +107,7 @@ pub fn to_dot(root: &impl AstNode) -> String {
         DynNodeRef(root),
         |a, b| edges.push((a, b)),
         |i, n| {
-            nodes.entry(i).or_insert_with(|| n.node_label());
+            nodes.entry(i).or_insert_with(|| label_for(n));
         },
     );
 
@@ -98,7 +132,7 @@ pub fn to_text(root: &impl AstNode) -> String {
     fn rec(out: &mut String, depth: usize, node: DynNodeRef) {
         use std::fmt::Write as _;
         let indent = "  ".repeat(depth);
-        writeln!(out, "{}{}", indent, node.0.node_label()).ok();
+        writeln!(out, "{}{}", indent, label_for(node.0)).ok();
         node.children(|c| rec(out, depth + 1, c));
     }
     let mut out = String::new();
