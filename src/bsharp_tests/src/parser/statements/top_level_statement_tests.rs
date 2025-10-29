@@ -4,6 +4,7 @@ use parser::expressions::statements::top_level_statement_parser::{
     parse_top_level_statement, parse_top_level_statements,
 };
 use syntax::statements::statement::Statement;
+use parser::errors::format_error_tree;
 
 fn parse_top_level_statements_helper(code: &str) -> Result<Vec<Statement>, String> {
     match parse_top_level_statements(code.into()) {

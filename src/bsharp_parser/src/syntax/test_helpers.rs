@@ -47,7 +47,10 @@ where
 
 /// Parse statement and ensure all input is consumed
 pub fn parse_statement_all(input: Span) -> BResult<Statement> {
-    parse_all(crate::parser::statement_parser::parse_statement, input)
+    parse_all(|i| {
+        let (r, s) = crate::parser::statement_parser::parse_statement_ws_spanned(i)?;
+        Ok((r, s.node))
+    }, input)
 }
 
 /// Helper function to unwrap a syntax result or panic on error.

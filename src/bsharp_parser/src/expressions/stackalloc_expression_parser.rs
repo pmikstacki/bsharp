@@ -1,4 +1,4 @@
-use crate::parser::expressions::primary_expression_parser::parse_expression;
+use crate::parser::expressions::primary_expression_parser::parse_expression_spanned;
 use crate::parser::keywords::expression_keywords::kw_stackalloc;
 use crate::parser::types::type_parser::parse_type_expression;
 use crate::trivia::comment_parser::ws;
@@ -15,7 +15,10 @@ use syntax::types::Type;
 fn parse_collection_initializer(input: Span) -> BResult<Vec<Expression>> {
     parse_delimited_list0::<_, _, _, _, char, char, char, Expression>(
         |i| delimited(ws, tok_l_brace(), ws).parse(i),
-        |i| delimited(ws, parse_expression, ws).parse(i),
+        |i| {
+            let (r, s) = delimited(ws, parse_expression_spanned, ws).parse(i)?;
+            Ok((r, s.node))
+        },
         |i| delimited(ws, tok_comma(), ws).parse(i),
         |i| delimited(ws, tok_r_brace(), ws).parse(i),
         false,
@@ -65,7 +68,7 @@ pub fn parse_stackalloc_expression(input: Span) -> BResult<Expression> {
                             map(
                                 delimited(
                                     delimited(ws, tok_l_brack(), ws),
-                                    delimited(ws, parse_expression, ws),
+                                    delimited(ws, parse_expression_spanned, ws).map(|s| s.node),
                                     cut(delimited(ws, tok_r_brack(), ws)),
                                 ),
                                 |count| (Some(count), None),

@@ -2,7 +2,7 @@
 use crate::custom_asserts::after_parse;
 use crate::custom_asserts::after_parse::CaseData;
 use crate::custom_asserts::roslyn_asserts::ExpectedDiagnostics;
-use bsharp_parser::bsharp::parse_csharp_source_strict;
+use bsharp_parser::bsharp::parse_csharp_source as parse_csharp_source_strict;
 use bsharp_parser::statement_parser::parse_statement_ws;
 use bsharp_syntax::span::Span;
 /// Roslyn: LambdaParameterParsingTests.EndOfFileAfterOut (case 1)

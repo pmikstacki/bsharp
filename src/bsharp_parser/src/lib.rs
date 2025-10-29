@@ -36,3 +36,6 @@ pub use traits::parsable::{Parsable, ParsableSpanned};
 // Re-export span API
 pub use span::{Spanned, ByteRange, LineOffset, TextRange, HasSpan};
 pub use span_ext::ParserExt as SpannedParserExt;
+
+// Public spanned root entrypoint
+pub use bsharp::parse_csharp_source_spanned;

@@ -18,3 +18,4 @@ miette = "5"
 [features]
 parser_recovery_trace = []
 expose_parser_diagnostics = []
+strict_allows_trailing = []

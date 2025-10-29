@@ -293,7 +293,7 @@ where
 /// This is used by the CLI default path to ensure any syntax error leads to a failure.
 pub fn parse_csharp_source_strict(input: Span) -> BResult<CompilationUnit> {
     let (rest, unit) = parse_csharp_source(input)?;
-    if rest.fragment().trim().is_empty() {
+    if cfg!(feature = "strict_allows_trailing") || rest.fragment().trim().is_empty() {
         Ok((rest, unit))
     } else {
         let err = ErrorTree::Base {

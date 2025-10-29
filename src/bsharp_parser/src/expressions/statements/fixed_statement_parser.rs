@@ -1,6 +1,6 @@
 use crate::parser::expressions::declarations::variable_declaration_parser::parse_variable_declaration;
 use crate::parser::keywords::exception_and_safety_keywords::kw_fixed;
-use crate::parser::statement_parser::parse_statement_ws;
+use crate::parser::statement_parser::parse_statement_ws_spanned;
 use crate::trivia::comment_parser::ws;
 use crate::errors::BResult;
 use nom::Parser;
@@ -22,7 +22,9 @@ pub fn parse_fixed_statement(input: Span) -> BResult<Statement> {
                 cut(delimited(ws, tok_r_paren(), ws)).context("closing parenthesis"),
             )
             .context("fixed variable declarations in parentheses"),
-            cut(delimited(ws, parse_statement_ws, ws)).context("fixed body"),
+            cut(delimited(ws, parse_statement_ws_spanned, ws))
+                .map(|s| s.node)
+                .context("fixed body"),
         ),
         |(_, decl, body)| {
             // Take the first declarator to populate FixedStatement fields

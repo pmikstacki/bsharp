@@ -34,7 +34,7 @@ use nom::{
 use syntax::expressions::Expression;
 use syntax::types::Type;
 
-/// Parse any expression - the main entry point for expression parsing
+#[deprecated(note = "Use parse_expression_spanned or Parsable<'a>::parse -> Spanned<_>")]
 pub fn parse_expression(input: Span) -> BResult<Expression> {
     delimited(
         ws,
@@ -109,6 +109,7 @@ pub fn parse_base_spanned(input: Span) -> BResult<Spanned<Expression>> {
     Ok((rest, s.map(|_| Expression::Base)))
 }
 
+#[allow(deprecated)]
 pub fn parse_primary_expression_spanned(input: Span) -> BResult<Spanned<Expression>> {
     use nom::branch::alt;
     let core = alt((
@@ -139,6 +140,7 @@ pub fn parse_expression_spanned(input: Span) -> BResult<Spanned<Expression>> {
     delimited(ws, |i| core_spanned(i), ws).parse(input)
 }
 
+#[deprecated(note = "Use parse_primary_expression_spanned or Parsable<'a>::parse -> Spanned<_>")]
 pub fn parse_primary_expression(input: Span) -> BResult<Expression> {
     map(
         alt((

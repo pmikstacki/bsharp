@@ -1,4 +1,4 @@
-use crate::parser::expressions::primary_expression_parser::parse_expression;
+use crate::parser::expressions::primary_expression_parser::parse_expression_spanned;
 use crate::parser::keywords::expression_keywords::kw_await;
 use crate::errors::BResult;
 use nom::combinator::{cut, map};
@@ -42,7 +42,10 @@ fn parse_awaitable_expression(input: Span) -> BResult<Expression> {
 /// Parse complex method chains like _userRepository.GetByEmailAsync(email)
 fn parse_complex_method_chain(input: Span) -> BResult<Expression> {
     // Import the main expression syntax to handle the full complexity
-    parse_expression.parse(input)
+    match parse_expression_spanned.parse(input) {
+        Ok((rest, s)) => Ok((rest, s.node)),
+        Err(e) => Err(e),
+    }
 }
 
 /// Parse simple awaitable expressions as fallback

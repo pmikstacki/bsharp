@@ -1,5 +1,5 @@
 use crate::parser::expressions::await_expression_parser::parse_await_expression;
-use crate::parser::expressions::primary_expression_parser::parse_expression;
+use crate::parser::expressions::primary_expression_parser::parse_expression_spanned;
 use crate::parser::expressions::ref_expression_parser::parse_ref_expression;
 use crate::parser::expressions::sizeof_expression_parser::parse_sizeof_expression;
 use crate::parser::expressions::stackalloc_expression_parser::parse_stackalloc_expression;
@@ -27,7 +27,8 @@ pub(crate) fn parse_unary_expression_or_higher(input: Span) -> BResult<Expressio
     // checked(expr)
     if let Ok((input_after_kw, _)) = delimited(ws, kw_checked(), ws).parse(input) {
         if let Ok((rest, _)) = delimited(ws, tok_l_paren(), ws).parse(input_after_kw) {
-            let (rest, inner) = parse_expression(rest)?;
+            let (rest, s) = parse_expression_spanned(rest)?;
+            let inner = s.node;
             let (rest, _) = delimited(ws, tok_r_paren(), ws).parse(rest)?;
             return Ok((
                 rest,
@@ -43,7 +44,8 @@ pub(crate) fn parse_unary_expression_or_higher(input: Span) -> BResult<Expressio
     // unchecked(expr)
     if let Ok((input_after_kw, _)) = delimited(ws, kw_unchecked(), ws).parse(input) {
         if let Ok((rest, _)) = delimited(ws, tok_l_paren(), ws).parse(input_after_kw) {
-            let (rest, inner) = parse_expression(rest)?;
+            let (rest, s) = parse_expression_spanned(rest)?;
+            let inner = s.node;
             let (rest, _) = delimited(ws, tok_r_paren(), ws).parse(rest)?;
             return Ok((
                 rest,

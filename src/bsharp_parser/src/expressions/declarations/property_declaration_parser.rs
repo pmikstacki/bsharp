@@ -1,6 +1,6 @@
 use crate::parser::expressions::declarations::attribute_parser::parse_attribute_lists;
 use crate::parser::expressions::declarations::modifier_parser::parse_modifiers_for_decl_type;
-use crate::parser::expressions::primary_expression_parser::parse_expression;
+use crate::parser::expressions::primary_expression_parser::parse_expression_spanned;
 use crate::parser::identifier_parser::parse_identifier;
 use crate::parser::types::type_parser::parse_type_expression;
 use crate::trivia::comment_parser::ws;
@@ -38,7 +38,10 @@ fn parse_get_accessor(input: Span) -> BResult<PropertyAccessor> {
         map(
             (
                 delimited(ws, tag_no_case("=>"), ws),
-                cut((delimited(ws, parse_expression, ws), delimited(ws, tok_semicolon(), ws))),
+                cut((
+                    delimited(ws, parse_expression_spanned, ws).map(|s| s.node),
+                    delimited(ws, tok_semicolon(), ws),
+                )),
             ),
             |(_, (expr, _))| Some(Statement::Expression(expr)),
         ),
@@ -84,7 +87,10 @@ fn parse_set_accessor(input: Span) -> BResult<PropertyAccessor> {
         map(
             (
                 delimited(ws, tag_no_case("=>"), ws),
-                cut((delimited(ws, parse_expression, ws), delimited(ws, tok_semicolon(), ws))),
+                cut((
+                    delimited(ws, parse_expression_spanned, ws).map(|s| s.node),
+                    delimited(ws, tok_semicolon(), ws),
+                )),
             ),
             |(_, (expr, _))| Some(Statement::Expression(expr)),
         ),
@@ -128,7 +134,10 @@ fn parse_init_accessor(input: Span) -> BResult<PropertyAccessor> {
         map(
             (
                 delimited(ws, tag_no_case("=>"), ws),
-                cut((delimited(ws, parse_expression, ws), delimited(ws, tok_semicolon(), ws))),
+                cut((
+                    delimited(ws, parse_expression_spanned, ws).map(|s| s.node),
+                    delimited(ws, tok_semicolon(), ws),
+                )),
             ),
             |(_, (expr, _))| Some(Statement::Expression(expr)),
         ),
@@ -178,7 +187,9 @@ fn parse_property_initializer(input: Span) -> BResult<Option<Expression>> {
     opt(preceded(
         delimited(ws, tok_assign(), ws).context("property initializer"),
         (
-            delimited(ws, parse_expression, ws).context("property initializer expression"),
+            delimited(ws, parse_expression_spanned, ws)
+                .map(|s| s.node)
+                .context("property initializer expression"),
             delimited(ws, tok_semicolon(), ws).context("property initializer terminator"),
         ),
     ))
@@ -210,7 +221,7 @@ pub fn parse_property_declaration(input: Span) -> BResult<PropertyDeclaration> {
                 (
                     delimited(ws, tag_no_case("=>"), ws),
                     cut((
-                        delimited(ws, parse_expression, ws),
+                        delimited(ws, parse_expression_spanned, ws).map(|s| s.node),
                         delimited(ws, tok_semicolon(), ws),
                     )),
                 ),

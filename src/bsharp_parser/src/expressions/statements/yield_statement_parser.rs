@@ -1,4 +1,4 @@
-use crate::parser::expressions::primary_expression_parser::parse_expression;
+use crate::parser::expressions::primary_expression_parser::parse_expression_spanned;
 use crate::parser::keywords::flow_control_keywords::{kw_break, kw_return, kw_yield};
 use crate::trivia::comment_parser::ws;
 use crate::errors::BResult;
@@ -19,7 +19,9 @@ pub fn parse_yield_statement(input: Span) -> BResult<Statement> {
                 map(
                     (
                         kw_return().context("return keyword"),
-                        delimited(ws, parse_expression, ws).context("return expression"),
+                        delimited(ws, parse_expression_spanned, ws)
+                            .map(|s| s.node)
+                            .context("return expression"),
                     ),
                     |(_, expr)| YieldStatement::Return(expr),
                 ),

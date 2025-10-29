@@ -51,15 +51,15 @@ impl Rule for CtorNoAsync {
         for decl in &cu.declarations {
             if let TopLevelDeclaration::Class(class) = decl {
                 for member in &class.body_declarations {
-                    if let ClassBodyDeclaration::Constructor(ctor) = member {
-                        if ctor.modifiers.contains(&Modifier::Async) {
-                            let mut b = DiagnosticBuilder::new(DiagnosticCode::BSE01001);
-                            let class_name = ident_text(&class.name);
-                            if let Some((start, len)) = find_ctor_span(session, &class_name) {
-                                b = b.at_span(session, start, len);
-                            }
-                            b.emit(session);
+                    if let ClassBodyDeclaration::Constructor(ctor) = member
+                        && ctor.modifiers.contains(&Modifier::Async)
+                    {
+                        let mut b = DiagnosticBuilder::new(DiagnosticCode::BSE01001);
+                        let class_name = ident_text(&class.name);
+                        if let Some((start, len)) = find_ctor_span(session, &class_name) {
+                            b = b.at_span(session, start, len);
                         }
+                        b.emit(session);
                     }
                 }
             }
@@ -118,17 +118,16 @@ impl Rule for CtorNoVirtualOrAbstract {
         for decl in &cu.declarations {
             if let TopLevelDeclaration::Class(class) = decl {
                 for member in &class.body_declarations {
-                    if let ClassBodyDeclaration::Constructor(ctor) = member {
-                        if ctor.modifiers.contains(&Modifier::Virtual)
-                            || ctor.modifiers.contains(&Modifier::Abstract)
-                        {
-                            let mut b = DiagnosticBuilder::new(DiagnosticCode::BSE01003);
-                            let class_name = ident_text(&class.name);
-                            if let Some((start, len)) = find_ctor_span(session, &class_name) {
-                                b = b.at_span(session, start, len);
-                            }
-                            b.emit(session);
+                    if let ClassBodyDeclaration::Constructor(ctor) = member
+                        && (ctor.modifiers.contains(&Modifier::Virtual)
+                            || ctor.modifiers.contains(&Modifier::Abstract))
+                    {
+                        let mut b = DiagnosticBuilder::new(DiagnosticCode::BSE01003);
+                        let class_name = ident_text(&class.name);
+                        if let Some((start, len)) = find_ctor_span(session, &class_name) {
+                            b = b.at_span(session, start, len);
                         }
+                        b.emit(session);
                     }
                 }
             }
@@ -151,18 +150,19 @@ impl Rule for MethodNoAbstractBody {
         for decl in &cu.declarations {
             if let TopLevelDeclaration::Class(class) = decl {
                 for member in &class.body_declarations {
-                    if let ClassBodyDeclaration::Method(m) = member {
-                        if m.modifiers.contains(&Modifier::Abstract) && m.body.is_some() {
-                            let mut b = DiagnosticBuilder::new(DiagnosticCode::BSE02001);
-                            let class_name = ident_text(&class.name);
-                            let method_name = ident_text(&m.name);
-                            if let Some((start, len)) =
-                                find_method_span(session, &class_name, &method_name)
-                            {
-                                b = b.at_span(session, start, len);
-                            }
-                            b.emit(session);
+                    if let ClassBodyDeclaration::Method(m) = member
+                        && m.modifiers.contains(&Modifier::Abstract)
+                        && m.body.is_some()
+                    {
+                        let mut b = DiagnosticBuilder::new(DiagnosticCode::BSE02001);
+                        let class_name = ident_text(&class.name);
+                        let method_name = ident_text(&m.name);
+                        if let Some((start, len)) =
+                            find_method_span(session, &class_name, &method_name)
+                        {
+                            b = b.at_span(session, start, len);
                         }
+                        b.emit(session);
                     }
                 }
             }
@@ -185,20 +185,19 @@ impl Rule for MethodNoStaticOverride {
         for decl in &cu.declarations {
             if let TopLevelDeclaration::Class(class) = decl {
                 for member in &class.body_declarations {
-                    if let ClassBodyDeclaration::Method(m) = member {
-                        if m.modifiers.contains(&Modifier::Static)
-                            && m.modifiers.contains(&Modifier::Override)
+                    if let ClassBodyDeclaration::Method(m) = member
+                        && m.modifiers.contains(&Modifier::Static)
+                        && m.modifiers.contains(&Modifier::Override)
+                    {
+                        let mut b = DiagnosticBuilder::new(DiagnosticCode::BSE02006);
+                        let class_name = ident_text(&class.name);
+                        let method_name = ident_text(&m.name);
+                        if let Some((start, len)) =
+                            find_method_span(session, &class_name, &method_name)
                         {
-                            let mut b = DiagnosticBuilder::new(DiagnosticCode::BSE02006);
-                            let class_name = ident_text(&class.name);
-                            let method_name = ident_text(&m.name);
-                            if let Some((start, len)) =
-                                find_method_span(session, &class_name, &method_name)
-                            {
-                                b = b.at_span(session, start, len);
-                            }
-                            b.emit(session);
+                            b = b.at_span(session, start, len);
                         }
+                        b.emit(session);
                     }
                 }
             }
@@ -221,25 +220,25 @@ impl Rule for AsyncReturnsTask {
         for decl in &cu.declarations {
             if let TopLevelDeclaration::Class(class) = decl {
                 for member in &class.body_declarations {
-                    if let ClassBodyDeclaration::Method(m) = member {
-                        if m.modifiers.contains(&Modifier::Async) {
-                            let valid = match &m.return_type {
-                                Type::Reference(rt) => ident_text(rt) == "Task",
-                                Type::Generic { base, .. } => ident_text(base) == "Task",
-                                Type::Primitive(PrimitiveType::Void) => true, // allowed but discouraged
-                                _ => false,
-                            };
-                            if !valid {
-                                let mut b = DiagnosticBuilder::new(DiagnosticCode::BSE02009);
-                                let class_name = ident_text(&class.name);
-                                let method_name = ident_text(&m.name);
-                                if let Some((start, len)) =
-                                    find_method_span(session, &class_name, &method_name)
-                                {
-                                    b = b.at_span(session, start, len);
-                                }
-                                b.emit(session);
+                    if let ClassBodyDeclaration::Method(m) = member
+                        && m.modifiers.contains(&Modifier::Async)
+                    {
+                        let valid = match &m.return_type {
+                            Type::Reference(rt) => ident_text(rt) == "Task",
+                            Type::Generic { base, .. } => ident_text(base) == "Task",
+                            Type::Primitive(PrimitiveType::Void) => true, // allowed but discouraged
+                            _ => false,
+                        };
+                        if !valid {
+                            let mut b = DiagnosticBuilder::new(DiagnosticCode::BSE02009);
+                            let class_name = ident_text(&class.name);
+                            let method_name = ident_text(&m.name);
+                            if let Some((start, len)) =
+                                find_method_span(session, &class_name, &method_name)
+                            {
+                                b = b.at_span(session, start, len);
                             }
+                            b.emit(session);
                         }
                     }
                 }

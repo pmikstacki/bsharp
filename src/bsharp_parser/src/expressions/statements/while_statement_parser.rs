@@ -17,14 +17,18 @@ pub fn parse_while_statement(input: Span) -> BResult<Statement> {
             kw_while().context("while keyword"),
             delimited(
                 delimited(ws, tok_l_paren(), ws),
-                (|i| crate::parser::expressions::primary_expression_parser::parse_expression(i))
+                (|i| crate::parser::expressions::primary_expression_parser::parse_expression_spanned(i))
+                    .map(|s| s.node)
                     .context("while loop condition"),
                 cut(delimited(ws, tok_r_paren(), ws))
                     .context("closing parenthesis for while condition"),
             ),
             cut(delimited(
                 ws,
-                |i| crate::parser::statement_parser::parse_statement_ws(i),
+                |i| {
+                    let (r, s) = crate::parser::statement_parser::parse_statement_ws_spanned(i)?;
+                    Ok((r, s.node))
+                },
                 ws,
             ))
             .context("while loop body"),

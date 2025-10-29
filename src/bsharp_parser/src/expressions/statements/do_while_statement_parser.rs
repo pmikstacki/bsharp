@@ -1,8 +1,8 @@
 // Parser for do-while statements
 
-use crate::parser::expressions::primary_expression_parser::parse_expression;
+use crate::parser::expressions::primary_expression_parser::parse_expression_spanned;
 use crate::parser::keywords::iteration_keywords::{kw_do, kw_while};
-use crate::parser::statement_parser::parse_statement_ws;
+use crate::parser::statement_parser::parse_statement_ws_spanned;
 use crate::trivia::comment_parser::ws;
 use crate::errors::BResult;
 use nom::combinator::cut;
@@ -16,11 +16,16 @@ pub fn parse_do_while_statement(input: Span) -> BResult<Statement> {
     map(
         (
             kw_do().context("do keyword"),
-            cut(delimited(ws, parse_statement_ws, ws)).context("do body"),
+            cut(delimited(ws, parse_statement_ws_spanned, ws))
+                .map(|s| s.node)
+                .context("do body"),
             delimited(ws, kw_while(), ws).context("while keyword"),
             delimited(
                 delimited(ws, tok_l_paren(), ws),
-                parse_expression,
+                |i| {
+                    let (r, s) = parse_expression_spanned(i)?;
+                    Ok((r, s.node))
+                },
                 cut(delimited(ws, tok_r_paren(), ws)),
             )
             .context("while condition in parentheses"),

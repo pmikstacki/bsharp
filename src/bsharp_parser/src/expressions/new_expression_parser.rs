@@ -1,4 +1,4 @@
-use crate::parser::expressions::primary_expression_parser::parse_expression;
+use crate::parser::expressions::primary_expression_parser::parse_expression_spanned;
 use crate::parser::identifier_parser::parse_identifier;
 use crate::parser::keywords::expression_keywords::kw_new;
 use crate::parser::types::type_parser::parse_type_expression;
@@ -79,7 +79,10 @@ fn enhanced_new_with_type_and_initializer(input: Span) -> BResult<Expression> {
     fn parse_arg_list(i: Span) -> BResult<Vec<Expression>> {
         parse_delimited_list0::<_, _, _, _, char, char, char, Expression>(
             |i| delimited(ws, tok_l_paren(), ws).parse(i),
-            |i| delimited(ws, parse_expression, ws).parse(i),
+            |i| {
+                let (r, s) = delimited(ws, parse_expression_spanned, ws).parse(i)?;
+                Ok((r, s.node))
+            },
             |i| delimited(ws, tok_comma(), ws).parse(i),
             |i| delimited(ws, tok_r_paren(), ws).parse(i),
             false,
@@ -91,10 +94,12 @@ fn enhanced_new_with_type_and_initializer(input: Span) -> BResult<Expression> {
         (
             kw_new(),
             cut(delimited(ws, parse_type_expression, ws)),
+            // Only proceed as typed-new if next significant token starts an arg list or initializer
+            peek(alt((delimited(ws, tok_l_paren(), ws), delimited(ws, tok_l_brace(), ws)))),
             opt(parse_arg_list),
             opt(delimited(ws, enhanced_initializer, ws)),
         ),
-        |(_new_kw, ty, arguments, initializer)| {
+        |(_new_kw, ty, _guard, arguments, initializer)| {
             let (object_initializer, collection_initializer) = match initializer {
                 Some(InitializerKind::Object(obj)) => (Some(obj), None),
                 Some(InitializerKind::Collection(coll)) => (None, Some(coll)),
@@ -117,7 +122,10 @@ fn simple_new_expression(input: Span) -> BResult<Expression> {
     fn parse_arg_list(i: Span) -> BResult<Vec<Expression>> {
         parse_delimited_list0::<_, _, _, _, char, char, char, Expression>(
             |i| delimited(ws, tok_l_paren(), ws).parse(i),
-            |i| delimited(ws, parse_expression, ws).parse(i),
+            |i| {
+                let (r, s) = delimited(ws, parse_expression_spanned, ws).parse(i)?;
+                Ok((r, s.node))
+            },
             |i| delimited(ws, tok_comma(), ws).parse(i),
             |i| delimited(ws, tok_r_paren(), ws).parse(i),
             false,
@@ -129,9 +137,11 @@ fn simple_new_expression(input: Span) -> BResult<Expression> {
         (
             kw_new(),
             delimited(ws, parse_type_expression, ws),
+            // Require there to be an argument list to consider this a simple typed-new
+            peek(delimited(ws, tok_l_paren(), ws)),
             opt(parse_arg_list),
         ),
-        |(_new_kw, ty, arguments)| {
+        |(_new_kw, ty, _guard, arguments)| {
             Expression::New(Box::new(NewExpression {
                 target_type: Some(ty),
                 arguments: arguments.unwrap_or_default(),
@@ -148,7 +158,10 @@ fn target_typed_new_expression(input: Span) -> BResult<Expression> {
     fn parse_arg_list(i: Span) -> BResult<Vec<Expression>> {
         parse_delimited_list0::<_, _, _, _, char, char, char, Expression>(
             |i| delimited(ws, tok_l_paren(), ws).parse(i),
-            |i| delimited(ws, parse_expression, ws).parse(i),
+            |i| {
+                let (r, s) = delimited(ws, parse_expression_spanned, ws).parse(i)?;
+                Ok((r, s.node))
+            },
             |i| delimited(ws, tok_comma(), ws).parse(i),
             |i| delimited(ws, tok_r_paren(), ws).parse(i),
             false,
@@ -240,7 +253,7 @@ fn enhanced_property_assignment(input: Span) -> BResult<ObjectInitializerEntry> 
         (
             delimited(ws, parse_identifier, ws),
             delimited(ws, tok_assign(), ws),
-            delimited(ws, parse_expression, ws),
+            delimited(ws, parse_expression_spanned, ws).map(|s| s.node),
         ),
         |(id, _, expr)| {
             let name = match id {
@@ -281,7 +294,7 @@ fn enhanced_collection_initializer(input: Span) -> BResult<InitializerKind> {
     map(
         separated_list0(
             delimited(ws, tok_comma(), ws),
-            delimited(ws, parse_expression, ws),
+            delimited(ws, parse_expression_spanned, ws).map(|s| s.node),
         ),
         InitializerKind::Collection,
     )
@@ -295,11 +308,11 @@ fn parse_indexer_assignment(input: Span) -> BResult<ObjectInitializerEntry> {
             delimited(ws, tok_l_brack(), ws),
             separated_list1(
                 delimited(ws, tok_comma(), ws),
-                delimited(ws, parse_expression, ws),
+                delimited(ws, parse_expression_spanned, ws).map(|s| s.node),
             ),
             cut(delimited(ws, tok_r_brack(), ws)),
             cut(delimited(ws, tok_assign(), ws)),
-            cut(delimited(ws, parse_expression, ws)),
+            cut(delimited(ws, parse_expression_spanned, ws).map(|s| s.node)),
         ),
         |(_, indices, _, _, value)| ObjectInitializerEntry::Indexer { indices, value },
     )
@@ -314,7 +327,7 @@ fn parse_anonymous_object_member(input: Span) -> BResult<AnonymousObjectMember> 
             (
                 delimited(ws, parse_identifier, ws),
                 delimited(ws, tok_assign(), ws),
-                delimited(ws, parse_expression, ws),
+                delimited(ws, parse_expression_spanned, ws).map(|s| s.node),
             ),
             |(name, _, value)| AnonymousObjectMember {
                 name: Some(name),

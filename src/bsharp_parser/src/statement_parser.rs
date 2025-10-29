@@ -244,6 +244,7 @@ fn parse_group4_misc(input: Span) -> BResult<Statement> {
 
 /// Main statement syntax - Enhanced VerboseError with specific diagnostics
 /// Following Microsoft's Roslyn approach but using Nom's VerboseError for detailed error reporting
+#[deprecated(note = "Use parse_statement_spanned/parse_statement_ws_spanned or Parsable<'a>::parse -> Spanned<_>")]
 pub fn parse_statement(input: Span) -> BResult<Statement> {
     if let Ok(r) = parse_group1_with_block(input) {
         return Ok(r);
@@ -259,6 +260,7 @@ pub fn parse_statement(input: Span) -> BResult<Statement> {
 
 /// Statement syntax for use inside blocks - EXCLUDES block statements to prevent recursion
 /// Enhanced with VerboseError diagnostics explaining the recursive exclusion
+#[deprecated(note = "Use parse_statement_for_block_spanned or Parsable<'a>::parse -> Spanned<_>")]
 pub fn parse_statement_for_block(input: Span) -> BResult<Statement> {
     if let Ok(r) = parse_group1_without_block(input) {
         return Ok(r);
@@ -274,17 +276,20 @@ pub fn parse_statement_for_block(input: Span) -> BResult<Statement> {
 
 /// Parse a statement for use inside blocks, consuming any leading whitespace or comments.
 /// This version excludes block statements to prevent recursion.
+#[deprecated(note = "Use parse_statement_for_block_spanned or Parsable<'a>::parse -> Spanned<_>")]
 pub fn parse_statement_for_block_ws(input: Span) -> BResult<Statement> {
     let (input, _) = parse_whitespace_or_comments(input)?;
     parse_statement_for_block(input)
 }
 
 /// Parse a statement, consuming any leading whitespace or comments.
+#[deprecated(note = "Use parse_statement_ws_spanned or Parsable<'a>::parse -> Spanned<_>")]
 pub fn parse_statement_ws(input: Span) -> BResult<Statement> {
     let (input, _) = parse_whitespace_or_comments(input)?;
     parse_statement(input)
 }
 
+#[allow(deprecated)]
 pub fn parse_statement_spanned(input: Span) -> BResult<Spanned<Statement>> {
     let start_abs = input.location_offset();
     let start_lo = LineOffset { line: input.location_line(), offset: input.get_utf8_column().saturating_sub(1) };
@@ -296,6 +301,7 @@ pub fn parse_statement_spanned(input: Span) -> BResult<Spanned<Statement>> {
     Ok((rest, Spanned { node, abs, rel }))
 }
 
+#[allow(deprecated)]
 pub fn parse_statement_for_block_spanned(input: Span) -> BResult<Spanned<Statement>> {
     let start_abs = input.location_offset();
     let start_lo = LineOffset { line: input.location_line(), offset: input.get_utf8_column().saturating_sub(1) };
@@ -307,6 +313,7 @@ pub fn parse_statement_for_block_spanned(input: Span) -> BResult<Spanned<Stateme
     Ok((rest, Spanned { node, abs, rel }))
 }
 
+#[allow(deprecated)]
 pub fn parse_statement_ws_spanned(input: Span) -> BResult<Spanned<Statement>> {
     let (input_core, _) = parse_whitespace_or_comments(input)?;
     let start_abs = input_core.location_offset();

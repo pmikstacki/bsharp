@@ -1,4 +1,4 @@
-use crate::parser::expressions::primary_expression_parser::parse_expression;
+use crate::parser::expressions::primary_expression_parser::parse_expression_spanned;
 use crate::parser::identifier_parser::parse_qualified_name;
 use crate::parser::types::type_parser::parse_type_expression;
 use crate::trivia::comment_parser::ws;
@@ -110,7 +110,7 @@ pub fn parse_attribute(input: Span) -> BResult<Attribute> {
             Expression,
         >(
             |i2| delimited(ws, tok_l_paren(), ws).parse(i2),
-            parse_expression,
+            |i2| delimited(ws, parse_expression_spanned, ws).map(|s| s.node).parse(i2),
             |i2| delimited(ws, tok_comma(), ws).parse(i2),
             |i2| delimited(ws, tok_r_paren(), ws).parse(i2),
             false,

@@ -44,7 +44,11 @@ pub(crate) fn parse_conditional_expression_or_higher<'a>(
                 ws,
             )
             .parse(input)?;
-            let (input, true_expr) = (|i| expressions::parse_expression(i))
+            let (input, true_expr) = (|i| {
+                use crate::parser::expressions::primary_expression_parser::parse_expression_spanned;
+                let (r, s) = parse_expression_spanned(i)?;
+                Ok((r, s.node))
+            })
                 .context("conditional expression: true branch")
                 .parse(input)?;
             let (input, _) = nom::combinator::cut(nom::sequence::delimited(

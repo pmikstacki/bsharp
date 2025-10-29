@@ -1,5 +1,5 @@
 use crate::parser::expressions::declarations::modifier_parser::parse_modifiers;
-use crate::parser::expressions::primary_expression_parser::parse_expression;
+use crate::parser::expressions::primary_expression_parser::parse_expression_spanned;
 use crate::parser::identifier_parser::parse_identifier;
 use crate::parser::types::type_parser::parse_type_expression;
 use crate::errors::BResult;
@@ -17,7 +17,9 @@ use syntax::expressions::Expression;
 fn parse_field_initializer(input: Span) -> BResult<Option<Expression>> {
     opt(preceded(
         delimited(ws, tok_assign(), ws).context("field initializer"),
-        delimited(ws, parse_expression, ws).context("field initializer expression"),
+        delimited(ws, parse_expression_spanned, ws)
+            .map(|s| s.node)
+            .context("field initializer expression"),
     ))
     .parse(input)
 }

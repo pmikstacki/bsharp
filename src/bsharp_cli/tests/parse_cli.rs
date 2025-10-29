@@ -17,6 +17,26 @@ fn write_temp(contents: &str, name: &str) -> PathBuf {
 }
 
 #[test]
+fn json_error_with_spans_includes_abs_rel() {
+    let src = r#"using System; class C {} trailing"#;
+    let file = write_temp(src, "json_spans");
+
+    let mut cmd = Command::cargo_bin("bsharp_cli").unwrap();
+    let assert = cmd
+        .args(["parse", "--input"]) // positional
+        .arg(&file)
+        .arg("--errors-json")
+        .arg("--emit-spans")
+        .assert()
+        .failure();
+
+    let out = String::from_utf8_lossy(&assert.get_output().stdout);
+    assert!(out.contains("\"spans\""), "stdout: {}", out);
+    assert!(out.contains("\"abs\""), "stdout: {}", out);
+    assert!(out.contains("\"rel\""), "stdout: {}", out);
+}
+
+#[test]
 fn pretty_miette_reports_expected_eof_for_trailing_tokens() {
     // Minimal program with trailing garbage to trigger remaining-input path (expected EOF)
     let src = r#"using System; class C {} trailing"#;

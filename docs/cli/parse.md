@@ -82,6 +82,12 @@ public clas MyClass { }
 - Expected vs. actual input
 - Helpful error messages
 
+#### Pretty error formatting
+
+The parser integrates with the `miette` crate for rich, labeled diagnostics in pretty (non-JSON) mode. CLI parse errors are formatted from the underlying `ErrorTree` with spans and context information for easier debugging.
+
+For programmatic formatting from parser code, see `bsharp_parser::errors::to_miette_report` which converts an `ErrorTree` to a `miette::Report` with source code attached.
+
 ### File Errors
 
 ```bash

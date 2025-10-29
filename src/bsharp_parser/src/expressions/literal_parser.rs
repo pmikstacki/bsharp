@@ -1,4 +1,4 @@
-use crate::parser::expressions::primary_expression_parser::parse_expression;
+use crate::parser::expressions::primary_expression_parser::parse_expression_spanned;
 // This is used by parse_interpolation
 use crate::keywords::literal_keywords::{kw_false, kw_null, kw_true};
 use crate::trivia::comment_parser::ws;
@@ -142,7 +142,7 @@ pub fn parse_raw_interpolated_string<'a>(input: Span<'a>) -> BResult<'a, Literal
         }
         Err(nom::Err::Error(make_error(i, ErrorKind::Tag)))
     })
-    .context("raw interpolated string literal (expected $\"\"\"...\"\"\" with {expr})")
+    .context("raw interpolated string literal")
     .parse(input)
 }
 
@@ -391,7 +391,7 @@ pub fn parse_float<'a>(input: Span<'a>) -> BResult<'a, Literal> {
             }
         }
     })
-    .context("floating-point literal (decimal with optional exponent, underscores allowed)")
+    .context("floating-point literal")
     .parse(input)
 }
 
@@ -590,8 +590,10 @@ fn enhanced_interpolation(input: Span<'_>) -> BResult<'_, InterpolatedStringPart
 
 /// Robust expression parsing within interpolation with fallback
 fn robust_expression_in_interpolation(input: Span) -> BResult<Expression> {
-    let res = parse_expression(input).or_else(|_| fallback_simple_expression(input));
-    res
+    match parse_expression_spanned.parse(input) {
+        Ok((rest, s)) => Ok((rest, s.node)),
+        Err(_) => fallback_simple_expression(input),
+    }
 }
 
 /// Fallback syntax for simple expressions when complex parsing fails
