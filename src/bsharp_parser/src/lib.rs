@@ -1,3 +1,13 @@
+//! bsharp_parser crate
+//! 
+//! Spanned-first public entrypoints:
+//! - Expressions: `parser::expressions::primary_expression_parser::parse_expression_spanned`
+//!   and `parser::expressions::primary_expression_parser::parse_primary_expression_spanned`.
+//! - Full source: `bsharp::parse_csharp_source_spanned`.
+//! 
+//! Idiom: obtain unspanned nodes via `.map(|s| s.node)` on returned `Spanned<T>`.
+//! Legacy unspanned helpers are deprecated and not re-exported at the crate surface.
+//! Prefer the spanned-first APIs for consistent error reporting and diagnostics.
 pub mod bsharp;
 pub mod declaration_helpers;
 pub mod expressions;

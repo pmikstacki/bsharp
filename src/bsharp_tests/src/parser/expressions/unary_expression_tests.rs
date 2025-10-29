@@ -1,11 +1,11 @@
 // Tests for prefix unary expressions
 
-use parser::expressions::primary_expression_parser::parse_expression;
+use parser::expressions::primary_expression_parser::parse_expression_spanned as parse_expression;
 use syntax::expressions::UnaryOperator;
 use syntax::expressions::expression::Expression;
 
 fn assert_unary(op_str: &str, expected: UnaryOperator) {
-    let (rest, expr) = parse_expression(op_str.into()).expect("parse ok");
+    let (rest, expr) = parse_expression(op_str.into()).map(|(rest, s)| (rest, s.node)).expect("parse ok");
     assert!(rest.fragment().trim().is_empty());
     match expr {
         Expression::Unary { op, .. } => assert_eq!(op, expected),
@@ -23,14 +23,14 @@ fn prefix_ops_basic() {
 
 #[test]
 fn prefix_inc_dec() {
-    let (rest, expr) = parse_expression("++x".into()).expect("parse ok");
+    let (rest, expr) = parse_expression("++x".into()).map(|(rest, s)| (rest, s.node)).expect("parse ok");
     assert!(rest.fragment().trim().is_empty());
     match expr {
         Expression::Unary { op, .. } => assert_eq!(op, UnaryOperator::Increment),
         other => panic!("expected prefix ++, got {:?}", other),
     }
 
-    let (rest, expr) = parse_expression("--x".into()).expect("parse ok");
+    let (rest, expr) = parse_expression("--x".into()).map(|(rest, s)| (rest, s.node)).expect("parse ok");
     assert!(rest.fragment().trim().is_empty());
     match expr {
         Expression::Unary { op, .. } => assert_eq!(op, UnaryOperator::Decrement),
@@ -41,14 +41,14 @@ fn prefix_inc_dec() {
 #[test]
 fn address_of_and_pointer_indirection() {
     // These may require unsafe contexts semantically, but syntactically we parse them
-    let (rest, expr) = parse_expression("&x".into()).expect("parse ok");
+    let (rest, expr) = parse_expression("&x".into()).map(|(rest, s)| (rest, s.node)).expect("parse ok");
     assert!(rest.fragment().trim().is_empty());
     match expr {
         Expression::Unary { op, .. } => assert_eq!(op, UnaryOperator::AddressOf),
         other => panic!("expected &, got {:?}", other),
     }
 
-    let (rest, expr) = parse_expression("*x".into()).expect("parse ok");
+    let (rest, expr) = parse_expression("*x".into()).map(|(rest, s)| (rest, s.node)).expect("parse ok");
     assert!(rest.fragment().trim().is_empty());
     match expr {
         Expression::Unary { op, .. } => assert_eq!(op, UnaryOperator::PointerIndirection),
@@ -58,7 +58,7 @@ fn address_of_and_pointer_indirection() {
 
 #[test]
 fn index_from_end_prefix() {
-    let (rest, expr) = parse_expression("^1".into()).expect("parse ok");
+    let (rest, expr) = parse_expression("^1".into()).map(|(rest, s)| (rest, s.node)).expect("parse ok");
     assert!(rest.fragment().trim().is_empty());
     match expr {
         Expression::Index(_) => {}
@@ -69,6 +69,6 @@ fn index_from_end_prefix() {
 #[test]
 fn invalid_standalone_assignment_op_is_error() {
     // Ensure '-= 5' isn't misparsed as unary minus followed by '= 5'
-    let result = parse_expression("-= 5".into());
+    let result = parse_expression("-= 5".into()).map(|(rest, s)| (rest, s.node));
     assert!(result.is_err());
 }

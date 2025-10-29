@@ -34,16 +34,7 @@ use nom::{
 use syntax::expressions::Expression;
 use syntax::types::Type;
 
-#[deprecated(note = "Use parse_expression_spanned or Parsable<'a>::parse -> Spanned<_>")]
-pub fn parse_expression(input: Span) -> BResult<Expression> {
-    delimited(
-        ws,
-        assignment_expression_parser::parse_assignment_expression_or_higher,
-        ws,
-    )
-    .context("expression")
-    .parse(input)
-}
+// Deprecated unspanned parse_expression removed; use parse_expression_spanned.
 
 pub fn parse_primary_literal_spanned(input: Span) -> BResult<Spanned<Expression>> {
     let (rest, s) = parse_literal_spanned(input)?;
@@ -129,8 +120,6 @@ pub fn parse_primary_expression_spanned(input: Span) -> BResult<Spanned<Expressi
         parse_lambda_or_anonymous_method_spanned,
         parse_primary_variable_spanned,
         parse_stackalloc_expression_spanned,
-        // Fallback
-        (|i| parse_primary_expression(i)).spanned(),
     ));
     nom::sequence::delimited(ws, core, ws).parse(input)
 }
@@ -140,47 +129,7 @@ pub fn parse_expression_spanned(input: Span) -> BResult<Spanned<Expression>> {
     delimited(ws, |i| core_spanned(i), ws).parse(input)
 }
 
-#[deprecated(note = "Use parse_primary_expression_spanned or Parsable<'a>::parse -> Spanned<_>")]
-pub fn parse_primary_expression(input: Span) -> BResult<Expression> {
-    map(
-        alt((
-            // Parenthesized or tuple must be tried very early to avoid other branches
-            // (like switch basic expression) consuming '(' with a cut
-            parse_paren_or_tuple_primary,
-            // Collection expressions starting with '[' must be before variable/member/indexing
-            parse_collection_expression_or_brackets,
-            // Generic type name primary (e.g., Result<User>) used for static member access
-            parse_generic_name_primary,
-            // LINQ Query expressions - must come before variables/identifiers
-            parse_query_expression,
-            // Switch expressions - must come before variables/identifiers
-            parse_switch_expression,
-            // Throw expressions - must come before variables/identifiers
-            parse_throw_expression,
-            // Nameof expressions - must come before variables/identifiers
-            parse_nameof_expression,
-            // Default expressions - must come before variables/identifiers
-            parse_default_expression,
-            // Literals
-            map(parse_literal, Expression::Literal),
-            // this keyword
-            map(kw_this(), |_| Expression::This),
-            // base keyword
-            map(kw_base(), |_| Expression::Base),
-            // New expressions (includes anonymous object creation)
-            parse_new_expression,
-            // Lambda expressions
-            parse_lambda_or_anonymous_method,
-            // Variables/identifiers
-            map(parse_identifier, Expression::Variable),
-            // Stackalloc expressions
-            parse_stackalloc_expression,
-        )),
-        |v| v,
-    )
-    .context("primary expression")
-    .parse(input)
-}
+// Deprecated unspanned parse_primary_expression removed; use parse_primary_expression_spanned.
 
 /// Parse a generic type name as a primary expression for static member access.
 /// Example: `Result<User>` (treated as a name for `Result` so that `Result<User>.Success(...)` parses)

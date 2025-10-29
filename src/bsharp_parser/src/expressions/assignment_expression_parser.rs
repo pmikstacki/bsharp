@@ -4,7 +4,6 @@ use crate::errors::BResult;
 use crate::trivia::comment_parser::ws;
 use syntax::span::Span;
 use crate::span::{Spanned, ByteRange, LineOffset, TextRange};
-use crate::span_ext::ParserExt as _;
 
 use nom::Parser;
 use nom::branch::alt;

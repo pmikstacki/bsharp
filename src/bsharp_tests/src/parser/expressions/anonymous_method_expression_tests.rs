@@ -1,11 +1,11 @@
 // Tests for anonymous method expressions
 
-use parser::expressions::primary_expression_parser::parse_expression;
+use parser::expressions::primary_expression_parser::parse_expression_spanned as parse_expression;
 use syntax::expressions::expression::Expression;
 use syntax::expressions::lambda_expression::LambdaBody;
 
 fn parse(code: &str) -> Expression {
-    let (rest, expr) = parse_expression(code.into()).expect("parse ok");
+    let (rest, expr) = parse_expression(code.into()).map(|(rest, s)| (rest, s.node)).expect("parse ok");
     assert!(rest.trim().is_empty(), "unparsed: {}", rest);
     expr
 }

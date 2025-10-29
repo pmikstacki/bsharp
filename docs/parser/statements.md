@@ -223,34 +223,14 @@ unsafe
 
 ## Statement Parsing Implementation
 
-The statement parser uses a dispatch mechanism based on the first token:
+Use the spanned entrypoint and unwrap when spans are not needed:
 
 ```rust
-fn parse_statement(input: &str) -> BResult<&str, Statement> {
-    alt((
-        parse_block_statement,
-        parse_if_statement,
-        parse_while_statement,
-        parse_for_statement,
-        parse_foreach_statement,
-        parse_do_while_statement,
-        parse_switch_statement,
-        parse_try_statement,
-        parse_using_statement,
-        parse_lock_statement,
-        parse_return_statement,
-        parse_throw_statement,
-        parse_break_statement,
-        parse_continue_statement,
-        parse_goto_statement,
-        parse_label_statement,
-        parse_yield_statement,
-        parse_local_declaration_statement,
-        parse_local_function_statement,
-        parse_expression_statement,
-        parse_empty_statement,
-    ))(input.into())
-}
+use bsharp_parser::parser::statement_parser::parse_statement_ws_spanned;
+use bsharp_syntax::span::Span;
+
+let result = parse_statement_ws_spanned(Span::new(input))
+    .map(|(rest, s)| (rest, s.node));
 ```
 
 ## Block Statements

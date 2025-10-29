@@ -127,20 +127,20 @@ pub fn parse_attribute(input: Span) -> BResult<Attribute> {
                 syntax::Identifier::OperatorOverrideIdentifier(_) => "operator".to_string(),
             })
             .collect();
-        if let Some(type_args) = &type_args_opt {
-            if let Some(last) = name_segments.last_mut() {
-                let mut appended = String::new();
-                appended.push_str(last);
-                appended.push('<');
-                for (i, t) in type_args.iter().enumerate() {
-                    if i > 0 {
-                        appended.push_str(", ");
-                    }
-                    appended.push_str(&type_to_string(t));
+        if let Some(type_args) = &type_args_opt
+            && let Some(last) = name_segments.last_mut()
+        {
+            let mut appended = String::new();
+            appended.push_str(last);
+            appended.push('<');
+            for (i, t) in type_args.iter().enumerate() {
+                if i > 0 {
+                    appended.push_str(", ");
                 }
-                appended.push('>');
-                *last = appended;
+                appended.push_str(&type_to_string(t));
             }
+            appended.push('>');
+            *last = appended;
         }
 
         // Build final Identifier: Simple if single segment, otherwise QualifiedIdentifier

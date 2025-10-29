@@ -13,10 +13,10 @@ fn ident_text(id: &crate::syntax::Identifier) -> String {
 }
 
 pub fn method_fqn(cu: &CompilationUnit, method: &MethodDeclaration) -> String {
-    if let Some(fs) = &cu.file_scoped_namespace {
-        if let Some((cfqn, name)) = find_in_namespace(None, &fs.declarations, method) {
-            return format!("{}::{}", cfqn, name);
-        }
+    if let Some(fs) = &cu.file_scoped_namespace
+        && let Some((cfqn, name)) = find_in_namespace(None, &fs.declarations, method)
+    {
+        return format!("{}::{}", cfqn, name);
     }
     for decl in &cu.declarations {
         match decl {
@@ -51,9 +51,7 @@ fn find_in_namespace(
                     Some(p) => format!("{}.{}", p, ident_text(&inner.name)),
                     None => ident_text(&inner.name),
                 };
-                if let Some((cfqn, name)) =
-                    find_in_namespace(Some(&new_ns), &inner.declarations, method)
-                {
+                if let Some((cfqn, name)) = find_in_namespace(Some(&new_ns), &inner.declarations, method) {
                     return Some((cfqn, name));
                 }
             }
@@ -103,11 +101,10 @@ fn find_in_class(
 }
 
 pub fn class_fqn(cu: &CompilationUnit, class: &ClassDeclaration) -> String {
-    if let Some(fs) = &cu.file_scoped_namespace {
-        if let Some(cfqn) = find_class_in_namespace(None, &fs.declarations, class, &mut Vec::new())
-        {
-            return cfqn;
-        }
+    if let Some(fs) = &cu.file_scoped_namespace
+        && let Some(cfqn) = find_class_in_namespace(None, &fs.declarations, class, &mut Vec::new())
+    {
+        return cfqn;
     }
     for decl in &cu.declarations {
         match decl {
@@ -146,9 +143,7 @@ fn find_class_in_namespace(
                     Some(p) => format!("{}.{}", p, ident_text(&inner.name)),
                     None => ident_text(&inner.name),
                 };
-                if let Some(cfqn) =
-                    find_class_in_namespace(Some(&new_ns), &inner.declarations, target, stack)
-                {
+                if let Some(cfqn) = find_class_in_namespace(Some(&new_ns), &inner.declarations, target, stack) {
                     return Some(cfqn);
                 }
             }
@@ -171,11 +166,11 @@ fn find_class_path(
 ) -> Option<String> {
     stack.push(ident_text(&class.name));
     for member in &class.body_declarations {
-        if let ClassBodyDeclaration::NestedClass(nested) = member {
-            if let Some(path) = find_class_path(ns_path, nested, target, stack) {
-                stack.pop();
-                return Some(path);
-            }
+        if let ClassBodyDeclaration::NestedClass(nested) = member
+            && let Some(path) = find_class_path(ns_path, nested, target, stack)
+        {
+            stack.pop();
+            return Some(path);
         }
     }
     let class_path = stack.join(".");
@@ -192,10 +187,10 @@ fn find_class_path(
 }
 
 pub fn namespace_fqn(cu: &CompilationUnit, ns: &NamespaceDeclaration) -> String {
-    if let Some(fs) = &cu.file_scoped_namespace {
-        if let Some(path) = find_namespace_path(None, &fs.declarations, ns) {
-            return path;
-        }
+    if let Some(fs) = &cu.file_scoped_namespace
+        && let Some(path) = find_namespace_path(None, &fs.declarations, ns)
+    {
+        return path;
     }
     for decl in &cu.declarations {
         if let TopLevelDeclaration::Namespace(top) = decl {

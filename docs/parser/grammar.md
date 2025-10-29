@@ -4,9 +4,9 @@ This document summarizes the grammar that B# currently supports, the precedence 
 
 ## Entry points
 
-- Expression entry: `parse_expression()`
-  - Location: `src/bsharp_parser/src/expressions/primary_expression_parser.rs` (re-exported by `expressions/mod.rs`)
-- Statement entry: `parse_statement()`
+- Expression entry: `parse_expression_spanned()`
+  - Location: `src/bsharp_parser/src/expressions/primary_expression_parser.rs`
+- Statement entry: `parse_statement_ws_spanned()`
   - Location: `src/bsharp_parser/src/statement_parser.rs`
 - Pattern entry: `parse_pattern()`
   - Location: `src/bsharp_parser/src/expressions/pattern_parser.rs`

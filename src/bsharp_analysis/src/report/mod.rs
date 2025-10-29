@@ -67,13 +67,13 @@ impl AnalysisReport {
             let mut edge_keys: std::collections::HashSet<String> = std::collections::HashSet::new();
             let sym_idx = session.artifacts.get::<SymbolIndex>();
             fn id_to_key_with_idx(sym_idx: Option<&SymbolIndex>, id: &SymbolId) -> String {
-                if let Some(idx) = sym_idx {
-                    if let Some(sym) = idx.get(*id) {
-                        if let Some(f) = &sym.fqn {
-                            return f.clone();
-                        }
-                        return sym.name.clone();
+                if let Some(idx) = sym_idx
+                    && let Some(sym) = idx.get(*id)
+                {
+                    if let Some(f) = &sym.fqn {
+                        return f.clone();
                     }
+                    return sym.name.clone();
                 }
                 format!("id:{}", id.0)
             }

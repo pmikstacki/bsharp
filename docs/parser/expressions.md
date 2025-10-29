@@ -121,22 +121,14 @@ value switch
 
 ## Operator Precedence Implementation
 
-The parser implements precedence using recursive descent with precedence climbing:
+The expression entrypoint is spanned-first. Callers can unwrap the `Spanned<Expression>` when they do not need spans:
 
 ```rust
-fn parse_expression(input: &str) -> BResult<&str, Expression> {
-    parse_assignment_expression(input.into())
-}
+use bsharp_parser::parser::expressions::primary_expression_parser::parse_expression_spanned;
+use bsharp_syntax::span::Span;
 
-fn parse_assignment_expression(input: &str) -> BResult<&str, Expression> {
-    // Handle assignment operators with right associativity
-}
-
-fn parse_conditional_expression(input: &str) -> BResult<&str, Expression> {
-    // Handle ternary conditional operator
-}
-
-// ... continuing down the precedence chain
+let result = parse_expression_spanned(Span::new(input))
+    .map(|(rest, s)| (rest, s.node));
 ```
 
 ## Error Handling in Expressions

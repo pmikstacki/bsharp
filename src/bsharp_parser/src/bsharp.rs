@@ -393,18 +393,16 @@ where
     if peek(delimited(ws, kw_namespace(), ws))
         .parse(remaining)
         .is_ok()
-    {
-        if let Ok((rest, (recognized, ns))) = (|i| parse_file_scoped_namespace_declaration(i))
+        && let Ok((rest, (recognized, ns))) = (|i| parse_file_scoped_namespace_declaration(i))
             .with_recognized()
             .parse(remaining)
-        {
-            let start = recognized.location_offset();
-            let end = start + recognized.fragment().len();
-            let key = format!("namespace::{}", ident_to_string(&ns.name));
-            span_table.insert(key, start..end);
-            file_scoped_namespace = Some(ns);
-            remaining = rest;
-        }
+    {
+        let start = recognized.location_offset();
+        let end = start + recognized.fragment().len();
+        let key = format!("namespace::{}", ident_to_string(&ns.name));
+        span_table.insert(key, start..end);
+        file_scoped_namespace = Some(ns);
+        remaining = rest;
     }
 
     // Top-level members

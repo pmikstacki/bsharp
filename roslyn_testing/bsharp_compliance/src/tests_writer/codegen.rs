@@ -547,7 +547,7 @@ pub fn write_group(
     if has_stmt {
         writeln!(
             f,
-            "use bsharp_parser::statement_parser::parse_statement_ws;"
+            "use bsharp_parser::statement_parser::parse_statement_ws_spanned;"
         )?;
     }
     writeln!(
@@ -667,7 +667,7 @@ pub fn write_group(
                 writeln!(f, "    }}")?;
             }
             Category::Statement => {
-                writeln!(f, "    let r = parse_statement_ws(span);")?;
+                writeln!(f, "    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));")?;
                 writeln!(f, "    if let Some(expected) = expected {{")?;
                 writeln!(f, "        match r {{")?;
                 writeln!(f, "            Ok((rest, ast)) => {{")?;

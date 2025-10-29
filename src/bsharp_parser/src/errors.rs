@@ -183,5 +183,5 @@ pub fn to_miette_report<'a>(src_name: &str, src: &'a str, error: &ErrorTree<Span
     let span = SourceSpan::new((offset).into(), 1usize.into());
     let label = LabeledSpan::at(span, msg.clone());
     miette::miette!(labels = vec![label], "parse error: {}", msg)
-        .with_source_code(NamedSource::new(src_name.to_string(), src.to_string()))
+        .with_source_code(NamedSource::new(src_name, src.to_string()))
 }

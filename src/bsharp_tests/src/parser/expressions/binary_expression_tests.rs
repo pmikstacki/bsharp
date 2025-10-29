@@ -1,4 +1,4 @@
-use parser::expressions::primary_expression_parser::parse_expression;
+use parser::expressions::primary_expression_parser::parse_expression_spanned as parse_expression;
 use syntax::expressions::expression::Expression;
 use syntax::expressions::literal::Literal;
 use syntax::expressions::{AssignmentExpression, BinaryOperator};
@@ -12,7 +12,7 @@ fn test_simple_binary_expression() {
         op: BinaryOperator::Add,
         right: Box::new(Expression::Literal(Literal::Integer(2))),
     };
-    let (_, actual) = parse_expression(input.into()).unwrap();
+    let (_, actual) = parse_expression(input.into()).map(|(rest, s)| (rest, s.node)).unwrap();
     assert_eq!(actual, expected);
 
     let input = "a * b";
@@ -21,7 +21,7 @@ fn test_simple_binary_expression() {
         op: BinaryOperator::Multiply,
         right: Box::new(Expression::Variable(Identifier::new("b"))),
     };
-    let (_, actual) = parse_expression(input.into()).unwrap();
+    let (_, actual) = parse_expression(input.into()).map(|(rest, s)| (rest, s.node)).unwrap();
     assert_eq!(actual, expected);
 }
 
@@ -33,7 +33,7 @@ fn test_simple_assignment_expression() {
         op: BinaryOperator::Assign,
         value: Box::new(Expression::Literal(Literal::Integer(10))),
     }));
-    let (_, actual) = parse_expression(input.into()).unwrap();
+    let (_, actual) = parse_expression(input.into()).map(|(rest, s)| (rest, s.node)).unwrap();
     assert_eq!(actual, expected);
 }
 
@@ -45,7 +45,7 @@ fn test_compound_assignment_expression() {
         op: BinaryOperator::AddAssign,
         value: Box::new(Expression::Literal(Literal::Integer(5))),
     }));
-    let (_, actual) = parse_expression(input.into()).unwrap();
+    let (_, actual) = parse_expression(input.into()).map(|(rest, s)| (rest, s.node)).unwrap();
     assert_eq!(actual, expected);
 
     let input = "z *= a";
@@ -54,7 +54,7 @@ fn test_compound_assignment_expression() {
         op: BinaryOperator::MultiplyAssign,
         value: Box::new(Expression::Variable(Identifier::new("a"))),
     }));
-    let (_, actual) = parse_expression(input.into()).unwrap();
+    let (_, actual) = parse_expression(input.into()).map(|(rest, s)| (rest, s.node)).unwrap();
     assert_eq!(actual, expected);
 }
 
@@ -71,7 +71,7 @@ fn test_precedence() {
             right: Box::new(Expression::Variable(Identifier::new("c"))),
         }),
     };
-    let (_, actual) = parse_expression(input.into()).unwrap();
+    let (_, actual) = parse_expression(input.into()).map(|(rest, s)| (rest, s.node)).unwrap();
     assert_eq!(actual, expected);
 
     // x = y == z -> x = (y == z)
@@ -85,7 +85,7 @@ fn test_precedence() {
             right: Box::new(Expression::Variable(Identifier::new("z"))),
         }),
     }));
-    let (_, actual) = parse_expression(input.into()).unwrap();
+    let (_, actual) = parse_expression(input.into()).map(|(rest, s)| (rest, s.node)).unwrap();
     assert_eq!(actual, expected);
 }
 
@@ -102,7 +102,7 @@ fn test_parentheses() {
         op: BinaryOperator::Multiply,
         right: Box::new(Expression::Variable(Identifier::new("c"))),
     };
-    let (_, actual) = parse_expression(input.into()).unwrap();
+    let (_, actual) = parse_expression(input.into()).map(|(rest, s)| (rest, s.node)).unwrap();
     assert_eq!(actual, expected);
 }
 
@@ -119,7 +119,7 @@ fn test_left_associativity() {
         op: BinaryOperator::Add,
         right: Box::new(Expression::Variable(Identifier::new("c"))),
     };
-    let (_, actual) = parse_expression(input.into()).unwrap();
+    let (_, actual) = parse_expression(input.into()).map(|(rest, s)| (rest, s.node)).unwrap();
     assert_eq!(actual, expected);
 }
 
@@ -135,7 +135,7 @@ fn test_assignment_associativity() {
             value: Box::new(Expression::Literal(Literal::Integer(5))),
         }))),
     }));
-    let (_, actual) = parse_expression(code.into()).unwrap();
+    let (_, actual) = parse_expression(code.into()).map(|(rest, s)| (rest, s.node)).unwrap();
     assert_eq!(actual, expected);
 }
 
@@ -147,7 +147,7 @@ fn test_null_coalescing_assignment_expression() {
         op: BinaryOperator::NullCoalescingAssign,
         value: Box::new(Expression::Literal(Literal::Integer(42))),
     }));
-    let (_, actual) = parse_expression(input.into()).unwrap();
+    let (_, actual) = parse_expression(input.into()).map(|(rest, s)| (rest, s.node)).unwrap();
     assert_eq!(actual, expected);
 }
 
@@ -163,7 +163,7 @@ fn test_null_coalescing_assignment_chain() {
             value: Box::new(Expression::Variable(Identifier::new("c"))),
         }))),
     }));
-    let (_, actual) = parse_expression(input.into()).unwrap();
+    let (_, actual) = parse_expression(input.into()).map(|(rest, s)| (rest, s.node)).unwrap();
     assert_eq!(actual, expected);
 }
 
@@ -180,6 +180,6 @@ fn test_null_coalescing_vs_null_coalescing_assignment() {
             right: Box::new(Expression::Variable(Identifier::new("y"))),
         }),
     }));
-    let (_, actual) = parse_expression(input.into()).unwrap();
+    let (_, actual) = parse_expression(input.into()).map(|(rest, s)| (rest, s.node)).unwrap();
     assert_eq!(actual, expected);
 }

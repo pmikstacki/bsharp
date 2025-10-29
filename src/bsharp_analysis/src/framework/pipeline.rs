@@ -50,10 +50,10 @@ impl AnalyzerPipeline {
                 continue;
             }
             // Config-based toggle: if enable_passes contains an entry for this id, honor it.
-            if let Some(enabled) = session.config.enable_passes.get(pass.id()) {
-                if !enabled {
-                    continue;
-                }
+            if let Some(enabled) = session.config.enable_passes.get(pass.id())
+                && !enabled
+            {
+                continue;
             }
             pass.run(cu, session);
         }
@@ -67,10 +67,10 @@ impl AnalyzerPipeline {
         let mut all_rules: Vec<&dyn Rule> = Vec::new();
         for rs in registry.rulesets_local() {
             // If config has a toggle for this ruleset id, honor it
-            if let Some(enabled) = session.config.enable_rulesets.get(rs.id) {
-                if !enabled {
-                    continue;
-                }
+            if let Some(enabled) = session.config.enable_rulesets.get(rs.id)
+                && !enabled
+            {
+                continue;
             }
             for r in rs.iter() {
                 all_rules.push(r);
@@ -103,10 +103,10 @@ impl AnalyzerPipeline {
     ) {
         let mut all_rules: Vec<&dyn Rule> = Vec::new();
         for rs in registry.rulesets_semantic() {
-            if let Some(enabled) = session.config.enable_rulesets.get(rs.id) {
-                if !enabled {
-                    continue;
-                }
+            if let Some(enabled) = session.config.enable_rulesets.get(rs.id)
+                && !enabled
+            {
+                continue;
             }
             for r in rs.iter() {
                 all_rules.push(r);

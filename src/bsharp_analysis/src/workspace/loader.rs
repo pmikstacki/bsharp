@@ -131,15 +131,15 @@ impl WorkspaceLoader {
         for entry in fs::read_dir(path)? {
             let entry = entry?;
             let p = entry.path();
-            if p.is_file() {
-                if let Some(ext) = p.extension().and_then(|e| e.to_str()) {
-                    let ext = ext.to_ascii_lowercase();
-                    if ext == "sln" {
-                        slns.push(p.clone());
-                    }
-                    if ext == "csproj" {
-                        csprojs.push(p);
-                    }
+            if p.is_file()
+                && let Some(ext) = p.extension().and_then(|e| e.to_str())
+            {
+                let ext = ext.to_ascii_lowercase();
+                if ext == "sln" {
+                    slns.push(p.clone());
+                }
+                if ext == "csproj" {
+                    csprojs.push(p);
                 }
             }
         }

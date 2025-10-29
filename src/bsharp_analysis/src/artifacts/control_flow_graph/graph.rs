@@ -143,21 +143,22 @@ impl ControlFlowGraph {
                     }
                     x_set.push(*x);
                 }
-                if ok {
-                    if let Some(head) = head_opt {
-                        if head != j {
-                            // Perform collapse: remove all x in X and wire head->j
-                            for x in &x_set {
-                                nodes.remove(x);
-                            }
-                            edges.retain(|Edge(a, b, _)| {
-                                !(x_set.iter().any(|x| *a == *x || *b == *x))
-                            });
-                            edges.insert(Edge(head, j, EdgeKind::Normal));
-                            collapsed_any = true;
-                            break;
-                        }
+                if ok
+                    && let Some(head) = head_opt
+                    && head != j
+                {
+                    // Perform collapse: remove all x in X and wire head->j
+                    use std::collections::HashSet;
+                    let x_set_set: HashSet<BlockId> = x_set.iter().copied().collect();
+                    for x in &x_set_set {
+                        nodes.remove(x);
                     }
+                    edges.retain(|Edge(a, b, _)| {
+                        !(x_set_set.contains(a) || x_set_set.contains(b))
+                    });
+                    edges.insert(Edge(head, j, EdgeKind::Normal));
+                    collapsed_any = true;
+                    break;
                 }
             }
             if collapsed_any {

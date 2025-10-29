@@ -78,10 +78,10 @@ impl Rule for DeepNesting {
                     "Method '{}' has deep nesting (depth={})",
                     key, stats.max_nesting
                 ));
-                if let (Some(c), Some(m)) = (class_name.as_deref(), method_name.as_deref()) {
-                    if let Some((start, len)) = find_method_span(session, c, m) {
-                        b = b.at_span(session, start, len);
-                    }
+                if let (Some(c), Some(m)) = (class_name.as_deref(), method_name.as_deref())
+                    && let Some((start, len)) = find_method_span(session, c, m)
+                {
+                    b = b.at_span(session, start, len);
                 }
                 b.emit(session);
             }

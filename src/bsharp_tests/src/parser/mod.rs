@@ -4,4 +4,7 @@ mod expressions; // Added
 mod keyword_parsers_tests;
 mod preprocessor;
 mod statements;
-mod types; // Added for type_parser_tests // Added
+mod types;
+mod formatter_golden;
+mod spans;
+// Added for type_parser_tests // Added

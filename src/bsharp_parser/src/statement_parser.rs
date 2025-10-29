@@ -270,32 +270,7 @@ fn parse_group4_misc(input: Span) -> BResult<Statement> {
         .parse(input)
 }
 
-/// Main statement syntax (deprecated unspanned wrapper)
-#[deprecated(note = "Use parse_statement_spanned/parse_statement_ws_spanned or Parsable<'a>::parse -> Spanned<_>")]
-pub fn parse_statement(input: Span) -> BResult<Statement> {
-    parse_statement_spanned(input).map(|(rest, s)| (rest, s.node))
-}
-
-/// Inside-block statement (deprecated unspanned wrapper)
-#[deprecated(note = "Use parse_statement_for_block_spanned or Parsable<'a>::parse -> Spanned<_>")]
-pub fn parse_statement_for_block(input: Span) -> BResult<Statement> {
-    parse_statement_for_block_spanned(input).map(|(rest, s)| (rest, s.node))
-}
-
-/// Parse a statement for use inside blocks, consuming any leading whitespace or comments.
-/// This version excludes block statements to prevent recursion.
-#[deprecated(note = "Use parse_statement_for_block_spanned or Parsable<'a>::parse -> Spanned<_>")]
-pub fn parse_statement_for_block_ws(input: Span) -> BResult<Statement> {
-    let (input, _) = parse_whitespace_or_comments(input)?;
-    parse_statement_for_block_spanned(input).map(|(rest, s)| (rest, s.node))
-}
-
-/// Parse a statement, consuming any leading whitespace or comments.
-#[deprecated(note = "Use parse_statement_ws_spanned or Parsable<'a>::parse -> Spanned<_>")]
-pub fn parse_statement_ws(input: Span) -> BResult<Statement> {
-    let (input, _) = parse_whitespace_or_comments(input)?;
-    parse_statement_spanned(input).map(|(rest, s)| (rest, s.node))
-}
+// Deprecated unspanned wrappers removed; use spanned entrypoints below.
 
 pub fn parse_statement_spanned(input: Span) -> BResult<Spanned<Statement>> {
     let start_abs = input.location_offset();

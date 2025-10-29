@@ -7,23 +7,11 @@ use std::path::PathBuf;
 use bsharp_parser::bsharp::{parse_csharp_source, parse_csharp_source_strict};
 use bsharp_parser::helpers::brace_tracker;
 use bsharp_parser::parse_mode;
-use bsharp_parser::errors as perr;
 use bsharp_parser::syntax::node::render;
 use bsharp_syntax::span::Span;
 use nom_supreme::error::{BaseErrorKind, ErrorTree, Expectation};
+use crate::errors::{emit_json_error, print_pretty_error};
 
-// Select deepest location span from an ErrorTree<Span>
-fn deepest_span<'a>(e: &'a ErrorTree<Span<'a>>) -> Span<'a> {
-    match e {
-        ErrorTree::Base { location, .. } => *location,
-        ErrorTree::Stack { base, .. } => deepest_span(base),
-        ErrorTree::Alt(list) => list
-            .iter()
-            .map(|child| deepest_span(child))
-            .max_by_key(|s| s.location_offset())
-            .unwrap_or_else(|| Span::new("")),
-    }
-}
 #[derive(clap::Args)]
 #[clap(author, version, about, long_about = None)]
 pub struct ParseArgs {
@@ -51,6 +39,7 @@ pub struct ParseArgs {
     #[arg(long, default_value_t = false)]
     pub emit_spans: bool,
 }
+
 /// Execute the parse command: parse C# file and output JSON
 /// On parse failure, pretty-print errors by default and exit non-zero.
 /// If `errors_json` is true, emit a JSON error object to stdout instead.
@@ -84,81 +73,18 @@ pub fn execute(args: ParseArgs) -> Result<()> {
                         location: Span::new(""),
                         kind: BaseErrorKind::Expected(Expectation::Eof),
                     };
-                    let pretty = perr::format_error_tree(&source_code, &t);
                     if args.errors_json {
-                        let loc = deepest_span(&t);
-                        let line = loc.location_line() as usize;
-                        let column = loc.get_utf8_column();
-                        let line_text = source_code
-                            .lines()
-                            .nth(line.saturating_sub(1))
-                            .unwrap_or("")
-                            .to_string();
-                        let mut error_obj = serde_json::json!({
-                            "kind": "parse_error",
-                            "file": args.input.display().to_string(),
-                            "line": line,
-                            "column": column,
-                            "expected": "",
-                            "found": "",
-                            "line_text": line_text,
-                            "message": pretty
-                        });
-                        if args.emit_spans {
-                            let offset = loc.location_offset();
-                            error_obj["spans"] = serde_json::json!({
-                                "abs": {"start": offset, "end": offset + 1},
-                                "rel": {"start": {"line": line, "column": column}, "end": {"line": line, "column": column + 1}}
-                            });
-                        }
-                        let payload = serde_json::json!({"error": error_obj});
-                        println!(
-                            "{}",
-                            serde_json::to_string(&payload).unwrap_or_else(|_| {
-                                "{\"error\":{\"message\":\"parse error\"}}".to_string()
-                            })
-                        );
+                        emit_json_error(&args, &source_code, &t);
                     } else {
-                        let report = perr::to_miette_report(&args.input.display().to_string(), &source_code, &t);
-                        eprintln!("{:?}", report);
+                        print_pretty_error(&args, &source_code, &t);
                     }
                     std::process::exit(1);
                 }
             };
-            let pretty = perr::format_error_tree(&source_code, err_tree);
             if args.errors_json {
-                let loc = deepest_span(err_tree);
-                let line = loc.location_line() as usize;
-                let column = loc.get_utf8_column();
-                let line_text = source_code
-                    .lines()
-                    .nth(line.saturating_sub(1))
-                    .unwrap_or("")
-                    .to_string();
-                // We don't compute expected/found here; leave empty strings
-                let (expected, found) = (String::new(), String::new());
-                let mut error_obj = serde_json::json!({
-                    "kind": "parse_error",
-                    "file": args.input.display().to_string(),
-                    "line": line,
-                    "column": column,
-                    "expected": expected,
-                    "found": found,
-                    "line_text": line_text,
-                    "message": pretty
-                });
-                if args.emit_spans {
-                    let offset = loc.location_offset();
-                    error_obj["spans"] = serde_json::json!({
-                        "abs": {"start": offset, "end": offset + 1},
-                        "rel": {"start": {"line": line, "column": column}, "end": {"line": line, "column": column + 1}}
-                    });
-                }
-                let payload = serde_json::json!({"error": error_obj});
-                println!("{}", serde_json::to_string(&payload).unwrap_or_else(|_| "{\"error\":{\"message\":\"parse error\"}}".to_string()));
+                emit_json_error(&args, &source_code, err_tree);
             } else {
-                let report = perr::to_miette_report(&args.input.display().to_string(), &source_code, err_tree);
-                eprintln!("{:?}", report);
+                print_pretty_error(&args, &source_code, err_tree);
             }
             std::process::exit(1);
         }
@@ -172,44 +98,10 @@ pub fn execute(args: ParseArgs) -> Result<()> {
                     location: Span::new(&source_code[offset..]),
                     kind: BaseErrorKind::Expected(Expectation::Char('}')),
                 };
-                let pretty = perr::format_error_tree(&source_code, &tree);
                 if args.errors_json {
-                    let loc = deepest_span(&tree);
-                    let line = loc.location_line() as usize;
-                    let column = loc.get_utf8_column();
-                    let line_text = source_code
-                        .lines()
-                        .nth(line.saturating_sub(1))
-                        .unwrap_or("")
-                        .to_string();
-                    let (expected, found) = (String::new(), String::new());
-                    let mut error_obj = serde_json::json!({
-                        "kind": "parse_error",
-                        "file": args.input.display().to_string(),
-                        "line": line,
-                        "column": column,
-                        "expected": expected,
-                        "found": found,
-                        "line_text": line_text,
-                        "message": pretty
-                    });
-                    if args.emit_spans {
-                        let offset = loc.location_offset();
-                        error_obj["spans"] = serde_json::json!({
-                            "abs": {"start": offset, "end": offset + 1},
-                            "rel": {"start": {"line": line, "column": column}, "end": {"line": line, "column": column + 1}}
-                        });
-                    }
-                    let payload = serde_json::json!({"error": error_obj});
-                    println!(
-                        "{}",
-                        serde_json::to_string(&payload).unwrap_or_else(|_| {
-                            "{\"error\":{\"message\":\"parse error\"}}".to_string()
-                        })
-                    );
+                    emit_json_error(&args, &source_code, &tree);
                 } else {
-                    let report = perr::to_miette_report(&args.input.display().to_string(), &source_code, &tree);
-                    eprintln!("{:?}", report);
+                    print_pretty_error(&args, &source_code, &tree);
                 }
             } else {
                 // Build a synthetic EOF-expected error at the remaining location
@@ -217,44 +109,10 @@ pub fn execute(args: ParseArgs) -> Result<()> {
                     location: remaining,
                     kind: BaseErrorKind::Expected(Expectation::Eof),
                 };
-                let pretty = perr::format_error_tree(&source_code, &tree);
                 if args.errors_json {
-                    let loc = deepest_span(&tree);
-                    let line = loc.location_line() as usize;
-                    let column = loc.get_utf8_column();
-                    let line_text = source_code
-                        .lines()
-                        .nth(line.saturating_sub(1))
-                        .unwrap_or("")
-                        .to_string();
-                    let (expected, found) = (String::new(), String::new());
-                    let mut error_obj = serde_json::json!({
-                        "kind": "parse_error",
-                        "file": args.input.display().to_string(),
-                        "line": line,
-                        "column": column,
-                        "expected": expected,
-                        "found": found,
-                        "line_text": line_text,
-                        "message": pretty
-                    });
-                    if args.emit_spans {
-                        let offset = loc.location_offset();
-                        error_obj["spans"] = serde_json::json!({
-                            "abs": {"start": offset, "end": offset + 1},
-                            "rel": {"start": {"line": line, "column": column}, "end": {"line": line, "column": column + 1}}
-                        });
-                    }
-                    let payload = serde_json::json!({"error": error_obj});
-                    println!(
-                        "{}",
-                        serde_json::to_string(&payload).unwrap_or_else(|_| {
-                            "{\"error\":{\"message\":\"parse error\"}}".to_string()
-                        })
-                    );
+                    emit_json_error(&args, &source_code, &tree);
                 } else {
-                    let report = perr::to_miette_report(&args.input.display().to_string(), &source_code, &tree);
-                    eprintln!("{:?}", report);
+                    print_pretty_error(&args, &source_code, &tree);
                 }
             }
         } else {
@@ -263,39 +121,10 @@ pub fn execute(args: ParseArgs) -> Result<()> {
                 location: remaining,
                 kind: BaseErrorKind::Expected(Expectation::Eof),
             };
-            let pretty = perr::format_error_tree(&source_code, &tree);
             if args.errors_json {
-                let loc = deepest_span(&tree);
-                let line = loc.location_line() as usize;
-                let column = loc.get_utf8_column();
-                let line_text = source_code
-                    .lines()
-                    .nth(line.saturating_sub(1))
-                    .unwrap_or("")
-                    .to_string();
-                let (expected, found) = (String::new(), String::new());
-                let mut error_obj = serde_json::json!({
-                    "kind": "parse_error",
-                    "file": args.input.display().to_string(),
-                    "line": line,
-                    "column": column,
-                    "expected": expected,
-                    "found": found,
-                    "line_text": line_text,
-                    "message": pretty
-                });
-                if args.emit_spans {
-                    let offset = loc.location_offset();
-                    error_obj["spans"] = serde_json::json!({
-                        "abs": {"start": offset, "end": offset + 1},
-                        "rel": {"start": {"line": line, "column": column}, "end": {"line": line, "column": column + 1}}
-                    });
-                }
-                let payload = serde_json::json!({"error": error_obj});
-                println!("{}", serde_json::to_string(&payload).unwrap_or_else(|_| "{\"error\":{\"message\":\"parse error\"}}".to_string()));
+                emit_json_error(&args, &source_code, &tree);
             } else {
-                let report = perr::to_miette_report(&args.input.display().to_string(), &source_code, &tree);
-                eprintln!("{:?}", report);
+                print_pretty_error(&args, &source_code, &tree);
             }
         }
         std::process::exit(1);

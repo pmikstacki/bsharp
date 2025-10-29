@@ -1,3 +1,7 @@
+**`--emit-spans`**
+- When used with `--errors-json`, include absolute and relative spans in the JSON under `error.spans`.
+- No effect unless `--errors-json` is set.
+
 # Parse Command
 
 The `parse` command parses C# source code and prints a textual AST tree representation to stdout.
@@ -7,7 +11,7 @@ The `parse` command parses C# source code and prints a textual AST tree represen
 ## Usage
 
 ```bash
-bsharp parse <INPUT> [--errors-json] [--no-color] [--lenient]
+bsharp parse --input <INPUT> [--errors-json] [--emit-spans] [--no-color] [--lenient]
 ```
 
 ### Arguments

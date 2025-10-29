@@ -43,10 +43,10 @@ fn parse_case_label(input: Span) -> BResult<SwitchLabel> {
                 .parse(after_when)?;
 
             // If it's a simple constant pattern with no when, keep legacy Case(Expression)
-            if when_clause.is_none() {
-                if let Constant(expr) = pat {
-                    return Ok((after_colon, SwitchLabel::Case(expr)));
-                }
+            if let Constant(ref expr) = pat
+                && when_clause.is_none()
+            {
+                return Ok((after_colon, SwitchLabel::Case(expr.clone())));
             }
 
             return Ok((
