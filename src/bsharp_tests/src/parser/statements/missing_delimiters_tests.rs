@@ -7,7 +7,7 @@ use parser::expressions::statements::goto_statement_parser::parse_goto_statement
 use parser::expressions::statements::switch_statement_parser::parse_switch_statement;
 use parser::expressions::statements::throw_statement_parser::parse_throw_statement;
 use parser::expressions::statements::yield_statement_parser::parse_yield_statement;
-use bsharp_parser::errors::BResult;
+use parser::errors::BResult;
 
 fn assert_failure<T: std::fmt::Debug>(res: BResult<'_, T>) {
     assert!(res.is_err(), "Expected parse error, got: {:?}", res);

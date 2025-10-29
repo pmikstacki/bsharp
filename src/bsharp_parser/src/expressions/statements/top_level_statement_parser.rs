@@ -1,4 +1,4 @@
-use crate::parser::statement_parser::{parse_statement, parse_statement_ws};
+use crate::parser::statement_parser::{parse_statement_spanned, parse_statement_ws_spanned};
 use crate::trivia::comment_parser::ws;
 use crate::errors::BResult;
 use syntax::statements::statement::Statement;
@@ -31,12 +31,12 @@ pub fn parse_top_level_statements(input: Span) -> BResult<Vec<Statement>> {
 
             let before_len = current.len();
 
-            match parse_statement(current) {
-                Ok((rest, stmt)) => {
+            match parse_statement_spanned(current) {
+                Ok((rest, stmt_s)) => {
                     if rest.len() == before_len {
                         break;
                     }
-                    statements.push(stmt);
+                    statements.push(stmt_s.node);
                     current = rest;
                 }
                 Err(nom::Err::Error(e)) => {
@@ -56,7 +56,8 @@ pub fn parse_top_level_statements(input: Span) -> BResult<Vec<Statement>> {
 /// Parse a single top-level statement
 /// This is a wrapper around parse_statement that handles top-level context
 pub fn parse_top_level_statement(input: Span) -> BResult<Statement> {
-    parse_statement_ws
+    parse_statement_ws_spanned
+        .map(|s| s.node)
         .context("top-level statement")
         .parse(input)
 }

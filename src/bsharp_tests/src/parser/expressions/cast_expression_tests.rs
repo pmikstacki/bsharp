@@ -1,6 +1,6 @@
 // Tests for cast expressions and parens disambiguation
 
-use parser::expressions::primary_expression_parser::parse_expression;
+use parser::expressions::primary_expression_parser::parse_expression_spanned as parse_expression;
 use syntax::expressions::expression::Expression;
 use syntax::identifier::Identifier;
 use syntax::types::{PrimitiveType, Type};
@@ -8,7 +8,7 @@ use syntax::types::{PrimitiveType, Type};
 #[test]
 fn explicit_cast_basic() {
     let code = "(int)x";
-    let (rest, expr) = parse_expression(code.into()).expect("parse ok");
+    let (rest, expr) = parse_expression(code.into()).map(|(rest, s)| (rest, s.node)).expect("parse ok");
     assert!(
         rest.fragment().trim().is_empty(),
         "unparsed: {}",
@@ -29,7 +29,7 @@ fn explicit_cast_basic() {
 #[test]
 fn parens_not_cast_without_trailer() {
     let code = "(x)";
-    let (rest, expr) = parse_expression(code.into()).expect("parse ok");
+    let (rest, expr) = parse_expression(code.into()).map(|(rest, s)| (rest, s.node)).expect("parse ok");
     assert!(rest.fragment().trim().is_empty());
     match expr {
         Expression::Variable(id) => assert_eq!(id.to_string(), "x"),

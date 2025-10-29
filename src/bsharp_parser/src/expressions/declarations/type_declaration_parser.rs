@@ -582,29 +582,29 @@ pub fn parse_interface_indexer(input: Span) -> BResult<IndexerDeclaration> {
     let (input, indexer_decl) = parse_indexer_declaration(input)?;
 
     // Interface indexer accessors may be present, but cannot have bodies.
-    if let Some(get_acc) = &indexer_decl.accessor_list.get_accessor {
-        if get_acc.body.is_some() {
-            use nom_supreme::error::{BaseErrorKind, ErrorTree, Expectation};
-            let error_tree = ErrorTree::Base {
-                location: input,
-                kind: BaseErrorKind::Expected(Expectation::Tag(
-                    "Interface indexer 'get' accessor cannot have a body",
-                )),
-            };
-            return Err(nom::Err::Error(error_tree));
-        }
+    if let Some(get_acc) = &indexer_decl.accessor_list.get_accessor
+        && get_acc.body.is_some()
+    {
+        use nom_supreme::error::{BaseErrorKind, ErrorTree, Expectation};
+        let error_tree = ErrorTree::Base {
+            location: input,
+            kind: BaseErrorKind::Expected(Expectation::Tag(
+                "Interface indexer 'get' accessor cannot have a body",
+            )),
+        };
+        return Err(nom::Err::Error(error_tree));
     }
-    if let Some(set_acc) = &indexer_decl.accessor_list.set_accessor {
-        if set_acc.body.is_some() {
-            use nom_supreme::error::{BaseErrorKind, ErrorTree, Expectation};
-            let error_tree = ErrorTree::Base {
-                location: input,
-                kind: BaseErrorKind::Expected(Expectation::Tag(
-                    "Interface indexer 'set' accessor cannot have a body",
-                )),
-            };
-            return Err(nom::Err::Error(error_tree));
-        }
+    if let Some(set_acc) = &indexer_decl.accessor_list.set_accessor
+        && set_acc.body.is_some()
+    {
+        use nom_supreme::error::{BaseErrorKind, ErrorTree, Expectation};
+        let error_tree = ErrorTree::Base {
+            location: input,
+            kind: BaseErrorKind::Expected(Expectation::Tag(
+                "Interface indexer 'set' accessor cannot have a body",
+            )),
+        };
+        return Err(nom::Err::Error(error_tree));
     }
 
     Ok((input, indexer_decl))

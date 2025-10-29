@@ -1,4 +1,4 @@
-use crate::parser::expressions::primary_expression_parser::parse_expression;
+use crate::parser::expressions::primary_expression_parser::parse_expression_spanned;
 use crate::trivia::comment_parser::ws;
 use crate::errors::BResult;
 
@@ -35,11 +35,15 @@ pub fn parse_collection_expression_or_brackets(input: Span) -> BResult<Expressio
 fn parse_collection_element(input: Span) -> BResult<CollectionElement> {
     // Try spread element: `.. expr`
     if let Ok((rest, _)) = delimited(ws, preceded(nom_char('.'), nom_char('.')), ws).parse(input) {
-        let (rest, expr) = delimited(ws, parse_expression, ws).parse(rest)?;
+        let (rest, expr) = delimited(ws, parse_expression_spanned, ws).map(|s| s.node).parse(rest)?;
         return Ok((rest, CollectionElement::Spread(expr)));
     }
     // Otherwise a normal expression
-    map(delimited(ws, parse_expression, ws), CollectionElement::Expr).parse(input)
+    map(
+        delimited(ws, parse_expression_spanned, ws).map(|s| s.node),
+        CollectionElement::Expr,
+    )
+    .parse(input)
 }
 use syntax::span::Span;
 

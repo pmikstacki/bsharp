@@ -1,4 +1,4 @@
-use crate::parser::expressions::primary_expression_parser::parse_expression;
+use crate::parser::expressions::primary_expression_parser::parse_expression_spanned;
 use crate::parser::identifier_parser::parse_identifier;
 use crate::parser::keywords::contextual_misc_keywords::kw_var;
 use crate::parser::types::type_parser::parse_type_expression;
@@ -23,7 +23,7 @@ pub fn parse_deconstruction_expression(input: Span) -> BResult<DeconstructionExp
         (
             parse_deconstruction_targets,
             delimited(ws, tok_assign(), ws),
-            delimited(ws, parse_expression, ws),
+            delimited(ws, parse_expression_spanned, ws).map(|s| s.node),
         ),
         |(targets, _, value)| DeconstructionExpression {
             targets,

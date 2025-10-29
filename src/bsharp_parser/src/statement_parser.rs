@@ -1,6 +1,7 @@
 use crate::parser::expressions::declarations::variable_declaration_parser::parse_local_variable_declaration_statement;
 use crate::trivia::comment_parser::parse_whitespace_or_comments;
 use crate::errors::BResult;
+use crate::span::{Spanned, ByteRange, LineOffset, TextRange};
 use syntax::statements::statement::Statement;
 
 use nom::Parser;
@@ -126,6 +127,34 @@ fn build_group1_parser<'a>(allow_block: bool) -> impl Fn(Span<'a>) -> BResult<'a
     }
 }
 
+/// Core: full statement (groups 1-4), used by spanned entrypoints
+fn parse_statement_core(input: Span) -> BResult<Statement> {
+    if let Ok(r) = parse_group1_with_block(input) {
+        return Ok(r);
+    }
+    if let Ok(r) = parse_group2_special(input) {
+        return Ok(r);
+    }
+    if let Ok(r) = parse_group3_jump(input) {
+        return Ok(r);
+    }
+    parse_group4_misc(input)
+}
+
+/// Core: inside-block statement (no block statements), used by spanned entrypoints
+fn parse_statement_for_block_core(input: Span) -> BResult<Statement> {
+    if let Ok(r) = parse_group1_without_block(input) {
+        return Ok(r);
+    }
+    if let Ok(r) = parse_group2_special(input) {
+        return Ok(r);
+    }
+    if let Ok(r) = parse_group3_jump(input) {
+        return Ok(r);
+    }
+    parse_group4_misc(input)
+}
+
 /// Group 1 with block statements allowed
 fn parse_group1_with_block(input: Span) -> BResult<Statement> {
     build_group1_parser(true)(input)
@@ -241,47 +270,40 @@ fn parse_group4_misc(input: Span) -> BResult<Statement> {
         .parse(input)
 }
 
-/// Main statement syntax - Enhanced VerboseError with specific diagnostics
-/// Following Microsoft's Roslyn approach but using Nom's VerboseError for detailed error reporting
-pub fn parse_statement(input: Span) -> BResult<Statement> {
-    if let Ok(r) = parse_group1_with_block(input) {
-        return Ok(r);
-    }
-    if let Ok(r) = parse_group2_special(input) {
-        return Ok(r);
-    }
-    if let Ok(r) = parse_group3_jump(input) {
-        return Ok(r);
-    }
-    parse_group4_misc(input)
+// Deprecated unspanned wrappers removed; use spanned entrypoints below.
+
+pub fn parse_statement_spanned(input: Span) -> BResult<Spanned<Statement>> {
+    let start_abs = input.location_offset();
+    let start_lo = LineOffset { line: input.location_line(), offset: input.get_utf8_column().saturating_sub(1) };
+    let (rest, node) = parse_statement_core(input)?;
+    let end_abs = rest.location_offset();
+    let end_lo = LineOffset { line: rest.location_line(), offset: rest.get_utf8_column().saturating_sub(1) };
+    let abs = ByteRange { start: start_abs, end: end_abs };
+    let rel = TextRange { start: start_lo, end: end_lo };
+    Ok((rest, Spanned { node, abs, rel }))
 }
 
-/// Statement syntax for use inside blocks - EXCLUDES block statements to prevent recursion
-/// Enhanced with VerboseError diagnostics explaining the recursive exclusion
-pub fn parse_statement_for_block(input: Span) -> BResult<Statement> {
-    if let Ok(r) = parse_group1_without_block(input) {
-        return Ok(r);
-    }
-    if let Ok(r) = parse_group2_special(input) {
-        return Ok(r);
-    }
-    if let Ok(r) = parse_group3_jump(input) {
-        return Ok(r);
-    }
-    parse_group4_misc(input)
+pub fn parse_statement_for_block_spanned(input: Span) -> BResult<Spanned<Statement>> {
+    let start_abs = input.location_offset();
+    let start_lo = LineOffset { line: input.location_line(), offset: input.get_utf8_column().saturating_sub(1) };
+    let (rest, node) = parse_statement_for_block_core(input)?;
+    let end_abs = rest.location_offset();
+    let end_lo = LineOffset { line: rest.location_line(), offset: rest.get_utf8_column().saturating_sub(1) };
+    let abs = ByteRange { start: start_abs, end: end_abs };
+    let rel = TextRange { start: start_lo, end: end_lo };
+    Ok((rest, Spanned { node, abs, rel }))
 }
 
-/// Parse a statement for use inside blocks, consuming any leading whitespace or comments.
-/// This version excludes block statements to prevent recursion.
-pub fn parse_statement_for_block_ws(input: Span) -> BResult<Statement> {
-    let (input, _) = parse_whitespace_or_comments(input)?;
-    parse_statement_for_block(input)
-}
-
-/// Parse a statement, consuming any leading whitespace or comments.
-pub fn parse_statement_ws(input: Span) -> BResult<Statement> {
-    let (input, _) = parse_whitespace_or_comments(input)?;
-    parse_statement(input)
+pub fn parse_statement_ws_spanned(input: Span) -> BResult<Spanned<Statement>> {
+    let (input_core, _) = parse_whitespace_or_comments(input)?;
+    let start_abs = input_core.location_offset();
+    let start_lo = LineOffset { line: input_core.location_line(), offset: input_core.get_utf8_column().saturating_sub(1) };
+    let (rest_after_core, node) = parse_statement_core(input_core)?;
+    let end_abs = rest_after_core.location_offset();
+    let end_lo = LineOffset { line: rest_after_core.location_line(), offset: rest_after_core.get_utf8_column().saturating_sub(1) };
+    let abs = ByteRange { start: start_abs, end: end_abs };
+    let rel = TextRange { start: start_lo, end: end_lo };
+    Ok((rest_after_core, Spanned { node, abs, rel }))
 }
 
 use syntax::span::Span;

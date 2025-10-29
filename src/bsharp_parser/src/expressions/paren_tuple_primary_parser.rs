@@ -1,4 +1,4 @@
-use crate::parser::expressions::primary_expression_parser::parse_expression;
+use crate::parser::expressions::primary_expression_parser::parse_expression_spanned;
 use crate::parser::identifier_parser::parse_identifier;
 use crate::trivia::comment_parser::ws;
 use crate::errors::BResult;
@@ -59,7 +59,7 @@ fn parse_tuple_element_local(input: Span) -> BResult<TupleElement> {
     if let Ok((input, (name, _, value))) = (
         nom::sequence::delimited(ws, parse_identifier, ws),
         nom::sequence::delimited(ws, tok_colon(), ws),
-        nom::sequence::delimited(ws, parse_expression, ws),
+        nom::sequence::delimited(ws, parse_expression_spanned, ws).map(|s| s.node),
     )
         .parse(input)
     {
@@ -74,7 +74,7 @@ fn parse_tuple_element_local(input: Span) -> BResult<TupleElement> {
 
     // Otherwise, parse as unnamed element
     map(
-        nom::sequence::delimited(ws, parse_expression, ws),
+        nom::sequence::delimited(ws, parse_expression_spanned, ws).map(|s| s.node),
         |value| TupleElement { name: None, value },
     )
     .parse(input)

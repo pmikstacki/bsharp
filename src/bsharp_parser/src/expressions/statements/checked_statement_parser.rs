@@ -1,5 +1,5 @@
 use crate::parser::keywords::exception_and_safety_keywords::{kw_checked, kw_unchecked};
-use crate::parser::statement_parser::parse_statement_ws;
+use crate::parser::statement_parser::parse_statement_ws_spanned;
 use crate::trivia::comment_parser::ws;
 use crate::errors::BResult;
 use nom::Parser;
@@ -14,7 +14,9 @@ pub fn parse_checked_statement(input: Span) -> BResult<Statement> {
     map(
         (
             kw_checked().context("checked keyword"),
-            nom::combinator::cut(delimited(ws, parse_statement_ws, ws)).context("checked body"),
+            nom::combinator::cut(delimited(ws, parse_statement_ws_spanned, ws))
+                .map(|s| s.node)
+                .context("checked body"),
         ),
         |(_, body)| {
             Statement::Checked(Box::new(CheckedStatement {
@@ -31,7 +33,9 @@ pub fn parse_unchecked_statement(input: Span) -> BResult<Statement> {
     map(
         (
             kw_unchecked().context("unchecked keyword"),
-            nom::combinator::cut(delimited(ws, parse_statement_ws, ws)).context("unchecked body"),
+            nom::combinator::cut(delimited(ws, parse_statement_ws_spanned, ws))
+                .map(|s| s.node)
+                .context("unchecked body"),
         ),
         |(_, body)| {
             Statement::Unchecked(Box::new(UncheckedStatement {

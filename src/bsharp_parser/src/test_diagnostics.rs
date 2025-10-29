@@ -32,8 +32,8 @@ pub mod exposed {
         BResult<'_, crate::syntax::statements::statement::Statement>,
         Vec<ParserDiag>,
     ) {
-        // Use the whitespace-tolerant entry used by tests
-        let r = crate::statement_parser::parse_statement_ws(input);
+        // Use the whitespace-tolerant spanned entry used by tests
+        let r = crate::statement_parser::parse_statement_ws_spanned(input).map(|(rest, s)| (rest, s.node));
         (r, Vec::new())
     }
 }

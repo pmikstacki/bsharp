@@ -108,7 +108,7 @@ pub fn emit_tests_for_group(
     if has_stmt {
         writeln!(
             out,
-            "use bsharp_parser::statement_parser::parse_statement_ws;"
+            "use bsharp_parser::statement_parser::parse_statement_ws_spanned;"
         )
         .ok();
     }
@@ -303,7 +303,7 @@ pub fn emit_tests_for_group(
                 }
             }
             TestCategory::Statement => {
-                writeln!(out, "    let r = parse_statement_ws(span);").ok();
+                writeln!(out, "    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));").ok();
                 if any_diag {
                     writeln!(out, "    if let Some(expected) = expected {{").ok();
                     writeln!(out, "        match r {{").ok();

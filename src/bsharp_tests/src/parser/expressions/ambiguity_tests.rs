@@ -1,8 +1,8 @@
-use parser::expressions::primary_expression_parser::parse_expression;
+use parser::expressions::primary_expression_parser::parse_expression_spanned as parse_expression;
 use syntax::expressions::{BinaryOperator, expression::Expression};
 
 fn parse_ok(input: &str) -> Expression {
-    let (remaining, expr) = parse_expression(input.into()).expect("parse ok");
+    let (remaining, expr) = parse_expression(input.into()).map(|(rest, s)| (rest, s.node)).expect("parse ok");
     assert_eq!(remaining.trim(), "", "remaining input should be empty");
     expr
 }

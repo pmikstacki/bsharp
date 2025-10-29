@@ -1,13 +1,13 @@
 // Tests for parsing invocation expressions (modifiers and named args)
 
-use parser::expressions::primary_expression_parser::parse_expression;
+use parser::expressions::primary_expression_parser::parse_expression_spanned as parse_expression;
 use syntax::expressions::expression::Expression;
 use syntax::expressions::invocation_expression::ArgumentModifier;
 
 fn parse_invocation_ok(
     code: &str,
 ) -> syntax::expressions::invocation_expression::InvocationExpression {
-    let (rest, expr) = parse_expression(code.into()).expect("parse expression");
+    let (rest, expr) = parse_expression(code.into()).map(|(rest, s)| (rest, s.node)).expect("parse expression");
     assert!(
         rest.fragment().trim().is_empty(),
         "Unparsed rest: '{}'",

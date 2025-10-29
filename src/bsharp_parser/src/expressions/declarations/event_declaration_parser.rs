@@ -3,7 +3,7 @@ use crate::parser::expressions::declarations::modifier_parser::parse_modifiers;
 use crate::parser::identifier_parser::parse_identifier;
 use crate::parser::keywords::accessor_keywords::{kw_add, kw_remove};
 use crate::parser::keywords::declaration_keywords::kw_event;
-use crate::parser::statement_parser::parse_statement;
+use crate::parser::statement_parser::parse_statement_ws_spanned;
 use crate::parser::types::type_parser::parse_type_expression;
 use crate::errors::BResult;
 
@@ -28,7 +28,8 @@ fn parse_event_accessor(input: Span) -> BResult<(String, EventAccessor)> {
                 delimited(ws, kw_add(), ws),
                 alt((
                     map(delimited(ws, tok_semicolon(), ws), |_| None),
-                    map(delimited(ws, parse_statement, ws), Some),
+                    delimited(ws, parse_statement_ws_spanned, ws)
+                        .map(|s| Some(s.node)),
                 )),
             ),
             |(_, body)| {
@@ -47,7 +48,8 @@ fn parse_event_accessor(input: Span) -> BResult<(String, EventAccessor)> {
                 delimited(ws, kw_remove(), ws),
                 alt((
                     map(delimited(ws, tok_semicolon(), ws), |_| None),
-                    map(delimited(ws, parse_statement, ws), Some),
+                    delimited(ws, parse_statement_ws_spanned, ws)
+                        .map(|s| Some(s.node)),
                 )),
             ),
             |(_, body)| {

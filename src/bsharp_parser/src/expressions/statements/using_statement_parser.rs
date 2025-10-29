@@ -1,10 +1,10 @@
 use crate::parser::expressions::declarations::variable_declaration_parser::{
     parse_local_variable_declaration, parse_variable_declaration,
 };
-use crate::parser::expressions::primary_expression_parser::parse_expression;
+use crate::parser::expressions::primary_expression_parser::parse_expression_spanned;
 use crate::parser::keywords::declaration_keywords::kw_using;
 use crate::parser::keywords::expression_keywords::kw_await;
-use crate::parser::statement_parser::parse_statement_ws;
+use crate::parser::statement_parser::parse_statement_ws_spanned;
 use crate::trivia::comment_parser::ws;
 use crate::errors::BResult;
 use nom::Parser;
@@ -43,7 +43,8 @@ pub fn parse_using_statement(input: Span) -> BResult<Statement> {
                 let (rest_after_paren, _) = cut(delimited(ws, tok_r_paren(), ws))
                     .context("closing parenthesis after resource")
                     .parse(rest_after_decl)?;
-                let (rest_after_body, body) = cut(delimited(ws, parse_statement_ws, ws))
+                let (rest_after_body, body) = cut(delimited(ws, parse_statement_ws_spanned, ws))
+                    .map(|s| s.node)
                     .context("using statement body")
                     .parse(rest_after_paren)?;
 
@@ -59,13 +60,15 @@ pub fn parse_using_statement(input: Span) -> BResult<Statement> {
             }
 
             // Otherwise parse expression resource
-            let (after_resource, resource) = delimited(ws, parse_expression, ws)
+            let (after_resource, resource) = delimited(ws, parse_expression_spanned, ws)
+                .map(|s| s.node)
                 .context("resource expression")
                 .parse(after_open)?;
             let (after_paren, _) = cut(delimited(ws, tok_r_paren(), ws))
                 .context("closing parenthesis after resource")
                 .parse(after_resource)?;
-            let (rest_after_body, body) = cut(delimited(ws, parse_statement_ws, ws))
+            let (rest_after_body, body) = cut(delimited(ws, parse_statement_ws_spanned, ws))
+                .map(|s| s.node)
                 .context("using statement body (expected valid C# statement)")
                 .parse(after_paren)?;
 

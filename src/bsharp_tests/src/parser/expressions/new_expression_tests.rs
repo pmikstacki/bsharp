@@ -1,13 +1,13 @@
 // Tests for parsing new expressions
 
-use parser::expressions::primary_expression_parser::parse_expression;
+use parser::expressions::primary_expression_parser::parse_expression_spanned as parse_expression;
 use syntax::expressions::expression::Expression;
 use syntax::expressions::literal::Literal;
 use syntax::expressions::new_expression::ObjectInitializerEntry;
 use syntax::types::{PrimitiveType, Type};
 
 fn parse_new_expr(code: &str) -> Result<Expression, String> {
-    match parse_expression(code.into()) {
+    match parse_expression(code.into()).map(|(rest, s)| (rest, s.node)) {
         Ok((remaining, expr)) => {
             if remaining.fragment().trim().is_empty() {
                 Ok(expr)
@@ -22,7 +22,7 @@ fn parse_new_expr(code: &str) -> Result<Expression, String> {
 #[test]
 fn test_typed_new_mixed_object_and_collection_initializer_should_error() {
     // Mixed initializer elements like property + value are invalid
-    let res = parse_expression("new List<int> { P = 1, 2 }".into());
+    let res = parse_expression("new List<int> { P = 1, 2 }".into()).map(|(rest, s)| (rest, s.node));
     assert!(
         res.is_err(),
         "expected parse error for mixed object/collection initializer, got: {:?}",
@@ -248,13 +248,13 @@ fn test_parse_new_complex_nested_initializer() {
 
 #[test]
 fn test_parse_new_with_indexer_object_initializer() {
-    use parser::expressions::primary_expression_parser::parse_expression;
+    use parser::expressions::primary_expression_parser::parse_expression_spanned as parse_expression;
     use syntax::expressions::expression::Expression;
     use syntax::expressions::literal::Literal;
     use syntax::expressions::new_expression::ObjectInitializerEntry;
 
     let code = "new Dictionary<int, string> { [1] = \"a\", [2] = \"b\" }";
-    let (rest, expr) = parse_expression(code.into()).expect("parse ok");
+    let (rest, expr) = parse_expression(code.into()).map(|(rest, s)| (rest, s.node)).expect("parse ok");
     assert!(
         rest.fragment().trim().is_empty(),
         "unparsed: {}",

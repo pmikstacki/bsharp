@@ -1,4 +1,4 @@
-use crate::parser::expressions::primary_expression_parser::parse_expression;
+use crate::parser::expressions::primary_expression_parser::parse_expression_spanned;
 use crate::parser::keywords::parameter_modifier_keywords::kw_ref;
 use crate::trivia::comment_parser::ws;
 use crate::errors::BResult;
@@ -20,7 +20,7 @@ pub fn parse_ref_expression(input: Span) -> BResult<Expression> {
     map(
         (
             delimited(ws, kw_ref(), ws),
-            delimited(ws, parse_expression, ws),
+            delimited(ws, parse_expression_spanned, ws).map(|s| s.node),
         ),
         |(_, expr)| Expression::Ref(Box::new(expr)),
     )

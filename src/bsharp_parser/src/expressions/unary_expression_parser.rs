@@ -1,5 +1,5 @@
 use crate::parser::expressions::await_expression_parser::parse_await_expression;
-use crate::parser::expressions::primary_expression_parser::parse_expression;
+use crate::parser::expressions::primary_expression_parser::parse_expression_spanned;
 use crate::parser::expressions::ref_expression_parser::parse_ref_expression;
 use crate::parser::expressions::sizeof_expression_parser::parse_sizeof_expression;
 use crate::parser::expressions::stackalloc_expression_parser::parse_stackalloc_expression;
@@ -25,33 +25,35 @@ use syntax::expressions::{Expression, IndexExpression, UnaryOperator, UncheckedE
 /// Parse a unary expression or higher precedence constructs
 pub(crate) fn parse_unary_expression_or_higher(input: Span) -> BResult<Expression> {
     // checked(expr)
-    if let Ok((input_after_kw, _)) = delimited(ws, kw_checked(), ws).parse(input) {
-        if let Ok((rest, _)) = delimited(ws, tok_l_paren(), ws).parse(input_after_kw) {
-            let (rest, inner) = parse_expression(rest)?;
-            let (rest, _) = delimited(ws, tok_r_paren(), ws).parse(rest)?;
-            return Ok((
-                rest,
-                Expression::Checked(Box::new(
-                    syntax::expressions::checked_expression::CheckedExpression {
-                        expr: Box::new(inner),
-                    },
-                )),
-            ));
-        }
+    if let Ok((input_after_kw, _)) = delimited(ws, kw_checked(), ws).parse(input)
+        && let Ok((rest, _)) = delimited(ws, tok_l_paren(), ws).parse(input_after_kw)
+    {
+        let (rest, s) = parse_expression_spanned(rest)?;
+        let inner = s.node;
+        let (rest, _) = delimited(ws, tok_r_paren(), ws).parse(rest)?;
+        return Ok((
+            rest,
+            Expression::Checked(Box::new(
+                syntax::expressions::checked_expression::CheckedExpression {
+                    expr: Box::new(inner),
+                },
+            )),
+        ));
     }
 
     // unchecked(expr)
-    if let Ok((input_after_kw, _)) = delimited(ws, kw_unchecked(), ws).parse(input) {
-        if let Ok((rest, _)) = delimited(ws, tok_l_paren(), ws).parse(input_after_kw) {
-            let (rest, inner) = parse_expression(rest)?;
-            let (rest, _) = delimited(ws, tok_r_paren(), ws).parse(rest)?;
-            return Ok((
-                rest,
-                Expression::Unchecked(Box::new(UncheckedExpression {
-                    expr: Box::new(inner),
-                })),
-            ));
-        }
+    if let Ok((input_after_kw, _)) = delimited(ws, kw_unchecked(), ws).parse(input)
+        && let Ok((rest, _)) = delimited(ws, tok_l_paren(), ws).parse(input_after_kw)
+    {
+        let (rest, s) = parse_expression_spanned(rest)?;
+        let inner = s.node;
+        let (rest, _) = delimited(ws, tok_r_paren(), ws).parse(rest)?;
+        return Ok((
+            rest,
+            Expression::Unchecked(Box::new(UncheckedExpression {
+                expr: Box::new(inner),
+            })),
+        ));
     }
     // Try ref expression first
     if let Ok((input, ref_expr)) = parse_ref_expression(input) {
@@ -107,25 +109,20 @@ pub(crate) fn parse_unary_expression_or_higher(input: Span) -> BResult<Expressio
     }
 
     // Try cast expression: (Type)expression - but be more careful to avoid conflicts with parenthesized expressions
-    if let Ok((input_after_paren, _)) = delimited(ws, tok_l_paren(), ws).parse(input) {
+    if let Ok((input_after_paren, _)) = delimited(ws, tok_l_paren(), ws).parse(input)
         // Try to parse as a type, but only if it's followed by something that looks like an expression
-        if let Ok((input_after_type, ty)) = parse_type_expression(input_after_paren) {
-            if let Ok((input_after_close_paren, _)) =
-                delimited(ws, tok_r_paren(), ws).parse(input_after_type)
-            {
-                // Only treat as cast if the operand parses successfully; otherwise, backtrack.
-                if let Ok((input, operand)) =
-                    parse_unary_expression_or_higher(input_after_close_paren)
-                {
-                    return Ok((
-                        input,
-                        Expression::Cast {
-                            expression: Box::new(operand),
-                            target_type: ty,
-                        },
-                    ));
-                }
-            }
+        && let Ok((input_after_type, ty)) = parse_type_expression(input_after_paren)
+        && let Ok((input_after_close_paren, _)) = delimited(ws, tok_r_paren(), ws).parse(input_after_type)
+    {
+        // Only treat as cast if the operand parses successfully; otherwise, backtrack.
+        if let Ok((input, operand)) = parse_unary_expression_or_higher(input_after_close_paren) {
+            return Ok((
+                input,
+                Expression::Cast {
+                    expression: Box::new(operand),
+                    target_type: ty,
+                },
+            ));
         }
     }
 

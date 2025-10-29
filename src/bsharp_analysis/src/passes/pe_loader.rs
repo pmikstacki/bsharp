@@ -39,20 +39,19 @@ impl AnalyzerPass for PeLoaderPass {
         }
         for dir in &session.config.pe_reference_paths {
             let dir_path = PathBuf::from(dir);
-            if dir_path.is_dir() {
-                if let Ok(walker) =
+            if dir_path.is_dir()
+                && let Ok(walker) =
                     GlobWalkerBuilder::from_patterns(&dir_path, &["**/*.dll"]).build()
-                {
-                    for entry in walker.flatten() {
-                        let path = entry.path().to_path_buf();
-                        collect_and_load(
-                            &mut provider,
-                            &mut seen,
-                            &mut assemblies,
-                            &mut types,
-                            &path,
-                        );
-                    }
+            {
+                for entry in walker.flatten() {
+                    let path = entry.path().to_path_buf();
+                    collect_and_load(
+                        &mut provider,
+                        &mut seen,
+                        &mut assemblies,
+                        &mut types,
+                        &path,
+                    );
                 }
             }
         }

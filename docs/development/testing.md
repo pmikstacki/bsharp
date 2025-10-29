@@ -119,13 +119,19 @@ public clas MyClass { }
 
 **`parse_input_unwrap()`** - Unwrap parse result:
 ```rust
-let (remaining, ast) = parse_input_unwrap(parse_expression(input.into()));
+use bsharp_syntax::span::Span;
+let (remaining, ast) = parse_input_unwrap(
+    parse_expression_spanned(Span::new(input)).map(|(rest, s)| (rest, s.node))
+);
 assert_eq!(remaining, "");  // Verify full consumption
 ```
 
 **`assert_parse_error()`** - Verify parse failures:
 ```rust
-assert_parse_error(parse_expression("invalid syntax"));
+use bsharp_syntax::span::Span;
+assert_parse_error(
+    parse_expression_spanned(Span::new("invalid syntax")).map(|(rest, s)| (rest, s.node))
+);
 ```
 
 ---
@@ -253,9 +259,9 @@ fn test_target_typed_new() {
 ```rust
 #[test]
 fn test_unclosed_paren_diagnostic() {
+    use bsharp_syntax::span::Span;
     let input = "(x + y";
-    let result = parse_expression(input.into());
-    
+    let result = parse_expression_spanned(Span::new(input)).map(|(rest, s)| (rest, s.node));
     assert!(result.is_err());
     // Optionally check error contains expected message
 }
@@ -445,10 +451,11 @@ public clas MyClass { }
 fn test_with_logging() {
     env_logger::init();  // Initialize logger
     
+    use bsharp_syntax::span::Span;
     let input = "complex syntax";
     log::debug!("Parsing: {}", input);
     
-    let result = parse_expression(input.into());
+    let result = parse_expression_spanned(Span::new(input)).map(|(rest, s)| (rest, s.node));
     log::debug!("Result: {:?}", result);
     
     expect_ok(input, result);

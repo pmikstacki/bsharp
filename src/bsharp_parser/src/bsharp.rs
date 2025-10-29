@@ -27,6 +27,8 @@ use nom_supreme::error::{BaseErrorKind, ErrorTree, Expectation};
 use syntax::Identifier as SynIdentifier;
 use syntax::ast::{CompilationUnit, TopLevelDeclaration};
 use syntax::declarations::{ClassBodyDeclaration, GlobalUsingDirective, TypeDeclaration};
+use crate::span::Spanned;
+use crate::span_ext::ParserExt as _;
 
 fn ident_to_string(id: &SynIdentifier) -> String {
     match id {
@@ -34,6 +36,12 @@ fn ident_to_string(id: &SynIdentifier) -> String {
         SynIdentifier::QualifiedIdentifier(segs) => segs.join("."),
         SynIdentifier::OperatorOverrideIdentifier(_) => "operator".to_string(),
     }
+}
+
+/// Variant of parse_csharp_source that also returns the span of the recognized root node.
+pub fn parse_csharp_source_spanned<'a>(input: Span<'a>) -> BResult<'a, Spanned<CompilationUnit>> {
+    use nom::sequence::delimited;
+    delimited(ws, (|i| parse_csharp_source(i)).spanned(), ws).parse(input)
 }
 
 /// Parse a C# source file following Roslyn's model where a source file contains:
@@ -285,7 +293,7 @@ where
 /// This is used by the CLI default path to ensure any syntax error leads to a failure.
 pub fn parse_csharp_source_strict(input: Span) -> BResult<CompilationUnit> {
     let (rest, unit) = parse_csharp_source(input)?;
-    if rest.fragment().trim().is_empty() {
+    if cfg!(feature = "strict_allows_trailing") || rest.fragment().trim().is_empty() {
         Ok((rest, unit))
     } else {
         let err = ErrorTree::Base {
@@ -385,18 +393,16 @@ where
     if peek(delimited(ws, kw_namespace(), ws))
         .parse(remaining)
         .is_ok()
-    {
-        if let Ok((rest, (recognized, ns))) = (|i| parse_file_scoped_namespace_declaration(i))
+        && let Ok((rest, (recognized, ns))) = (|i| parse_file_scoped_namespace_declaration(i))
             .with_recognized()
             .parse(remaining)
-        {
-            let start = recognized.location_offset();
-            let end = start + recognized.fragment().len();
-            let key = format!("namespace::{}", ident_to_string(&ns.name));
-            span_table.insert(key, start..end);
-            file_scoped_namespace = Some(ns);
-            remaining = rest;
-        }
+    {
+        let start = recognized.location_offset();
+        let end = start + recognized.fragment().len();
+        let key = format!("namespace::{}", ident_to_string(&ns.name));
+        span_table.insert(key, start..end);
+        file_scoped_namespace = Some(ns);
+        remaining = rest;
     }
 
     // Top-level members

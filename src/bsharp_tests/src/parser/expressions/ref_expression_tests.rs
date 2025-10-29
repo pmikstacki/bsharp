@@ -1,6 +1,6 @@
 // Tests for parsing ref expressions and ref return types
 
-use parser::expressions::primary_expression_parser::parse_expression;
+use parser::expressions::primary_expression_parser::parse_expression_spanned as parse_expression;
 use parser::expressions::ref_expression_parser::parse_ref_expression;
 use parser::types::type_parser::parse_type_expression;
 use syntax::expressions::expression::Expression;
@@ -25,7 +25,7 @@ fn parse_ref_expr_helper(code: &str) -> Result<Expression, String> {
 }
 
 fn parse_expr_helper(code: &str) -> Result<Expression, String> {
-    match parse_expression(code.into()) {
+    match parse_expression(code.into()).map(|(rest, s)| (rest, s.node)) {
         Ok((remaining, expr)) => {
             if remaining.fragment().trim().is_empty() {
                 Ok(expr)

@@ -1,4 +1,4 @@
-use crate::parser::expressions::primary_expression_parser::parse_expression;
+use crate::parser::expressions::primary_expression_parser::parse_expression_spanned;
 // This is used by parse_interpolation
 use crate::keywords::literal_keywords::{kw_false, kw_null, kw_true};
 use crate::trivia::comment_parser::ws;
@@ -15,6 +15,8 @@ use nom::{
     sequence::{delimited, preceded},
 };
 use nom_supreme::ParserExt;
+use crate::span::Spanned;
+use crate::span_ext::ParserExt as _;
 use syntax::expressions::literal::InterpolatedStringPart;
 use syntax::expressions::literal::{IntegerSuffix, InterpolatedStringLiteral};
 use syntax::expressions::{Expression, Literal};
@@ -28,6 +30,24 @@ pub fn parse_boolean(input: Span) -> BResult<Literal> {
     ))
     .context("boolean literal (expected 'true' or 'false')")
     .parse(input)
+}
+
+pub fn parse_literal_spanned(input: Span) -> BResult<Spanned<Literal>> {
+    use nom::{branch::alt, combinator::map};
+    let core = alt((
+        parse_boolean,
+        map(kw_null(), |_| Literal::Null),
+        parse_decimal_literal,
+        parse_float,
+        parse_integer,
+        parse_raw_interpolated_string,
+        parse_interpolated_string,
+        parse_verbatim_string,
+        parse_raw_string,
+        parse_string,
+        parse_char_literal,
+    ));
+    nom::sequence::delimited(ws, core.spanned(), ws).parse(input)
 }
 
 // Parse a raw interpolated string literal: $""" ... {expr} ... """ or with multiple $ and N quotes
@@ -122,7 +142,7 @@ pub fn parse_raw_interpolated_string<'a>(input: Span<'a>) -> BResult<'a, Literal
         }
         Err(nom::Err::Error(make_error(i, ErrorKind::Tag)))
     })
-    .context("raw interpolated string literal (expected $\"\"\"...\"\"\" with {expr})")
+    .context("raw interpolated string literal")
     .parse(input)
 }
 
@@ -371,7 +391,7 @@ pub fn parse_float<'a>(input: Span<'a>) -> BResult<'a, Literal> {
             }
         }
     })
-    .context("floating-point literal (decimal with optional exponent, underscores allowed)")
+    .context("floating-point literal")
     .parse(input)
 }
 
@@ -570,8 +590,10 @@ fn enhanced_interpolation(input: Span<'_>) -> BResult<'_, InterpolatedStringPart
 
 /// Robust expression parsing within interpolation with fallback
 fn robust_expression_in_interpolation(input: Span) -> BResult<Expression> {
-    let res = parse_expression(input).or_else(|_| fallback_simple_expression(input));
-    res
+    match parse_expression_spanned.parse(input) {
+        Ok((rest, s)) => Ok((rest, s.node)),
+        Err(_) => fallback_simple_expression(input),
+    }
 }
 
 /// Fallback syntax for simple expressions when complex parsing fails

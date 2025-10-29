@@ -1,4 +1,4 @@
-use bsharp_parser::bsharp::parse_csharp_source_strict;
+use parser::bsharp::parse_csharp_source_strict;
 use syntax::span::Span;
 
 use syntax::formatter::{FormatOptions, Formatter};

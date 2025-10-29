@@ -6,7 +6,7 @@ use crate::errors::BResult;
 use nom::Parser;
 use nom::character::complete::char as nom_char;
 use nom::combinator::peek;
-use nom::sequence::delimited;
+use nom::sequence::{delimited, preceded};
 use nom_supreme::ParserExt;
 use syntax::Identifier;
 use syntax::declarations::UsingDirective;
@@ -31,7 +31,7 @@ pub fn parse_using_directive(input: Span) -> BResult<UsingDirective> {
                     Identifier::OperatorOverrideIdentifier(_) => "operator".to_string(),
                 })
                 .collect();
-            let (input_final, _) = delimited(ws, nom_char(';'), ws).parse(input_after_name)?;
+            let (input_final, _) = preceded(ws, nom_char(';')).parse(input_after_name)?;
             let using_directive = UsingDirective::Static {
                 type_name: Identifier::QualifiedIdentifier(type_name_segments),
             };
@@ -60,14 +60,14 @@ pub fn parse_using_directive(input: Span) -> BResult<UsingDirective> {
                     Identifier::OperatorOverrideIdentifier(_) => "operator".to_string(),
                 })
                 .collect();
-            let (input, _) = delimited(ws, nom_char(';'), ws).parse(input)?;
+            let (input, _) = preceded(ws, nom_char(';')).parse(input)?;
             let using_directive = UsingDirective::Alias {
                 alias: Identifier::QualifiedIdentifier(left_segments),
                 namespace_or_type: Identifier::QualifiedIdentifier(right_segments),
             };
             Ok((input, using_directive))
         } else {
-            let (input, _) = delimited(ws, nom_char(';'), ws).parse(input)?;
+            let (input, _) = preceded(ws, nom_char(';')).parse(input)?;
             let using_directive = UsingDirective::Namespace {
                 namespace: Identifier::QualifiedIdentifier(left_segments),
             };

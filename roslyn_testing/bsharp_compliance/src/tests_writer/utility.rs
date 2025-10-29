@@ -1,6 +1,6 @@
 use crate::tests_writer::codegen;
 use bsharp_parser::bsharp::parse_csharp_source_strict;
-use bsharp_parser::statement_parser::parse_statement_ws;
+use bsharp_parser::statement_parser::parse_statement_ws_spanned;
 use regex::Regex;
 use std::path::PathBuf;
 use bsharp_parser::syntax::span::Span;
@@ -116,7 +116,7 @@ pub fn find_enclosing_method_name(methods: &[(usize, String)], pos: usize) -> Op
 pub fn prevalidate(t: &ExtractedTest) -> bool {
     match t.category {
         Category::Tree => parse_csharp_source_strict(Span::new(t.code.as_str())).is_ok(),
-        Category::Statement => match parse_statement_ws(Span::new(t.code.as_str())) {
+        Category::Statement => match parse_statement_ws_spanned(Span::new(t.code.as_str())).map(|(rest, s)| (rest, s.node)) {
             Ok((rest, _)) => rest.fragment().trim().is_empty(),
             Err(_) => false,
         },

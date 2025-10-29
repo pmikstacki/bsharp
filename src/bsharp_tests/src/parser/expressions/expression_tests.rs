@@ -2,10 +2,10 @@
 
 use syntax::expressions::Expression;
 
-use parser::expressions::primary_expression_parser::parse_expression as real_parse_expression;
+use parser::expressions::primary_expression_parser::parse_expression_spanned as real_parse_expression;
 
 fn parse_expression(code: &str) -> Result<Expression, String> {
-    match real_parse_expression(code.into()) {
+    match real_parse_expression(code.into()).map(|(rest, s)| (rest, s.node)) {
         Ok((rest, expr)) if rest.trim().is_empty() => Ok(expr),
         Ok((rest, _)) => Err(format!("Unparsed input: {}", rest)),
         Err(e) => Err(format!("Parse error: {:?}", e)),
@@ -53,14 +53,14 @@ fn test_object_initializer() {
 // #[test]
 // fn test_collection_initializer() {
 //     // This tests implicitly typed arrays (new[] { ... }) which is not implemented yet
-//     let expr = parse_expression("new[] { 1, 2, 3 }").unwrap();
+//     let expr = parse_expression("new[] { 1, 2, 3 }").map(|(rest, s)| (rest, s.node)).unwrap();
 //     assert!(matches!(expr, Expression::New(new_expr) if new_expr.collection_initializer.is_some()));
 // }
 
 #[test]
 fn test_parse_integer_literal() {
     let input = "123";
-    let expr = parse_expression(input.into()).unwrap();
+    let expr = parse_expression(input).unwrap();
     assert_eq!(
         expr,
         Expression::Literal(syntax::expressions::Literal::Integer(123))
@@ -70,7 +70,7 @@ fn test_parse_integer_literal() {
 #[test]
 fn test_parse_identifier() {
     let input = "myVariable";
-    let expr = parse_expression(input.into()).unwrap();
+    let expr = parse_expression(input).unwrap();
     assert_eq!(
         expr,
         Expression::Variable(syntax::identifier::Identifier::new("myVariable"))
@@ -80,14 +80,14 @@ fn test_parse_identifier() {
 #[test]
 fn test_parse_this_keyword() {
     let input = "this";
-    let expr = parse_expression(input.into()).unwrap();
+    let expr = parse_expression(input).unwrap();
     assert_eq!(expr, Expression::This);
 }
 
 #[test]
 fn test_parse_parenthesized_expression() {
     let input = "(42)";
-    let expr = parse_expression(input.into()).unwrap();
+    let expr = parse_expression(input).unwrap();
     // Parenthesized expressions just resolve to the inner expression
     assert_eq!(
         expr,

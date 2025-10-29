@@ -1,4 +1,4 @@
-use crate::parser::statement_parser::parse_statement_ws;
+use crate::parser::statement_parser::parse_statement_ws_spanned;
 use crate::trivia::comment_parser::ws;
 use crate::errors::BResult;
 use nom::Parser;
@@ -29,7 +29,8 @@ pub fn parse_block_statement(input: Span) -> BResult<Statement> {
                 // Do not attempt a statement if next non-ws is '}'
                 let guard = map(delimited(ws, tok_r_brace(), ws), |_| ());
                 peek(not(guard)).parse(i)?;
-                parse_statement_ws(i)
+                let (r, s) = parse_statement_ws_spanned(i)?;
+                Ok((r, s.node))
             })
             .context("statement in block"),
             cut(delimited(ws, tok_r_brace(), ws)).context("closing brace for block statement"),

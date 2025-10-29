@@ -1,11 +1,11 @@
 // Parser for foreach loops
 
-use crate::parser::expressions::primary_expression_parser::parse_expression;
+use crate::parser::expressions::primary_expression_parser::parse_expression_spanned;
 use crate::parser::identifier_parser::parse_identifier;
 use crate::parser::keywords::expression_keywords::kw_await;
 use crate::parser::keywords::iteration_keywords::kw_foreach;
 use crate::parser::keywords::parameter_modifier_keywords::kw_in;
-use crate::parser::statement_parser::parse_statement_ws;
+use crate::parser::statement_parser::parse_statement_ws_spanned;
 use crate::parser::types::type_parser::parse_type_expression;
 use crate::trivia::comment_parser::ws;
 use crate::errors::BResult;
@@ -34,12 +34,16 @@ pub fn parse_foreach_statement(input: Span) -> BResult<Statement> {
             // 5. 'in' keyword
             delimited(ws, kw_in(), ws).context("in keyword in foreach"),
             // 6. Collection expression
-            delimited(ws, parse_expression, ws).context("collection expression in foreach"),
+            delimited(ws, parse_expression_spanned, ws)
+                .map(|s| s.node)
+                .context("collection expression in foreach"),
             // 7. Closing parenthesis
             cut(delimited(ws, tok_r_paren(), ws))
                 .context("closing parenthesis after foreach header"),
             // 8. Body statement
-            cut(delimited(ws, parse_statement_ws, ws)).context("foreach body statement"),
+            cut(delimited(ws, parse_statement_ws_spanned, ws))
+                .map(|s| s.node)
+                .context("foreach body statement"),
         ),
         |(
             await_opt,

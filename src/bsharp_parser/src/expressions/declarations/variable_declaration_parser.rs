@@ -1,4 +1,4 @@
-use crate::parser::expressions::primary_expression_parser::parse_expression;
+use crate::parser::expressions::primary_expression_parser::parse_expression_spanned;
 use crate::parser::identifier_parser::parse_identifier;
 use crate::parser::types::type_parser::parse_type_expression;
 use crate::trivia::comment_parser::ws;
@@ -23,7 +23,9 @@ pub fn parse_variable_declarator(input: Span) -> BResult<VariableDeclaration> {
             delimited(ws, parse_identifier, ws).context("variable name"),
             opt(preceded(
                 delimited(ws, tok_assign(), ws).context("variable initializer"),
-                delimited(ws, parse_expression, ws).context("variable initializer expression"),
+                delimited(ws, parse_expression_spanned, ws)
+                    .map(|s| s.node)
+                    .context("variable initializer expression"),
             )),
         ),
         |(name, initializer)| VariableDeclaration { name, initializer },

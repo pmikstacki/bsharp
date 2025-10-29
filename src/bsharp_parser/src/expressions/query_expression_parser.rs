@@ -1,4 +1,4 @@
-use crate::parser::expressions::primary_expression_parser::parse_expression;
+use crate::parser::expressions::primary_expression_parser::parse_expression_spanned;
 use crate::parser::identifier_parser::parse_identifier;
 use crate::parser::keywords::contextual_misc_keywords::kw_dynamic;
 use crate::parser::keywords::linq_query_keywords::{
@@ -96,7 +96,7 @@ fn parse_from_clause(input: Span) -> BResult<FromClause> {
                 ws,
             ),
             delimited(ws, kw_in(), ws),
-            delimited(ws, parse_expression, ws), // Collection expression
+            delimited(ws, parse_expression_spanned, ws).map(|s| s.node), // Collection expression
         ),
         |(_, (type_annotation, identifier), _, expression)| FromClause {
             type_annotation,
@@ -136,7 +136,7 @@ fn parse_let_clause(input: Span) -> BResult<LetClause> {
             kw_let(),
             delimited(ws, parse_identifier, ws),
             delimited(ws, tok_assign(), ws),
-            delimited(ws, parse_expression, ws),
+            delimited(ws, parse_expression_spanned, ws).map(|s| s.node),
         ),
         |(_, identifier, _, expression)| LetClause {
             identifier,
@@ -149,7 +149,7 @@ fn parse_let_clause(input: Span) -> BResult<LetClause> {
 /// Parse 'where' clause for filtering
 fn parse_where_clause(input: Span) -> BResult<QueryWhereClause> {
     map(
-        preceded(kw_where(), delimited(ws, parse_expression, ws)),
+        preceded(kw_where(), delimited(ws, parse_expression_spanned, ws).map(|s| s.node)),
         |condition| QueryWhereClause { condition },
     )
     .parse(input)
@@ -177,11 +177,11 @@ fn parse_join_clause(input: Span) -> BResult<JoinClause> {
                 ws,
             ),
             delimited(ws, kw_in(), ws),
-            delimited(ws, parse_expression, ws), // Join collection
+            delimited(ws, parse_expression_spanned, ws).map(|s| s.node), // Join collection
             delimited(ws, kw_on(), ws),
-            delimited(ws, parse_expression, ws), // Join condition left side
+            delimited(ws, parse_expression_spanned, ws).map(|s| s.node), // Join condition left side
             delimited(ws, kw_equals(), ws),
-            delimited(ws, parse_expression, ws), // Join condition right side
+            delimited(ws, parse_expression_spanned, ws).map(|s| s.node), // Join condition right side
             opt(preceded(
                 delimited(ws, kw_into(), ws),
                 delimited(ws, parse_identifier, ws),
@@ -227,7 +227,7 @@ fn parse_orderby_clause(input: Span) -> BResult<QueryOrderByClause> {
 fn parse_ordering(input: Span) -> BResult<OrderByOrdering> {
     map(
         (
-            delimited(ws, parse_expression, ws),
+            delimited(ws, parse_expression_spanned, ws).map(|s| s.node),
             opt(delimited(
                 ws,
                 alt((
@@ -257,7 +257,7 @@ fn parse_select_or_group_clause(input: Span) -> BResult<QuerySelectOrGroup> {
 /// Parse 'select' clause
 fn parse_select_clause(input: Span) -> BResult<QuerySelectOrGroup> {
     map(
-        preceded(kw_select(), delimited(ws, parse_expression, ws)),
+        preceded(kw_select(), delimited(ws, parse_expression_spanned, ws).map(|s| s.node)),
         QuerySelectOrGroup::Select,
     )
     .parse(input)
@@ -268,9 +268,9 @@ fn parse_group_clause(input: Span) -> BResult<QuerySelectOrGroup> {
     map(
         (
             kw_group(),
-            delimited(ws, parse_expression, ws),
+            delimited(ws, parse_expression_spanned, ws).map(|s| s.node),
             delimited(ws, kw_by(), ws),
-            delimited(ws, parse_expression, ws),
+            delimited(ws, parse_expression_spanned, ws).map(|s| s.node),
         ),
         |(_, element, _, by)| QuerySelectOrGroup::Group { element, by },
     )

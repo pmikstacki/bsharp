@@ -2,7 +2,7 @@
 // Integration tests for local variable declaration statements
 // Moved from statement_tests.rs
 
-use parser::statement_parser::parse_statement;
+use parser::statement_parser::parse_statement_ws_spanned;
 use parser::syntax::test_helpers::parse_all;
 use syntax::declarations::LocalVariableDeclaration;
 use syntax::declarations::local_variable_declaration::VariableDeclaration;
@@ -16,10 +16,10 @@ use syntax::types::{PrimitiveType, Type};
 // Helper function from statement_tests.rs
 fn assert_statement_parses(code: &str, expected: Statement) {
     let code_trimmed = code.trim();
-    match parse_all(parse_statement, code_trimmed.into()) {
+    match parse_all(parse_statement_ws_spanned, code_trimmed.into()) {
         Ok((_, parsed_statement)) => {
             assert_eq!(
-                parsed_statement, expected,
+                parsed_statement.node, expected,
                 "Parsed statement does not match expected for code: {}\n",
                 code_trimmed
             );

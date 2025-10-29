@@ -4,6 +4,38 @@ Practical recipes for nom-based parsers in `bsharp_parser`.
 
 ---
 
+## Spanned-first policy
+
+- All public parser entrypoints return `Spanned<T>` so callers have precise source ranges for AST nodes.
+- Internals should prefer spanned parsers as well to preserve spans through transformations.
+- When you only need the inner value, map via `.node`.
+
+Examples:
+
+```rust
+// Prefer the spanned variant and map to inner node when spans are not needed
+let (rest, expr) = nom::sequence::delimited(ws, parse_expression_spanned, ws)
+    .map(|s| s.node)
+    .parse(input)?;
+
+// Lists of expressions: collect inner nodes
+let (rest, args) = parse_delimited_list0(
+    |i| delimited(ws, tok_l_paren(), ws).parse(i),
+    |i| delimited(ws, parse_expression_spanned, ws).map(|s| s.node).parse(i),
+    |i| delimited(ws, tok_comma(), ws).parse(i),
+    |i| delimited(ws, tok_r_paren(), ws).parse(i),
+    false,
+    true,
+).parse(input)?;
+```
+
+### Parsable trait
+
+- For one-shot parsing of a type to `Spanned<Self>`, implement or use the crate’s `Parsable` abstraction (where available) instead of bespoke entrypoints.
+- This keeps a consistent contract across the parser and simplifies tests and tools that need spans.
+
+---
+
 ## Conventions
 
 - Use `Span<'a>` and `BResult<'a, T>` from `bsharp_parser::syntax` modules.
