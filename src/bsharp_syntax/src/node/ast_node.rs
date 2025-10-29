@@ -17,8 +17,16 @@ pub trait AstNode: Any {
 
     /// A short human-friendly label for visualization. Defaults to `node_kind()`.
     fn node_label(&self) -> String {
-        format!("{} ({})", self.node_kind(), core::any::type_name::<Self>())
+        if let Some(v) = self.node_label_value() {
+            v
+        } else {
+            self.node_kind().to_string()
+        }
     }
+
+    /// Optional value text for labeling (combined with a short kind by renderers).
+    /// Default is None; derive macro will generate implementations based on common conventions.
+    fn node_label_value(&self) -> Option<String> { None }
 }
 
 /// Public ergonomic alias used across the codebase.
