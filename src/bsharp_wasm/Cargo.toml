@@ -1,0 +1,21 @@
+[package]
+name = "bsharp_wasm"
+edition.workspace = true
+version.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+wasm-bindgen = "0.2"
+bsharp_parser = { path = "../bsharp_parser" }
+bsharp_syntax = { path = "../bsharp_syntax" }
+bsharp_analysis = { path = "../bsharp_analysis" }
+serde_json = { version = "1", features = ["std"] }
+nom = "8.0.0"
+nom-supreme = { package = "bsharp_nom_supreme", path = "../bsharp_nom_supreme" }
+
+[features]
+default = []

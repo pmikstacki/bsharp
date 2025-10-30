@@ -62,6 +62,12 @@ jobs:
         run: bun install
         working-directory: site
 
+      - name: Install wasm32 target
+        run: rustup target add wasm32-unknown-unknown
+
+      - name: Install wasm-pack
+        run: cargo install wasm-pack
+
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5

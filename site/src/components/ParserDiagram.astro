@@ -1,176 +1,73 @@
 ---
-import diagramSvg from '../assets/diagram.svg?raw';
-
-const codeSample = `public class TestClass
+import MonacoInstance from './MonacoInstance.astro';
+const sample = `public class TestClass
 {
-    public void Loops()
-    {
-        Console.WriteLine("test");
-    }
+    public void Hello() { System.Console.WriteLine("hi"); }
 }`;
+const rawBase = import.meta.env.BASE_URL || '/';
+const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
 ---
-<section class="relative mx-auto w-full max-w-6xl px-0 md:px-0">
-    <div class="grid gap-6 p-4 md:grid-cols-2 md:p-6">
-      <!-- Code side -->
-      <div class="relative">
-        <div class="glass relative h-full rounded-xl border border-white/10 bg-slate-900/30 p-0 shadow-xl ring-1 ring-white/10">
-          <div class="flex items-center justify-between border-b border-white/10 px-3 py-2 text-xs text-slate-300">
-            <div class="flex items-center gap-1.5"><span class="h-2.5 w-2.5 rounded-full bg-red-400/80"></span><span class="h-2.5 w-2.5 rounded-full bg-amber-400/80"></span><span class="h-2.5 w-2.5 rounded-full bg-emerald-400/80"></span></div>
-            <div>console_class.cs</div>
-            <div class="w-10"></div>
-          </div>
-          <pre class="h-[420px] overflow-auto p-4 font-mono text-[13px] leading-6 text-slate-100/90"><code>{codeSample}</code></pre>
-        </div>
-      </div>
-
-      <!-- Diagram side -->
-      <div class="parser-diagram relative h-[450px] overflow-hidden -mr-4 md:-mr-6">
-        <div
-          id="fly"
-          class="svg-wrap absolute inset-0 will-change-transform"
-          style="transform: scale(5)"
-          set:html={diagramSvg}
-        ></div>
-        <div class="merge-haze pointer-events-none absolute inset-0"></div>
+<section class="w-full px-4 py-8 md:px-8">
+  <div class="prose prose-slate dark:prose-invert">
+    <h2>Parser</h2>
+    <p>Render the AST as a Mermaid diagram directly in your browser.</p>
+  </div>
+  <div class="mt-6 grid gap-4 md:grid-cols-2">
+    <div>
+      <div class="mb-2 text-sm text-slate-500">Input C#</div>
+      <MonacoInstance id="parser-monaco" initial={sample} height="460px" />
+      <div class="mt-3">
+        <button id="btn" class="btn btn-primary">Render AST (Mermaid)</button>
       </div>
     </div>
+    <div>
+      <div class="mb-2 text-sm text-slate-500">Diagram</div>
+      <div id="mermaid-wrap" class="h-[460px] w-full overflow-auto rounded-md border border-white/10 bg-black/30 p-3">
+        <div id="m-target" class="mermaid">graph TD; A["No graph yet"]</div>
+      </div>
+    </div>
+  </div>
 </section>
 
-<script is:inline>
+<script type="module" define:vars={{ base }}>
+  import { renderMermaid } from '/src/scripts/mermaid-setup.ts';
+  function wasmUrl() {
+    const b = base.endsWith('/') ? base : `${base}/`;
+    return new URL(`${b}wasm/bsharp_wasm.js`, window.location.origin).toString();
+  }
   (function(){
-    const el = document.querySelector('.parser-diagram .svg-wrap');
-    if(!el) return;
-    const baseScale = 2;
-    let tx = 0, ty = 0; // current translate
-    let targetX = 0, targetY = 0; // target translate
-    let raf;
-
-    // Post-style SVG once it exists
-    const styleInternals = () => {
-      const svg = el.querySelector('svg');
-      if (!svg) return;
-      // Remove big background rect (pick the largest area)
-      let maxArea = 0, bgRect = null;
-      svg.querySelectorAll('rect').forEach(r => {
-        const w = parseFloat(r.getAttribute('width')||'0');
-        const h = parseFloat(r.getAttribute('height')||'0');
-        const area = w*h;
-        if (area > maxArea) { maxArea = area; bgRect = r; }
-      });
-      if (bgRect) { bgRect.setAttribute('fill','none'); bgRect.setAttribute('stroke','none'); }
-
-      // Rounded node corners and translucency
-      svg.querySelectorAll('rect').forEach(r => {
-        if (!r.getAttribute('rx')) r.setAttribute('rx','6');
-        if (!r.getAttribute('ry')) r.setAttribute('ry','6');
-        // Slight translucency for nodes
-        const fill = r.getAttribute('fill');
-        if (!fill || fill === '#ffffff' || fill === 'white') {
-          r.setAttribute('fill','rgba(255,255,255,0.85)');
-        }
-      });
-
-      // Bolder lines with glassy glow
-      svg.querySelectorAll('path, polyline, line').forEach(p => {
-        p.setAttribute('stroke-width','1.8');
-        p.setAttribute('stroke-linecap','round');
-        p.setAttribute('stroke','#9aa4b2');
-        p.style.filter = 'drop-shadow(0 0 10px rgba(59,130,246,0.14))';
-      });
-    };
-    // Try now and also after a frame for SSR hydration cases
-    styleInternals();
-    requestAnimationFrame(styleInternals);
-
-    // Smooth flyover: pick random target within bounds and ease towards it
-    const bounds = 40   ; // px in either axis at base scale
-    function pickTarget() {
-      targetX = (Math.random()*5 - 2.5) * bounds;
-      targetY = (Math.random()*5 - 2.5) * bounds;
-      // pick new target every 3–6s
-      setTimeout(pickTarget, 3000 + Math.random()*3000);
+    async function wasm(){
+      const m = await import(wasmUrl());
+      if (m && m.default) await m.default();
+      return m;
     }
-    pickTarget();
-
-    function tick() {
-      // ease current towards target
-      tx += (targetX - tx) * 0.015;
-      ty += (targetY - ty) * 0.015;
-      el.style.transform = `scale(${baseScale}) translate(${tx}px, ${ty}px)`;
-      raf = requestAnimationFrame(tick);
+    const $ = (s)=>document.querySelector(s);
+    const btn = $('#btn');
+    const target = $('#m-target');
+    function getEditor(){ return window.__monacoEditors?.['parser-monaco']; }
+  async function ensureEditor(){
+    const start = Date.now();
+    while (!getEditor() && Date.now() - start < 2000) await new Promise(r => setTimeout(r, 50));
+    if (!getEditor()) console.warn('Monaco editor instance not found after timeout');
+    return getEditor();
+  }
+  btn?.addEventListener('click', async () => {
+    try {
+      const mod = await wasm();
+      const ed = await ensureEditor();
+      const diag = await mod.ast_to_mermaid(ed.getValue());
+      const id = 'ast-' + Math.random().toString(36).slice(2);
+      await renderMermaid(target, id, diag);
+    } catch (e) {
+      target.textContent = 'Mermaid render error: ' + (e?.message || String(e));
     }
-    raf = requestAnimationFrame(tick);
-    window.addEventListener('visibilitychange', () => {
-      if (document.hidden) cancelAnimationFrame(raf); else raf = requestAnimationFrame(tick);
-    });
+  });
+  window.addEventListener('load', () => btn?.click());
   })();
-  </script>
+</script>
 
 <style is:inline>
-  /* Global-ish styles for the inlined SVG */
-  :global(.parser-diagram) {
-    background: transparent;
-    isolation: isolate; /* ensure proper compositing for masks */
-    /* Left-edge fade for whole container (Safari + standard) */
-    -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,0) 0, #000 160px, #000 100%);
-            mask-image: linear-gradient(to right, rgba(0,0,0,0) 0, #000 160px, #000 100%);
-    -webkit-mask-repeat: no-repeat;
-            mask-repeat: no-repeat;
-    -webkit-mask-size: 100% 100%;
-            mask-size: 100% 100%;
-    -webkit-mask-position: left top;
-            mask-position: left top;
-    -webkit-mask-mode: alpha;
-            mask-mode: alpha;
-  }
-  :global(.parser-diagram svg) {
-    width: 100%;
-    height: 100%;
-    color: #0f172a; /* slate-900 fallback */
-  }
-  :global(.parser-diagram svg *) {
-    vector-effect: non-scaling-stroke;
-  }
-  /* Wrapper doesn't need mask now; keep empty for clarity */
-  :global(.parser-diagram .svg-wrap) {}
-  /* Nodes */
-  :global(.parser-diagram svg rect) {
-    fill: rgba(255,255,255,0.96) !important;
-    stroke: rgba(2,6,23,0.15) !important; /* slate-900 at 15% */
-    stroke-width: 1.25 !important;
-    filter: drop-shadow(0 1px 0 rgba(255,255,255,0.06)) drop-shadow(0 10px 24px rgba(2,6,23,0.20));
-  }
-  /* Connectors */
-  :global(.parser-diagram svg path),
-  :global(.parser-diagram svg polyline),
-  :global(.parser-diagram svg line) {
-    stroke: rgba(148,163,184,0.55) !important; /* slate-400 */
-    stroke-width: 1.4 !important;
-    stroke-linecap: round !important;
-    stroke-linejoin: round !important;
-  }
-  /* Labels */
-  :global(.parser-diagram svg text) {
-    fill: #0b1220 !important; /* near-slate-950 */
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
-    font-size: 11px !important;
-    letter-spacing: 0.01em;
-  }
-  /* Corner haze inset inside the SVG box */
-  :global(.parser-diagram .merge-haze) {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-  }
-  :global(.parser-diagram .merge-haze::before) {
-    content: '';
-    position: absolute;
-    inset: 12px; /* push haze inward */
-    border-radius: 16px;
-    background:
-      radial-gradient(60% 70% at 0% 0%, rgba(2,6,23,0.28), transparent 70%),
-      radial-gradient(60% 70% at 0% 100%, rgba(2,6,23,0.28), transparent 70%);
-  }
-  /* Remove inner vignette for merged look */
-  :global(.parser-diagram .svg-wrap::after) { content: none; }
+  :global(#mermaid-wrap svg) { min-width: 100%; height: auto; }
+  :global(#mermaid-wrap svg *) { vector-effect: non-scaling-stroke; }
+  :global(#mermaid-wrap .merge-haze) { position: absolute; inset: 0; pointer-events: none; }
 </style>

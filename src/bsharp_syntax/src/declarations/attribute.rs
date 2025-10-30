@@ -3,7 +3,6 @@ use crate::identifier::Identifier;
 use crate::types::Type;
 use bsharp_syntax_derive::AstNode;
 use serde::{Deserialize, Serialize};
-use crate::span::Span;
 
 #[derive(AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct Attribute {

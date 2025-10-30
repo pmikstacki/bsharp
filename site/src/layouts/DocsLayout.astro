@@ -24,19 +24,12 @@ const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
       <nav class="mx-auto flex max-w-7xl items-center justify-between gap-6 px-4 py-3">
         <a href={base} class="font-semibold tracking-tight text-slate-900 hover:text-brand-600 dark:text-slate-100 dark:hover:text-brand-400">BSharp</a>
         <ul class="flex items-center gap-5 text-sm">
-          <li><a class="hover:text-brand-600 dark:hover:text-brand-400" href="#parser">Parser</a></li>
-          <li><a class="hover:text-brand-600 dark:hover:text-brand-400" href="#formatter">Formatter</a></li>
-          <li><a class="hover:text-brand-600 dark:hover:text-brand-400" href="#analysis">Analysis</a></li>
-          <li><a class="hover:text-brand-600 dark:hover:text-brand-400" href="#compiler">Compiler</a></li>
           <li><a class="inline-flex items-center rounded-md border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium backdrop-blur hover:bg-white/10" href={`${base}docs/`}>Docs</a></li>
         </ul>
       </nav>
     </header>
-    <main class="mx-auto max-w-7xl px-4 py-10">
+    <main class="h-[calc(100dvh-4rem)] w-full p-0">
       <slot />
     </main>
-    <footer class="border-t border-slate-200/60 px-4 py-8 text-center text-xs text-slate-500 dark:border-slate-800/60">
-      <p>© {new Date().getFullYear()} BSharp</p>
-    </footer>
   </body>
 </html>
