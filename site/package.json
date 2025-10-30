@@ -17,7 +17,8 @@
     "entities": "^7.0.0",
     "gsap": "^3.13.0",
     "mermaid": "^11.12.1",
-    "monaco-editor": "^0.54.0"
+    "monaco-editor": "^0.54.0",
+    "svg-pan-zoom": "^3.6.2"
   },
   "devDependencies": {
     "@astrojs/tailwind": "^6.0.0",

@@ -67,7 +67,8 @@ const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
 </script>
 
 <style is:inline>
-  :global(#mermaid-wrap svg) { min-width: 100%; height: auto; }
+  :global(#mermaid-wrap) { width: 100%; height: 460px; overflow: hidden; }
+  :global(#mermaid-wrap svg) { width: 100%; height: 100%; }
   :global(#mermaid-wrap svg *) { vector-effect: non-scaling-stroke; }
   :global(#mermaid-wrap .merge-haze) { position: absolute; inset: 0; pointer-events: none; }
 </style>
