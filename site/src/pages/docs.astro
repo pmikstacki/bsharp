@@ -10,4 +10,48 @@ const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
     class="h-full w-full border-0"
     loading="lazy"
   ></iframe>
+  <script type="module">
+    const iframe = document.querySelector('iframe[title="BSharp Docs"]');
+    function currentTheme(){
+      const d = document.documentElement;
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const hasDarkClass = d.classList.contains('dark');
+      return hasDarkClass || (!d.classList.contains('light') && prefersDark) ? 'dark' : 'light';
+    }
+    function send(){
+      if (!iframe?.contentWindow) return;
+      iframe.contentWindow.postMessage({ type: 'bsharp:theme', value: currentTheme() }, '*');
+    }
+    function injectCss(){
+      try {
+        const doc = iframe?.contentDocument;
+        if (!doc) return;
+        const style = doc.createElement('style');
+        style.textContent = `#theme-toggle, #theme-list { display: none !important; }`;
+        doc.head.appendChild(style);
+      } catch {}
+    }
+    function removeThemeNodes(){
+      try {
+        const doc = iframe?.contentDocument;
+        if (!doc) return;
+        const btn = doc.getElementById('theme-toggle');
+        const list = doc.getElementById('theme-list');
+        if (btn) btn.remove();
+        if (list) list.remove();
+      } catch {}
+    }
+    // Initial send when iframe is ready
+    iframe?.addEventListener('load', () => { injectCss(); removeThemeNodes(); send();
+      // Retry a few times to beat late DOM injections from book.js
+      let n = 0; const max = 15; const iv = setInterval(() => { removeThemeNodes(); n++; if (n>=max) clearInterval(iv); }, 150);
+    });
+    // React to system preference changes
+    try { window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', send); } catch {}
+    // React to html class changes (site theme toggle)
+    const mo = new MutationObserver(send);
+    mo.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    // Fallback ping after a short delay
+    setTimeout(() => { injectCss(); removeThemeNodes(); send(); }, 500);
+  </script>
 </Layout>

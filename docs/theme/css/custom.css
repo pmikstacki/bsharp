@@ -1,68 +1,4 @@
-
-/* Custom styles for BSharp documentation */
-
-.hljs {
-    background-color: #f6f8fa;
-    border-radius: 6px;
-    padding: 16px;
-    margin: 16px 0;
-}
-
-.rust {
-    border-left: 4px solid #f74c00;
-}
-
-.warning {
-    background-color: #fff3cd;
-    border: 1px solid #ffeaa7;
-    border-radius: 4px;
-    padding: 12px;
-    margin: 16px 0;
-}
-
-.info {
-    background-color: #d1ecf1;
-    border: 1px solid #bee5eb;
-    border-radius: 4px;
-    padding: 12px;
-    margin: 16px 0;
-}
-
-.sidebar .chapter-item {
-    margin: 2px 0;
-}
-
-.content h1, .content h2, .content h3 {
-    border-bottom: 1px solid #eaecef;
-    padding-bottom: 8px;
-}
-
-code {
-    background-color: rgba(27,31,35,0.05);
-    border-radius: 3px;
-    padding: 2px 4px;
-    font-size: 85%;
-}
-
-/* Improve table styling */
-table {
-    border-collapse: collapse;
-    width: 100%;
-    margin: 16px 0;
-}
-
-th, td {
-    border: 1px solid #dfe2e5;
-    padding: 8px 12px;
-    text-align: left;
-}
-
-th {
-    background-color: #f6f8fa;
-    font-weight: 600;
-}
-
-/* BSharp site-aligned theming */
+/* Animated mesh/aurora background matching Astro site */
 html {
   background-image:
     radial-gradient(800px 500px at 15% 10%, rgba(59,130,246,0.18), transparent 60%),
@@ -71,6 +7,7 @@ html {
   background-attachment: fixed;
 }
 
+/* Glass card styling for main content and sidebar */
 .page {
   background: rgba(255, 255, 255, 0.6);
   backdrop-filter: blur(12px);
@@ -85,6 +22,7 @@ html {
   border-right: 1px solid rgba(255, 255, 255, 0.15);
 }
 
+/* Dark mode glass */
 html.coal .page,
 html.dark .page {
   background: rgba(15, 23, 42, 0.7);
@@ -98,6 +36,7 @@ html.dark .sidebar {
   border-right-color: rgba(255, 255, 255, 0.08);
 }
 
+/* Menu bar transparency and blur */
 #menu-bar {
   background: rgba(255, 255, 255, 0.5);
   backdrop-filter: blur(12px);
@@ -110,14 +49,34 @@ html.dark #menu-bar {
   border-bottom-color: rgba(255, 255, 255, 0.08);
 }
 
-.icon-button { border-radius: 0.5rem; transition: all 0.2s ease; }
-.icon-button:hover { background: rgba(0, 0, 0, 0.06); }
+/* Search and theme switcher buttons */
+.icon-button {
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.icon-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
 html.coal .icon-button:hover,
-html.dark .icon-button:hover { background: rgba(255, 255, 255, 0.08); }
+html.dark .icon-button:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
 
-.sidebar a:hover { background: rgba(59, 130, 246, 0.10); border-radius: 0.375rem; }
-.sidebar .current { background: rgba(59, 130, 246, 0.15); border-radius: 0.375rem; font-weight: 500; }
+/* Sidebar links hover/active */
+.sidebar a:hover {
+  background: rgba(59, 130, 246, 0.1);
+  border-radius: 0.375rem;
+}
 
+.sidebar .current {
+  background: rgba(59, 130, 246, 0.15);
+  border-radius: 0.375rem;
+  font-weight: 500;
+}
+
+/* Code blocks: match VS Code Dark Plus in dark mode */
 html.coal pre,
 html.coal code,
 html.dark pre,
@@ -128,8 +87,13 @@ html.dark code {
   border-radius: 0.5rem;
 }
 
-.content { font-family: 'Inter', 'Open Sans', sans-serif; line-height: 1.7; }
+/* Content typography tweaks */
+.content {
+  font-family: 'Inter', 'Open Sans', sans-serif;
+  line-height: 1.7;
+}
 
+/* Admonish boxes glass styling */
 .admonish {
   background: rgba(255, 255, 255, 0.4);
   backdrop-filter: blur(8px);
@@ -143,6 +107,7 @@ html.dark .admonish {
   border-color: rgba(255, 255, 255, 0.1);
 }
 
+/* Search results glass */
 .search-results {
   background: rgba(255, 255, 255, 0.5);
   backdrop-filter: blur(8px);
@@ -156,4 +121,7 @@ html.dark .search-results {
   border-color: rgba(255, 255, 255, 0.08);
 }
 
-* { transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; }
+/* Smooth transitions for theme switching */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
