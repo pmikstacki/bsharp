@@ -122,6 +122,15 @@ const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
       window.addEventListener('scroll', updateFabPalette, { passive: true });
       window.addEventListener('resize', updateFabPalette, { passive: true });
       document.addEventListener('DOMContentLoaded', updateFabPalette);
+      
+      // Listen for Material Colors to be ready
+      document.addEventListener('material-colors-ready', updateFabPalette);
+      
+      // Also check if colors are already available (in case event already fired)
+      if (document.querySelector('[data-mc-seed]')?.style.getPropertyValue('--mc-primary')) {
+        updateFabPalette();
+      }
+      
       // Also update when dark mode toggles
       const mo = new MutationObserver(updateFabPalette);
       mo.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
