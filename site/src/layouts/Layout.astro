@@ -1,5 +1,7 @@
 ---
 import '../styles/tailwind.css';
+import trigUrl from '../scripts/trig.min.js?url';
+import materialColorsUrl from '../scripts/material-colors.ts?url';
 const { title = 'BSharp' } = Astro.props;
 const rawBase = import.meta.env.BASE_URL || '/';
 const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
@@ -12,13 +14,12 @@ const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
     <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
     <meta name="generator" content={Astro.generator} />
     <meta name="color-scheme" content="light dark" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/trig-js/src/trig-animations.min.css" />
+    <script src={trigUrl} defer></script>
+    <script type="module" src={materialColorsUrl}></script>
     <title>{title}</title>
   </head>
   <body class="relative min-h-dvh bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-100">
-    <div class="fixed inset-0 -z-10 hero-gradient mesh-gradient animate-mesh"></div>
-    <div class="blob blob-blue animate-pulse-slow -z-10 left-[10%] top-[-6%] h-80 w-80"></div>
-    <div class="blob blob-pink animate-pulse-slow -z-10 right-[12%] top-[8%] h-72 w-72"></div>
-    <div class="blob blob-amber animate-pulse-slow -z-10 left-[50%] top-[60%] h-96 w-96"></div>
     <div class="pointer-events-none fixed inset-0 -z-10 vignette"></div>
     <header class="sticky top-0 z-40 border-b border-white/10 bg-white/5 backdrop-blur-xl shadow-[0_1px_0_0_rgba(255,255,255,0.06)]">
       <nav class="mx-auto flex max-w-7xl items-center justify-between gap-6 px-4 py-3">
@@ -27,16 +28,98 @@ const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
           <li><a class="hover:text-brand-600 dark:hover:text-brand-400" href="#parser">Parser</a></li>
           <li><a class="hover:text-brand-600 dark:hover:text-brand-400" href="#formatter">Formatter</a></li>
           <li><a class="hover:text-brand-600 dark:hover:text-brand-400" href="#analysis">Analysis</a></li>
-          <li><a class="hover:text-brand-600 dark:hover:text-brand-400" href="#compiler">Compiler</a></li>
+          <li><a class="hover:text-brand-600 dark:hover:text-brand-400" href="#roadmap">Roadmap</a></li>
+          <li><a class="btn btn-mc-primary" href="#install">Install</a></li>
           <li><a class="inline-flex items-center rounded-md border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium backdrop-blur hover:bg-white/10" href={`${base}docs/`}>Docs</a></li>
         </ul>
       </nav>
     </header>
-    <main class="mx-auto max-w-7xl px-4 py-10">
+    <main class="w-full">
       <slot />
     </main>
+    <!-- Floating Back-to-Top -->
+    <button
+      id="fab-back-to-top"
+      class="fab"
+      aria-label="Back to top"
+      type="button"
+      onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="h-5 w-5 fab-icon"
+      >
+        <polyline points="18 15 12 9 6 15"></polyline>
+      </svg>
+    </button>
+    <script type="module">
+      // Ensure FAB inherits palette from the current visible section
+      function updateFabPalette() {
+        const fab = document.getElementById('fab-back-to-top');
+        if (!fab) return;
+        // Hide FAB when in hero section
+        const heroSection = document.querySelector('.section');
+        const heroRect = heroSection?.getBoundingClientRect();
+        if (heroRect && heroRect.bottom > window.innerHeight * 0.8) {
+          fab.style.display = 'none';
+          return;
+        }
+        fab.style.display = '';
+        // Find the section that’s currently most in view
+        const sections = Array.from(document.querySelectorAll('section[data-mc-seed]'));
+        let closest = null;
+        let minDist = Infinity;
+        sections.forEach(sec => {
+          const rect = sec.getBoundingClientRect();
+          const dist = Math.abs(rect.top + rect.height / 2 - window.innerHeight / 2);
+          if (dist < minDist) {
+            minDist = dist;
+            closest = sec;
+          }
+        });
+        if (closest) {
+          const computed = getComputedStyle(closest);
+          const root = document.documentElement;
+          // Update FAB colors
+          if (fab) {
+            fab.style.setProperty('--mc-surface-variant', computed.getPropertyValue('--mc-surface-variant'));
+            fab.style.setProperty('--mc-outline-variant', computed.getPropertyValue('--mc-outline-variant'));
+            fab.style.setProperty('--mc-primary', computed.getPropertyValue('--mc-primary'));
+          }
+          // Update global background animation colors
+          root.style.setProperty('--bg-primary', computed.getPropertyValue('--mc-primary'));
+          root.style.setProperty('--bg-secondary', computed.getPropertyValue('--mc-secondary') || computed.getPropertyValue('--mc-primary'));
+          root.style.setProperty('--bg-tertiary', computed.getPropertyValue('--mc-tertiary') || computed.getPropertyValue('--mc-primary-container'));
+          // Update blob colors for aurora effect
+          root.style.setProperty('--blob-primary', computed.getPropertyValue('--mc-primary'));
+          root.style.setProperty('--blob-secondary', computed.getPropertyValue('--mc-secondary') || computed.getPropertyValue('--mc-primary-container'));
+          root.style.setProperty('--blob-tertiary', computed.getPropertyValue('--mc-tertiary') || computed.getPropertyValue('--mc-tertiary-container'));
+        }
+      }
+      // Update palette on scroll and on load
+      window.addEventListener('scroll', updateFabPalette, { passive: true });
+      window.addEventListener('resize', updateFabPalette, { passive: true });
+      document.addEventListener('DOMContentLoaded', updateFabPalette);
+      // Also update when dark mode toggles
+      const mo = new MutationObserver(updateFabPalette);
+      mo.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    </script>
     <footer class="border-t border-slate-200/60 px-4 py-8 text-center text-xs text-slate-500 dark:border-slate-800/60">
-      <p>© {new Date().getFullYear()} BSharp</p>
+      <p class="flex items-center justify-center gap-1">
+        <span>{new Date().getFullYear()} BSharp</span>
+        <span class="mx-2">•</span>
+        <span>Made with</span>
+        <svg class="h-3 w-3 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" />
+        </svg>
+        <span>by Cybernomad</span>
+      </p>
     </footer>
   </body>
 </html>

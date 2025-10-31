@@ -7,34 +7,43 @@ const sample = `public class Example
 const rawBase = import.meta.env.BASE_URL || '/';
 const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
 ---
-<section class="relative mx-auto w-full max-w-6xl">
-  <div class="glass mx-auto max-w-6xl p-4 md:p-6">
+<div class="mx-auto max-w-6xl p-4 md:p-6">
     <div class="prose prose-slate dark:prose-invert">
-      <h3>Analysis (live)</h3>
-      <p>Run the analysis pipeline in your browser and inspect the JSON report.</p>
+      <p>Explore your code's structure: analyze C# snippets and inspect detailed metrics, control flow, and dependencies.</p>
     </div>
     <div class="mt-4 grid gap-4 md:grid-cols-2">
       <div>
         <label class="mb-2 block text-sm text-slate-500">Input C#</label>
         <MonacoInstance id="analysis-monaco" initial={sample} height="256px" />
         <div class="mt-3 flex gap-2">
-          <button id="an-run" class="btn btn-primary">Analyze</button>
+          <button id="an-run" class="btn btn-mc-primary">Analyze</button>
         </div>
       </div>
       <div>
         <label class="mb-2 block text-sm text-slate-500">Report (JSON)</label>
-        <pre id="an-out" class="h-64 w-full overflow-auto rounded-md border border-white/10 bg-black/30 p-3 font-mono text-sm text-slate-100"></pre>
+        <div class="h-[256px] overflow-auto rounded-md border border-white/10 bg-black/30">
+          <json-viewer id="an-out" style="height:100%;width:100%;--background-color:transparent;--color:#e2e8f0;--string-color:#38bdf8;--number-color:#f59e0b;--property-color:#93c5fd;--null-color:#f472b6;--boolean-color:#34d399" copyable root-name="report"></json-viewer>
+        </div>
       </div>
     </div>
   </div>
-</section>
 
 <script type="module" define:vars={{ base }}>
+  const JSON_VIEWER_CDN = 'https://unpkg.com/@alenaksu/json-viewer@2.1.2/dist/json-viewer.bundle.js';
   function wasmUrl() {
     const b = base.endsWith('/') ? base : `${base}/`;
     return new URL(`${b}wasm/bsharp_wasm.js`, window.location.origin).toString();
   }
   (function(){
+    function ensureJsonViewer(){
+      if (customElements.get('json-viewer')) return Promise.resolve();
+      return new Promise((resolve) => {
+        const s = document.createElement('script');
+        s.src = JSON_VIEWER_CDN;
+        s.onload = () => resolve();
+        document.head.appendChild(s);
+      });
+    }
     async function loadWasm(){
       const mod = await import(wasmUrl());
       if (mod && mod.default) await mod.default();
@@ -52,12 +61,17 @@ const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
   }
     btn?.addEventListener('click', async () => {
       try {
+        await ensureJsonViewer();
         const mod = await loadWasm();
         const ed = await ensureEditor();
         const json = await mod.analyze_code(ed.getValue());
-        cout.textContent = json;
+        try {
+          cout.data = JSON.parse(json);
+        } catch {
+          cout.data = { error: 'Failed to parse JSON output', raw: json };
+        }
       } catch(e) {
-        cout.textContent = 'Analysis error: ' + (e?.message || String(e));
+        cout.data = { error: (e?.message || String(e)) };
       }
     });
     window.addEventListener('load', () => btn?.click());

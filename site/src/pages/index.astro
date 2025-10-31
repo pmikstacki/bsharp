@@ -1,7 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
-import FeaturesGrid from '../components/FeaturesGrid.astro';
 import InstallSection from '../components/InstallSection.astro';
 import ParserDiagram from '../components/ParserDiagram.astro';
 import FormattingDemo from '../components/FormattingDemo.astro';
@@ -12,72 +11,151 @@ const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
 
 <Layout title="BSharp — C# Platform">
   <Hero base={base} />
-  <FeaturesGrid />
 
-  <section id="parser" class="mx-auto w-full px-4 py-16 md:px-8">
-    <div class="prose prose-slate dark:prose-invert" data-reveal>
-      <h2>Parser</h2>
-      <p>The BSharp parser provides a solid foundation for downstream tooling, ensuring correctness and performance across large codebases.</p>
-    </div>
-    <div class="mt-8" data-reveal>
-      <ParserDiagram />
+  <section id="parser" class="section hue-blue section-pulse" data-mc-seed="#00C9B9" data-mc-accent="#FF6B6B" data-trig data-trig-var="true">
+    <div class="mx-auto w-full max-w-7xl px-4 py-24 md:px-8">
+      <div class="prose prose-slate dark:prose-invert">
+        <h2 style="color:var(--mc-primary)">Parser</h2>
+        <p style="color:var(--mc-on-surface-variant)">Built on robust C# grammar with deterministic parsing principles, the BSharp parser handles complex language constructs while maintaining performance across large codebases. It serves as the foundation for all downstream tooling, ensuring consistent and accurate syntax trees.</p>
+      </div>
+      <div class="mt-8 glass-mc p-4">
+        <ParserDiagram />
+      </div>
     </div>
   </section>
 
-  <section id="formatter" class="mx-auto w-full px-4 py-16 md:px-8">
-    <div class="prose prose-slate dark:prose-invert" data-reveal>
-      <h2>Formatter</h2>
-      <p>Consistent formatting enhances readability and keeps diffs stable.</p>
-    </div>
-    <div class="mt-8" data-reveal>
-      <FormattingDemo />
-    </div>
-  </section>
-
-
-  <section id="analysis" class="mx-auto w-full px-4 py-16 md:px-8">
-    <div class="prose prose-slate dark:prose-invert" data-reveal>
-      <h2>Analysis Pipeline</h2>
-      <p>A modular analysis pipeline captures accurate control-flow and dependency information for advanced insights.</p>
-    </div>
-    <div class="mt-8" data-reveal>
-      <AnalysisDemo />
+  <section id="formatter" class="section hue-cyan section-pulse" data-mc-seed="#00BCD4" data-mc-accent="#FF9F40" data-trig data-trig-var="true">
+    <div class="mx-auto w-full max-w-7xl px-4 py-24 md:px-8">
+      <div class="prose prose-slate dark:prose-invert">
+        <h2 style="color:var(--mc-primary)">Formatter</h2>
+        <p style="color:var(--mc-on-surface-variant)">Achieve consistent code style with our opinionated formatter that produces predictable diffs and supports configurable profiles. Designed for team collaboration, it enforces readability standards while respecting your project's unique conventions.</p>
+      </div>
+      <div class="mt-8 glass-mc p-4">
+        <FormattingDemo />
+      </div>
     </div>
   </section>
 
-  <section id="compiler" class="mx-auto w-full px-4 py-16 md:px-8">
-    <div class="prose prose-slate dark:prose-invert" data-reveal>
-      <h2>LLVM-based Compiler (planned)</h2>
-      <p>We aim to provide an LLVM-based backend for high-performance native targets.</p>
+
+  <section id="analysis" class="section hue-orange section-pulse" data-mc-seed="#FF9800" data-mc-accent="#9C27B0" data-trig data-trig-var="true">
+    <div class="mx-auto w-full max-w-7xl px-4 py-24 md:px-8">
+      <div class="prose prose-slate dark:prose-invert">
+        <h2 style="color:var(--mc-primary)">Analysis Pipeline</h2>
+        <p style="color:var(--mc-on-surface-variant)">Unlock deep insights into your codebase with our modular static analysis pipeline. Capture precise control-flow graphs, dependency maps, and comprehensive metrics that enable advanced refactoring, security auditing, and performance optimization.</p>
+      </div>
+      <div class="mt-8 glass-mc p-4">
+        <AnalysisDemo />
+      </div>
+    </div>
+  </section>
+
+  <section id="roadmap" class="section hue-amber section-pulse" data-mc-seed="#FFC107" data-mc-accent="#4CAF50" data-trig data-trig-var="true">
+    <div class="mx-auto w-full max-w-7xl px-4 py-24 md:px-8">
+      <div class="prose prose-slate dark:prose-invert">
+        <h2 style="color:var(--mc-primary)">Roadmap</h2>
+        <p style="color:var(--mc-on-surface-variant)">Our journey to reimagine C# tooling. Building the foundation for modern C# development with deterministic parsing, deep analysis, and native compilation.</p>
+      </div>
+      <div class="mt-8 glass-mc p-6">
+        <div class="relative">
+          <!-- Timeline track -->
+          <div class="absolute left-6 top-0 bottom-0 w-1 rounded-full" style="background: linear-gradient(to bottom, var(--mc-primary) 0%, var(--mc-primary) 37.5%, color-mix(in oklab, var(--mc-outline-variant) 30%, transparent) 37.5%, color-mix(in oklab, var(--mc-outline-variant) 30%, transparent) 62.5%, color-mix(in oklab, var(--mc-primary) 20%, transparent) 62.5%, color-mix(in oklab, var(--mc-primary) 20%, transparent) 100%)"></div>
+          
+          <!-- Roadmap items -->
+          <div class="space-y-8">
+            <!-- Completed items -->
+            <div class="relative flex items-start gap-4">
+              <div class="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full shadow-lg" style="background-color: var(--mc-primary); box-shadow: 0 0 20px color-mix(in oklab, var(--mc-primary) 40%, transparent);">
+                <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+              </div>
+              <div class="flex-1 pt-2">
+                <h3 class="font-semibold text-lg" style="color: var(--mc-on-primary);">AST structures (up to C# version 12) with APIs for querying data</h3>
+                <p style="color: var(--mc-on-surface-variant);">Complete abstract syntax tree representation with comprehensive query APIs for deep code analysis.</p>
+              </div>
+            </div>
+
+            <div class="relative flex items-start gap-4">
+              <div class="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full shadow-lg" style="background-color: var(--mc-primary); box-shadow: 0 0 20px color-mix(in oklab, var(--mc-primary) 40%, transparent);">
+                <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+              </div>
+              <div class="flex-1 pt-2">
+                <h3 class="font-semibold text-lg" style="color: var(--mc-on-primary);">Analysis Pipeline</h3>
+                <p style="color: var(--mc-on-surface-variant);">Modular static analysis with control-flow graphs, dependency mapping, and comprehensive metrics.</p>
+              </div>
+            </div>
+
+            <div class="relative flex items-start gap-4">
+              <div class="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full shadow-lg" style="background-color: var(--mc-primary); box-shadow: 0 0 20px color-mix(in oklab, var(--mc-primary) 40%, transparent);">
+                <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+              </div>
+              <div class="flex-1 pt-2">
+                <h3 class="font-semibold text-lg" style="color: var(--mc-on-primary);">Opinionated Formatter</h3>
+                <p style="color: var(--mc-on-surface-variant);">Consistent code formatting with predictable diffs and configurable style profiles.</p>
+              </div>
+            </div>
+
+            <!-- Future items -->
+            <div class="relative flex items-start gap-4 opacity-60">
+              <div class="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-2" style="border-color: var(--mc-outline-variant); background-color: color-mix(in oklab, var(--mc-surface-variant) 25%, transparent);">
+                <div class="h-3 w-3 rounded-full" style="background-color: var(--mc-outline-variant);"></div>
+              </div>
+              <div class="flex-1 pt-2">
+                <h3 class="font-semibold text-lg" style="color: var(--mc-on-surface);">Feature Parity with C# 14 Syntax</h3>
+                <p style="color: var(--mc-on-surface-variant);">Complete support for the latest C# 14 language features and syntax constructs.</p>
+              </div>
+            </div>
+
+            <div class="relative flex items-start gap-4 opacity-60">
+              <div class="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-2" style="border-color: var(--mc-outline-variant); background-color: color-mix(in oklab, var(--mc-surface-variant) 25%, transparent);">
+                <div class="h-3 w-3 rounded-full" style="background-color: var(--mc-outline-variant);"></div>
+              </div>
+              <div class="flex-1 pt-2">
+                <h3 class="font-semibold text-lg" style="color: var(--mc-on-surface);">LSP</h3>
+                <p style="color: var(--mc-on-surface-variant);">Language Server Protocol support for IDE integration with IntelliSense, go-to definition, and refactoring.</p>
+              </div>
+            </div>
+
+            <div class="relative flex items-start gap-4 opacity-60">
+              <div class="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-2" style="border-color: var(--mc-outline-variant); background-color: color-mix(in oklab, var(--mc-surface-variant) 25%, transparent);">
+                <div class="h-3 w-3 rounded-full" style="background-color: var(--mc-outline-variant);"></div>
+              </div>
+              <div class="flex-1 pt-2">
+                <h3 class="font-semibold text-lg" style="color: var(--mc-on-surface);">Roslyn Parser Compliance</h3>
+                <p style="color: var(--mc-on-surface-variant);">Full compatibility with Microsoft's Roslyn parser for seamless migration and tooling integration.</p>
+              </div>
+            </div>
+
+            <div class="relative flex items-start gap-4 opacity-60">
+              <div class="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-2" style="border-color: var(--mc-outline-variant); background-color: color-mix(in oklab, var(--mc-surface-variant) 25%, transparent);">
+                <div class="h-3 w-3 rounded-full" style="background-color: var(--mc-outline-variant);"></div>
+              </div>
+              <div class="flex-1 pt-2">
+                <h3 class="font-semibold text-lg" style="color: var(--mc-on-surface);">BSharp Scripting Runtime</h3>
+                <p style="color: var(--mc-on-surface-variant);">High-performance scripting runtime for executing C# scripts with rapid startup and low memory footprint.</p>
+              </div>
+            </div>
+
+            <div class="relative flex items-start gap-4 opacity-60">
+              <div class="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-2" style="border-color: var(--mc-outline-variant); background-color: color-mix(in oklab, var(--mc-surface-variant) 25%, transparent);">
+                <div class="h-3 w-3 rounded-full" style="background-color: var(--mc-outline-variant);"></div>
+              </div>
+              <div class="flex-1 pt-2">
+                <h3 class="font-semibold text-lg" style="color: var(--mc-on-surface);">BSharp Native Compiler</h3>
+                <p style="color: var(--mc-on-surface-variant);">LLVM-based native compiler producing optimized executables with ahead-of-time compilation.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
   <InstallSection />
 
-  <script type="module" define:vars={{ base }}>
-    import { gsap } from '/node_modules/gsap/index.js';
-    import ScrollTrigger from '/node_modules/gsap/ScrollTrigger/index.js';
-    gsap.registerPlugin(ScrollTrigger);
-
-    (function(){
-      document.querySelectorAll('[data-reveal]').forEach((el) => {
-        gsap.fromTo(el, { y: 24, opacity: 0 }, {
-          y: 0,
-          opacity: 1,
-          duration: 0.8,
-          ease: 'power2.out',
-          scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none reverse' }
-        });
-      });
-
-      document.querySelectorAll('[data-parallax-y]')?.forEach((el) => {
-        const speed = parseFloat(el.getAttribute('data-parallax-y') || '0.2');
-        gsap.to(el, {
-          yPercent: speed * 20,
-          ease: 'none',
-          scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom top', scrub: true }
-        });
-      });
-    })();
-  </script>
+  
 </Layout>

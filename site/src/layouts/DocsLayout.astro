@@ -12,6 +12,9 @@ const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
     <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
     <meta name="generator" content={Astro.generator} />
     <meta name="color-scheme" content="light dark" />
+    <script type="module">
+      import '/src/scripts/material-colors.ts';
+    </script>
     <title>{title}</title>
   </head>
   <body class="relative min-h-dvh bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-100">
@@ -28,7 +31,7 @@ const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
         </ul>
       </nav>
     </header>
-    <main class="h-[calc(100dvh-4rem)] w-full p-0">
+    <main class="h-[calc(100dvh-4rem)] min-h-[calc(100dvh-4rem)] w-full p-0 flex">
       <slot />
     </main>
   </body>

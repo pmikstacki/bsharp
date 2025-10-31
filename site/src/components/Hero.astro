@@ -1,18 +1,42 @@
 ---
 const { base } = Astro.props as { base: string };
 ---
-<section class="relative mx-auto max-w-7xl py-24">
-  <div class="text-center">
+<section class="section hue-blue section-pulse" data-mc-seed="#00C9B9" data-trig data-trig-var="true" data-trig-pixels="true" data-trig-degrees="true" data-trig-global="true">
+  <div class="mx-auto w-full max-w-7xl px-4 py-24 text-center md:px-8">
     <div class="relative z-10 flex flex-col items-center">
-      <span data-parallax="-0.28" class="slogan slogan-left block reveal reveal-left in-view mb-1">Csharp.</span>
-      <span data-parallax="0.28" class="slogan slogan-right block reveal reveal-right in-view mt-1">Reimagined.</span>
+      <span class="slogan slogan-left block enable-trig trig-fade-right trig-target mb-1">Csharp.</span>
+      <span class="slogan slogan-right block enable-trig trig-fade-left trig-target mt-1">Reimagined.</span>
     </div>
     <p class="mx-auto mt-6 max-w-2xl text-slate-400">
-      Parser. Formatter. Analysis pipeline. Soon: LLVM-based compiler. Deterministic, fast, and designed for deep code understanding.
+      A modern C# toolchain with deterministic parsing, opinionated formatting, and deep static analysis for robust code understanding.
     </p>
     <div class="mt-8 flex items-center justify-center gap-3">
-      <a class="btn btn-primary" href={`${base}docs/`}>Read the Docs</a>
-      <a class="btn btn-outline" href="#features">Explore Features</a>
+      <a class="btn btn-mc-primary" href={`${base}docs/`}>Read the Docs</a>
+      <a class="btn btn-mc-outline" href="#install">Install</a>
+    </div>
+
+    <div class="mx-auto mt-12 grid max-w-6xl grid-cols-1 gap-6 text-left sm:grid-cols-2 lg:grid-cols-3">
+      <a href="#parser" class="group glass-mc p-6 md:p-7" style="color:var(--mc-on-surface)">
+        <div class="flex items-center gap-3">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5" style="color:var(--mc-primary)"><path d="M10 6l-6 6 6 6"/><path d="M18 6l-6 6 6 6"/></svg>
+          <h3 class="font-semibold">Parser</h3>
+        </div>
+        <p class="mt-2 text-sm" style="color:var(--mc-on-surface-variant)">Deterministic parsing for reliable tooling.</p>
+      </a>
+      <a href="#formatter" class="group glass-mc p-6 md:p-7" style="color:var(--mc-on-surface)">
+        <div class="flex items-center gap-3">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5" style="color:var(--mc-primary)"><path d="M9 7h10"/><path d="M5 7h.01"/><path d="M5 12h.01"/><path d="M5 17h.01"/><path d="M9 12h10"/><path d="M9 17h10"/></svg>
+          <h3 class="font-semibold">Formatter</h3>
+        </div>
+        <p class="mt-2 text-sm" style="color:var(--mc-on-surface-variant)">Opinionated formatting with predictable diffs.</p>
+      </a>
+      <a href="#analysis" class="group glass-mc p-6 md:p-7" style="color:var(--mc-on-surface)">
+        <div class="flex items-center gap-3">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5" style="color:var(--mc-primary)"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+          <h3 class="font-semibold">Analysis</h3>
+        </div>
+        <p class="mt-2 text-sm" style="color:var(--mc-on-surface-variant)">Deep static analysis and code insights.</p>
+      </a>
     </div>
   </div>
 </section>
