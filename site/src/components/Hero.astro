@@ -16,27 +16,42 @@ const { base } = Astro.props as { base: string };
     </div>
 
     <div class="mx-auto mt-12 grid max-w-6xl grid-cols-1 gap-6 text-left sm:grid-cols-2 lg:grid-cols-3">
-      <a href="#parser" class="group glass-mc p-6 md:p-7" style="color:var(--mc-on-surface)">
+      <a href="#parser" class="group glass-mc p-6 md:p-7 feature-tile" data-section-color="emerald">
         <div class="flex items-center gap-3">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5" style="color:var(--mc-primary)"><path d="M10 6l-6 6 6 6"/><path d="M18 6l-6 6 6 6"/></svg>
-          <h3 class="font-semibold">Parser</h3>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 section-icon"><path d="M10 6l-6 6 6 6"/><path d="M18 6l-6 6 6 6"/></svg>
+          <h3 class="font-semibold section-title">Parser</h3>
         </div>
-        <p class="mt-2 text-sm" style="color:var(--mc-on-surface-variant)">Deterministic parsing for reliable tooling.</p>
+        <p class="mt-2 text-sm section-description">Deterministic parsing for reliable tooling.</p>
       </a>
-      <a href="#formatter" class="group glass-mc p-6 md:p-7" style="color:var(--mc-on-surface)">
+      <a href="#formatter" class="group glass-mc p-6 md:p-7 feature-tile" data-section-color="indigo">
         <div class="flex items-center gap-3">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5" style="color:var(--mc-primary)"><path d="M9 7h10"/><path d="M5 7h.01"/><path d="M5 12h.01"/><path d="M5 17h.01"/><path d="M9 12h10"/><path d="M9 17h10"/></svg>
-          <h3 class="font-semibold">Formatter</h3>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 section-icon"><path d="M9 7h10"/><path d="M5 7h.01"/><path d="M5 12h.01"/><path d="M5 17h.01"/><path d="M9 12h10"/><path d="M9 17h10"/></svg>
+          <h3 class="font-semibold section-title">Formatter</h3>
         </div>
-        <p class="mt-2 text-sm" style="color:var(--mc-on-surface-variant)">Opinionated formatting with predictable diffs.</p>
+        <p class="mt-2 text-sm section-description">Opinionated formatting with predictable diffs.</p>
       </a>
-      <a href="#analysis" class="group glass-mc p-6 md:p-7" style="color:var(--mc-on-surface)">
+      <a href="#analysis" class="group glass-mc p-6 md:p-7 feature-tile" data-section-color="orange">
         <div class="flex items-center gap-3">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5" style="color:var(--mc-primary)"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
-          <h3 class="font-semibold">Analysis</h3>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 section-icon"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+          <h3 class="font-semibold section-title">Analysis</h3>
         </div>
-        <p class="mt-2 text-sm" style="color:var(--mc-on-surface-variant)">Deep static analysis and code insights.</p>
+        <p class="mt-2 text-sm section-description">Deep static analysis and code insights.</p>
       </a>
     </div>
   </div>
 </section>
+
+<style>
+  /* Section-specific colors for feature tiles */
+  [data-section-color="emerald"] .section-icon { color: #10B981; }
+  [data-section-color="emerald"] .section-title { color: #4edea3; }
+  [data-section-color="emerald"] .section-description { color: #c0c9c1; }
+  
+  [data-section-color="indigo"] .section-icon { color: #3949AB; }
+  [data-section-color="indigo"] .section-title { color: #bbc3ff; }
+  [data-section-color="indigo"] .section-description { color: #e4e1e6; }
+  
+  [data-section-color="orange"] .section-icon { color: #FF9800; }
+  [data-section-color="orange"] .section-title { color: #ffb870; }
+  [data-section-color="orange"] .section-description { color: #ebe0d9; }
+</style>

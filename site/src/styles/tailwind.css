@@ -7,7 +7,7 @@
     color-scheme: light dark;
   }
   /* Map Tailwind colors to Material CSS variables */
-  @theme {
+  :root {
     --color-*: initial;
     --color-white: var(--mc-surface);
     --color-black: var(--mc-on-surface);
@@ -136,6 +136,16 @@
 }
 
 @layer utilities {
+  /* Section-scoped prose tinting using Material vars (applies to all feature sections) */
+  section.section .prose h1,
+  section.section .prose h2,
+  section.section .prose h3,
+  section.section .prose strong { color: var(--mc-primary) !important; }
+  section.section .prose p,
+  section.section .prose li,
+  section.section .prose span { color: var(--mc-on-surface-variant) !important; }
+  section.section .prose a { color: var(--mc-secondary) !important; }
+  section.section .prose code { color: var(--mc-tertiary) !important; }
   .hero-gradient {
     background: linear-gradient(to bottom, rgba(59,130,246,0.10), transparent 35%),
       radial-gradient(1200px 600px at 50% -10%, rgba(59,130,246,0.20), transparent 60%);
@@ -345,4 +355,26 @@
     border-color: var(--mc-outline-variant);
   }
   .fab-icon { color: var(--mc-primary); }
+
+  /* Section-specific Monaco syntax highlighting */
+  #parser .monaco-editor .mtk8 { color: var(--mc-secondary) !important; } /* keywords */
+  #parser .monaco-editor .mtk1 { color: var(--mc-on-surface) !important; } /* identifiers */
+  #parser .monaco-editor .mtk9 { color: var(--mc-tertiary) !important; } /* brackets */
+  #parser .monaco-editor .mtk5 { color: var(--mc-secondary) !important; } /* strings */
+  #parser .monaco-editor .mtk3 { color: var(--mc-on-surface) !important; } /* methods */
+  #parser .monaco-editor .mtk7 { color: var(--mc-primary) !important; } /* numbers */
+  
+  #formatter .monaco-editor .mtk8 { color: var(--mc-secondary) !important; } /* keywords */
+  #formatter .monaco-editor .mtk1 { color: var(--mc-on-surface) !important; } /* identifiers */
+  #formatter .monaco-editor .mtk9 { color: var(--mc-tertiary) !important; } /* brackets */
+  #formatter .monaco-editor .mtk5 { color: var(--mc-secondary) !important; } /* strings */
+  #formatter .monaco-editor .mtk3 { color: var(--mc-on-surface) !important; } /* methods */
+  #formatter .monaco-editor .mtk7 { color: var(--mc-primary) !important; } /* numbers */
+  
+  #analysis .monaco-editor .mtk8 { color: var(--mc-secondary) !important; } /* keywords */
+  #analysis .monaco-editor .mtk1 { color: var(--mc-on-surface) !important; } /* identifiers */
+  #analysis .monaco-editor .mtk9 { color: var(--mc-tertiary) !important; } /* brackets */
+  #analysis .monaco-editor .mtk5 { color: var(--mc-secondary) !important; } /* strings */
+  #analysis .monaco-editor .mtk3 { color: var(--mc-on-surface) !important; } /* methods */
+  #analysis .monaco-editor .mtk7 { color: var(--mc-primary) !important; } /* numbers */
 }

@@ -12,7 +12,7 @@ const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
 <Layout title="BSharp — C# Platform">
   <Hero base={base} />
 
-  <section id="parser" class="section hue-blue section-pulse" data-mc-seed="#00C9B9" data-mc-accent="#FF6B6B" data-trig data-trig-var="true">
+  <section id="parser" class="section hue-emerald section-pulse" data-mc-seed="#10B981" data-mc-accent="#EC4899" data-trig data-trig-var="true">
     <div class="mx-auto w-full max-w-7xl px-4 py-24 md:px-8">
       <div class="prose prose-slate dark:prose-invert">
         <h2 style="color:var(--mc-primary)">Parser</h2>
@@ -24,7 +24,7 @@ const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
     </div>
   </section>
 
-  <section id="formatter" class="section hue-cyan section-pulse" data-mc-seed="#00BCD4" data-mc-accent="#FF9F40" data-trig data-trig-var="true">
+  <section id="formatter" class="section hue-indigo section-pulse" data-mc-seed="#3949AB" data-mc-accent="#FF6F00" data-trig data-trig-var="true">
     <div class="mx-auto w-full max-w-7xl px-4 py-24 md:px-8">
       <div class="prose prose-slate dark:prose-invert">
         <h2 style="color:var(--mc-primary)">Formatter</h2>
@@ -56,9 +56,24 @@ const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
         <p style="color:var(--mc-on-surface-variant)">Our journey to reimagine C# tooling. Building the foundation for modern C# development with deterministic parsing, deep analysis, and native compilation.</p>
       </div>
       <div class="mt-8 glass-mc p-6">
-        <div class="relative">
+        <div class="relative" style="border-radius: inherit;">
           <!-- Timeline track -->
-          <div class="absolute left-6 top-0 bottom-0 w-1 rounded-full" style="background: linear-gradient(to bottom, var(--mc-primary) 0%, var(--mc-primary) 37.5%, color-mix(in oklab, var(--mc-outline-variant) 30%, transparent) 37.5%, color-mix(in oklab, var(--mc-outline-variant) 30%, transparent) 62.5%, color-mix(in oklab, var(--mc-primary) 20%, transparent) 62.5%, color-mix(in oklab, var(--mc-primary) 20%, transparent) 100%)"></div>
+          <div class="absolute top-0 bottom-0 w-1 rounded-full" style="
+            left: calc(1.5rem - 2px);
+            /* Align with the center of 3rem (h-12 w-12) dots that sit at padding-left 1.5rem */
+            background:
+            linear-gradient(
+              to bottom,
+              var(--mc-primary) 0%,
+              var(--mc-primary) 34%,
+              color-mix(in oklab, var(--mc-primary) 28%, transparent) 40%,
+              color-mix(in oklab, var(--mc-primary) 12%, transparent) 46%,
+              transparent 50%,
+              transparent 100%
+            );
+            -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 96%, rgba(0,0,0,0) 100%);
+            mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 96%, rgba(0,0,0,0) 100%);
+          "></div>
           
           <!-- Roadmap items -->
           <div class="space-y-8">
@@ -70,7 +85,7 @@ const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
                 </svg>
               </div>
               <div class="flex-1 pt-2">
-                <h3 class="font-semibold text-lg" style="color: var(--mc-on-primary);">AST structures (up to C# version 12) with APIs for querying data</h3>
+                <h3 class="font-semibold text-lg" style="color: var(--mc-on-surface-variant);">AST structures (up to C# version 12) with APIs for querying data</h3>
                 <p style="color: var(--mc-on-surface-variant);">Complete abstract syntax tree representation with comprehensive query APIs for deep code analysis.</p>
               </div>
             </div>
@@ -82,7 +97,7 @@ const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
                 </svg>
               </div>
               <div class="flex-1 pt-2">
-                <h3 class="font-semibold text-lg" style="color: var(--mc-on-primary);">Analysis Pipeline</h3>
+                <h3 class="font-semibold text-lg" style="color: var(--mc-on-surface-variant);">Analysis Pipeline</h3>
                 <p style="color: var(--mc-on-surface-variant);">Modular static analysis with control-flow graphs, dependency mapping, and comprehensive metrics.</p>
               </div>
             </div>
@@ -94,7 +109,7 @@ const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
                 </svg>
               </div>
               <div class="flex-1 pt-2">
-                <h3 class="font-semibold text-lg" style="color: var(--mc-on-primary);">Opinionated Formatter</h3>
+                <h3 class="font-semibold text-lg" style="color: var(--mc-on-surface-variant);">Opinionated Formatter</h3>
                 <p style="color: var(--mc-on-surface-variant);">Consistent code formatting with predictable diffs and configurable style profiles.</p>
               </div>
             </div>

@@ -23,15 +23,17 @@ const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
     <div class="pointer-events-none fixed inset-0 -z-10 vignette"></div>
     <header class="sticky top-0 z-40 border-b border-white/10 bg-white/5 backdrop-blur-xl shadow-[0_1px_0_0_rgba(255,255,255,0.06)]">
       <nav class="mx-auto flex max-w-7xl items-center justify-between gap-6 px-4 py-3">
-        <a href={base} class="font-semibold tracking-tight text-slate-900 hover:text-brand-600 dark:text-slate-100 dark:hover:text-brand-400">BSharp</a>
-        <ul class="flex items-center gap-5 text-sm">
-          <li><a class="hover:text-brand-600 dark:hover:text-brand-400" href="#parser">Parser</a></li>
-          <li><a class="hover:text-brand-600 dark:hover:text-brand-400" href="#formatter">Formatter</a></li>
-          <li><a class="hover:text-brand-600 dark:hover:text-brand-400" href="#analysis">Analysis</a></li>
-          <li><a class="hover:text-brand-600 dark:hover:text-brand-400" href="#roadmap">Roadmap</a></li>
-          <li><a class="btn btn-mc-primary" href="#install">Install</a></li>
-          <li><a class="inline-flex items-center rounded-md border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium backdrop-blur hover:bg-white/10" href={`${base}docs/`}>Docs</a></li>
+        <a href={base} class="bsharp-logo font-semibold tracking-tight">B#</a>
+        <ul class="flex items-center gap-5 text-sm flex-1 justify-center">
+          <li><a class="nav-link nav-parser" href="#parser">Parser</a></li>
+          <li><a class="nav-link nav-formatter" href="#formatter">Formatter</a></li>
+          <li><a class="nav-link nav-analysis" href="#analysis">Analysis</a></li>
+          <li><a class="nav-link nav-roadmap" href="#roadmap">Roadmap</a></li>
         </ul>
+        <div class="flex items-center gap-3">
+          <a class="btn btn-mc-primary" href="#install">Install</a>
+          <a class="btn btn-mc-outline" href={`${base}docs/`}>Docs</a>
+        </div>
       </nav>
     </header>
     <main class="w-full">
@@ -86,12 +88,26 @@ const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
         if (closest) {
           const computed = getComputedStyle(closest);
           const root = document.documentElement;
+          const navbar = document.querySelector('header');
+          
           // Update FAB colors
           if (fab) {
             fab.style.setProperty('--mc-surface-variant', computed.getPropertyValue('--mc-surface-variant'));
             fab.style.setProperty('--mc-outline-variant', computed.getPropertyValue('--mc-outline-variant'));
             fab.style.setProperty('--mc-primary', computed.getPropertyValue('--mc-primary'));
           }
+          
+          // Update navbar colors for proper button styling
+          if (navbar) {
+            navbar.style.setProperty('--mc-primary', computed.getPropertyValue('--mc-primary'));
+            navbar.style.setProperty('--mc-on-primary', computed.getPropertyValue('--mc-on-primary'));
+            navbar.style.setProperty('--mc-secondary', computed.getPropertyValue('--mc-secondary'));
+            navbar.style.setProperty('--mc-surface', computed.getPropertyValue('--mc-surface'));
+            navbar.style.setProperty('--mc-surface-variant', computed.getPropertyValue('--mc-surface-variant'));
+            navbar.style.setProperty('--mc-outline', computed.getPropertyValue('--mc-outline'));
+            navbar.style.setProperty('--mc-outline-variant', computed.getPropertyValue('--mc-outline-variant'));
+          }
+          
           // Update global background animation colors
           root.style.setProperty('--bg-primary', computed.getPropertyValue('--mc-primary'));
           root.style.setProperty('--bg-secondary', computed.getPropertyValue('--mc-secondary') || computed.getPropertyValue('--mc-primary'));
@@ -121,5 +137,116 @@ const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
         <span>by Cybernomad</span>
       </p>
     </footer>
+    
+    <style>
+      /* B# logo glassy gradient animation */
+      .bsharp-logo {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #feca57 75%, #48c774 100%);
+        background-size: 400% 400%;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: gradient-shift 8s ease infinite;
+        filter: drop-shadow(0 0 20px rgba(102, 126, 234, 0.3));
+        backdrop-filter: blur(10px);
+        position: relative;
+      }
+      
+      .bsharp-logo::before {
+        content: 'B#';
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: -1;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        filter: blur(8px);
+      }
+      
+      @keyframes gradient-shift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+      }
+      
+      /* Nav link colors */
+      .nav-link {
+        transition: all 0.3s ease;
+        position: relative;
+      }
+      
+      .nav-link::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        transition: width 0.3s ease;
+      }
+      
+      .nav-parser { color: #4edea3; }
+      .nav-parser::after { background: #4edea3; }
+      .nav-parser:hover { color: #10B981; }
+      
+      .nav-formatter { color: #bbc3ff; }
+      .nav-formatter::after { background: #bbc3ff; }
+      .nav-formatter:hover { color: #3949AB; }
+      
+      .nav-analysis { color: #ffb870; }
+      .nav-analysis::after { background: #ffb870; }
+      .nav-analysis:hover { color: #FF9800; }
+      
+      .nav-roadmap { color: #fbbf24; }
+      .nav-roadmap::after { background: #fbbf24; }
+      .nav-roadmap:hover { color: #f59e0b; }
+      
+      .nav-link.active::after {
+        width: 100%;
+      }
+    </style>
+    
+    <script type="module">
+      // Update active nav link based on current section
+      function updateActiveNavLink() {
+        const sections = ['parser', 'formatter', 'analysis', 'roadmap'];
+        const navLinks = {
+          parser: document.querySelector('.nav-parser'),
+          formatter: document.querySelector('.nav-formatter'),
+          analysis: document.querySelector('.nav-analysis'),
+          roadmap: document.querySelector('.nav-roadmap')
+        };
+        
+        // Remove active class from all links
+        Object.values(navLinks).forEach(link => link?.classList.remove('active'));
+        
+        // Find current section
+        const scrollPosition = window.scrollY + 100;
+        let currentSection = '';
+        
+        sections.forEach(sectionId => {
+          const section = document.getElementById(sectionId);
+          if (section) {
+            const sectionTop = section.offsetTop;
+            const sectionHeight = section.offsetHeight;
+            
+            if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+              currentSection = sectionId;
+            }
+          }
+        });
+        
+        // Add active class to current section's nav link
+        if (currentSection && navLinks[currentSection]) {
+          navLinks[currentSection].classList.add('active');
+        }
+      }
+      
+      // Update on scroll and load
+      window.addEventListener('scroll', updateActiveNavLink, { passive: true });
+      document.addEventListener('DOMContentLoaded', updateActiveNavLink);
+    </script>
   </body>
 </html>
