@@ -6,6 +6,83 @@
   :root {
     color-scheme: light dark;
   }
+  /* Map Tailwind colors to Material CSS variables */
+  :root {
+    --color-*: initial;
+    --color-white: var(--mc-surface);
+    --color-black: var(--mc-on-surface);
+    --color-slate-50: var(--mc-surface-variant);
+    --color-slate-100: var(--mc-surface-variant);
+    --color-slate-200: var(--mc-surface-variant);
+    --color-slate-300: var(--mc-surface-variant);
+    --color-slate-400: var(--mc-outline-variant);
+    --color-slate-500: var(--mc-outline);
+    --color-slate-600: var(--mc-on-surface-variant);
+    --color-slate-700: var(--mc-on-surface);
+    --color-slate-800: var(--mc-on-surface);
+    --color-slate-900: var(--mc-on-surface);
+    --color-slate-950: var(--mc-on-surface);
+    --color-primary: var(--mc-primary);
+    --color-primary-50: var(--mc-primary-container);
+    --color-primary-100: var(--mc-primary-container);
+    --color-primary-200: var(--mc-primary-container);
+    --color-primary-300: var(--mc-primary-container);
+    --color-primary-400: var(--mc-primary);
+    --color-primary-500: var(--mc-primary);
+    --color-primary-600: var(--mc-primary);
+    --color-primary-700: var(--mc-primary);
+    --color-primary-800: var(--mc-primary);
+    --color-primary-900: var(--mc-primary);
+    --color-primary-950: var(--mc-primary);
+  }
+  /* Material-aware glass card */
+  .glass-mc {
+    @apply relative rounded-2xl border shadow-lg transition-transform duration-300 ease-out;
+    background: color-mix(in oklab, var(--mc-surface-variant) 25%, transparent);
+    backdrop-filter: blur(12px) saturate(1.1);
+    border-color: color-mix(in oklab, var(--mc-outline-variant) 30%, transparent);
+    box-shadow: 
+      0 8px 32px color-mix(in oklab, var(--mc-primary) 8%, transparent),
+      0 4px 16px color-mix(in oklab, var(--mc-outline) 4%, transparent),
+      inset 0 1px 0 color-mix(in oklab, var(--mc-surface) 20%, transparent);
+  }
+  .glass-mc:hover { 
+    @apply -translate-y-1; 
+    background: color-mix(in oklab, var(--mc-surface-variant) 35%, transparent);
+    box-shadow: 
+      0 12px 40px color-mix(in oklab, var(--mc-primary) 12%, transparent),
+      0 6px 20px color-mix(in oklab, var(--mc-outline) 6%, transparent),
+      inset 0 1px 0 color-mix(in oklab, var(--mc-surface) 25%, transparent);
+  }
+
+  /* Material-aware buttons */
+  .btn-mc-primary {
+    color: var(--mc-on-primary);
+    background-color: color-mix(in oklab, var(--mc-primary) 85%, transparent);
+    border-color: color-mix(in oklab, var(--mc-primary) 60%, transparent);
+    backdrop-filter: blur(8px);
+    transition: all 0.2s ease;
+  }
+  .btn-mc-primary:hover {
+    background-color: color-mix(in oklab, var(--mc-primary) 95%, transparent);
+    border-color: var(--mc-primary);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 25px color-mix(in oklab, var(--mc-primary) 25%, transparent);
+  }
+  .btn-mc-outline {
+    color: var(--mc-primary);
+    background-color: color-mix(in oklab, var(--mc-surface) 15%, transparent);
+    border-color: color-mix(in oklab, var(--mc-primary) 40%, transparent);
+    backdrop-filter: blur(8px);
+    transition: all 0.2s ease;
+  }
+  .btn-mc-outline:hover {
+    background-color: color-mix(in oklab, var(--mc-primary) 20%, transparent);
+    border-color: var(--mc-primary);
+    color: var(--mc-on-primary);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 25px color-mix(in oklab, var(--mc-primary) 15%, transparent);
+  }
 }
 
 @layer components {
@@ -39,10 +116,15 @@
     @apply font-extrabold tracking-tight leading-none select-none;
   }
   .slogan-left {
-    @apply text-6xl sm:text-7xl md:text-8xl bg-gradient-to-r from-brand-500 to-brand-700 bg-clip-text text-transparent drop-shadow;
+    @apply text-6xl sm:text-7xl md:text-8xl drop-shadow;
+    background: linear-gradient(135deg, var(--mc-primary), var(--mc-secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
   .slogan-right {
-    @apply text-5xl sm:text-6xl md:text-7xl text-slate-900 dark:text-slate-100 drop-shadow;
+    @apply text-5xl sm:text-6xl md:text-7xl drop-shadow;
+    color: var(--mc-on-surface);
   }
 
   /* Glass card with cursor glow */
@@ -54,6 +136,16 @@
 }
 
 @layer utilities {
+  /* Section-scoped prose tinting using Material vars (applies to all feature sections) */
+  section.section .prose h1,
+  section.section .prose h2,
+  section.section .prose h3,
+  section.section .prose strong { color: var(--mc-primary) !important; }
+  section.section .prose p,
+  section.section .prose li,
+  section.section .prose span { color: var(--mc-on-surface-variant) !important; }
+  section.section .prose a { color: var(--mc-secondary) !important; }
+  section.section .prose code { color: var(--mc-tertiary) !important; }
   .hero-gradient {
     background: linear-gradient(to bottom, rgba(59,130,246,0.10), transparent 35%),
       radial-gradient(1200px 600px at 50% -10%, rgba(59,130,246,0.20), transparent 60%);
@@ -84,6 +176,205 @@
   }
   .animate-mesh { animation: meshMove 22s ease-in-out infinite alternate; }
 
+  /* Blob animation keyframes */
+  @keyframes blobFloat1 {
+    0%, 100% { 
+      transform: translate(0, 0) scale(1);
+      --blob1-x: 0;
+      --blob1-y: 0;
+    }
+    25% { 
+      transform: translate(30px, -20px) scale(1.05);
+      --blob1-x: 30;
+      --blob1-y: -20;
+    }
+    50% { 
+      transform: translate(-20px, 40px) scale(0.95);
+      --blob1-x: -20;
+      --blob1-y: 40;
+    }
+    75% { 
+      transform: translate(40px, 30px) scale(1.02);
+      --blob1-x: 40;
+      --blob1-y: 30;
+    }
+  }
+  
+  @keyframes blobFloat2 {
+    0%, 100% { 
+      transform: translate(0, 0) scale(1);
+      --blob2-x: 0;
+      --blob2-y: 0;
+    }
+    33% { 
+      transform: translate(-40px, -30px) scale(1.08);
+      --blob2-x: -40;
+      --blob2-y: -30;
+    }
+    66% { 
+      transform: translate(25px, 50px) scale(0.92);
+      --blob2-x: 25;
+      --blob2-y: 50;
+    }
+  }
+  
+  @keyframes blobPulse {
+    0%, 100% { 
+      opacity: 0.4;
+      filter: blur(80px) saturate(1.2);
+    }
+    50% { 
+      opacity: 0.6;
+      filter: blur(100px) saturate(1.4);
+    }
+  }
+
   /* Subtle vignette overlay */
   .vignette { background: radial-gradient(120% 120% at 50% 30%, transparent 0%, transparent 55%, rgba(0,0,0,0.25) 100%); pointer-events: none; }
+}
+
+@layer utilities {
+  /* Global animated background */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -2;
+    background-image:
+      radial-gradient(900px 520px at calc(20% + (var(--trig, 0) * 0.2%)) calc(10% + (var(--trig, 0) * -0.1%)), color-mix(in oklab, var(--bg-primary, var(--mc-primary)) 22%, transparent), transparent 60%),
+      radial-gradient(900px 520px at calc(80% + (var(--trig, 0) * -0.25%)) calc(20% + (var(--trig, 0) * 0.15%)), color-mix(in oklab, var(--bg-secondary, var(--mc-secondary)) 18%, transparent), transparent 60%),
+      radial-gradient(1100px 600px at 50% calc(90% + (var(--trig, 0) * 0.25%)), color-mix(in oklab, var(--bg-tertiary, var(--mc-tertiary)) 16%, transparent), transparent 60%);
+    filter: hue-rotate(calc(var(--section-hue, 0deg) + (var(--trig, 0) * 0.6deg))) saturate(1.08);
+    transform: translate(
+      calc(var(--trig-reverse, 0) * 0.25%),
+      calc(var(--trig, 0) * 0.20%)
+    );
+    animation: meshMove var(--section-speed, 22s) ease-in-out infinite alternate;
+    opacity: 0.9;
+    will-change: transform, filter;
+    transition: background-image 1.2s ease;
+  }
+
+  /* Aurora blobs layer */
+  body::after {
+    content: "";
+    position: fixed;
+    top: -10%;
+    left: -10%;
+    right: -10%;
+    bottom: -10%;
+    z-index: -1;
+    background-image:
+      radial-gradient(800px 600px at calc(25% + (var(--blob1-x, 0) * 1%)) calc(20% + (var(--blob1-y, 0) * 1%)), color-mix(in oklab, var(--blob-primary, var(--bg-primary)) 15%, transparent) 0%, transparent 50%),
+      radial-gradient(1000px 700px at calc(75% + (var(--blob2-x, 0) * 1%)) calc(60% + (var(--blob2-y, 0) * 1%)), color-mix(in oklab, var(--blob-secondary, var(--bg-secondary)) 12%, transparent) 0%, transparent 50%),
+      radial-gradient(600px 500px at calc(50% + (var(--blob3-x, 0) * 1%)) calc(80% + (var(--blob3-y, 0) * 1%)), color-mix(in oklab, var(--blob-tertiary, var(--bg-tertiary)) 10%, transparent) 0%, transparent 50%);
+    filter: blur(80px) saturate(1.2);
+    mix-blend-mode: screen;
+    opacity: 0.4;
+    will-change: transform, filter;
+    transition: background-image 1.5s ease, opacity 0.8s ease;
+    animation: 
+      blobFloat1 25s ease-in-out infinite,
+      blobFloat2 30s ease-in-out infinite reverse,
+      blobPulse 8s ease-in-out infinite;
+  }
+
+  /* Full-viewport section without its own background */
+  .section { @apply relative w-full min-h-dvh overflow-hidden flex items-center; }
+
+  /* Per-section hue presets */
+  .hue-blue { --section-hue: 210deg; }
+  .hue-pink { --section-hue: 325deg; }
+  .hue-green { --section-hue: 140deg; }
+  .hue-purple { --section-hue: 270deg; }
+  .hue-amber { --section-hue: 45deg; }
+  .hue-cyan { --section-hue: 180deg; }
+  .hue-orange { --section-hue: 25deg; }
+
+  /* Pulses of light overlay (apply to hero only) */
+  @keyframes lightPulse {
+    0%, 100% { opacity: 0.12; transform: translate(var(--pulse-x,0), var(--pulse-y,0)) scale(1); }
+    50%      { opacity: 0.35; transform: translate(calc(var(--pulse-x,0) + 2%), calc(var(--pulse-y,0) - 1%)) scale(1.06); }
+  }
+  @keyframes pulseDrift {
+    0%   { --pulse-x: calc((var(--trig, 0) * 0.1%)); --pulse-y: 0%; }
+    50%  { --pulse-x: calc((var(--trig, 0) * -0.15%)); --pulse-y: 1%; }
+    100% { --pulse-x: calc((var(--trig, 0) * 0.2%)); --pulse-y: -1%; }
+  }
+  .section-pulse::after {
+    content: "";
+    position: absolute;
+    inset: -10%;
+    z-index: -1;
+    background:
+      radial-gradient(600px 380px at calc(20% + (var(--trig, 0) * 0.25%)) 30%, rgba(59,130,246,0.28), transparent 60%),
+      radial-gradient(520px 320px at calc(80% + (var(--trig, 0) * -0.2%)) 25%, rgba(236,72,153,0.24), transparent 60%),
+      radial-gradient(680px 420px at 50% calc(85% + (var(--trig, 0) * 0.25%)), rgba(245,158,11,0.22), transparent 60%);
+    mix-blend-mode: screen;
+    filter: blur(12px) saturate(1.1);
+    opacity: 0.18;
+    transform: translate(0,0) scale(1);
+    animation:
+      lightPulse 8s ease-in-out infinite,
+      pulseDrift 14s ease-in-out infinite;
+    pointer-events: none;
+    will-change: transform, opacity;
+  }
+
+  /* Material Colors utilities */
+  .mc-primary { background-color: var(--mc-primary); }
+  .mc-on-primary { color: var(--mc-on-primary); }
+  .mc-primary-container { background-color: var(--mc-primary-container); }
+  .mc-on-primary-container { color: var(--mc-on-primary-container); }
+  .mc-secondary { background-color: var(--mc-secondary); }
+  .mc-on-secondary { color: var(--mc-on-secondary); }
+  .mc-secondary-container { background-color: var(--mc-secondary-container); }
+  .mc-on-secondary-container { color: var(--mc-on-secondary-container); }
+  .mc-tertiary { background-color: var(--mc-tertiary); }
+  .mc-on-tertiary { color: var(--mc-on-tertiary); }
+  .mc-tertiary-container { background-color: var(--mc-tertiary-container); }
+  .mc-on-tertiary-container { color: var(--mc-on-tertiary-container); }
+  .mc-surface { background-color: var(--mc-surface); }
+  .mc-on-surface { color: var(--mc-on-surface); }
+  .mc-surface-variant { background-color: var(--mc-surface-variant); }
+  .mc-on-surface-variant { color: var(--mc-on-surface-variant); }
+  .mc-outline { border-color: var(--mc-outline); }
+  .mc-outline-variant { border-color: var(--mc-outline-variant); }
+  .mc-scrim { background-color: var(--mc-scrim); }
+  .mc-inverse-surface { background-color: var(--mc-inverse-surface); }
+  .mc-inverse-on-surface { color: var(--mc-inverse-on-surface); }
+  .mc-inverse-primary { color: var(--mc-inverse-primary); }
+
+  /* Floating Action Button base styling */
+  .fab {
+    @apply fixed bottom-6 right-6 z-50 rounded-full border p-3 shadow-lg backdrop-blur-md;
+    background: color-mix(in oklab, var(--mc-surface-variant) 35%, transparent);
+    border-color: var(--mc-outline-variant);
+  }
+  .fab-icon { color: var(--mc-primary); }
+
+  /* Section-specific Monaco syntax highlighting */
+  #parser .monaco-editor .mtk8 { color: var(--mc-secondary) !important; } /* keywords */
+  #parser .monaco-editor .mtk1 { color: var(--mc-on-surface) !important; } /* identifiers */
+  #parser .monaco-editor .mtk9 { color: var(--mc-tertiary) !important; } /* brackets */
+  #parser .monaco-editor .mtk5 { color: var(--mc-secondary) !important; } /* strings */
+  #parser .monaco-editor .mtk3 { color: var(--mc-on-surface) !important; } /* methods */
+  #parser .monaco-editor .mtk7 { color: var(--mc-primary) !important; } /* numbers */
+  
+  #formatter .monaco-editor .mtk8 { color: var(--mc-secondary) !important; } /* keywords */
+  #formatter .monaco-editor .mtk1 { color: var(--mc-on-surface) !important; } /* identifiers */
+  #formatter .monaco-editor .mtk9 { color: var(--mc-tertiary) !important; } /* brackets */
+  #formatter .monaco-editor .mtk5 { color: var(--mc-secondary) !important; } /* strings */
+  #formatter .monaco-editor .mtk3 { color: var(--mc-on-surface) !important; } /* methods */
+  #formatter .monaco-editor .mtk7 { color: var(--mc-primary) !important; } /* numbers */
+  
+  #analysis .monaco-editor .mtk8 { color: var(--mc-secondary) !important; } /* keywords */
+  #analysis .monaco-editor .mtk1 { color: var(--mc-on-surface) !important; } /* identifiers */
+  #analysis .monaco-editor .mtk9 { color: var(--mc-tertiary) !important; } /* brackets */
+  #analysis .monaco-editor .mtk5 { color: var(--mc-secondary) !important; } /* strings */
+  #analysis .monaco-editor .mtk3 { color: var(--mc-on-surface) !important; } /* methods */
+  #analysis .monaco-editor .mtk7 { color: var(--mc-primary) !important; } /* numbers */
 }

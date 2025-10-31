@@ -8,6 +8,7 @@ members = [
     "src/bsharp_syntax_derive",
     "src/bsharp_tests",
     "src/bsharp_il",
+    "src/bsharp_wasm",
     "roslyn_testing/bsharp_compliance",
     "roslyn_testing/bsharp_compliance_testing"
 ]

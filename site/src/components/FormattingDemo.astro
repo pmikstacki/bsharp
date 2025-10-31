@@ -1,141 +1,93 @@
 ---
-import { Icon } from 'astro-icon/components';
+import MonacoInstance from './MonacoInstance.astro';
+const sample = `public class TestClass { public void Loops(){ System.Console.WriteLine("test"); } }`;
+const rawBase = import.meta.env.BASE_URL || '/';
+const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
 ---
-<section class="relative mx-auto w-full max-w-5xl pb-8">
-  <div class="glass relative w-full overflow-hidden p-0">
-    <div class="flex items-center justify-between border-b border-white/20 px-3 py-2 dark:border-white/10">
-      <div class="flex items-center gap-1.5"><span class="h-2.5 w-2.5 rounded-full bg-red-400/80"></span><span class="h-2.5 w-2.5 rounded-full bg-amber-400/80"></span><span class="h-2.5 w-2.5 rounded-full bg-emerald-400/80"></span></div>
-      <div class="text-xs text-slate-400">TestClass.cs</div>
-      <div class="w-10"></div>
-    </div>
-    <div class="relative">
-      <pre id="code-unformatted" class="block h-[460px] overflow-auto p-5 font-mono text-[13px] leading-6 text-slate-800 dark:text-slate-200"><code>public class TestClass&#123;public void Loops()&#123;Console.WriteLine("test");&#125;&#125;</code></pre>
-      <pre id="code-formatted" class="absolute inset-0 block h-[460px] translate-y-2 overflow-auto p-5 font-mono text-[13px] leading-6 text-slate-800 opacity-0 transition-all duration-700 dark:text-slate-200"><code>public class TestClass
-&#123;
-    public void Loops()
-    &#123;
-        Console.WriteLine("test");
-    &#125;
-&#125;</code></pre>
-    </div>
-
-    <!-- Terminal overlay INSIDE the editor window -->
-    <div id="terminal" class="pointer-events-auto absolute right-4 top-4 z-50 w-[88%] sm:w-[70%] md:w-[54%] lg:w-[48%] xl:w-[42%] rounded-2xl border border-white/20 bg-slate-950/80 text-slate-100 shadow-2xl backdrop-blur-md transition-all duration-400 ease-out" style="opacity:0; transform: translateY(16px) scale(0.97); z-index: 9999;">
-      <div class="flex items-center justify-between border-b border-white/10 px-3 py-2 text-xs text-slate-300">
-        <div class="flex items-center gap-1.5"><span class="h-2.5 w-2.5 rounded-full bg-red-400/80"></span><span class="h-2.5 w-2.5 rounded-full bg-amber-400/80"></span><span class="h-2.5 w-2.5 rounded-full bg-emerald-400/80"></span></div>
-        <div class="text-xs text-slate-300">bash — ~/bsharp</div>
-        <div class="w-10"></div>
-      </div>
-      <div class="space-y-2 p-4 font-mono text-sm">
-        <div class="flex items-center gap-2"><span class="text-emerald-400">$</span><span id="typed" class="inline-block"></span><span id="cursor" class="ml-0.5 inline-block h-4 w-2 translate-y-[2px] bg-slate-100 align-middle"></span></div>
-        <div id="log" class="opacity-0 transition-opacity duration-500">[2025-10-24T10:21:58Z INFO  bsharp_cli::commands::format] formatted 1 file(s)</div>
+<section class="w-full px-4 py-8 md:px-8 demo-formatting">
+  <p style="color: var(--mc-on-surface-variant)">Experience clean, consistent formatting by editing C# code and seeing the transformed output instantly.</p>
+  <div class="mt-6 grid gap-4 md:grid-cols-2">
+    <div>
+      <label class="mb-2 block text-sm" style="color: var(--mc-on-surface-variant)">Input C#</label>
+      <MonacoInstance id="fmt-monaco" initial={sample} height="460px" />
+      <div class="mt-3 flex gap-2">
+        <button id="fmt-run" class="btn btn-mc-primary">Format</button>
       </div>
     </div>
-
-    <!-- Toggle control inside editor -->
-    <button id="btn-toggle" aria-label="Pause" class="absolute bottom-4 right-4 z-50 inline-flex items-center justify-center rounded-full border border-white/20 bg-slate-950/70 p-2 text-slate-100 shadow-xl backdrop-blur-md hover:bg-slate-900/80">
-      <span id="ico-pause" class="block"><Icon name="lucide:pause" class="h-5 w-5" /></span>
-      <span id="ico-play" class="hidden"><Icon name="lucide:play" class="h-5 w-5" /></span>
-    </button>
+    <div>
+      <label class="mb-2 block text-sm" style="color: var(--mc-on-surface-variant)">Formatted</label>
+      <MonacoInstance id="fmt-out" initial="" height="460px" />
+    </div>
   </div>
 </section>
 
-<script is:inline>
-  (function(){
-    const cmd = 'bsharp format TestClass.cs';
-    const typedEl = document.getElementById('typed');
-    const cursor = document.getElementById('cursor');
-    const log = document.getElementById('log');
-    const codeUnf = document.getElementById('code-unformatted');
-    const codeFmt = document.getElementById('code-formatted');
-    const term = document.getElementById('terminal');
-    const btnToggle = document.getElementById('btn-toggle');
-    const icoPause = document.getElementById('ico-pause');
-    const icoPlay = document.getElementById('ico-play');
-
-    let paused = false;
-    let running = false;
-    let cancelToken = 0;
-    let typed = null;
-
-    const sleep = (ms) => new Promise(r => setTimeout(r, ms));
-
-    const resetVisuals = () => {
-      if (typed) { try { typed.destroy(); } catch {} typed = null; }
-      typedEl.textContent = '';
-      log.style.opacity = '0';
-      codeFmt.style.opacity = '0';
-      codeFmt.style.transform = 'translateY(0.5rem)';
-      codeUnf.style.opacity = '1';
-      cursor.style.opacity = '1';
-      term.style.transition = 'transform 400ms ease, opacity 400ms ease';
-      term.style.opacity = '1';
-      term.style.transform = 'translateY(0) scale(1)';
-      term.style.pointerEvents = 'auto';
-    };
-
-    async function runOnce() {
-      if (running) return;
-      running = true;
-      const my = ++cancelToken;
-      resetVisuals();
-      const { default: Typed } = await import('https://esm.sh/typed.js@2.1.0');
-      if (paused || my !== cancelToken) { running = false; return; }
-      typed = new Typed(typedEl, {
-        strings: [cmd],
-        typeSpeed: 35,
-        backSpeed: 0,
-        showCursor: false,
-        smartBackspace: false,
-        loop: false,
-      });
-      while (typed && typed.el && typed.typingComplete !== true) {
-        if (paused || my !== cancelToken) { try { typed.destroy(); } catch {}; running = false; return; }
-        await sleep(60);
+<script type="module" define:vars={{ base }}>
+  function wasmUrl() {
+    const b = base.endsWith('/') ? base : `${base}/`;
+    return new URL(`${b}wasm/bsharp_wasm.js`, window.location.origin).toString();
+  }
+  const $ = (s) => document.querySelector(s);
+  const btn = $('#fmt-run');
+  let inputEditor = null;
+  let outputEditor = null;
+  
+  // Wait for both Monaco editors to be initialized
+  function waitForEditors() {
+    return new Promise((resolve) => {
+      const checkEditors = () => {
+        const inputContainer = $('#fmt-monaco');
+        const outputContainer = $('#fmt-out');
+        
+        if (inputContainer && inputContainer.querySelector('.monaco-editor') &&
+            outputContainer && outputContainer.querySelector('.monaco-editor')) {
+          // Get the editor instances from global Monaco editors
+          const inputEd = window.__monacoEditors?.['fmt-monaco'];
+          const outputEd = window.__monacoEditors?.['fmt-out'];
+          
+          if (inputEd && outputEd) {
+            inputEditor = inputEd;
+            outputEditor = outputEd;
+            resolve({ inputEditor, outputEditor });
+          } else {
+            setTimeout(checkEditors, 100);
+          }
+        } else {
+          setTimeout(checkEditors, 100);
+        }
+      };
+      checkEditors();
+    });
+  }
+  
+  async function loadWasm(){
+    const mod = await import(wasmUrl());
+    if (mod && mod.default) await mod.default();
+    return mod;
+  }
+  
+  btn?.addEventListener('click', async () => {
+    try {
+      const mod = await loadWasm();
+      if (!inputEditor || !outputEditor) {
+        await waitForEditors();
       }
-      cursor.style.opacity = '0';
-      await sleep(250);
-      if (paused || my !== cancelToken) { running = false; return; }
-      log.style.opacity = '1';
-      await sleep(700);
-      if (paused || my !== cancelToken) { running = false; return; }
-      codeUnf.style.opacity = '0';
-      codeFmt.style.opacity = '1';
-      codeFmt.style.transform = 'translateY(0)';
-      await sleep(900);
-      running = false;
-    }
-
-    async function loop() {
-      while (!paused) {
-        await runOnce();
-        if (paused) break;
-        await sleep(1200);
+      if (inputEditor && outputEditor) {
+        const res = await mod.format_code(inputEditor.getValue());
+        outputEditor.setValue(res);
+      }
+    } catch(e) {
+      if (outputEditor) {
+        outputEditor.setValue('Format error: ' + (e?.message || String(e)));
       }
     }
-
-    function play() {
-      if (paused) {
-        paused = false;
-        btnToggle.setAttribute('aria-label', 'Pause');
-        icoPause.classList.remove('hidden');
-        icoPlay.classList.add('hidden');
-      }
-      if (!running) loop();
-    }
-    function pause() {
-      paused = true;
-      cancelToken++;
-      if (typed) { try { typed.destroy(); } catch {} typed = null; }
-      btnToggle.setAttribute('aria-label', 'Play');
-      icoPause.classList.add('hidden');
-      icoPlay.classList.remove('hidden');
-    }
-    function toggle(){ paused ? play() : pause(); }
-
-    btnToggle?.addEventListener('click', toggle);
-    requestAnimationFrame(play);
-    window.addEventListener('load', play);
-    ['pointerdown','keydown','scroll'].forEach((evt) => window.addEventListener(evt, play, { once: true, passive: true }));
-  })();
+  });
+  
+  // Auto-format on load
+  window.addEventListener('load', async () => {
+    await waitForEditors();
+    btn?.click();
+  });
 </script>
+
+<style>
+</style>

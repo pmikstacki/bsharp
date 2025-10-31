@@ -1,0 +1,40 @@
+---
+import Layout from '../layouts/DocsLayout.astro';
+const rawBase = import.meta.env.BASE_URL || '/';
+const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
+---
+<Layout title="Documentation">
+  <div class="section min-h-[calc(100dvh-4rem)] flex items-stretch" data-mc-seed="#00C9B9" data-trig data-trig-var="true" style="position:relative;">
+    <iframe
+      src={`${base}docs/book/html/index.html`}
+      title="BSharp Docs"
+      class="block h-full w-full flex-1 border-0"
+      loading="lazy"
+    ></iframe>
+  </div>
+  <script type="module">
+    const iframe = document.querySelector('iframe[title="BSharp Docs"]');
+    function currentTheme(){
+      const d = document.documentElement;
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const hasDarkClass = d.classList.contains('dark');
+      return hasDarkClass || (!d.classList.contains('light') && prefersDark) ? 'dark' : 'light';
+    }
+    function send(){
+      if (!iframe?.contentWindow) return;
+      iframe.contentWindow.postMessage({ type: 'bsharp:theme', value: currentTheme() }, '*');
+    }
+    // Initial send when iframe is ready
+    iframe?.addEventListener('load', () => {
+      // Only communicate theme preference; do not inject styles to avoid overriding mdBook CSS
+      send();
+    });
+    // React to system preference changes
+    try { window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', send); } catch {}
+    // React to html class changes (site theme toggle)
+    const mo = new MutationObserver(send);
+    mo.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    // Fallback ping after a short delay
+    setTimeout(() => { send(); }, 500);
+  </script>
+</Layout>

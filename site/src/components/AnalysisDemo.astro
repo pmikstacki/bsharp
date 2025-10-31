@@ -1,0 +1,79 @@
+---
+import MonacoInstance from './MonacoInstance.astro';
+const sample = `public class Example
+{
+    int Add(int a, int b) { return a + b; }
+}`;
+const rawBase = import.meta.env.BASE_URL || '/';
+const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
+---
+<div class="mx-auto max-w-6xl p-4 md:p-6">
+    <div class="prose prose-slate dark:prose-invert">
+      <p>Explore your code's structure: analyze C# snippets and inspect detailed metrics, control flow, and dependencies.</p>
+    </div>
+    <div class="mt-4 grid gap-4 md:grid-cols-2">
+      <div>
+        <label class="mb-2 block text-sm text-slate-500">Input C#</label>
+        <MonacoInstance id="analysis-monaco" initial={sample} height="256px" />
+        <div class="mt-3 flex gap-2">
+          <button id="an-run" class="btn btn-mc-primary">Analyze</button>
+        </div>
+      </div>
+      <div>
+        <label class="mb-2 block text-sm text-slate-500">Report (JSON)</label>
+        <div class="h-[256px] overflow-auto rounded-md border border-white/10 bg-black/30">
+          <json-viewer id="an-out" style="height:100%;width:100%;--background-color:transparent;--color:#e2e8f0;--string-color:#38bdf8;--number-color:#f59e0b;--property-color:#93c5fd;--null-color:#f472b6;--boolean-color:#34d399" copyable root-name="report"></json-viewer>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script type="module" define:vars={{ base }}>
+  const JSON_VIEWER_CDN = 'https://unpkg.com/@alenaksu/json-viewer@2.1.2/dist/json-viewer.bundle.js';
+  function wasmUrl() {
+    const b = base.endsWith('/') ? base : `${base}/`;
+    return new URL(`${b}wasm/bsharp_wasm.js`, window.location.origin).toString();
+  }
+  (function(){
+    function ensureJsonViewer(){
+      if (customElements.get('json-viewer')) return Promise.resolve();
+      return new Promise((resolve) => {
+        const s = document.createElement('script');
+        s.src = JSON_VIEWER_CDN;
+        s.onload = () => resolve();
+        document.head.appendChild(s);
+      });
+    }
+    async function loadWasm(){
+      const mod = await import(wasmUrl());
+      if (mod && mod.default) await mod.default();
+      return mod;
+    }
+    const $ = (s) => document.querySelector(s);
+    const cout = $('#an-out');
+    const btn = $('#an-run');
+    function getEditor(){ return window.__monacoEditors?.['analysis-monaco']; }
+  async function ensureEditor(){
+    const start = Date.now();
+    while (!getEditor() && Date.now() - start < 2000) await new Promise(r => setTimeout(r, 50));
+    if (!getEditor()) console.warn('Monaco editor instance not found after timeout');
+    return getEditor();
+  }
+    btn?.addEventListener('click', async () => {
+      try {
+        await ensureJsonViewer();
+        const mod = await loadWasm();
+        const ed = await ensureEditor();
+        const json = await mod.analyze_code(ed.getValue());
+        try {
+          cout.data = JSON.parse(json);
+        } catch {
+          cout.data = { error: 'Failed to parse JSON output', raw: json };
+        }
+      } catch(e) {
+        cout.data = { error: (e?.message || String(e)) };
+      }
+    });
+    window.addEventListener('load', () => btn?.click());
+  })();
+</script>

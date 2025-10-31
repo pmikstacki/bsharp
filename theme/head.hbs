@@ -1,0 +1,89 @@
+<!-- BSharp mdBook Custom Head -->
+<meta name="theme-color" content="#00C9B9">
+<link rel="icon" type="image/svg+xml" href="{{ base_url }}/favicon.svg">
+<style>
+  /* Additional custom styles */
+  .header .left a::before {
+    content: "B# ";
+    color: #00C9B9;
+    font-weight: 700;
+  }
+  
+  /* Force dark theme immediately */
+  html, html.light, html.dark {
+    color-scheme: dark !important;
+  }
+  
+  html body, body, .light body, .dark body {
+    background: linear-gradient(66.77deg, #00C9B9 0%, #003824 100%) !important;
+    background-color: transparent !important;
+    color: #dfe4e3 !important;
+  }
+  
+  .header, .light .header, .dark .header {
+    background-color: rgba(15, 20, 20, 0.7) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  }
+  
+  .sidebar, .light .sidebar, .dark .sidebar {
+    background-color: rgba(15, 20, 20, 0.7) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
+  }
+  
+  .content, .light .content, .dark .content {
+    background-color: rgba(15, 20, 20, 0.6) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    color: #dfe4e3 !important;
+  }
+  
+  /* Hide theme selector */
+  .theme-selector {
+    display: none !important;
+  }
+</style>
+<script>
+  // Force dark mode and prevent theme switching
+  (function() {
+    // Set dark mode immediately
+    document.documentElement.classList.remove('light');
+    document.documentElement.classList.add('dark');
+    localStorage.setItem('mdbook-theme', 'dark');
+    
+    // Override localStorage to always return dark
+    const originalSetItem = localStorage.setItem;
+    const originalGetItem = localStorage.getItem;
+    
+    localStorage.setItem = function(key, value) {
+      if (key === 'mdbook-theme') {
+        value = 'dark';
+      }
+      return originalSetItem.call(this, key, value);
+    };
+    
+    localStorage.getItem = function(key) {
+      if (key === 'mdbook-theme') {
+        return 'dark';
+      }
+      return originalGetItem.call(this, key);
+    };
+    
+    // Continuously enforce dark mode
+    setInterval(function() {
+      document.documentElement.classList.remove('light');
+      document.documentElement.classList.add('dark');
+    }, 50);
+    
+    // Hide theme selector if it exists
+    setTimeout(function() {
+      const themeSelector = document.querySelector('.theme-selector');
+      if (themeSelector) {
+        themeSelector.style.display = 'none';
+      }
+    }, 100);
+  })();
+</script>

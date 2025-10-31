@@ -1,0 +1,193 @@
+/* BSharp mdBook Theme - Matches the main site styling */
+:root {
+  /* BSharp brand colors */
+  --bsharp-primary: #00C9B9;
+  --bsharp-primary-light: #4edea3;
+  --bsharp-primary-dark: #003824;
+  --bsharp-secondary: #EC4899;
+  --bsharp-surface: #0f1414;
+  --bsharp-surface-light: #ffffff;
+  --bsharp-on-surface: #dfe4e3;
+  --bsharp-on-surface-light: #1c1c1c;
+  --bsharp-outline: #6a8a88;
+  --bsharp-outline-light: #79747e;
+}
+
+/* Force dark mode only */
+html, html.light, html.dark {
+  color-scheme: dark !important;
+}
+
+html body, body, .light body, .dark body {
+  background: #0f1414 !important;
+  color: #dfe4e3 !important;
+  position: relative;
+}
+
+/* Header and navigation - force transparency */
+.header, .light .header, .dark .header {
+  background-color: rgba(15, 20, 20, 0.95) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.sidebar, .light .sidebar, .dark .sidebar {
+  background-color: rgba(15, 20, 20, 0.95) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Content area - solid background for readability */
+.content, .light .content, .dark .content {
+  background-color: rgba(15, 20, 20, 0.95) !important;
+  color: #dfe4e3 !important;
+  border-radius: 8px;
+  margin: 1rem;
+  padding: 1.5rem;
+}
+
+/* Force dark theme for all elements */
+.chapter, .light .chapter, .dark .chapter {
+  color: var(--bsharp-on-surface) !important;
+}
+
+.chapter li a, .light .chapter li a, .dark .chapter li a {
+  color: var(--bsharp-primary-light) !important;
+}
+
+.chapter li a:hover,
+.chapter li a.active,
+.light .chapter li a:hover,
+.light .chapter li a.active,
+.dark .chapter li a:hover,
+.dark .chapter li a.active {
+  color: var(--bsharp-primary) !important;
+  background-color: rgba(0, 201, 185, 0.1) !important;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6,
+.light h1, .light h2, .light h3, .light h4, .light h5, .light h6,
+.dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
+  color: var(--bsharp-primary-light) !important;
+  border-bottom-color: var(--bsharp-outline) !important;
+}
+
+h1, .light h1, .dark h1 {
+  border-bottom: 2px solid var(--bsharp-primary) !important;
+}
+
+/* Links */
+a, .light a, .dark a {
+  color: var(--bsharp-primary-light) !important;
+  text-decoration: none;
+}
+
+a:hover, .light a:hover, .dark a:hover {
+  color: var(--bsharp-primary) !important;
+  text-decoration: underline;
+}
+
+/* Code blocks */
+code {
+  background-color: rgba(0, 201, 185, 0.1);
+  border: 1px solid var(--bsharp-outline);
+  color: var(--bsharp-primary-light);
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+}
+
+pre {
+  background-color: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--bsharp-outline);
+  border-radius: 6px;
+}
+
+pre code {
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  color: inherit;
+}
+
+/* Blockquotes */
+blockquote {
+  border-left: 4px solid var(--bsharp-primary);
+  background-color: rgba(0, 201, 185, 0.05);
+  color: var(--bsharp-on-surface);
+}
+
+/* Tables */
+table {
+  border-collapse: collapse;
+  border: 1px solid var(--bsharp-outline);
+}
+
+th, td {
+  border: 1px solid var(--bsharp-outline);
+  padding: 8px 12px;
+}
+
+th {
+  background-color: rgba(0, 201, 185, 0.1);
+  color: var(--bsharp-primary-light);
+}
+
+/* Search bar */
+#search-results {
+  background-color: var(--bsharp-surface);
+  border: 1px solid var(--bsharp-outline);
+}
+
+#search-results .search-results .search-result a {
+  color: var(--bsharp-primary-light);
+}
+
+#search-results .search-results .search-result a:hover {
+  color: var(--bsharp-primary);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bsharp-surface);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--bsharp-outline);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--bsharp-primary-light);
+}
+
+/* BSharp logo in header */
+.header .left a, .light .header .left a, .dark .header .left a {
+  color: var(--bsharp-primary-light) !important;
+  font-weight: 600;
+  font-size: 1.2em;
+}
+
+/* Theme selector */
+.theme-selector, .light .theme-selector, .dark .theme-selector {
+  background-color: rgba(0, 201, 185, 0.1) !important;
+  border: 1px solid var(--bsharp-outline) !important;
+  color: var(--bsharp-primary-light) !important;
+}
+
+.theme-selector:hover, .light .theme-selector:hover, .dark .theme-selector:hover {
+  background-color: rgba(0, 201, 185, 0.2) !important;
+  color: var(--bsharp-primary) !important;
+}
+
+/* Edit button */
+.edit-button {
+  background-color: var(--bsharp-primary);
+  color: var(--bsharp-primary-dark);
+}
+
+.edit-button:hover {
+  background-color: var(--bsharp-primary-light);
+}
