@@ -1,181 +1,150 @@
 <!DOCTYPE HTML>
-<html lang="en" class="light sidebar-visible" dir="ltr">
-    <head>
-        <!-- Book generated using mdBook -->
-        <meta charset="UTF-8">
-        <title>Command Line Interface - BSharp C# Parser Documentation</title>
+<html lang="en" class="dark js">
+<head>
+    <!-- Book generated using mdBook -->
+    <meta charset="UTF-8">
+    <title>Command Line Interface - BSharp C# Parser Documentation</title>
+    <meta name="robots" content="noindex">
+    <!-- BSharp mdBook Custom Head -->
+    <meta name="theme-color" content="#00C9B9">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <style>
+      /* Additional custom styles */
+      .header .left a::before {
+        content: "B# ";
+        color: #00C9B9;
+        font-weight: 700;
+      }
+      
+      /* Force dark theme immediately */
+      html, html.light, html.dark {
+        color-scheme: dark !important;
+      }
+      
+      html body, body, .light body, .dark body {
+        background: linear-gradient(66.77deg, #00C9B9 0%, #003824 100%) !important;
+        background-color: transparent !important;
+        color: #dfe4e3 !important;
+      }
+      
+      .header, .light .header, .dark .header {
+        background-color: rgba(15, 20, 20, 0.7) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+      }
+      
+      .sidebar, .light .sidebar, .dark .sidebar {
+        background-color: rgba(15, 20, 20, 0.7) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
+      }
+      
+      .content, .light .content, .dark .content {
+        background-color: rgba(15, 20, 20, 0.6) !important;
+        backdrop-filter: blur(10px) !important;
+        -webkit-backdrop-filter: blur(10px) !important;
+        color: #dfe4e3 !important;
+      }
+      
+      /* Hide theme selector */
+      .theme-selector {
+        display: none !important;
+      }
+    </style>
+    <script>
+      // Force dark mode and prevent theme switching
+      (function() {
+        // Set dark mode immediately
+        document.documentElement.classList.remove('light');
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('mdbook-theme', 'dark');
+        
+        // Override localStorage to always return dark
+        const originalSetItem = localStorage.setItem;
+        const originalGetItem = localStorage.getItem;
+        
+        localStorage.setItem = function(key, value) {
+          if (key === 'mdbook-theme') {
+            value = 'dark';
+          }
+          return originalSetItem.call(this, key, value);
+        };
+        
+        localStorage.getItem = function(key) {
+          if (key === 'mdbook-theme') {
+            return 'dark';
+          }
+          return originalGetItem.call(this, key);
+        };
+        
+        // Continuously enforce dark mode
+        setInterval(function() {
+          document.documentElement.classList.remove('light');
+          document.documentElement.classList.add('dark');
+        }, 50);
+        
+        // Hide theme selector if it exists
+        setTimeout(function() {
+          const themeSelector = document.querySelector('.theme-selector');
+          if (themeSelector) {
+            themeSelector.style.display = 'none';
+          }
+        }, 100);
+      })();
+    </script>
+</head>
+<body>
+    <!-- Provide site root to javascript -->
+    <script>
+        var path_to_root = "../";
+        var default_theme = "light";
+    </script>
 
+    <!-- Work around some values being stored in localStorage wrapped in quotes -->
+    <script>
+        try {
+            var theme = localStorage.getItem('mdbook-theme');
+            var sidebar = localStorage.getItem('mdbook-sidebar');
 
-        <!-- Custom HTML head -->
+            if (theme.startsWith('"') && theme.endsWith('"')) {
+                localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+            }
 
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="theme-color" content="#ffffff">
+            if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+            }
+        } catch (e) { }
+    </script>
 
-        <link rel="icon" href="../favicon.svg">
-        <link rel="shortcut icon" href="../favicon.png">
-        <link rel="stylesheet" href="../css/variables.css">
-        <link rel="stylesheet" href="../css/general.css">
-        <link rel="stylesheet" href="../css/chrome.css">
-        <link rel="stylesheet" href="../css/print.css" media="print">
+    <!-- Hide / unhide sidebar before it is displayed -->
+    <script>
+        var html = document.querySelector('html');
+        var sidebar = null;
+        if (document.body.clientWidth >= 1080) {
+            try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+            sidebar = sidebar || 'visible';
+        } else {
+            sidebar = 'hidden';
+        }
+        html.classList.remove('sidebar-visible');
+        html.classList.add("sidebar-" + sidebar);
+    </script>
 
-        <!-- Fonts -->
-        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
-        <link rel="stylesheet" href="../fonts/fonts.css">
-
-        <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
-        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
-        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
-
-        <!-- Custom theme stylesheets -->
-
-
-        <!-- Provide site root and default themes to javascript -->
-        <script>
-            const path_to_root = "../";
-            const default_light_theme = "light";
-            const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex.js";
-        </script>
-        <!-- Start loading toc.js asap -->
-        <script src="../toc.js"></script>
-    </head>
-    <body>
-    <div id="mdbook-help-container">
-        <div id="mdbook-help-popup">
-            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
-            <div>
-                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
-                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
-                <p>Press <kbd>?</kbd> to show this help</p>
-                <p>Press <kbd>Esc</kbd> to hide this help</p>
-            </div>
+    <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+        <div class="sidebar-scroll">
+            <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Parser Architecture</li><li class="chapter-item expanded "><a href="parser/overview.html"><strong aria-hidden="true">1.</strong> Overview</a></li><li class="chapter-item expanded "><a href="parser/core-components.html"><strong aria-hidden="true">2.</strong> Core Components</a></li><li class="chapter-item expanded "><a href="parser/ast-structure.html"><strong aria-hidden="true">3.</strong> AST Structure</a></li><li class="chapter-item expanded "><a href="parser/error-handling.html"><strong aria-hidden="true">4.</strong> Error Handling</a></li><li class="chapter-item expanded affix "><li class="part-title">Parser Modules</li><li class="chapter-item expanded "><a href="parser/expressions.html"><strong aria-hidden="true">5.</strong> Expression Parsing</a></li><li class="chapter-item expanded "><a href="parser/statements.html"><strong aria-hidden="true">6.</strong> Statement Parsing</a></li><li class="chapter-item expanded "><a href="parser/declarations.html"><strong aria-hidden="true">7.</strong> Declaration Parsing</a></li><li class="chapter-item expanded "><a href="parser/types.html"><strong aria-hidden="true">8.</strong> Type System</a></li><li class="chapter-item expanded "><a href="parser/feature-completeness.html"><strong aria-hidden="true">9.</strong> Feature Completeness</a></li><li class="chapter-item expanded "><a href="parser/keywords-and-tokens.html"><strong aria-hidden="true">10.</strong> Keywords and Tokens</a></li><li class="chapter-item expanded affix "><li class="part-title">Advanced Features</li><li class="chapter-item expanded "><a href="parser/navigation.html"><strong aria-hidden="true">11.</strong> Query API</a></li><li class="chapter-item expanded "><a href="parser/comments.html"><strong aria-hidden="true">12.</strong> Comment Parsing</a></li><li class="chapter-item expanded "><a href="parser/preprocessor.html"><strong aria-hidden="true">13.</strong> Preprocessor Directives</a></li><li class="chapter-item expanded affix "><li class="part-title">Syntax</li><li class="chapter-item expanded "><a href="syntax/spans.html"><strong aria-hidden="true">14.</strong> Spans</a></li><li class="chapter-item expanded "><a href="syntax/traits.html"><strong aria-hidden="true">15.</strong> Traits</a></li><li class="chapter-item expanded "><a href="syntax/derive-macros.html"><strong aria-hidden="true">16.</strong> Derive Macros</a></li><li class="chapter-item expanded "><a href="syntax/formatter.html"><strong aria-hidden="true">17.</strong> Formatter and Emitters</a></li><li class="chapter-item expanded affix "><li class="part-title">Analysis Framework</li><li class="chapter-item expanded "><a href="analysis/overview.html"><strong aria-hidden="true">18.</strong> Analysis Overview</a></li><li class="chapter-item expanded "><a href="analysis/pipeline.html"><strong aria-hidden="true">19.</strong> Analysis Pipeline</a></li><li class="chapter-item expanded "><a href="analysis/traversal-guide.html"><strong aria-hidden="true">20.</strong> Traversal Guide</a></li><li class="chapter-item expanded "><a href="analysis/control-flow.html"><strong aria-hidden="true">21.</strong> Control Flow Analysis</a></li><li class="chapter-item expanded "><a href="analysis/dependencies.html"><strong aria-hidden="true">22.</strong> Dependency Analysis</a></li><li class="chapter-item expanded "><a href="analysis/metrics.html"><strong aria-hidden="true">23.</strong> Metrics Collection</a></li><li class="chapter-item expanded "><a href="analysis/types.html"><strong aria-hidden="true">24.</strong> Type Analysis</a></li><li class="chapter-item expanded "><a href="analysis/quality.html"><strong aria-hidden="true">25.</strong> Code Quality</a></li><li class="chapter-item expanded "><a href="analysis/passes-and-rules.html"><strong aria-hidden="true">26.</strong> Passes and Rules</a></li><li class="chapter-item expanded "><a href="analysis/report-schema.html"><strong aria-hidden="true">27.</strong> Report Schema</a></li><li class="chapter-item expanded "><a href="analysis/writing-a-pass.html"><strong aria-hidden="true">28.</strong> Writing a Pass</a></li><li class="chapter-item expanded "><a href="analysis/writing-a-ruleset.html"><strong aria-hidden="true">29.</strong> Writing a Ruleset</a></li><li class="chapter-item expanded affix "><li class="part-title">CLI Tools</li><li class="chapter-item expanded "><a href="cli/overview.html"><strong aria-hidden="true">30.</strong> Command Line Interface</a></li><li class="chapter-item expanded "><a href="cli/parse.html"><strong aria-hidden="true">31.</strong> Parse Command</a></li><li class="chapter-item expanded "><a href="cli/tree.html"><strong aria-hidden="true">32.</strong> Tree Visualization</a></li><li class="chapter-item expanded "><a href="cli/analyze.html"><strong aria-hidden="true">33.</strong> Analysis Command</a></li><li class="chapter-item expanded "><a href="cli/format.html"><strong aria-hidden="true">34.</strong> Format Command</a></li><li class="chapter-item expanded "><a href="cli/errors-json.html"><strong aria-hidden="true">35.</strong> Parse Errors JSON</a></li><li class="chapter-item expanded affix "><li class="part-title">Workspace</li><li class="chapter-item expanded "><a href="workspace/overview.html"><strong aria-hidden="true">36.</strong> Workspace Loading</a></li><li class="chapter-item expanded affix "><li class="part-title">Configuration</li><li class="chapter-item expanded "><a href="configuration/overview.html"><strong aria-hidden="true">37.</strong> Configuration Overview</a></li><li class="chapter-item expanded affix "><li class="part-title">Development</li><li class="chapter-item expanded "><a href="development/contributing.html"><strong aria-hidden="true">38.</strong> Contributing</a></li><li class="chapter-item expanded "><a href="development/testing.html"><strong aria-hidden="true">39.</strong> Testing</a></li><li class="chapter-item expanded "><a href="development/architecture.html"><strong aria-hidden="true">40.</strong> Architecture Decisions</a></li><li class="chapter-item expanded "><a href="development/cookbooks.html"><strong aria-hidden="true">41.</strong> Cookbooks</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="development/query-cookbook.html"><strong aria-hidden="true">41.1.</strong> Query Cookbook</a></li><li class="chapter-item expanded "><a href="development/parser-cookbook.html"><strong aria-hidden="true">41.2.</strong> Parser Cookbook</a></li></ol></li><li class="chapter-item expanded "><a href="development/writing-tests.html"><strong aria-hidden="true">42.</strong> Writing Tests</a></li><li class="chapter-item expanded "><a href="development/bsharp_tests.html"><strong aria-hidden="true">43.</strong> bsharp_tests Overview</a></li><li class="chapter-item expanded "><a href="development/extending-syntax.html"><strong aria-hidden="true">44.</strong> Extending Syntax (New Nodes)</a></li><li class="chapter-item expanded "><a href="development/writing-parsers.html"><strong aria-hidden="true">45.</strong> Writing Parsers</a></li><li class="chapter-item expanded "><a href="development/compliance/index.html"><strong aria-hidden="true">46.</strong> Compliance</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="development/compliance/overview.html"><strong aria-hidden="true">46.1.</strong> Overview</a></li><li class="chapter-item expanded "><a href="development/compliance/compliance_guide.html"><strong aria-hidden="true">46.2.</strong> Compliance Guide</a></li><li class="chapter-item expanded "><a href="development/compliance/Generator.html"><strong aria-hidden="true">46.3.</strong> Generator</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Research &amp; Development</li><li class="chapter-item expanded "><a href="cil-runtime/index.html"><strong aria-hidden="true">47.</strong> CIL Runtime</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="cil-runtime/overview.html"><strong aria-hidden="true">47.1.</strong> Overview</a></li><li class="chapter-item expanded "><a href="cil-runtime/architecture.html"><strong aria-hidden="true">47.2.</strong> Architecture</a></li><li class="chapter-item expanded "><a href="cil-runtime/phases/index.html"><strong aria-hidden="true">47.3.</strong> Phases</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="cil-runtime/phases/00-dotscope-spike.html"><strong aria-hidden="true">47.3.1.</strong> Phase 0: Dotscope Spike</a></li><li class="chapter-item expanded "><a href="cil-runtime/phases/01-vm-mvp.html"><strong aria-hidden="true">47.3.2.</strong> Phase 1: VM MVP</a></li><li class="chapter-item expanded "><a href="cil-runtime/phases/02-control-flow-and-eh.html"><strong aria-hidden="true">47.3.3.</strong> Phase 2: Control Flow + EH</a></li><li class="chapter-item expanded "><a href="cil-runtime/phases/03-object-model-and-arrays.html"><strong aria-hidden="true">47.3.4.</strong> Phase 3: Object Model and Arrays</a></li><li class="chapter-item expanded "><a href="cil-runtime/phases/04-back-compat-polish.html"><strong aria-hidden="true">47.3.5.</strong> Phase 4: Back-Compat Polish</a></li><li class="chapter-item expanded "><a href="cil-runtime/phases/05-ast-to-il-emitter.html"><strong aria-hidden="true">47.3.6.</strong> Phase 5: AST→IL Emitter</a></li></ol></li><li class="chapter-item expanded "><a href="cil-runtime/dotscope-guide.html"><strong aria-hidden="true">47.4.</strong> dotscope Guide</a></li><li class="chapter-item expanded "><a href="cil-runtime/vm-design.html"><strong aria-hidden="true">47.5.</strong> VM Design</a></li><li class="chapter-item expanded "><a href="cil-runtime/emitter-design.html"><strong aria-hidden="true">47.6.</strong> Emitter Design</a></li><li class="chapter-item expanded "><a href="cil-runtime/testing.html"><strong aria-hidden="true">47.7.</strong> Testing &amp; Conformance</a></li><li class="chapter-item expanded "><a href="cil-runtime/roadmap.html"><strong aria-hidden="true">47.8.</strong> Roadmap</a></li><li class="chapter-item expanded "><a href="cil-runtime/open-questions.html"><strong aria-hidden="true">47.9.</strong> Open Questions</a></li><li class="chapter-item expanded "><a href="cil-runtime/glossary.html"><strong aria-hidden="true">47.10.</strong> Glossary</a></li></ol></li></ol>
         </div>
-    </div>
-    <div id="body-container">
-        <!-- Work around some values being stored in localStorage wrapped in quotes -->
-        <script>
-            try {
-                let theme = localStorage.getItem('mdbook-theme');
-                let sidebar = localStorage.getItem('mdbook-sidebar');
+    </nav>
 
-                if (theme.startsWith('"') && theme.endsWith('"')) {
-                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
-                }
+    <div id="page-wrapper" class="page-wrapper">
 
-                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
-                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
-                }
-            } catch (e) { }
-        </script>
+        <div class="page">
 
-        <!-- Set the theme before any content is loaded, prevents flash -->
-        <script>
-            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
-            let theme;
-            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
-            if (theme === null || theme === undefined) { theme = default_theme; }
-            const html = document.documentElement;
-            html.classList.remove('light')
-            html.classList.add(theme);
-            html.classList.add("js");
-        </script>
-
-        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
-
-        <!-- Hide / unhide sidebar before it is displayed -->
-        <script>
-            let sidebar = null;
-            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
-            if (document.body.clientWidth >= 1080) {
-                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
-                sidebar = sidebar || 'visible';
-            } else {
-                sidebar = 'hidden';
-                sidebar_toggle.checked = false;
-            }
-            if (sidebar === 'visible') {
-                sidebar_toggle.checked = true;
-            } else {
-                html.classList.remove('sidebar-visible');
-            }
-        </script>
-
-        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
-            <!-- populated by js -->
-            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
-            <noscript>
-                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
-            </noscript>
-            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
-                <div class="sidebar-resize-indicator"></div>
-            </div>
-        </nav>
-
-        <div id="page-wrapper" class="page-wrapper">
-
-            <div class="page">
-                <div id="menu-bar-hover-placeholder"></div>
-                <div id="menu-bar" class="menu-bar sticky">
-                    <div class="left-buttons">
-                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
-                            <i class="fa fa-bars"></i>
-                        </label>
-                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
-                            <i class="fa fa-paint-brush"></i>
-                        </button>
-                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
-                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
-                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
-                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
-                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
-                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
-                        </ul>
-                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
-                            <i class="fa fa-search"></i>
-                        </button>
-                    </div>
-
-                    <h1 class="menu-title">BSharp C# Parser Documentation</h1>
-
-                    <div class="right-buttons">
-                        <a href="../print.html" title="Print this book" aria-label="Print this book">
-                            <i id="print-button" class="fa fa-print"></i>
-                        </a>
-
-                    </div>
-                </div>
-
-                <div id="search-wrapper" class="hidden">
-                    <form id="searchbar-outer" class="searchbar-outer">
-                        <div class="search-wrapper">
-                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
-                            <div class="spinner-wrapper">
-                                <i class="fa fa-spinner fa-spin"></i>
-                            </div>
-                        </div>
-                    </form>
-                    <div id="searchresults-outer" class="searchresults-outer hidden">
-                        <div id="searchresults-header" class="searchresults-header"></div>
-                        <ul id="searchresults">
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
-                <script>
-                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
-                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
-                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
-                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
-                    });
-                </script>
-
-                <div id="content" class="content">
-                    <main>
-                        <h1 id="command-line-interface"><a class="header" href="#command-line-interface">Command Line Interface</a></h1>
+            <div id="content" class="content">
+                <main>
+                    <h1 id="command-line-interface"><a class="header" href="#command-line-interface">Command Line Interface</a></h1>
 <p>The BSharp CLI provides command-line tools for parsing, analyzing, and visualizing C# code.</p>
 <hr />
 <h2 id="installation"><a class="header" href="#installation">Installation</a></h2>
@@ -551,55 +520,78 @@ jq '.diagnostics | map(select(.code == "MET001"))' complexity.json
 <li><strong>Clap Documentation:</strong> https://docs.rs/clap/</li>
 </ul>
 
-                    </main>
+                </main>
+                <nav class="nav-wrapper" aria-label="Page navigation">
+                    <!-- Mobile navigation buttons -->
 
-                    <nav class="nav-wrapper" aria-label="Page navigation">
-                        <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../analysis/writing-a-ruleset.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
-                                <i class="fa fa-angle-left"></i>
-                            </a>
-
-                            <a rel="next prefetch" href="../cli/parse.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                                <i class="fa fa-angle-right"></i>
-                            </a>
-
-                        <div style="clear: both"></div>
-                    </nav>
-                </div>
+                    <div style="clear: both"></div>
+                </nav>
             </div>
 
-            <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../analysis/writing-a-ruleset.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
-                        <i class="fa fa-angle-left"></i>
-                    </a>
-
-                    <a rel="next prefetch" href="../cli/parse.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                        <i class="fa fa-angle-right"></i>
-                    </a>
-            </nav>
-
+            <!-- Theme selector removed - forcing dark mode only -->
         </div>
 
-
-
-
-        <script>
-            window.playground_copyable = true;
-        </script>
-
-
-        <script src="../elasticlunr.min.js"></script>
-        <script src="../mark.min.js"></script>
-        <script src="../searcher.js"></script>
-
-        <script src="../clipboard.min.js"></script>
-        <script src="../highlight.js"></script>
-        <script src="../book.js"></script>
-
-        <!-- Custom JS scripts -->
-
-
-
+        <nav class="nav-wide-wrapper" aria-label="Page navigation">
+        </nav>
     </div>
-    </body>
+
+    <!-- Livereload script (if served using the mdbook serve command) -->
+
+    <!-- Custom JS scripts -->
+
+    <!-- Force dark mode script -->
+    <script>
+        // Force dark mode and prevent theme switching
+        (function() {
+            // Override localStorage before mdBook loads
+            var originalSetItem = localStorage.setItem;
+            var originalGetItem = localStorage.getItem;
+            
+            localStorage.setItem = function(key, value) {
+                if (key === 'mdbook-theme') {
+                    value = 'dark';
+                }
+                return originalSetItem.call(this, key, value);
+            };
+            
+            localStorage.getItem = function(key) {
+                if (key === 'mdbook-theme') {
+                    return 'dark';
+                }
+                return originalGetItem.call(this, key);
+            };
+            
+            // Set dark mode immediately
+            localStorage.setItem('mdbook-theme', 'dark');
+            
+            // Continuously enforce dark mode
+            setInterval(function() {
+                document.documentElement.classList.remove('light');
+                document.documentElement.classList.add('dark');
+            }, 10);
+            
+            // Override any theme switching attempts
+            Object.defineProperty(window, 'mdbook', {
+                get: function() {
+                    return {
+                        changeTheme: function() {
+                            // Do nothing - prevent theme changes
+                        }
+                    };
+                },
+                set: function() {
+                    // Do nothing - prevent mdbook override
+                }
+            });
+        })();
+        
+        // Wait for DOM to be ready and enforce dark mode
+        document.addEventListener('DOMContentLoaded', function() {
+            setInterval(function() {
+                document.documentElement.classList.remove('light');
+                document.documentElement.classList.add('dark');
+            }, 10);
+        });
+    </script>
+</body>
 </html>

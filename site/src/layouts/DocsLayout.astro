@@ -1,5 +1,6 @@
 ---
 import '../styles/tailwind.css';
+import Navbar from '../components/Navbar.astro';
 const { title = 'BSharp' } = Astro.props;
 const rawBase = import.meta.env.BASE_URL || '/';
 const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
@@ -14,6 +15,19 @@ const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
     <meta name="color-scheme" content="light dark" />
     <script type="module">
       import '/src/scripts/material-colors.ts';
+      import { generateSimplePalette, applyPaletteToNavbar } from '/src/scripts/palette-utils.js';
+      
+      // Apply the same cyan palette as main site for consistency
+      function applyDocsPalette() {
+        // Generate palette using the same cyan color as main site
+        const vars = generateSimplePalette('#00C9B9');
+        
+        // Apply to navbar and global colors using shared utility
+        applyPaletteToNavbar(vars);
+      }
+      
+      // Apply palette immediately when script loads
+      applyDocsPalette();
     </script>
     <title>{title}</title>
   </head>
@@ -23,15 +37,10 @@ const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
     <div class="blob blob-pink animate-pulse-slow -z-10 right-[12%] top-[8%] h-72 w-72"></div>
     <div class="blob blob-amber animate-pulse-slow -z-10 left-[50%] top-[60%] h-96 w-96"></div>
     <div class="pointer-events-none fixed inset-0 -z-10 vignette"></div>
-    <header class="sticky top-0 z-40 border-b border-white/10 bg-white/5 backdrop-blur-xl shadow-[0_1px_0_0_rgba(255,255,255,0.06)]">
-      <nav class="mx-auto flex max-w-7xl items-center justify-between gap-6 px-4 py-3">
-        <a href={base} class="font-semibold tracking-tight text-slate-900 hover:text-brand-600 dark:text-slate-100 dark:hover:text-brand-400">BSharp</a>
-        <ul class="flex items-center gap-5 text-sm">
-          <li><a class="inline-flex items-center rounded-md border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium backdrop-blur hover:bg-white/10" href={`${base}`}>Home</a></li>
-        </ul>
-      </nav>
-    </header>
-    <main class="h-[calc(100dvh-4rem)] min-h-[calc(100dvh-4rem)] w-full p-0 flex">
+    <div class="sticky top-0 z-40 border-b border-white/10 bg-white/5 backdrop-blur-xl shadow-[0_1px_0_0_rgba(255,255,255,0.06)]">
+      <Navbar buttons="docs" base={base} />
+    </div>
+    <main class="h-[calc(100dvh-60px)] min-h-[calc(100dvh-60px)] w-full p-0 flex">
       <slot />
     </main>
   </body>

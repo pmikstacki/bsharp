@@ -1,0 +1,177 @@
+<!DOCTYPE HTML>
+<html lang="{{ language }}" class="dark js">
+<head>
+    <!-- Book generated using mdBook -->
+    <meta charset="UTF-8">
+    <title>{{title}}</title>
+    {{#if print_enable}}
+    <meta name="robots" content="noindex">
+    {{/if}}
+    {{> head}}
+</head>
+<body>
+    <!-- Provide site root to javascript -->
+    <script>
+        var path_to_root = "{{ path_to_root }}";
+        var default_theme = "{{ default_theme }}";
+    </script>
+
+    <!-- Work around some values being stored in localStorage wrapped in quotes -->
+    <script>
+        try {
+            var theme = localStorage.getItem('mdbook-theme');
+            var sidebar = localStorage.getItem('mdbook-sidebar');
+
+            if (theme.startsWith('"') && theme.endsWith('"')) {
+                localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+            }
+
+            if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+            }
+        } catch (e) { }
+    </script>
+
+    <!-- Hide / unhide sidebar before it is displayed -->
+    <script>
+        var html = document.querySelector('html');
+        var sidebar = null;
+        if (document.body.clientWidth >= 1080) {
+            try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+            sidebar = sidebar || 'visible';
+        } else {
+            sidebar = 'hidden';
+        }
+        html.classList.remove('sidebar-visible');
+        html.classList.add("sidebar-" + sidebar);
+    </script>
+
+    <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+        <div class="sidebar-scroll">
+            {{#toc}}{{/toc}}
+        </div>
+    </nav>
+
+    <div id="page-wrapper" class="page-wrapper">
+
+        <div class="page">
+            {{> header}}
+
+            <div id="content" class="content">
+                <main>
+                    {{{ content }}}
+                </main>
+                <nav class="nav-wrapper" aria-label="Page navigation">
+                    <!-- Mobile navigation buttons -->
+                    {{#if previous}}
+                        <a href="{{ path_to_root }}{{previous.href}}" class="mobile-nav-chapters previous" title="Previous chapter">
+                            <i class="fa fa-angle-left"></i>
+                        </a>
+                    {{/if}}
+                    {{#if next}}
+                        <a href="{{ path_to_root }}{{next.href}}" class="mobile-nav-chapters next" title="Next chapter">
+                            <i class="fa fa-angle-right"></i>
+                        </a>
+                    {{/if}}
+
+                    <div style="clear: both"></div>
+                </nav>
+            </div>
+
+            <!-- Theme selector removed - forcing dark mode only -->
+        </div>
+
+        <nav class="nav-wide-wrapper" aria-label="Page navigation">
+            {{#if previous}}
+                <a href="{{ path_to_root }}{{previous.href}}" class="nav-chapters previous" title="Previous chapter">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+            {{/if}}
+            {{#if next}}
+                <a href="{{ path_to_root }}{{next.href}}" class="nav-chapters next" title="Next chapter">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            {{/if}}
+        </nav>
+    </div>
+
+    <!-- Livereload script (if served using the mdbook serve command) -->
+    {{#if livereload}}
+    <script>
+        const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const wsAddress = wsProtocol + "//" + location.host + "/" + location.pathname.split(/\/([^\/]+)\/?$/)[1] + "/livereload";
+        const socket = new WebSocket(wsAddress);
+        socket.onmessage = function (event) {
+            if (event.data === "reload") {
+                socket.close();
+                location.reload();
+            }
+        };
+
+        window.onbeforeunload = function() {
+            socket.close();
+        }
+    </script>
+    {{/if}}
+
+    <!-- Custom JS scripts -->
+    {{#each additional_js}}
+    <script src="{{ path_to_root }}{{this}}"></script>
+    {{/each}}
+
+    <!-- Force dark mode script -->
+    <script>
+        // Force dark mode and prevent theme switching
+        (function() {
+            // Override localStorage before mdBook loads
+            var originalSetItem = localStorage.setItem;
+            var originalGetItem = localStorage.getItem;
+            
+            localStorage.setItem = function(key, value) {
+                if (key === 'mdbook-theme') {
+                    value = 'dark';
+                }
+                return originalSetItem.call(this, key, value);
+            };
+            
+            localStorage.getItem = function(key) {
+                if (key === 'mdbook-theme') {
+                    return 'dark';
+                }
+                return originalGetItem.call(this, key);
+            };
+            
+            // Set dark mode immediately
+            localStorage.setItem('mdbook-theme', 'dark');
+            
+            // Continuously enforce dark mode
+            setInterval(function() {
+                document.documentElement.classList.remove('light');
+                document.documentElement.classList.add('dark');
+            }, 10);
+            
+            // Override any theme switching attempts
+            Object.defineProperty(window, 'mdbook', {
+                get: function() {
+                    return {
+                        changeTheme: function() {
+                            // Do nothing - prevent theme changes
+                        }
+                    };
+                },
+                set: function() {
+                    // Do nothing - prevent mdbook override
+                }
+            });
+        })();
+        
+        // Wait for DOM to be ready and enforce dark mode
+        document.addEventListener('DOMContentLoaded', function() {
+            setInterval(function() {
+                document.documentElement.classList.remove('light');
+                document.documentElement.classList.add('dark');
+            }, 10);
+        });
+    </script>
+</body>
+</html>

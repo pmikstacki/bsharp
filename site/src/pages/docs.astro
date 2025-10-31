@@ -6,7 +6,7 @@ const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
 <Layout title="Documentation">
   <div class="section min-h-[calc(100dvh-4rem)] flex items-stretch" data-mc-seed="#00C9B9" data-trig data-trig-var="true" style="position:relative;">
     <iframe
-      src={`${base}docs/index.html`}
+      src={`${base}docs/book/html/index.html`}
       title="BSharp Docs"
       class="block h-full w-full flex-1 border-0"
       loading="lazy"
@@ -24,92 +24,10 @@ const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
       if (!iframe?.contentWindow) return;
       iframe.contentWindow.postMessage({ type: 'bsharp:theme', value: currentTheme() }, '*');
     }
-    function injectCss(){
-      try {
-        const doc = iframe?.contentDocument;
-        if (!doc) return;
-        const hostSection = document.querySelector('[data-mc-seed]');
-        const style = doc.createElement('style');
-        // Pull Material vars from host section and apply to mdBook root, with glass overrides
-        const computed = getComputedStyle(hostSection);
-        const primary = computed.getPropertyValue('--mc-primary').trim();
-        const onPrimary = computed.getPropertyValue('--mc-on-primary').trim();
-        const primaryContainer = computed.getPropertyValue('--mc-primary-container').trim();
-        const onPrimaryContainer = computed.getPropertyValue('--mc-on-primary-container').trim();
-        const surface = computed.getPropertyValue('--mc-surface').trim();
-        const onSurface = computed.getPropertyValue('--mc-on-surface').trim();
-        const surfaceVariant = computed.getPropertyValue('--mc-surface-variant').trim();
-        const outline = computed.getPropertyValue('--mc-outline').trim();
-        style.textContent = `
-          #theme-toggle, #theme-list { display: none !important; }
-          :root {
-            --mdbook-fg-color: ${onSurface};
-            --mdbook-bg-color: ${surface};
-            --sidebar-bg: ${surfaceVariant};
-            --sidebar-fg: ${onSurface};
-            --sidebar-active: ${primary};
-            --sidebar-spacer: ${outline};
-            --icons: ${onSurface};
-            --hover: ${primaryContainer};
-            --searchbar-bg: ${surfaceVariant};
-            --searchbar-fg: ${onSurface};
-            --searchbar-shadow-color: ${outline};
-            --searchbar-border-color: ${outline};
-            --mdbook-accent: ${primary};
-            --mdbook-accent-fg: ${onPrimary};
-          }
-          html, body {
-            background-color: ${surface} !important;
-            color: ${onSurface} !important;
-          }
-          .sidebar {
-            background: ${surfaceVariant} !important;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-right: 1px solid ${outline} !important;
-          }
-          .chapter {
-            color: ${primary} !important;
-          }
-          .content {
-            background: rgba(255,255,255,0.03);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border-radius: 12px;
-            border: 1px solid ${outline};
-            padding: 1.5rem;
-          }
-          pre, code {
-            background: ${surfaceVariant} !important;
-            border: 1px solid ${outline} !important;
-            border-radius: 6px;
-          }
-          a { color: ${primary} !important; }
-          a:hover { color: ${primaryContainer} !important; }
-          .mdbook-nav {
-            background: ${surfaceVariant} !important;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-top: 1px solid ${outline};
-          }
-        `;
-        doc.head.appendChild(style);
-      } catch {}
-    }
-    function removeThemeNodes(){
-      try {
-        const doc = iframe?.contentDocument;
-        if (!doc) return;
-        const btn = doc.getElementById('theme-toggle');
-        const list = doc.getElementById('theme-list');
-        if (btn) btn.remove();
-        if (list) list.remove();
-      } catch {}
-    }
     // Initial send when iframe is ready
-    iframe?.addEventListener('load', () => { injectCss(); removeThemeNodes(); send();
-      // Retry a few times to beat late DOM injections from book.js
-      let n = 0; const max = 15; const iv = setInterval(() => { removeThemeNodes(); n++; if (n>=max) clearInterval(iv); }, 150);
+    iframe?.addEventListener('load', () => {
+      // Only communicate theme preference; do not inject styles to avoid overriding mdBook CSS
+      send();
     });
     // React to system preference changes
     try { window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', send); } catch {}
@@ -117,6 +35,6 @@ const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
     const mo = new MutationObserver(send);
     mo.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
     // Fallback ping after a short delay
-    setTimeout(() => { injectCss(); removeThemeNodes(); send(); }, 500);
+    setTimeout(() => { send(); }, 500);
   </script>
 </Layout>

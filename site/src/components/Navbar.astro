@@ -1,0 +1,184 @@
+---
+interface Props {
+  buttons?: 'default' | 'docs';
+  base?: string;
+}
+
+const { buttons = 'default', base = '/' } = Astro.props;
+---
+
+<header class="navbar">
+  <nav class="mx-auto flex max-w-7xl items-center justify-between gap-6 px-4 py-3">
+    <a href={base} class="bsharp-logo font-semibold tracking-tight">B#</a>
+    
+    {buttons === 'default' && (
+      <ul class="flex items-center gap-5 text-sm flex-1 justify-center">
+        <li><a class="nav-link nav-parser" href="#parser">Parser</a></li>
+        <li><a class="nav-link nav-formatter" href="#formatter">Formatter</a></li>
+        <li><a class="nav-link nav-analysis" href="#analysis">Analysis</a></li>
+        <li><a class="nav-link nav-roadmap" href="#roadmap">Roadmap</a></li>
+      </ul>
+    )}
+    
+    {buttons === 'docs' && (
+      <div class="flex-1"></div>
+    )}
+    
+    {buttons === 'default' && (
+      <div class="flex items-center gap-3">
+        <a class="btn btn-mc-primary" href="#install">Install</a>
+        <a class="btn btn-mc-outline" href={`${base}docs/`}>Docs</a>
+      </div>
+    )}
+    
+    {buttons === 'docs' && (
+      <div class="flex items-center gap-3">
+        <a class="btn btn-mc-outline" href={`${base}#`}>Home</a>
+        <a class="btn btn-mc-primary github-btn" href="https://github.com/pmikstacki/bsharp">
+          <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+          </svg>
+        </a>
+      </div>
+    )}
+  </nav>
+</header>
+
+<script>
+  // Update active nav link based on current section
+  function updateActiveNavLink() {
+    const sections = ['parser', 'formatter', 'analysis', 'roadmap'];
+    const navLinks = {
+      parser: document.querySelector('.nav-parser'),
+      formatter: document.querySelector('.nav-formatter'),
+      analysis: document.querySelector('.nav-analysis'),
+      roadmap: document.querySelector('.nav-roadmap')
+    };
+    
+    // Remove active class from all links
+    Object.values(navLinks).forEach(link => link?.classList.remove('active'));
+    
+    // Find current section
+    const scrollPosition = window.scrollY + 100;
+    let currentSection = '';
+    
+    sections.forEach(sectionId => {
+      const section = document.getElementById(sectionId);
+      if (section) {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.offsetHeight;
+        
+        if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+          currentSection = sectionId;
+        }
+      }
+    });
+    
+    // Add active class to current section's nav link
+    if (currentSection && navLinks[currentSection]) {
+      navLinks[currentSection].classList.add('active');
+    }
+  }
+  
+  // Update on scroll and load
+  window.addEventListener('scroll', updateActiveNavLink, { passive: true });
+  document.addEventListener('DOMContentLoaded', updateActiveNavLink);
+</script>
+
+<style>
+  /* Navbar height consistency */
+  .navbar {
+    min-height: 60px;
+  }
+  
+  /* B# logo glassy gradient animation */
+  .bsharp-logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #feca57 75%, #48c774 100%);
+    background-size: 400% 400%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradient-shift 8s ease infinite;
+    filter: drop-shadow(0 0 20px rgba(102, 126, 234, 0.3));
+    position: relative;
+  }
+  
+  .bsharp-logo::before {
+    content: 'B#';
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: blur(8px);
+  }
+  
+  @keyframes gradient-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  
+  /* Navigation links with section colors */
+  .nav-link {
+    position: relative;
+    padding-bottom: 2px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+  }
+  
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: currentColor;
+    transition: width 0.3s ease;
+  }
+  
+  .nav-link:hover::after,
+  .nav-link.active::after {
+    width: 100%;
+  }
+  
+  /* Section-specific nav colors */
+  .nav-parser { color: rgb(78, 222, 163); }
+  .nav-formatter { color: rgb(187, 195, 255); }
+  .nav-analysis { color: rgb(255, 184, 112); }
+  .nav-roadmap { color: rgb(251, 191, 36); }
+  
+  .nav-parser:hover { color: rgb(16, 185, 129); }
+  .nav-formatter:hover { color: rgb(57, 73, 171); }
+  .nav-analysis:hover { color: rgb(255, 152, 0); }
+  .nav-roadmap:hover { color: rgb(217, 119, 6); }
+  
+  .nav-parser.active { color: rgb(16, 185, 129); }
+  .nav-formatter.active { color: rgb(57, 73, 171); }
+  .nav-analysis.active { color: rgb(255, 152, 0); }
+  .nav-roadmap.active { color: rgb(217, 119, 6); }
+  
+  /* GitHub button styling */
+  .btn.github-btn {
+    padding: 8px 16px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.5rem !important;
+    min-width: auto !important;
+    height: 40px !important;
+    min-height: 40px !important;
+  }
+  
+  .btn.github-btn svg {
+    flex-shrink: 0 !important;
+    height: 16px !important;
+    width: 16px !important;
+  }
+</style>

@@ -2,6 +2,7 @@
 import '../styles/tailwind.css';
 import trigUrl from '../scripts/trig.min.js?url';
 import materialColorsUrl from '../scripts/material-colors.ts?url';
+import Navbar from '../components/Navbar.astro';
 const { title = 'BSharp' } = Astro.props;
 const rawBase = import.meta.env.BASE_URL || '/';
 const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
@@ -21,21 +22,9 @@ const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
   </head>
   <body class="relative min-h-dvh bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-100">
     <div class="pointer-events-none fixed inset-0 -z-10 vignette"></div>
-    <header class="sticky top-0 z-40 border-b border-white/10 bg-white/5 backdrop-blur-xl shadow-[0_1px_0_0_rgba(255,255,255,0.06)]">
-      <nav class="mx-auto flex max-w-7xl items-center justify-between gap-6 px-4 py-3">
-        <a href={base} class="bsharp-logo font-semibold tracking-tight">B#</a>
-        <ul class="flex items-center gap-5 text-sm flex-1 justify-center">
-          <li><a class="nav-link nav-parser" href="#parser">Parser</a></li>
-          <li><a class="nav-link nav-formatter" href="#formatter">Formatter</a></li>
-          <li><a class="nav-link nav-analysis" href="#analysis">Analysis</a></li>
-          <li><a class="nav-link nav-roadmap" href="#roadmap">Roadmap</a></li>
-        </ul>
-        <div class="flex items-center gap-3">
-          <a class="btn btn-mc-primary" href="#install">Install</a>
-          <a class="btn btn-mc-outline" href={`${base}docs/`}>Docs</a>
-        </div>
-      </nav>
-    </header>
+    <div class="sticky top-0 z-40 border-b border-white/10 bg-white/5 backdrop-blur-xl shadow-[0_1px_0_0_rgba(255,255,255,0.06)]">
+      <Navbar buttons="default" base={base} />
+    </div>
     <main class="w-full">
       <slot />
     </main>
@@ -61,19 +50,45 @@ const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
       </svg>
     </button>
     <script type="module">
-      // Ensure FAB inherits palette from the current visible section
-      function updateFabPalette() {
-        const fab = document.getElementById('fab-back-to-top');
-        if (!fab) return;
-        // Hide FAB when in hero section
-        const heroSection = document.querySelector('.section');
-        const heroRect = heroSection?.getBoundingClientRect();
-        if (heroRect && heroRect.bottom > window.innerHeight * 0.8) {
-          fab.style.display = 'none';
-          return;
+      import { generateSimplePalette, applyPaletteToNavbar, updateNavbarFromSection } from '/src/scripts/palette-utils.js';
+
+      // Apply first palette immediately to hero section using shared utilities
+      function applyFirstPalette() {
+        const heroSection = document.querySelector('section[data-mc-seed="#00C9B9"]');
+        if (heroSection) {
+          // Generate palette using shared utility
+          const vars = generateSimplePalette('#00C9B9');
+          
+          // Apply to hero section
+          Object.entries(vars).forEach(([k, v]) => heroSection.style.setProperty(k, v));
+          
+          // Apply to navbar and global colors using shared utility
+          applyPaletteToNavbar(vars);
         }
+      }
+
+      // Apply first palette immediately when script loads
+      applyFirstPalette();
+
+      // Update palette on scroll and resize
+      function updateFabPalette() {
+        const fab = document.querySelector('.fab');
+        if (!fab) return;
+        
+        // Hide FAB when hero section is still dominant
+        const hero = document.querySelector('section[data-mc-seed="#00C9B9"]');
+        if (hero) {
+          const heroRect = hero.getBoundingClientRect();
+          if (heroRect && heroRect.bottom > window.innerHeight * 0.8) {
+            fab.style.display = 'none';
+            return;
+          }
+        }
+        
+        // Show FAB when scrolled down from hero
         fab.style.display = '';
-        // Find the section that’s currently most in view
+        
+        // Find the section that's currently most in view
         const sections = Array.from(document.querySelectorAll('section[data-mc-seed]'));
         let closest = null;
         let minDist = Infinity;
@@ -86,54 +101,29 @@ const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
           }
         });
         if (closest) {
-          const computed = getComputedStyle(closest);
-          const root = document.documentElement;
-          const navbar = document.querySelector('header');
-          
           // Update FAB colors
-          if (fab) {
-            fab.style.setProperty('--mc-surface-variant', computed.getPropertyValue('--mc-surface-variant'));
-            fab.style.setProperty('--mc-outline-variant', computed.getPropertyValue('--mc-outline-variant'));
-            fab.style.setProperty('--mc-primary', computed.getPropertyValue('--mc-primary'));
-          }
+          const computed = getComputedStyle(closest);
+          fab.style.setProperty('--mc-surface-variant', computed.getPropertyValue('--mc-surface-variant'));
+          fab.style.setProperty('--mc-outline-variant', computed.getPropertyValue('--mc-outline-variant'));
+          fab.style.setProperty('--mc-primary', computed.getPropertyValue('--mc-primary'));
           
-          // Update navbar colors for proper button styling
-          if (navbar) {
-            navbar.style.setProperty('--mc-primary', computed.getPropertyValue('--mc-primary'));
-            navbar.style.setProperty('--mc-on-primary', computed.getPropertyValue('--mc-on-primary'));
-            navbar.style.setProperty('--mc-secondary', computed.getPropertyValue('--mc-secondary'));
-            navbar.style.setProperty('--mc-surface', computed.getPropertyValue('--mc-surface'));
-            navbar.style.setProperty('--mc-surface-variant', computed.getPropertyValue('--mc-surface-variant'));
-            navbar.style.setProperty('--mc-outline', computed.getPropertyValue('--mc-outline'));
-            navbar.style.setProperty('--mc-outline-variant', computed.getPropertyValue('--mc-outline-variant'));
-          }
-          
-          // Update global background animation colors
-          root.style.setProperty('--bg-primary', computed.getPropertyValue('--mc-primary'));
-          root.style.setProperty('--bg-secondary', computed.getPropertyValue('--mc-secondary') || computed.getPropertyValue('--mc-primary'));
-          root.style.setProperty('--bg-tertiary', computed.getPropertyValue('--mc-tertiary') || computed.getPropertyValue('--mc-primary-container'));
-          // Update blob colors for aurora effect
-          root.style.setProperty('--blob-primary', computed.getPropertyValue('--mc-primary'));
-          root.style.setProperty('--blob-secondary', computed.getPropertyValue('--mc-secondary') || computed.getPropertyValue('--mc-primary-container'));
-          root.style.setProperty('--blob-tertiary', computed.getPropertyValue('--mc-tertiary') || computed.getPropertyValue('--mc-tertiary-container'));
+          // Update navbar colors using shared utility
+          updateNavbarFromSection(closest);
         }
       }
-      // Update palette on scroll and on load
+      
       window.addEventListener('scroll', updateFabPalette, { passive: true });
       window.addEventListener('resize', updateFabPalette, { passive: true });
-      document.addEventListener('DOMContentLoaded', updateFabPalette);
       
-      // Listen for Material Colors to be ready
+      // Listen for Material Colors to be ready (from external script)
       document.addEventListener('material-colors-ready', updateFabPalette);
-      
-      // Also check if colors are already available (in case event already fired)
-      if (document.querySelector('[data-mc-seed]')?.style.getPropertyValue('--mc-primary')) {
-        updateFabPalette();
-      }
       
       // Also update when dark mode toggles
       const mo = new MutationObserver(updateFabPalette);
       mo.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+      
+      // Try once immediately in case colors are already available
+      updateFabPalette();
     </script>
     <footer class="border-t border-slate-200/60 px-4 py-8 text-center text-xs text-slate-500 dark:border-slate-800/60">
       <p class="flex items-center justify-center gap-1">
@@ -146,116 +136,5 @@ const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
         <span>by Cybernomad</span>
       </p>
     </footer>
-    
-    <style>
-      /* B# logo glassy gradient animation */
-      .bsharp-logo {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #feca57 75%, #48c774 100%);
-        background-size: 400% 400%;
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
-        animation: gradient-shift 8s ease infinite;
-        filter: drop-shadow(0 0 20px rgba(102, 126, 234, 0.3));
-        backdrop-filter: blur(10px);
-        position: relative;
-      }
-      
-      .bsharp-logo::before {
-        content: 'B#';
-        position: absolute;
-        top: 0;
-        left: 0;
-        z-index: -1;
-        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
-        filter: blur(8px);
-      }
-      
-      @keyframes gradient-shift {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-      }
-      
-      /* Nav link colors */
-      .nav-link {
-        transition: all 0.3s ease;
-        position: relative;
-      }
-      
-      .nav-link::after {
-        content: '';
-        position: absolute;
-        bottom: -2px;
-        left: 0;
-        width: 0;
-        height: 2px;
-        transition: width 0.3s ease;
-      }
-      
-      .nav-parser { color: #4edea3; }
-      .nav-parser::after { background: #4edea3; }
-      .nav-parser:hover { color: #10B981; }
-      
-      .nav-formatter { color: #bbc3ff; }
-      .nav-formatter::after { background: #bbc3ff; }
-      .nav-formatter:hover { color: #3949AB; }
-      
-      .nav-analysis { color: #ffb870; }
-      .nav-analysis::after { background: #ffb870; }
-      .nav-analysis:hover { color: #FF9800; }
-      
-      .nav-roadmap { color: #fbbf24; }
-      .nav-roadmap::after { background: #fbbf24; }
-      .nav-roadmap:hover { color: #f59e0b; }
-      
-      .nav-link.active::after {
-        width: 100%;
-      }
-    </style>
-    
-    <script type="module">
-      // Update active nav link based on current section
-      function updateActiveNavLink() {
-        const sections = ['parser', 'formatter', 'analysis', 'roadmap'];
-        const navLinks = {
-          parser: document.querySelector('.nav-parser'),
-          formatter: document.querySelector('.nav-formatter'),
-          analysis: document.querySelector('.nav-analysis'),
-          roadmap: document.querySelector('.nav-roadmap')
-        };
-        
-        // Remove active class from all links
-        Object.values(navLinks).forEach(link => link?.classList.remove('active'));
-        
-        // Find current section
-        const scrollPosition = window.scrollY + 100;
-        let currentSection = '';
-        
-        sections.forEach(sectionId => {
-          const section = document.getElementById(sectionId);
-          if (section) {
-            const sectionTop = section.offsetTop;
-            const sectionHeight = section.offsetHeight;
-            
-            if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
-              currentSection = sectionId;
-            }
-          }
-        });
-        
-        // Add active class to current section's nav link
-        if (currentSection && navLinks[currentSection]) {
-          navLinks[currentSection].classList.add('active');
-        }
-      }
-      
-      // Update on scroll and load
-      window.addEventListener('scroll', updateActiveNavLink, { passive: true });
-      document.addEventListener('DOMContentLoaded', updateActiveNavLink);
-    </script>
   </body>
 </html>

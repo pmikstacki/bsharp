@@ -114,16 +114,17 @@ function updateAllSections() {
     const seed = section.dataset.mcSeed;
     if (seed) applyPaletteToSection(section, seed, isDark);
   });
-  
-  // Dispatch event to notify that Material Colors are ready
-  document.dispatchEvent(new CustomEvent('material-colors-ready'));
 }
 
-// Run on DOM ready and observe dark mode changes
+// Apply colors immediately when script loads, then dispatch event
+updateAllSections();
+
+// Dispatch event immediately after applying colors
+document.dispatchEvent(new CustomEvent('material-colors-ready'));
+
+// Also run on DOM ready for dynamic content
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', updateAllSections);
-} else {
-  updateAllSections();
 }
 
 // Observe dark mode toggles (class changes on html)
