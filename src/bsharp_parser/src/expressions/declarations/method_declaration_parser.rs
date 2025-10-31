@@ -3,7 +3,7 @@ use crate::parser::expressions::declarations::parameter_parser::parse_parameter_
 use crate::parser::expressions::declarations::type_parameter_parser::{
     parse_type_parameter_constraints_clauses, parse_type_parameter_list,
 };
-use crate::parser::expressions::primary_expression_parser::parse_expression;
+use crate::parser::expressions::primary_expression_parser::parse_expression_spanned;
 use crate::parser::expressions::statements::block_statement_parser::parse_block_statement;
 use crate::parser::identifier_parser::parse_identifier;
 use crate::parser::types::type_parser::parse_type_expression;
@@ -32,7 +32,10 @@ fn parse_constructor_initializer(input: Span) -> BResult<ConstructorInitializer>
             _, _, _, _, char, char, char, Expression,
         >(
             |j: Span| delimited(ws, tok_l_paren(), ws).parse(j),
-            |j: Span| delimited(ws, parse_expression, ws).parse(j),
+            |j: Span| {
+                let (r, s) = delimited(ws, parse_expression_spanned, ws).parse(j)?;
+                Ok((r, s.node))
+            },
             |j: Span| delimited(ws, tok_comma(), ws).parse(j),
             |j: Span| delimited(ws, tok_r_paren(), ws).parse(j),
             false,
@@ -126,7 +129,7 @@ fn parse_member_body(input: Span) -> BResult<Option<Statement>> {
             use nom::combinator::cut;
             let (i, _) = delimited(ws, tok_lambda(), ws).parse(i)?;
             let (i, (expr, _semi)) = cut((
-                delimited(ws, parse_expression, ws),
+                delimited(ws, parse_expression_spanned, ws).map(|s| s.node),
                 delimited(ws, tok_semicolon(), ws),
             ))
             .parse(i)?;

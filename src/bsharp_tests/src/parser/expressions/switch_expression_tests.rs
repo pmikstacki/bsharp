@@ -1,12 +1,12 @@
 // Tests for switch expressions
 
-use parser::expressions::primary_expression_parser::parse_expression;
+use parser::expressions::primary_expression_parser::parse_expression_spanned as parse_expression;
 use syntax::expressions::expression::{Expression, SwitchExpression};
 
 #[test]
 fn basic_switch_expression() {
     let code = "x switch { 1 => 10, _ => 20 }";
-    let (rest, expr) = parse_expression(code.into()).expect("parse ok");
+    let (rest, expr) = parse_expression(code.into()).map(|(rest, s)| (rest, s.node)).expect("parse ok");
     assert!(rest.trim().is_empty());
     match expr {
         Expression::SwitchExpression(se) => {
@@ -22,7 +22,7 @@ fn basic_switch_expression() {
 #[test]
 fn switch_when_clause() {
     let code = "x switch { > 0 when (1 + 1) == 2 => 1, _ => 0 }";
-    let (rest, expr) = parse_expression(code.into()).expect("parse ok");
+    let (rest, expr) = parse_expression(code.into()).map(|(rest, s)| (rest, s.node)).expect("parse ok");
     assert!(rest.trim().is_empty());
     match expr {
         Expression::SwitchExpression(se) => {

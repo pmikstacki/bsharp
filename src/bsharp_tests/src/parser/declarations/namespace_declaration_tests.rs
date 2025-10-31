@@ -2,7 +2,6 @@
 
 use parser::Parsable;
 use parser::expressions::declarations::namespace_declaration_parser::parse_namespace_declaration;
-use bsharp_parser::errors::BResult;
 use syntax::declarations::NamespaceDeclaration;
 
 // Local test helper to avoid import issues
@@ -13,7 +12,7 @@ fn test_simple_namespace_declaration() {
     let result = NamespaceDeclaration::parse(input.into());
     assert!(result.is_ok());
     let (_remaining, decl) = result.unwrap();
-    assert_eq!(decl.name.to_string(), "MyNamespace");
+    assert_eq!(decl.node.name.to_string(), "MyNamespace");
 }
 
 #[test]
@@ -22,7 +21,7 @@ fn test_qualified_namespace_declaration() {
     let result = NamespaceDeclaration::parse(input.into());
     assert!(result.is_ok());
     let (_remaining, decl) = result.unwrap();
-    assert_eq!(decl.name.to_string(), "System.Collections");
+    assert_eq!(decl.node.name.to_string(), "System.Collections");
 }
 
 #[test]
@@ -31,5 +30,5 @@ fn test_parse_namespace() {
     let result = NamespaceDeclaration::parse(code.into());
     assert!(result.is_ok(), "Expected successful parsing of namespace");
     let (_remaining, decl) = result.unwrap();
-    assert_eq!(decl.name.to_string(), "MyNs");
+    assert_eq!(decl.node.name.to_string(), "MyNs");
 }

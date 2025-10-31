@@ -3,7 +3,7 @@ use crate::parser::expressions::declarations::modifier_parser::parse_modifiers;
 use crate::parser::expressions::declarations::type_declaration_helpers::{
     parse_close_brace, parse_open_brace,
 };
-use crate::parser::expressions::primary_expression_parser::parse_expression;
+use crate::parser::expressions::primary_expression_parser::parse_expression_spanned;
 use crate::parser::identifier_parser::parse_identifier;
 use crate::parser::types::type_parser::parse_type_expression;
 use crate::errors::BResult;
@@ -117,7 +117,7 @@ fn parse_enum_member(input: Span) -> BResult<EnumMember> {
     // Parse optional value assignment
     let (input, value) = opt(preceded(
         delimited(ws, tok_assign(), ws).context("enum value assignment"),
-        delimited(ws, parse_expression, ws),
+        delimited(ws, parse_expression_spanned, ws).map(|s| s.node),
     ))
     .parse(input)?;
 

@@ -1,4 +1,4 @@
-use crate::parser::expressions::primary_expression_parser::parse_expression;
+use crate::parser::expressions::primary_expression_parser::parse_expression_spanned;
 use crate::parser::identifier_parser::parse_identifier;
 use crate::trivia::comment_parser::ws;
 use crate::errors::BResult;
@@ -46,7 +46,7 @@ fn parse_tuple_element(input: Span) -> BResult<TupleElement> {
     if let Ok((input, (name, _, value))) = (
         delimited(ws, parse_identifier, ws),
         delimited(ws, tok_colon(), ws),
-        delimited(ws, parse_expression, ws),
+        delimited(ws, parse_expression_spanned, ws).map(|s| s.node),
     )
         .parse(input)
     {
@@ -60,7 +60,7 @@ fn parse_tuple_element(input: Span) -> BResult<TupleElement> {
     }
 
     // Otherwise, parse as unnamed tuple element: expression
-    map(delimited(ws, parse_expression, ws), |value| TupleElement {
+    map(delimited(ws, parse_expression_spanned, ws).map(|s| s.node), |value| TupleElement {
         name: None,
         value,
     })

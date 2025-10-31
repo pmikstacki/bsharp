@@ -2,7 +2,7 @@
 use crate::custom_asserts::after_parse;
 use crate::custom_asserts::after_parse::CaseData;
 use bsharp_parser::bsharp::parse_csharp_source_strict;
-use bsharp_parser::statement_parser::parse_statement_ws;
+use bsharp_parser::statement_parser::parse_statement_ws_spanned;
 use bsharp_syntax::span::Span;
 /// Roslyn: SyntaxFactoryTests.UsingDirective (case 1)
 #[test]
@@ -306,7 +306,7 @@ fn unnecessary_semicolon_case_2() {
 fn unnecessary_semicolon_case_3() {
     let src = r#"{}"#;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     match r {
         Ok((rest, ast)) => {
             assert!(
@@ -492,7 +492,7 @@ fn parse_methods_keep_parse_options_in_the_tree_case_4() {
 fn parse_methods_keep_parse_options_in_the_tree_case_5() {
     let src = r#""#;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     match r {
         Ok((rest, ast)) => {
             assert!(

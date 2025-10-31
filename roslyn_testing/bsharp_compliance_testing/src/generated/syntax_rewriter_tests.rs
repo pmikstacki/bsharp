@@ -2,7 +2,7 @@
 use crate::custom_asserts::after_parse;
 use crate::custom_asserts::after_parse::CaseData;
 use bsharp_parser::bsharp::parse_csharp_source_strict;
-use bsharp_parser::statement_parser::parse_statement_ws;
+use bsharp_parser::statement_parser::parse_statement_ws_spanned;
 use bsharp_syntax::span::Span;
 /// Roslyn: SyntaxRewriterTests.TestSyntaxTreeForParsedSyntaxNode (case 1)
 #[test]
@@ -196,7 +196,7 @@ fn insert_node_should_not_lose_parse_options_case_2() {
 fn rewrite_missing_identifier_in_expression_statement_implicitly_created_syntax_tree() {
     let src = r#"if (true)"#;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     match r {
         Ok((rest, ast)) => {
             assert!(

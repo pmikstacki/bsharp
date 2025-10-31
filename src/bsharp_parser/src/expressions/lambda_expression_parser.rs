@@ -1,4 +1,4 @@
-use crate::parser::expressions::primary_expression_parser::parse_expression;
+use crate::parser::expressions::primary_expression_parser::parse_expression_spanned;
 use crate::parser::expressions::statements::block_statement_parser::{
     extract_statements_from_block, parse_block_statement,
 };
@@ -145,7 +145,7 @@ fn parse_lambda_body(input: Span) -> BResult<LambdaBody> {
                 LambdaBody::Block(statements)
             }),
             // Expression body: expression
-            map(parse_expression, LambdaBody::ExpressionSyntax),
+            map(parse_expression_spanned.map(|s| s.node), LambdaBody::ExpressionSyntax),
         )),
         |v| v,
     )

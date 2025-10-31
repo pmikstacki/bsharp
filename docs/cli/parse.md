@@ -1,3 +1,7 @@
+**`--emit-spans`**
+- When used with `--errors-json`, include absolute and relative spans in the JSON under `error.spans`.
+- No effect unless `--errors-json` is set.
+
 # Parse Command
 
 The `parse` command parses C# source code and prints a textual AST tree representation to stdout.
@@ -7,7 +11,7 @@ The `parse` command parses C# source code and prints a textual AST tree represen
 ## Usage
 
 ```bash
-bsharp parse <INPUT> [--errors-json] [--no-color] [--lenient]
+bsharp parse --input <INPUT> [--errors-json] [--emit-spans] [--no-color] [--lenient]
 ```
 
 ### Arguments
@@ -81,6 +85,12 @@ public clas MyClass { }
 - Context stack showing where parsing failed
 - Expected vs. actual input
 - Helpful error messages
+
+#### Pretty error formatting
+
+The parser integrates with the `miette` crate for rich, labeled diagnostics in pretty (non-JSON) mode. CLI parse errors are formatted from the underlying `ErrorTree` with spans and context information for easier debugging.
+
+For programmatic formatting from parser code, see `bsharp_parser::errors::to_miette_report` which converts an `ErrorTree` to a `miette::Report` with source code attached.
 
 ### File Errors
 

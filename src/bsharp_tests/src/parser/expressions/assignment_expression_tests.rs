@@ -1,6 +1,6 @@
 // Tests for parsing assignment expressions
 
-use parser::expressions::primary_expression_parser::parse_expression;
+use parser::expressions::primary_expression_parser::parse_expression_spanned as parse_expression;
 use syntax::Identifier;
 use syntax::expressions::BinaryOperator;
 use syntax::expressions::assignment_expression::AssignmentExpression;
@@ -8,7 +8,7 @@ use syntax::expressions::expression::Expression;
 use syntax::expressions::literal::Literal;
 
 fn parse_assignment_expr_helper(code: &str) -> Result<AssignmentExpression, String> {
-    match parse_expression(code.into()) {
+    match parse_expression(code.into()).map(|(rest, s)| (rest, s.node)) {
         Ok((remaining, expr)) if remaining.fragment().trim().is_empty() => match expr {
             Expression::Assignment(boxed_assignment_expr) => Ok(*boxed_assignment_expr),
             _ => Err(format!("Expected Expression::Assignment, got {:?}", expr)),

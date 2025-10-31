@@ -3,7 +3,7 @@ use crate::custom_asserts::after_parse;
 use crate::custom_asserts::after_parse::CaseData;
 use crate::custom_asserts::roslyn_asserts::ExpectedDiagnostics;
 use bsharp_parser::bsharp::parse_csharp_source_strict;
-use bsharp_parser::statement_parser::parse_statement_ws;
+use bsharp_parser::statement_parser::parse_statement_ws_spanned;
 use bsharp_syntax::span::Span;
 /// Roslyn: NullableParsingTests.PartialAccessibilityAndNullableArray (case 1)
 #[test]
@@ -837,7 +837,7 @@ fn declaration_pattern_nullable_type() {
         items: vec![],
     });
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -886,7 +886,7 @@ fn declaration_pattern_array_of_nullable_type() {
     let src = r#"switch (e) { case T?[] t: break; }"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -935,7 +935,7 @@ fn declaration_pattern_nullable_array_of_array() {
     let src = r#"switch (e) { case T[]?[] t: break; }"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -1038,7 +1038,7 @@ fn nullable_array_tuple_type() {
     let src = r#"(object[]?, A[]?) t;"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -1087,7 +1087,7 @@ fn nullable_array_using() {
     let src = r#"using (A[]? a = b) { }"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -1680,7 +1680,7 @@ fn is_expression_of_nullable_type_in_statement() {
     let src = r#"_ = x is Type?;"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -1729,7 +1729,7 @@ fn declaration_pattern_of_nullable_type_in_statement() {
     let src = r#"_ = x is Type? t;"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {

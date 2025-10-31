@@ -1,5 +1,5 @@
 use crate::parser::expressions::primary_expression_parser::{
-    parse_expression, parse_primary_expression,
+    parse_expression_spanned, parse_primary_expression_spanned,
 };
 use crate::parser::identifier_parser::parse_identifier;
 use crate::parser::keywords::expression_keywords::kw_with;
@@ -73,7 +73,8 @@ fn parse_invocation_argument(input: Span) -> BResult<Argument> {
     };
 
     // Expression
-    let (input, expr) = delimited(ws, parse_expression, ws).parse(input)?;
+    let (input, expr_s) = delimited(ws, parse_expression_spanned, ws).parse(input)?;
+    let expr = expr_s.node;
 
     Ok((
         input,
@@ -121,7 +122,7 @@ fn enhanced_indexing(input: Span) -> BResult<PostfixOpKind> {
     map(
         delimited(
             delimited(ws, tok_l_brack(), ws),
-            cut(delimited(ws, parse_expression, ws)),
+            cut(delimited(ws, parse_expression_spanned, ws).map(|s| s.node)),
             cut(delimited(ws, tok_r_brack(), ws)),
         ),
         |expr| PostfixOpKind::Indexing(Box::new(expr)),
@@ -145,7 +146,7 @@ fn enhanced_null_conditional_access(input: Span) -> BResult<PostfixOpKind> {
             map(
                 delimited(
                     delimited(ws, (nom_char('?'), tok_l_brack()), ws),
-                    cut(delimited(ws, parse_expression, ws)),
+                    cut(delimited(ws, parse_expression_spanned, ws).map(|s| s.node)),
                     cut(delimited(ws, tok_r_brack(), ws)),
                 ),
                 |expr| PostfixOpKind::NullConditionalIndexing(Box::new(expr)),
@@ -192,7 +193,7 @@ fn enhanced_with_expression(input: Span) -> BResult<PostfixOpKind> {
                         (
                             delimited(ws, parse_identifier, ws),
                             delimited(ws, tok_assign(), ws),
-                            delimited(ws, parse_expression, ws),
+                            delimited(ws, parse_expression_spanned, ws).map(|s| s.node),
                         ),
                         |(id, _, expr)| {
                             let name = match id {
@@ -221,11 +222,11 @@ fn parse_with_indexer_assignment(input: Span) -> BResult<WithInitializerEntry> {
             delimited(ws, tok_l_brack(), ws),
             separated_list1(
                 delimited(ws, tok_comma(), ws),
-                delimited(ws, parse_expression, ws),
+                delimited(ws, parse_expression_spanned, ws).map(|s| s.node),
             ),
             cut(delimited(ws, tok_r_brack(), ws)),
             cut(delimited(ws, tok_assign(), ws)),
-            cut(delimited(ws, parse_expression, ws)),
+            cut(delimited(ws, parse_expression_spanned, ws).map(|s| s.node)),
         ),
         |(_, indices, _, _, value)| WithInitializerEntry::Indexer { indices, value },
     )
@@ -322,8 +323,8 @@ pub(crate) fn parse_dotted_member_expression(input: Span) -> BResult<Expression>
 
 /// Parse a postfix-expression-or-higher: primary-expression followed by zero or more postfix operations
 pub(crate) fn parse_postfix_expression_or_higher(input: Span) -> BResult<Expression> {
-    let (mut cur, base) = delimited(ws, parse_primary_expression, ws).parse(input)?;
-    let mut expr = base;
+    let (mut cur, base_s) = delimited(ws, parse_primary_expression_spanned, ws).parse(input)?;
+    let mut expr = base_s.node;
     loop {
         // Detect if a postfix starter is present; if not, break.
         let has_starter =

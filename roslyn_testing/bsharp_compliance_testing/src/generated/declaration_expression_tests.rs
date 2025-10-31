@@ -2,7 +2,7 @@
 use crate::custom_asserts::after_parse;
 use crate::custom_asserts::after_parse::CaseData;
 use crate::custom_asserts::roslyn_asserts::ExpectedDiagnostics;
-use bsharp_parser::statement_parser::parse_statement_ws;
+use bsharp_parser::statement_parser::parse_statement_ws_spanned;
 use bsharp_syntax::span::Span;
 /// Roslyn: DeclarationExpressionTests.NullaboutOutDeclaration (case 1)
 #[test]
@@ -10,7 +10,7 @@ fn nullabout_out_declaration() {
     let src = r#"M(out int? x);"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -59,7 +59,7 @@ fn nullable_type_test_01() {
     let src = r#"if (e is int?) {}"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -108,7 +108,7 @@ fn nullable_type_test_02() {
     let src = r#"if (e is int ? true : false) {}"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -157,7 +157,7 @@ fn nullable_type_test_03() {
     let src = r#"if (e is int? x) {}"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -206,7 +206,7 @@ fn nullable_type_test_03_2() {
     let src = r#"if (e is int ? x : y) {}"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -255,7 +255,7 @@ fn nullable_type_test_04() {
     let src = r#"if (e is int x ? true : false) {}"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -304,7 +304,7 @@ fn nullable_type_test_05() {
     let src = r#"ref object x = o1 is string ? ref o2 : ref o3;"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -353,7 +353,7 @@ fn nullable_type_test_06() {
     let src = r#"ref object x = ref o1 is string ? ref o2 : ref o3;"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -402,7 +402,7 @@ fn underscore_in_old_foreach_01() {
     let src = r#"foreach (int _ in e) {}"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -451,7 +451,7 @@ fn underscore_in_old_foreach_02() {
     let src = r#"foreach (var _ in e) {}"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -500,7 +500,7 @@ fn new_foreach_01() {
     let src = r#"foreach ((var x, var y) in e) {}"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -549,7 +549,7 @@ fn new_foreach_02() {
     let src = r#"foreach ((int x, int y) in e) {}"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -598,7 +598,7 @@ fn new_foreach_03() {
     let src = r#"foreach ((int x, int y) v in e) {}"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -647,7 +647,7 @@ fn new_foreach_04() {
     let src = r#"foreach ((1, 2) in e) {}"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -696,7 +696,7 @@ fn new_foreach_05() {
     let src = r#"foreach (var (x, y) in e) {}"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -745,7 +745,7 @@ fn new_foreach_06() {
     let src = r#"foreach ((int x, var (y, z)) in e) {}"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -794,7 +794,7 @@ fn new_foreach_07() {
     let src = r#"foreach ((var (x, y), z) in e) {}"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -846,7 +846,7 @@ fn new_foreach_08() {
         items: vec![],
     });
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -895,7 +895,7 @@ fn new_foreach_09() {
     let src = r#"foreach (_ in e) {}"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -947,7 +947,7 @@ fn new_foreach_10() {
         items: vec![],
     });
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -996,7 +996,7 @@ fn tuple_on_the_left() {
     let src = r#"(1, 2) = e;"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -1045,7 +1045,7 @@ fn out_tuple_01() {
     let src = r#"M(out (1, 2));"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -1094,7 +1094,7 @@ fn out_tuple_02() {
     let src = r#"M(out (x, y));"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -1143,7 +1143,7 @@ fn out_tuple_03() {
     let src = r#"M(out (1, 2).Field);"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -1192,7 +1192,7 @@ fn out_tuple_04() {
     let src = r#"M(out (int x, int y));"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -1241,7 +1241,7 @@ fn out_tuple_05() {
     let src = r#"M(out (var x, var y));"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -1290,7 +1290,7 @@ fn named_tuple_on_the_left() {
     let src = r#"(x: 1, y: 2) = e;"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -1339,7 +1339,7 @@ fn invoke_method_named_var() {
     let src = r#"var(1, 2) = e;"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {

@@ -1,10 +1,10 @@
 // Parser for for loops
 
 use crate::parser::expressions::declarations::variable_declaration_parser::parse_variable_declarator;
-use crate::parser::expressions::primary_expression_parser::parse_expression;
+use crate::parser::expressions::primary_expression_parser::parse_expression_spanned;
 use crate::parser::keywords::iteration_keywords::kw_for;
 use crate::parser::keywords::modifier_keywords::kw_const;
-use crate::parser::statement_parser::parse_statement_ws;
+use crate::parser::statement_parser::parse_statement_ws_spanned;
 use crate::parser::types::type_parser::parse_type_expression;
 use crate::trivia::comment_parser::ws;
 use crate::errors::BResult;
@@ -50,7 +50,10 @@ fn parse_for_initializer(input: Span) -> BResult<ForInitializer> {
         map(
             separated_list1(
                 delimited(ws, tok_comma(), ws),
-                delimited(ws, parse_expression, ws),
+                delimited(ws, |i| {
+                    let (r, s) = parse_expression_spanned(i)?;
+                    Ok((r, s.node))
+                }, ws),
             )
             .context("expression list"),
             ForInitializer::Expressions,
@@ -78,7 +81,10 @@ pub fn parse_for_statement(input: Span) -> BResult<Statement> {
             .parse(input)?;
 
         // 2. Parse condition (optional) then semicolon
-        let (input, condition) = opt(delimited(ws, parse_expression, ws))
+        let (input, condition) = opt(delimited(ws, |i| {
+            let (r, s) = parse_expression_spanned(i)?;
+            Ok((r, s.node))
+        }, ws))
             .context("for loop condition")
             .parse(input)?;
         let (input, _) = delimited(ws, tok_semicolon(), ws)
@@ -86,7 +92,13 @@ pub fn parse_for_statement(input: Span) -> BResult<Statement> {
             .parse(input)?;
 
         // 3. Parse iterators list (comma-separated expressions)
-        let (input, iterators) = parse_list0(parse_expression, tok_comma())
+        let (input, iterators) = parse_list0(
+            |i| {
+                let (r, s) = parse_expression_spanned(i)?;
+                Ok((r, s.node))
+            },
+            tok_comma(),
+        )
             .context("for loop iterators")
             .parse(input)?;
 
@@ -96,7 +108,8 @@ pub fn parse_for_statement(input: Span) -> BResult<Statement> {
             .parse(input)?;
 
         // 5. Parse body statement
-        let (input, body) = cut(delimited(ws, parse_statement_ws, ws))
+        let (input, body) = cut(delimited(ws, parse_statement_ws_spanned, ws))
+            .map(|s| s.node)
             .context("for loop body ")
             .parse(input)?;
 

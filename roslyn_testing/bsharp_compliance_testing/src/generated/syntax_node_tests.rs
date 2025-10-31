@@ -2,7 +2,7 @@
 use crate::custom_asserts::after_parse;
 use crate::custom_asserts::after_parse::CaseData;
 use bsharp_parser::bsharp::parse_csharp_source_strict;
-use bsharp_parser::statement_parser::parse_statement_ws;
+use bsharp_parser::statement_parser::parse_statement_ws_spanned;
 use bsharp_syntax::span::Span;
 /// Roslyn: SyntaxNodeTests.TestQualifiedNameSyntaxWith (case 1)
 #[test]
@@ -452,7 +452,7 @@ fn replace_node_in_list_with_multiple_case_3() {
 fn replace_non_list_node_with_multiple() {
     let src = r#"if (a < b) m(c)"#;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     match r {
         Ok((rest, ast)) => {
             assert!(
@@ -478,7 +478,7 @@ fn replace_non_list_node_with_multiple() {
 fn replace_non_list_node_with_multiple_case_2() {
     let src = r#"m1(x)"#;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     match r {
         Ok((rest, ast)) => {
             assert!(
@@ -504,7 +504,7 @@ fn replace_non_list_node_with_multiple_case_2() {
 fn replace_non_list_node_with_multiple_case_3() {
     let src = r#"m2(y)"#;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     match r {
         Ok((rest, ast)) => {
             assert!(
@@ -611,7 +611,7 @@ fn insert_nodes_in_list_case_3() {
 fn insert_nodes_relative_to_non_list_node() {
     let src = r#"if (a < b) m(c)"#;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     match r {
         Ok((rest, ast)) => {
             assert!(
@@ -637,7 +637,7 @@ fn insert_nodes_relative_to_non_list_node() {
 fn insert_nodes_relative_to_non_list_node_case_2() {
     let src = r#"m1(x)"#;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     match r {
         Ok((rest, ast)) => {
             assert!(
@@ -663,7 +663,7 @@ fn insert_nodes_relative_to_non_list_node_case_2() {
 fn insert_nodes_relative_to_non_list_node_case_3() {
     let src = r#"m2(y)"#;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     match r {
         Ok((rest, ast)) => {
             assert!(
@@ -689,7 +689,7 @@ fn insert_nodes_relative_to_non_list_node_case_3() {
 fn replace_statement_in_list_with_multiple() {
     let src = r#"{ var x = 10; var y = 20; }"#;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     match r {
         Ok((rest, ast)) => {
             assert!(
@@ -715,7 +715,7 @@ fn replace_statement_in_list_with_multiple() {
 fn replace_statement_in_list_with_multiple_case_2() {
     let src = r#"var z = 30; "#;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     match r {
         Ok((rest, ast)) => {
             assert!(
@@ -741,7 +741,7 @@ fn replace_statement_in_list_with_multiple_case_2() {
 fn replace_statement_in_list_with_multiple_case_3() {
     let src = r#"var q = 40; "#;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     match r {
         Ok((rest, ast)) => {
             assert!(
@@ -767,7 +767,7 @@ fn replace_statement_in_list_with_multiple_case_3() {
 fn insert_statements_in_list() {
     let src = r#"{ var x = 10; var y = 20; }"#;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     match r {
         Ok((rest, ast)) => {
             assert!(
@@ -793,7 +793,7 @@ fn insert_statements_in_list() {
 fn insert_statements_in_list_case_2() {
     let src = r#"var z = 30; "#;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     match r {
         Ok((rest, ast)) => {
             assert!(
@@ -819,7 +819,7 @@ fn insert_statements_in_list_case_2() {
 fn insert_statements_in_list_case_3() {
     let src = r#"var q = 40; "#;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     match r {
         Ok((rest, ast)) => {
             assert!(
@@ -1527,7 +1527,7 @@ fn remove_last_node_in_separated_list_keep_exterior_trivia() {
 fn remove_node_keep_no_trivia() {
     let src = r#"{ a; b; /* trivia */ c }"#;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     match r {
         Ok((rest, ast)) => {
             assert!(
@@ -1553,7 +1553,7 @@ fn remove_node_keep_no_trivia() {
 fn remove_node_keep_exterior_trivia() {
     let src = r#"{ a; b; /* trivia */ c }"#;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     match r {
         Ok((rest, ast)) => {
             assert!(

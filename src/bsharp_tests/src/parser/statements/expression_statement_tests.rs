@@ -2,7 +2,7 @@
 // Content moved from src/parser/statements/expression_statement_parser.rs
 
 use parser::expressions::statements::expression_statement_parser::parse_expression_statement;
-use parser::statement_parser::parse_statement;
+use parser::statement_parser::parse_statement_ws_spanned;
 use parser::syntax::test_helpers::parse_all;
 use syntax::expressions::BinaryOperator;
 use syntax::expressions::assignment_expression::AssignmentExpression;
@@ -74,10 +74,10 @@ fn test_parse_expression_statement() {
 // Helper function from statement_tests.rs
 fn assert_statement_parses(code: &str, expected: Statement) {
     let code_trimmed = code.trim();
-    match parse_all(parse_statement, code_trimmed.into()) {
+    match parse_all(parse_statement_ws_spanned, code_trimmed.into()) {
         Ok((_, parsed_statement)) => {
             assert_eq!(
-                parsed_statement, expected,
+                parsed_statement.node, expected,
                 "Parsed statement does not match expected for code: {}\n",
                 code_trimmed
             );

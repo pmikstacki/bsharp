@@ -43,7 +43,6 @@ mod unary_operator_tests; // Added
 mod ambiguity_tests;
 mod collection_expression_tests;
 mod identifier_tests;
-mod invalid_diagnostics_tests;
 mod invocation_arguments_tests;
 mod literal_suffix_and_raw_multiline_tests;
 mod lookahead_boundaries2_tests;

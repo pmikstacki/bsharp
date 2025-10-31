@@ -3,7 +3,7 @@ use crate::custom_asserts::after_parse;
 use crate::custom_asserts::after_parse::CaseData;
 use crate::custom_asserts::roslyn_asserts::ExpectedDiagnostics;
 use bsharp_parser::bsharp::parse_csharp_source_strict;
-use bsharp_parser::statement_parser::parse_statement_ws;
+use bsharp_parser::statement_parser::parse_statement_ws_spanned;
 use bsharp_syntax::span::Span;
 /// Roslyn: ValueTupleTests.SimpleTuple (case 1)
 #[test]
@@ -416,7 +416,7 @@ fn ternary_versus_declaration_01() {
     let src = r#"return (i, isValid ? Errors.IsValid : Errors.HasErrors);"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -465,7 +465,7 @@ fn ternary_versus_declaration_02() {
     let src = r#"return (isValid ? Errors.IsValid : Errors.HasErrors, i);"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -514,7 +514,7 @@ fn ternary_versus_declaration_03() {
     let src = r#"return (i, a < b, c > d);"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -563,7 +563,7 @@ fn ternary_versus_declaration_04() {
     let src = r#"return (i, a < b, c > d.x);"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -612,7 +612,7 @@ fn ternary_versus_declaration_05() {
     let src = r#"return (i, a < b, c > d && x);"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {

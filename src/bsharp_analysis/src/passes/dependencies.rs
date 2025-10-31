@@ -55,11 +55,11 @@ fn add_class_dependencies(
     graph.add_node(class_id, DependencyNodeType::Class);
 
     for bt in &class.base_types {
-        if let Some(target) = type_name(bt) {
-            if let Some(to_id) = resolve_first_id(symbols, &target) {
-                graph.add_node(to_id, DependencyNodeType::Class);
-                graph.add_dependency(class_id, to_id, DependencyType::Inheritance);
-            }
+        if let Some(target) = type_name(bt)
+            && let Some(to_id) = resolve_first_id(symbols, &target)
+        {
+            graph.add_node(to_id, DependencyNodeType::Class);
+            graph.add_dependency(class_id, to_id, DependencyType::Inheritance);
         }
     }
 
@@ -67,28 +67,28 @@ fn add_class_dependencies(
     for member in &class.body_declarations {
         match member {
             ClassBodyDeclaration::Field(field) => {
-                if let Some(target) = type_name(&field.field_type) {
-                    if let Some(to_id) = resolve_first_id(symbols, &target) {
-                        graph.add_node(to_id, DependencyNodeType::Class);
-                        graph.add_dependency(class_id, to_id, DependencyType::FieldAccess);
-                    }
+                if let Some(target) = type_name(&field.field_type)
+                    && let Some(to_id) = resolve_first_id(symbols, &target)
+                {
+                    graph.add_node(to_id, DependencyNodeType::Class);
+                    graph.add_dependency(class_id, to_id, DependencyType::FieldAccess);
                 }
             }
             ClassBodyDeclaration::Method(method) => {
                 // Return type usage
-                if let Some(target) = type_name(&method.return_type) {
-                    if let Some(to_id) = resolve_first_id(symbols, &target) {
-                        graph.add_node(to_id, DependencyNodeType::Class);
-                        graph.add_dependency(class_id, to_id, DependencyType::Usage);
-                    }
+                if let Some(target) = type_name(&method.return_type)
+                    && let Some(to_id) = resolve_first_id(symbols, &target)
+                {
+                    graph.add_node(to_id, DependencyNodeType::Class);
+                    graph.add_dependency(class_id, to_id, DependencyType::Usage);
                 }
                 // Param types
                 for p in &method.parameters {
-                    if let Some(target) = type_name(&p.parameter_type) {
-                        if let Some(to_id) = resolve_first_id(symbols, &target) {
-                            graph.add_node(to_id, DependencyNodeType::Class);
-                            graph.add_dependency(class_id, to_id, DependencyType::Usage);
-                        }
+                    if let Some(target) = type_name(&p.parameter_type)
+                        && let Some(to_id) = resolve_first_id(symbols, &target)
+                    {
+                        graph.add_node(to_id, DependencyNodeType::Class);
+                        graph.add_dependency(class_id, to_id, DependencyType::Usage);
                     }
                 }
                 // Invocations in body

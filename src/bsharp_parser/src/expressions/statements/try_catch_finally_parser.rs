@@ -1,10 +1,10 @@
 // Parser for try-catch-finally statements
 
-use crate::parser::expressions::primary_expression_parser::parse_expression;
+use crate::parser::expressions::primary_expression_parser::parse_expression_spanned;
 use crate::parser::identifier_parser::parse_identifier;
 use crate::parser::keywords::exception_and_safety_keywords::{kw_catch, kw_finally, kw_try};
 use crate::parser::keywords::selection_and_switch_keywords::kw_when;
-use crate::parser::statement_parser::parse_statement_ws;
+use crate::parser::statement_parser::parse_statement_ws_spanned;
 use crate::parser::types::type_parser::parse_type_expression;
 use crate::trivia::comment_parser::ws;
 use crate::errors::BResult;
@@ -41,11 +41,13 @@ pub fn parse_catch_clause(input: Span) -> BResult<CatchClause> {
                 delimited(ws, kw_when(), ws),
                 delimited(
                     delimited(ws, tok_l_paren(), ws),
-                    delimited(ws, parse_expression, ws),
+                    delimited(ws, parse_expression_spanned, ws).map(|s| s.node),
                     cut(delimited(ws, tok_r_paren(), ws)),
                 ),
             )),
-            cut(delimited(ws, parse_statement_ws, ws)).context("catch block"),
+            cut(delimited(ws, parse_statement_ws_spanned, ws))
+                .map(|s| s.node)
+                .context("catch block"),
         ),
         |(_catch_kw, exception_info, when_clause, block_stmt)| {
             let (exception_type, exception_variable) = match exception_info {
@@ -69,7 +71,9 @@ pub fn parse_finally_clause(input: Span) -> BResult<FinallyClause> {
     map(
         (
             kw_finally().context("finally keyword"),
-            cut(delimited(ws, parse_statement_ws, ws)).context("finally block"),
+            cut(delimited(ws, parse_statement_ws_spanned, ws))
+                .map(|s| s.node)
+                .context("finally block"),
         ),
         |(_finally_kw, block_stmt)| FinallyClause {
             block: Box::new(block_stmt),
@@ -84,7 +88,9 @@ pub fn parse_try_statement(input: Span) -> BResult<Statement> {
     map(
         (
             kw_try().context("try keyword"),
-            cut(delimited(ws, parse_statement_ws, ws)).context("try block"),
+            cut(delimited(ws, parse_statement_ws_spanned, ws))
+                .map(|s| s.node)
+                .context("try block"),
             many0(delimited(ws, parse_catch_clause, ws)).context("zero or more catch clauses"),
             opt(delimited(ws, parse_finally_clause, ws)).context("optional finally clause"),
         ),

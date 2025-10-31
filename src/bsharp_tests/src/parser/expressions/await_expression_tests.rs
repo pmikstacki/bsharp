@@ -1,10 +1,10 @@
 // Tests for parsing await expressions
 
-use parser::expressions::primary_expression_parser::parse_expression;
+use parser::expressions::primary_expression_parser::parse_expression_spanned as parse_expression;
 use syntax::expressions::expression::Expression;
 
 fn parse_await_expr(code: &str) -> Result<Expression, String> {
-    match parse_expression(code.into()) {
+    match parse_expression(code.into()).map(|(rest, s)| (rest, s.node)) {
         Ok((remaining, expr)) => {
             if remaining.trim().is_empty() {
                 Ok(expr)

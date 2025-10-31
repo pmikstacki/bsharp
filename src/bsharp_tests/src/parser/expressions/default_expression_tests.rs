@@ -1,7 +1,7 @@
 // Tests for parsing default expressions
 
 use parser::expressions::default_expression_parser::parse_default_expression;
-use parser::expressions::primary_expression_parser::parse_expression;
+use parser::expressions::primary_expression_parser::parse_expression_spanned as parse_expression;
 use syntax::expressions::expression::Expression;
 use syntax::types::{PrimitiveType, Type};
 
@@ -17,7 +17,7 @@ fn parse_default_expr_helper(code: &str) -> Result<Expression, String> {
 }
 
 fn parse_expr_helper(code: &str) -> Result<Expression, String> {
-    match parse_expression(code.into()) {
+    match parse_expression(code.into()).map(|(rest, s)| (rest, s.node)) {
         Ok((remaining, expr)) if remaining.fragment().trim().is_empty() => Ok(expr),
         Ok((remaining, _)) => Err(format!(
             "Didn't consume all input. Remaining: '{}'",

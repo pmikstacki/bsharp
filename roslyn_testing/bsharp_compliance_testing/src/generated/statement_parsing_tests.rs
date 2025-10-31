@@ -3,7 +3,7 @@ use crate::custom_asserts::after_parse;
 use crate::custom_asserts::after_parse::CaseData;
 use crate::custom_asserts::roslyn_asserts::ExpectedDiagnostics;
 use bsharp_parser::bsharp::parse_csharp_source_strict;
-use bsharp_parser::statement_parser::parse_statement_ws;
+use bsharp_parser::statement_parser::parse_statement_ws_spanned;
 use bsharp_syntax::span::Span;
 /// Roslyn: StatementParsingTests.ParsePrivate (case 1)
 #[test]
@@ -14,7 +14,7 @@ fn parse_private() {
         items: vec![],
     });
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -63,7 +63,7 @@ fn using_var_with_declaration_tree() {
     let src = r#"using T a = b;"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -115,7 +115,7 @@ fn using_var_with_invalid_declaration() {
         items: vec![],
     });
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -164,7 +164,7 @@ fn using_var_with_var_declaration_tree() {
     let src = r#"using var a = b;"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -213,7 +213,7 @@ fn await_using_var_with_declaration_tree() {
     let src = r#"await using T a = b;"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -262,7 +262,7 @@ fn await_using_var_with_var_declaration_tree() {
     let src = r#"await using var a = b;"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -377,7 +377,7 @@ fn await_using_var_with_var_and_no_using_declaration_tree() {
         items: vec![],
     });
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -426,7 +426,7 @@ fn using_var_with_declaration_multiple_variables_tree() {
     let src = r#"using T a = b, c = d;"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -475,7 +475,7 @@ fn using_var_special_case_1_tree() {
     let src = r#"using var x = f ? a : b;"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -524,7 +524,7 @@ fn using_var_special_case_2_tree() {
     let src = r#"using f ? x = a;"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -573,7 +573,7 @@ fn using_var_special_case_3_tree() {
     let src = r#"using f? x, y;"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -622,7 +622,7 @@ fn using_var_ref_tree() {
     let src = r#"using ref int x = ref y;"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -671,7 +671,7 @@ fn using_var_ref_readonly_tree() {
     let src = r#"using ref readonly int x = ref y;"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -720,7 +720,7 @@ fn using_var_ref_var_tree() {
     let src = r#"using ref var x = ref y;"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -769,7 +769,7 @@ fn using_var_ref_var_is_ytree() {
     let src = r#"using ref var x = y;"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -821,7 +821,7 @@ fn using_var_readonly_multiple_declarations() {
         items: vec![],
     });
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -873,7 +873,7 @@ fn null_exception_in_labeled_statement() {
         items: vec![],
     });
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -925,7 +925,7 @@ fn parse_else_without_preceding_if_statement() {
         items: vec![],
     });
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -977,7 +977,7 @@ fn parse_else_and_else_without_preceding_if_statement() {
         items: vec![],
     });
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -1029,7 +1029,7 @@ fn parse_subsequent_else_without_preceding_if_statement() {
         items: vec![],
     });
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -1081,7 +1081,7 @@ fn parse_else_keyword_placed_as_if_embedded_statement() {
         items: vec![],
     });
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -1133,7 +1133,7 @@ fn parse_switch_01() {
         items: vec![],
     });
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -1185,7 +1185,7 @@ fn parse_switch_02() {
         items: vec![],
     });
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -1234,7 +1234,7 @@ fn parse_switch_03() {
     let src = r#"switch (a: 0, b: 4) {}"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -1286,7 +1286,7 @@ fn parse_switch_04() {
         items: vec![],
     });
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -1335,7 +1335,7 @@ fn parse_create_nullable_tuple_01() {
     let src = r#"_ = new (int, int)? {};"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -1387,7 +1387,7 @@ fn parse_create_nullable_tuple_02() {
         items: vec![],
     });
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -1436,7 +1436,7 @@ fn parse_pointer_to_array() {
     let src = r#"int []* p;"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -1485,7 +1485,7 @@ fn parse_pointer_to_nullable_type() {
     let src = r#"int?* p;"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -1534,7 +1534,7 @@ fn parse_new_nullable_with_initializer() {
     let src = r#"_ = new int? {};"#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -1799,7 +1799,7 @@ fn parse_switch_statement_with_unclosed_recursive_pattern_1() {
         items: vec![],
     });
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -1858,7 +1858,7 @@ fn parse_switch_statement_with_unclosed_recursive_pattern_2() {
         items: vec![],
     });
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -1917,7 +1917,7 @@ fn parse_switch_statement_with_unclosed_recursive_pattern_3() {
         items: vec![],
     });
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -1976,7 +1976,7 @@ fn parse_switch_statement_with_unclosed_list_pattern_1() {
         items: vec![],
     });
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -2035,7 +2035,7 @@ fn parse_switch_statement_with_unclosed_list_pattern_2() {
         items: vec![],
     });
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -2094,7 +2094,7 @@ fn parse_switch_statement_with_unclosed_list_pattern_3() {
         items: vec![],
     });
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -2154,7 +2154,7 @@ fn parse_switch_statement_with_unclosed_pattern_and_arrow() {
         items: vec![],
     });
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -2209,7 +2209,7 @@ fn switch_statement_with_nullable_type_in_pattern_1() {
                 "#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -2267,7 +2267,7 @@ fn switch_statement_with_nullable_type_in_pattern_2() {
         items: vec![],
     });
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -2322,7 +2322,7 @@ fn switch_statement_with_nullable_type_in_pattern_3() {
                 "#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -2377,7 +2377,7 @@ fn switch_statement_with_nullable_type_in_pattern_4() {
                 "#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {
@@ -2432,7 +2432,7 @@ fn switch_statement_with_nullable_type_in_pattern_5() {
                 "#;
     let expected: Option<ExpectedDiagnostics> = None;
     let span = Span::new(src);
-    let r = parse_statement_ws(span);
+    let r = parse_statement_ws_spanned(span).map(|(rest, s)| (rest, s.node));
     if let Some(expected) = expected {
         match r {
             Ok((rest, ast)) => {

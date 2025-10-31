@@ -10,6 +10,8 @@ use nom::{
     sequence::{pair, preceded},
 };
 use syntax::Identifier;
+use crate::span::Spanned;
+use crate::span_ext::ParserExt as _;
 
 // Parse a C# identifier (letters, digits, underscore, but must start with letter or underscore)
 pub fn parse_identifier(input: Span<'_>) -> BResult<'_, Identifier> {
@@ -47,6 +49,30 @@ pub fn parse_qualified_name(input: Span) -> BResult<Vec<Identifier>> {
         let mut result = vec![first];
         result.extend(others);
         Ok((rest, result))
+    })
+    .parse(input)
+}
+
+pub fn parse_identifier_spanned(input: Span<'_>) -> BResult<'_, Spanned<Identifier>> {
+    (|input| {
+        let identifier_start = alt((alpha1, recognize(nom_char('_'))));
+        let identifier_chars = recognize(pair(
+            identifier_start,
+            many0(alt((alphanumeric1, recognize(nom_char('_'))))),
+        ));
+        let core_spanned = identifier_chars.spanned();
+        nom::combinator::map_opt(
+            nom::sequence::delimited(ws, core_spanned, ws),
+            |s: Spanned<Span<'_>>| {
+                let frag = s.node.fragment();
+                if !is_keyword(frag) {
+                    Some(s.map(|span| Identifier::Simple(span.fragment().to_string())))
+                } else {
+                    None
+                }
+            },
+        )
+        .parse(input)
     })
     .parse(input)
 }

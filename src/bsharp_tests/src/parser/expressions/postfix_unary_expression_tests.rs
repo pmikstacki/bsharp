@@ -1,11 +1,12 @@
 // Tests for postfix unary expressions (x++, x--, null-forgiving)
 
-use parser::expressions::parse_expression;
+use parser::expressions::parse_expression_spanned;
 use syntax::expressions::{Expression, UnaryOperator};
 
 #[test]
 fn postfix_increment_basic() {
-    let (rest, expr) = parse_expression("x++".into()).expect("parse ok");
+    let (rest, s) = parse_expression_spanned("x++".into()).expect("parse ok");
+    let expr = s.node;
     assert!(rest.fragment().trim().is_empty());
     match expr {
         Expression::PostfixUnary { op, .. } => assert_eq!(op, UnaryOperator::Increment),
@@ -15,7 +16,8 @@ fn postfix_increment_basic() {
 
 #[test]
 fn postfix_decrement_chained_with_member() {
-    let (rest, expr) = parse_expression("x--.ToString()".into()).expect("parse ok");
+    let (rest, s) = parse_expression_spanned("x--.ToString()".into()).expect("parse ok");
+    let expr = s.node;
     assert!(rest.fragment().trim().is_empty());
     match expr {
         Expression::Invocation(_) => {}
@@ -25,7 +27,8 @@ fn postfix_decrement_chained_with_member() {
 
 #[test]
 fn null_forgiving_postfix() {
-    let (rest, expr) = parse_expression("x!".into()).expect("parse ok");
+    let (rest, s) = parse_expression_spanned("x!".into()).expect("parse ok");
+    let expr = s.node;
     assert!(rest.fragment().trim().is_empty());
     match expr {
         Expression::PostfixUnary { op, .. } => assert_eq!(op, UnaryOperator::NullForgiving),

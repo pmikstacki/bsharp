@@ -13,7 +13,9 @@ nom-supreme = { package = "bsharp_nom_supreme", path = "../bsharp_nom_supreme" }
 syntax = { package = "bsharp_syntax", path = "../bsharp_syntax" }
 phf = { version = "0.13.1", features = ["macros"] }
 nom_locate = "5.0.0"
+miette = "5"
 
 [features]
 parser_recovery_trace = []
 expose_parser_diagnostics = []
+strict_allows_trailing = []

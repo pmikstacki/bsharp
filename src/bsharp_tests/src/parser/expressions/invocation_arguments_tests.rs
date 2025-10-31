@@ -1,10 +1,10 @@
-use parser::expressions::primary_expression_parser::parse_expression;
+use parser::expressions::primary_expression_parser::parse_expression_spanned as parse_expression;
 use syntax::expressions::expression::Expression;
 use syntax::expressions::invocation_expression::ArgumentModifier;
 use syntax::identifier::Identifier;
 
 fn parse_ok(input: &str) -> Expression {
-    let (rest, expr) = parse_expression(input.into()).expect("parse ok");
+    let (rest, expr) = parse_expression(input.into()).map(|(rest, s)| (rest, s.node)).expect("parse ok");
     assert!(
         rest.fragment().trim().is_empty(),
         "unparsed: {}",

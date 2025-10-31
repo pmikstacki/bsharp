@@ -1,4 +1,4 @@
-use crate::parser::expressions::primary_expression_parser::parse_expression;
+use crate::parser::expressions::primary_expression_parser::parse_expression_spanned;
 use crate::parser::identifier_parser::parse_qualified_name;
 use crate::parser::types::type_parser::parse_type_expression;
 use crate::trivia::comment_parser::ws;
@@ -110,7 +110,7 @@ pub fn parse_attribute(input: Span) -> BResult<Attribute> {
             Expression,
         >(
             |i2| delimited(ws, tok_l_paren(), ws).parse(i2),
-            parse_expression,
+            |i2| delimited(ws, parse_expression_spanned, ws).map(|s| s.node).parse(i2),
             |i2| delimited(ws, tok_comma(), ws).parse(i2),
             |i2| delimited(ws, tok_r_paren(), ws).parse(i2),
             false,
@@ -127,20 +127,20 @@ pub fn parse_attribute(input: Span) -> BResult<Attribute> {
                 syntax::Identifier::OperatorOverrideIdentifier(_) => "operator".to_string(),
             })
             .collect();
-        if let Some(type_args) = &type_args_opt {
-            if let Some(last) = name_segments.last_mut() {
-                let mut appended = String::new();
-                appended.push_str(last);
-                appended.push('<');
-                for (i, t) in type_args.iter().enumerate() {
-                    if i > 0 {
-                        appended.push_str(", ");
-                    }
-                    appended.push_str(&type_to_string(t));
+        if let Some(type_args) = &type_args_opt
+            && let Some(last) = name_segments.last_mut()
+        {
+            let mut appended = String::new();
+            appended.push_str(last);
+            appended.push('<');
+            for (i, t) in type_args.iter().enumerate() {
+                if i > 0 {
+                    appended.push_str(", ");
                 }
-                appended.push('>');
-                *last = appended;
+                appended.push_str(&type_to_string(t));
             }
+            appended.push('>');
+            *last = appended;
         }
 
         // Build final Identifier: Simple if single segment, otherwise QualifiedIdentifier

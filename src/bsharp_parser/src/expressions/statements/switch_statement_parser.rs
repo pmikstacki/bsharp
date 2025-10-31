@@ -1,11 +1,11 @@
 // Parser for switch statements
 
 use crate::parser::expressions::pattern_parser::parse_pattern;
-use crate::parser::expressions::primary_expression_parser::parse_expression;
+use crate::parser::expressions::primary_expression_parser::parse_expression_spanned;
 use crate::parser::keywords::selection_and_switch_keywords::{
     kw_case, kw_default, kw_switch, kw_when,
 };
-use crate::parser::statement_parser::parse_statement;
+use crate::parser::statement_parser::parse_statement_ws_spanned;
 use crate::errors::BResult;
 // Need this for statements within sections
 
@@ -31,7 +31,7 @@ fn parse_case_label(input: Span) -> BResult<SwitchLabel> {
             // Optional when clause
             let (after_when, when_clause) = match nom::combinator::opt(preceded(
                 delimited(ws, kw_when(), ws),
-                delimited(ws, parse_expression, ws),
+                delimited(ws, parse_expression_spanned, ws).map(|s| s.node),
             ))
             .parse(after_pat)
             {
@@ -43,10 +43,10 @@ fn parse_case_label(input: Span) -> BResult<SwitchLabel> {
                 .parse(after_when)?;
 
             // If it's a simple constant pattern with no when, keep legacy Case(Expression)
-            if when_clause.is_none() {
-                if let Constant(expr) = pat {
-                    return Ok((after_colon, SwitchLabel::Case(expr)));
-                }
+            if let Constant(ref expr) = pat
+                && when_clause.is_none()
+            {
+                return Ok((after_colon, SwitchLabel::Case(expr.clone())));
             }
 
             return Ok((
@@ -59,7 +59,8 @@ fn parse_case_label(input: Span) -> BResult<SwitchLabel> {
         }
 
         // Fallback: parse as expression case
-        let (input, expr) = delimited(ws, parse_expression, ws)
+        let (input, expr) = delimited(ws, parse_expression_spanned, ws)
+            .map(|s| s.node)
             .context("case value expression")
             .parse(input)?;
         let (input, _) = delimited(ws, tok_colon(), ws)
@@ -112,7 +113,9 @@ fn parse_switch_section(input: Span) -> BResult<SwitchSection> {
                             map(delimited(ws, tok_r_brace(), ws), |_| ()),
                         ));
                         peek(not(guard)).parse(k)?;
-                        delimited(ws, parse_statement, ws).parse(k)
+                        delimited(ws, parse_statement_ws_spanned, ws)
+                            .map(|s| s.node)
+                            .parse(k)
                     })
                     .parse(j)
                 },
@@ -133,7 +136,9 @@ pub fn parse_switch_statement(input: Span) -> BResult<Statement> {
             delimited(
                 delimited(ws, tok_l_paren(), ws)
                     .context("opening parenthesis for switch expression"),
-                delimited(ws, parse_expression, ws).context("switch expression"),
+                delimited(ws, parse_expression_spanned, ws)
+                    .map(|s| s.node)
+                    .context("switch expression"),
                 cut(delimited(ws, tok_r_paren(), ws))
                     .context("closing parenthesis for switch expression"),
             ),

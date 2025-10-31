@@ -1,6 +1,6 @@
 use crate::parser::expressions::declarations::attribute_parser::parse_attribute_lists;
 use crate::parser::expressions::declarations::type_declaration_parser::convert_attributes;
-use crate::parser::expressions::primary_expression_parser::parse_expression;
+use crate::parser::expressions::primary_expression_parser::parse_expression_spanned;
 use crate::parser::identifier_parser::parse_identifier;
 use crate::parser::keywords::parameter_modifier_keywords::{
     kw_in, kw_out, kw_params, kw_ref, kw_scoped,
@@ -55,7 +55,7 @@ pub fn parse_parameter(input: Span) -> BResult<Parameter> {
     // Optional default value: = expression
     let (input, default_value) = opt(preceded(
         |i| delimited(ws, tok_assign(), ws).parse(i),
-        |i| delimited(ws, parse_expression, ws).parse(i),
+        |i| delimited(ws, parse_expression_spanned, ws).map(|s| s.node).parse(i),
     ))
     .parse(input)?;
 

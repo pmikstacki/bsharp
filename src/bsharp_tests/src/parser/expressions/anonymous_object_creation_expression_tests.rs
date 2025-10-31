@@ -1,12 +1,12 @@
 // Tests for parsing anonymous object creation expressions
 
-use parser::expressions::primary_expression_parser::parse_expression;
+use parser::expressions::primary_expression_parser::parse_expression_spanned as parse_expression;
 use syntax::expressions::Expression;
 use syntax::expressions::literal::Literal;
 
 // Helper function for parsing anonymous object expressions
 fn parse_anon_obj_expr(code: &str) -> Result<Expression, String> {
-    match parse_expression(code.into()) {
+    match parse_expression(code.into()).map(|(rest, s)| (rest, s.node)) {
         Ok((remaining, expr)) if remaining.fragment().trim().is_empty() => Ok(expr),
         Ok((remaining, _)) => Err(format!(
             "Didn't consume all input. Remaining: '{}'",

@@ -16,7 +16,14 @@ When `bsharp parse` is run with `--errors-json`, parse failures are emitted as a
     "expected": "",
     "found": "",
     "line_text": "",
-    "message": "<pretty formatted message>"
+    "message": "<pretty formatted message>",
+    "spans": {
+      "abs": { "start": 0, "end": 1 },
+      "rel": {
+        "start": { "line": 0, "column": 0 },
+        "end": { "line": 0, "column": 1 }
+      }
+    }
   }
 }
 ```
@@ -27,6 +34,7 @@ When `bsharp parse` is run with `--errors-json`, parse failures are emitted as a
 - `expected`, `found` – reserved fields (currently empty strings).
 - `line_text` – the full source line at the error location.
 - `message` – multi-line pretty message formatted from the parser's error tree.
+- `spans` – present only when `--emit-spans` is provided; includes absolute byte range and relative line/column positions.
 
 ---
 

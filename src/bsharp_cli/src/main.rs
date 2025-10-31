@@ -1,5 +1,6 @@
 mod cli;
 pub mod commands;
+pub mod errors;
 
 use anyhow::Result;
 

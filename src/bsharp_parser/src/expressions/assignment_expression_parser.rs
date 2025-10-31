@@ -3,6 +3,7 @@ use crate::errors::BResult;
 
 use crate::trivia::comment_parser::ws;
 use syntax::span::Span;
+use crate::span::{Spanned, ByteRange, LineOffset, TextRange};
 
 use nom::Parser;
 use nom::branch::alt;
@@ -146,4 +147,17 @@ pub(crate) fn parse_assignment_expression_or_higher(input: Span) -> BResult<Expr
     } else {
         Ok((input, left))
     }
+}
+
+pub(crate) fn parse_assignment_expression_or_higher_spanned(
+    input: Span,
+) -> BResult<Spanned<Expression>> {
+    let start_abs = input.location_offset();
+    let start_lo = LineOffset { line: input.location_line(), offset: input.get_utf8_column().saturating_sub(1) };
+    let (rest, node) = parse_assignment_expression_or_higher(input)?;
+    let end_abs = rest.location_offset();
+    let end_lo = LineOffset { line: rest.location_line(), offset: rest.get_utf8_column().saturating_sub(1) };
+    let abs = ByteRange { start: start_abs, end: end_abs };
+    let rel = TextRange { start: start_lo, end: end_lo };
+    Ok((rest, Spanned { node, abs, rel }))
 }

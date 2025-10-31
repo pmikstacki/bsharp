@@ -44,10 +44,10 @@ impl Rule for HighCyclomaticComplexity {
                     "Method '{}' has high cyclomatic complexity ({})",
                     key, stats.complexity
                 ));
-                if let (Some(c), Some(m)) = (class_name.as_deref(), method_name.as_deref()) {
-                    if let Some((start, len)) = find_method_span(session, c, m) {
-                        b = b.at_span(session, start, len);
-                    }
+                if let (Some(c), Some(m)) = (class_name.as_deref(), method_name.as_deref())
+                    && let Some((start, len)) = find_method_span(session, c, m)
+                {
+                    b = b.at_span(session, start, len);
                 }
                 b.emit(session);
             }
@@ -78,10 +78,10 @@ impl Rule for DeepNesting {
                     "Method '{}' has deep nesting (depth={})",
                     key, stats.max_nesting
                 ));
-                if let (Some(c), Some(m)) = (class_name.as_deref(), method_name.as_deref()) {
-                    if let Some((start, len)) = find_method_span(session, c, m) {
-                        b = b.at_span(session, start, len);
-                    }
+                if let (Some(c), Some(m)) = (class_name.as_deref(), method_name.as_deref())
+                    && let Some((start, len)) = find_method_span(session, c, m)
+                {
+                    b = b.at_span(session, start, len);
                 }
                 b.emit(session);
             }
@@ -123,20 +123,19 @@ impl Rule for LongMethodBySpan {
         for (key, _stats) in index.iter() {
             if let (Some(class_name), Some(method_name)) =
                 super::control_flow_smells::split_class_method(key)
+                && let Some((start, len)) = find_method_span(session, &class_name, &method_name)
             {
-                if let Some((start, len)) = find_method_span(session, &class_name, &method_name) {
-                    let end = start.saturating_add(len);
-                    let slice = &src.get(start..end).unwrap_or("");
-                    let line_count = slice.as_bytes().iter().filter(|&&b| b == b'\n').count() + 1;
-                    if line_count > threshold {
-                        let b = DiagnosticBuilder::new(DiagnosticCode::BSW01002)
-                            .with_message(format!(
-                                "Method '{}' is too long ({} lines > {})",
-                                key, line_count, threshold
-                            ))
-                            .at_span(session, start, len);
-                        b.emit(session);
-                    }
+                let end = start.saturating_add(len);
+                let slice = &src.get(start..end).unwrap_or("");
+                let line_count = slice.as_bytes().iter().filter(|&&b| b == b'\n').count() + 1;
+                if line_count > threshold {
+                    let b = DiagnosticBuilder::new(DiagnosticCode::BSW01002)
+                        .with_message(format!(
+                            "Method '{}' is too long ({} lines > {})",
+                            key, line_count, threshold
+                        ))
+                        .at_span(session, start, len);
+                    b.emit(session);
                 }
             }
         }

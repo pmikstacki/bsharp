@@ -26,8 +26,8 @@ fn parse_local_function_body(input: Span) -> BResult<Statement> {
         // Expression body: => expr;
         |i| {
             let (i, _) = delimited(ws, tok_lambda(), ws).parse(i)?;
-            use crate::parser::expressions::primary_expression_parser::parse_expression;
-            let (i, _expr) = delimited(ws, parse_expression, ws).parse(i)?;
+            use crate::parser::expressions::primary_expression_parser::parse_expression_spanned;
+            let (i, _expr) = delimited(ws, parse_expression_spanned, ws).map(|s| s.node).parse(i)?;
             let (i, _) = delimited(ws, tok_semicolon(), ws).parse(i)?;
             Ok((i, Statement::Empty))
         },

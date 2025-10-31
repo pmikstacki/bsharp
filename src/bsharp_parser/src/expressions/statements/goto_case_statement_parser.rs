@@ -1,4 +1,4 @@
-use crate::parser::expressions::primary_expression_parser::parse_expression;
+use crate::parser::expressions::primary_expression_parser::parse_expression_spanned;
 use crate::parser::keywords::flow_control_keywords::kw_goto;
 use crate::parser::keywords::selection_and_switch_keywords::{kw_case, kw_default};
 use crate::trivia::comment_parser::ws;
@@ -20,7 +20,9 @@ pub fn parse_goto_case_statement(input: Span) -> BResult<Statement> {
                 map(
                     (
                         kw_case().context("case keyword"),
-                        delimited(ws, parse_expression, ws).context("case expression"),
+                        delimited(ws, parse_expression_spanned, ws)
+                            .map(|s| s.node)
+                            .context("case expression"),
                     ),
                     |(_, expr)| GotoCaseKind::Case(expr),
                 ),

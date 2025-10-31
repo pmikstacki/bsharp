@@ -1,4 +1,4 @@
-use parser::expressions::primary_expression_parser::*;
+use parser::expressions::primary_expression_parser::parse_expression_spanned as parse_expression;
 use syntax::expressions::expression::Expression;
 use syntax::expressions::literal::Literal;
 use syntax::types::Type;
@@ -7,7 +7,7 @@ use syntax::types::Type;
 #[test]
 fn test_parse_simple_new_expression() {
     let input = "new Exception(\"Error\")";
-    let result = parse_expression(input.into());
+    let result = parse_expression(input.into()).map(|(rest, s)| (rest, s.node));
     assert!(
         result.is_ok(),
         r#"Failed to parse 'new Exception("Error")': {:?}"#,
@@ -36,7 +36,7 @@ fn test_parse_simple_new_expression() {
 #[test]
 fn test_parse_new_expression_no_args() {
     let input = "new Object()";
-    let result = parse_expression(input.into());
+    let result = parse_expression(input.into()).map(|(rest, s)| (rest, s.node));
     assert!(
         result.is_ok(),
         "Failed to parse 'new Object()': {:?}",
@@ -59,7 +59,7 @@ fn test_parse_new_expression_no_args() {
 #[test]
 fn test_parse_new_expression_multiple_args() {
     let input = "new Data(42, \"test\", true)";
-    let result = parse_expression(input.into());
+    let result = parse_expression(input.into()).map(|(rest, s)| (rest, s.node));
     assert!(
         result.is_ok(),
         r#"Failed to parse 'new Data(42, "test", true)': {:?}"#,

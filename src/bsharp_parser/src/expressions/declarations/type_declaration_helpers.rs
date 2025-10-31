@@ -143,11 +143,9 @@ pub fn skip_to_member_boundary_top_level(input: Span<'_>) -> &str {
             continue;
         }
         if in_block_comment {
-            if ch == '*' {
-                if let Some((_, '/')) = iter.peek() {
-                    in_block_comment = false;
-                    iter.next();
-                }
+            if ch == '*' && let Some((_, '/')) = iter.peek() {
+                in_block_comment = false;
+                iter.next();
             }
             continue;
         }

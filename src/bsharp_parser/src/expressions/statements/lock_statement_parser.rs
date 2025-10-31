@@ -1,6 +1,6 @@
-use crate::parser::expressions::primary_expression_parser::parse_expression;
+use crate::parser::expressions::primary_expression_parser::parse_expression_spanned;
 use crate::parser::keywords::exception_and_safety_keywords::kw_lock;
-use crate::parser::statement_parser::parse_statement_ws;
+use crate::parser::statement_parser::parse_statement_ws_spanned;
 use crate::trivia::comment_parser::ws;
 use crate::errors::BResult;
 
@@ -17,11 +17,15 @@ pub fn parse_lock_statement(input: Span) -> BResult<Statement> {
             kw_lock().context("lock keyword"),
             delimited(
                 delimited(ws, tok_l_paren(), ws),
-                parse_expression.context("lock object expression"),
+                parse_expression_spanned
+                    .context("lock object expression")
+                    .map(|s| s.node),
                 cut(delimited(ws, tok_r_paren(), ws)).context("closing parenthesis"),
             )
             .context("lock object in parentheses"),
-            cut(delimited(ws, parse_statement_ws, ws)).context("lock body"),
+            cut(delimited(ws, parse_statement_ws_spanned, ws))
+                .map(|s| s.node)
+                .context("lock body"),
         ),
         |(_, lock_object, body)| {
             Statement::Lock(Box::new(LockStatement {
