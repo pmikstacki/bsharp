@@ -51,7 +51,7 @@ jobs:
 
       - name: Install admonish assets
         run: mdbook-admonish install .
-        working-directory: .
+        working-directory: docs
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
@@ -73,8 +73,8 @@ jobs:
         uses: actions/configure-pages@v5
 
       - name: Build docs (mdBook) into Astro public/docs
-        run: mdbook build -d site/public/docs
-        working-directory: .
+        run: mdbook build -d ../site/public/docs
+        working-directory: docs
 
       - name: Build Astro (Bun)
         run: bun run build
