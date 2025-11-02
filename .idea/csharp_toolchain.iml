@@ -18,6 +18,7 @@
       <sourceFolder url="file://$MODULE_DIR$/roslyn_testing/bsharp_compliance_testing/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/bsharp_nom_supreme/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/bsharp_cli/tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/bsharp_wasm/src" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />

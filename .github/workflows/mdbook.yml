@@ -2,7 +2,7 @@
 #
 # To get started with mdBook see: https://rust-lang.github.io/mdBook/index.html
 #
-name: Deploy mdBook site to Pages
+name: "Docs: Build and Deploy to Pages (mdBook + Astro)"
 
 on:
   # Runs on pushes targeting the default branch
@@ -26,7 +26,8 @@ concurrency:
 
 jobs:
   # Build job
-  build:
+  docs_build:
+    name: Build docs
     runs-on: ubuntu-latest
     env:
       MDBOOK_VERSION: 0.4.36
@@ -53,14 +54,19 @@ jobs:
         run: mdbook-admonish install .
         working-directory: docs
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Astro dependencies (npm ci)
+        run: npm ci
+        working-directory: site
+
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
         with:
-          bun-version: '1.1.30'
-
-      - name: Install Astro dependencies (Bun)
-        run: bun install
-        working-directory: site
+          bun-version: 'latest'
 
       - name: Install wasm32 target
         run: rustup target add wasm32-unknown-unknown
@@ -69,6 +75,7 @@ jobs:
         run: cargo install wasm-pack
 
       - name: Setup Pages
+        if: ${{ !env.ACT }}
         id: pages
         uses: actions/configure-pages@v5
 
@@ -76,8 +83,8 @@ jobs:
         run: mdbook build -d ../site/public/docs
         working-directory: docs
 
-      - name: Build Astro (Bun)
-        run: bun run build
+      - name: Build Astro (npm)
+        run: npm run build
         working-directory: site
 
       - name: Upload artifact (Astro dist)
@@ -86,13 +93,15 @@ jobs:
           path: site/dist
 
   # Deployment job
-  deploy:
+  docs_deploy:
+    name: Deploy docs to GitHub Pages
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    needs: build
+    needs: docs_build
     steps:
       - name: Deploy to GitHub Pages
+        if: ${{ !env.ACT }}
         id: deployment
         uses: actions/deploy-pages@v4

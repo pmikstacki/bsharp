@@ -1,4 +1,4 @@
-name: Roslyn Compliance
+name: "Compliance: Roslyn Syntax"
 
 on:
   workflow_dispatch:
