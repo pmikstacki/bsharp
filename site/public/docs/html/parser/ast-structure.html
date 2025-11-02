@@ -1,0 +1,597 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>AST Structure - BSharp C# Parser Documentation</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="../custom.css">
+        
+        <script>
+          (function() {
+            function applyTheme(mode){
+              const theme = mode === 'dark' ? 'coal' : 'light';
+              try { localStorage.setItem('mdbook-theme', theme); } catch(e) {}
+              const html = document.documentElement;
+              html.classList.remove('light','rust','coal','navy','ayu','default_theme');
+              html.classList.add(theme,'js');
+            }
+            function detectFromParent(){
+              try {
+                if (window.parent && window.parent !== window) {
+                  const phtml = window.parent.document.documentElement;
+                  if (phtml.classList.contains('dark')) return 'dark';
+                  if (phtml.classList.contains('light')) return 'light';
+                }
+              } catch(e) {}
+              return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+            applyTheme(detectFromParent());
+            window.addEventListener('message', (e) => {
+              const d = e && e.data;
+              if (!d || d.type !== 'bsharp:theme') return;
+              applyTheme(d.value === 'dark' ? 'dark' : 'light');
+            });
+            try {
+              window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => applyTheme(e.matches ? 'dark' : 'light'));
+            } catch(e) {}
+            window.addEventListener('DOMContentLoaded', () => {
+              const themeBtn = document.getElementById('theme-toggle');
+              const themeList = document.getElementById('theme-list');
+              if (themeBtn) themeBtn.style.display = 'none';
+              if (themeList) themeList.style.display = 'none';
+            });
+          })();
+        </script>
+
+        <meta name="description" content="Comprehensive documentation for the BSharp C# parser and analysis toolkit">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../custom.css">
+        <link rel="stylesheet" href=".././mdbook-admonish.css">
+        <link rel="stylesheet" href="../theme/pagetoc.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BSharp C# Parser Documentation</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/pmikstacki/bsharp" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/pmikstacki/bsharp/edit/main/docs/./parser/ast-structure.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="ast-structure"><a class="header" href="#ast-structure">AST Structure</a></h1>
+<p>The BSharp AST (Abstract Syntax Tree) provides a complete, structured representation of C# source code. This document explains the organization and relationships between different AST node types.</p>
+<h2 id="ast-hierarchy"><a class="header" href="#ast-hierarchy">AST Hierarchy</a></h2>
+<h3 id="root-node-compilationunit"><a class="header" href="#root-node-compilationunit">Root Node: CompilationUnit</a></h3>
+<p>Every parsed C# file results in a <code>CompilationUnit</code>, which serves as the root of the AST:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct CompilationUnit {
+    pub global_attributes: Vec&lt;GlobalAttribute&gt;,        // [assembly: ...] attributes
+    pub using_directives: Vec&lt;UsingDirective&gt;,          // using statements
+    pub global_using_directives: Vec&lt;GlobalUsingDirective&gt;, // C# 10+ global using
+    pub declarations: Vec&lt;TopLevelDeclaration&gt;,         // namespaces, types
+    pub file_scoped_namespace: Option&lt;FileScopedNamespaceDeclaration&gt;, // C# 10+
+    pub top_level_statements: Vec&lt;Statement&gt;,           // C# 9+ top-level code
+}
+<span class="boring">}</span></code></pre></pre>
+<p>This structure supports both traditional C# files and modern features like file-scoped namespaces and top-level statements.</p>
+<h2 id="declaration-hierarchy"><a class="header" href="#declaration-hierarchy">Declaration Hierarchy</a></h2>
+<h3 id="top-level-declarations"><a class="header" href="#top-level-declarations">Top-Level Declarations</a></h3>
+<p>Top-level declarations represent constructs that can appear at the file or namespace level:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub enum TopLevelDeclaration {
+    Namespace(NamespaceDeclaration),
+    FileScopedNamespace(FileScopedNamespaceDeclaration),
+    Class(ClassDeclaration),
+    Struct(StructDeclaration),
+    Record(RecordDeclaration),
+    Interface(InterfaceDeclaration),
+    Enum(EnumDeclaration),
+    Delegate(DelegateDeclaration),
+    GlobalAttribute(GlobalAttribute),
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="type-declarations"><a class="header" href="#type-declarations">Type Declarations</a></h3>
+<p>Each type declaration contains comprehensive information about the type:</p>
+<h4 id="classdeclaration"><a class="header" href="#classdeclaration">ClassDeclaration</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct ClassDeclaration {
+    pub attributes: Vec&lt;AttributeList&gt;,
+    pub modifiers: Vec&lt;Modifier&gt;,
+    pub name: Identifier,
+    pub type_parameters: Option&lt;Vec&lt;TypeParameter&gt;&gt;,
+    pub primary_constructor_parameters: Option&lt;Vec&lt;Parameter&gt;&gt;, // C# 12
+    pub base_types: Vec&lt;Type&gt;,
+    pub body_declarations: Vec&lt;ClassBodyDeclaration&gt;,
+    pub documentation: Option&lt;XmlDocumentationComment&gt;,
+    pub constraints: Option&lt;Vec&lt;TypeParameterConstraintClause&gt;&gt;,
+}
+<span class="boring">}</span></code></pre></pre>
+<h4 id="methoddeclaration"><a class="header" href="#methoddeclaration">MethodDeclaration</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct MethodDeclaration {
+    pub modifiers: Vec&lt;Modifier&gt;,
+    pub return_type: Type,
+    pub name: Identifier,
+    pub type_parameters: Option&lt;Vec&lt;TypeParameter&gt;&gt;,
+    pub parameters: Vec&lt;Parameter&gt;,
+    pub body: Option&lt;Statement&gt;,                 // None for abstract/interface methods
+    pub constraints: Option&lt;Vec&lt;TypeParameterConstraintClause&gt;&gt;,
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="member-declarations"><a class="header" href="#member-declarations">Member Declarations</a></h3>
+<p>Class body declarations represent all possible class members:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub enum ClassBodyDeclaration {
+    Method(MethodDeclaration),
+    Constructor(ConstructorDeclaration),
+    Destructor(DestructorDeclaration),
+    Property(PropertyDeclaration),
+    Field(FieldDeclaration),
+    Event(EventDeclaration),
+    Indexer(IndexerDeclaration),
+    Operator(OperatorDeclaration),
+    NestedClass(ClassDeclaration),
+    NestedStruct(StructDeclaration),
+    NestedInterface(InterfaceDeclaration),
+    NestedEnum(EnumDeclaration),
+    NestedDelegate(DelegateDeclaration),
+}
+<span class="boring">}</span></code></pre></pre>
+<h2 id="expression-hierarchy"><a class="header" href="#expression-hierarchy">Expression Hierarchy</a></h2>
+<h3 id="expression-types"><a class="header" href="#expression-types">Expression Types</a></h3>
+<p>The expression system covers all C# expression types with proper precedence:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub enum Expression {
+    // Primary and names
+    Literal(Literal),
+    Variable(Identifier),
+
+    // Object and member operations
+    New(Box&lt;NewExpression&gt;),
+    MemberAccess(Box&lt;MemberAccessExpression&gt;),
+    Invocation(Box&lt;InvocationExpression&gt;),
+    Indexing(Box&lt;IndexingExpression&gt;),
+    Index(Box&lt;IndexExpression&gt;),
+    Range(Box&lt;RangeExpression&gt;),
+
+    // Lambda and anonymous methods
+    Lambda(Box&lt;LambdaExpression&gt;),
+    AnonymousMethod(Box&lt;AnonymousMethodExpression&gt;),
+
+    // Keywords
+    This,
+    Base,
+
+    // Operators
+    Unary { op: UnaryOperator, expr: Box&lt;Expression&gt; },
+    Binary { left: Box&lt;Expression&gt;, op: BinaryOperator, right: Box&lt;Expression&gt; },
+    PostfixUnary { op: UnaryOperator, expr: Box&lt;Expression&gt; },
+    Assignment(Box&lt;AssignmentExpression&gt;),
+
+    // Patterns and type ops
+    Pattern(Box&lt;Pattern&gt;),
+    IsPattern { expression: Box&lt;Expression&gt;, pattern: Box&lt;Pattern&gt; },
+    As { expression: Box&lt;Expression&gt;, target_type: Type },
+    Cast { expression: Box&lt;Expression&gt;, target_type: Type },
+
+    // Misc language features
+    Conditional(Box&lt;ConditionalExpression&gt;),
+    Query(Box&lt;QueryExpression&gt;),
+    Await(Box&lt;AwaitExpression&gt;),
+    Throw(Box&lt;ThrowExpression&gt;),
+    Nameof(Box&lt;NameofExpression&gt;),
+    Typeof(Box&lt;TypeofExpression&gt;),
+    Sizeof(Box&lt;SizeofExpression&gt;),
+    Default(Box&lt;DefaultExpression&gt;),
+    StackAlloc(Box&lt;StackAllocExpression&gt;),
+    Ref(Box&lt;Expression&gt;),
+    Checked(Box&lt;CheckedExpression&gt;),
+    Unchecked(Box&lt;UncheckedExpression&gt;),
+
+    // With/collection expressions
+    With { target: Box&lt;Expression&gt;, initializers: Vec&lt;WithInitializerEntry&gt; },
+    Collection(Vec&lt;CollectionElement&gt;),
+
+    // Composite forms
+    AnonymousObject(AnonymousObjectCreationExpression),
+    Tuple(TupleExpression),
+    SwitchExpression(Box&lt;SwitchExpression&gt;),
+}
+<span class="boring">}</span></code></pre></pre>
+<p>Key helper structs:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct SwitchExpression {
+    pub expression: Expression,
+    pub arms: Vec&lt;SwitchExpressionArm&gt;,
+}
+
+pub enum WithInitializerEntry {
+    Property { name: String, value: Expression },
+    Indexer { indices: Vec&lt;Expression&gt;, value: Expression },
+}
+
+pub enum CollectionElement {
+    Expr(Expression),
+    Spread(Expression),
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="literal-types"><a class="header" href="#literal-types">Literal Types</a></h3>
+<p>Comprehensive support for C# literals:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub enum Literal {
+    Boolean(bool),
+    Integer(String),          // Preserves original format
+    FloatingPoint(String),    // Preserves original format
+    Character(char),
+    String(String),
+    InterpolatedString(InterpolatedStringLiteral),
+    Null,
+    Default,
+}
+<span class="boring">}</span></code></pre></pre>
+<h2 id="statement-hierarchy"><a class="header" href="#statement-hierarchy">Statement Hierarchy</a></h2>
+<h3 id="statement-types"><a class="header" href="#statement-types">Statement Types</a></h3>
+<p>Complete coverage of C# statement types:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub enum Statement {
+    // Control flow
+    If(IfStatement),
+    Switch(SwitchStatement),
+    For(ForStatement),
+    ForEach(ForEachStatement),
+    While(WhileStatement),
+    DoWhile(DoWhileStatement),
+    
+    // Jump statements
+    Break(BreakStatement),
+    Continue(ContinueStatement),
+    Return(ReturnStatement),
+    Throw(ThrowStatement),
+    Goto(GotoStatement),
+    
+    // Exception handling
+    Try(TryStatement),
+    
+    // Resource management
+    Using(UsingStatement),
+    Lock(LockStatement),
+    
+    // Declarations and expressions
+    LocalVariableDeclaration(LocalVariableDeclaration),
+    ExpressionStatement(Expression),
+    Block(Vec&lt;Statement&gt;),
+    Empty,
+    
+    // Modern features
+    LocalFunction(LocalFunctionStatement),
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="control-flow-statements"><a class="header" href="#control-flow-statements">Control Flow Statements</a></h3>
+<p>Complex control flow statements contain nested structures:</p>
+<h4 id="ifstatement"><a class="header" href="#ifstatement">IfStatement</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct IfStatement {
+    pub condition: Expression,
+    pub consequence: Box&lt;Statement&gt;,
+    pub alternative: Option&lt;Box&lt;Statement&gt;&gt;,
+}
+<span class="boring">}</span></code></pre></pre>
+<h4 id="trystatement"><a class="header" href="#trystatement">TryStatement</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct TryStatement {
+    pub body: Box&lt;Statement&gt;,
+    pub catch_clauses: Vec&lt;CatchClause&gt;,
+    pub finally_clause: Option&lt;FinallyClause&gt;,
+}
+<span class="boring">}</span></code></pre></pre>
+<h2 id="type-system"><a class="header" href="#type-system">Type System</a></h2>
+<h3 id="type-representation"><a class="header" href="#type-representation">Type Representation</a></h3>
+<p>The type system models all C# type constructs:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub enum Type {
+    // Primitive types
+    Primitive(PrimitiveType),
+    
+    // Named types
+    Named { name: Identifier, type_arguments: Vec&lt;Type&gt; },
+    
+    // Array types
+    Array { element_type: Box&lt;Type&gt;, rank: usize },
+    
+    // Pointer types
+    Pointer(Box&lt;Type&gt;),
+    
+    // Nullable types
+    Nullable(Box&lt;Type&gt;),
+    
+    // Generic type parameters
+    TypeParameter(Identifier),
+    
+    // Tuple types
+    Tuple(Vec&lt;Type&gt;),
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="generic-support"><a class="header" href="#generic-support">Generic Support</a></h3>
+<p>Full support for C# generics:</p>
+<h4 id="typeparameter"><a class="header" href="#typeparameter">TypeParameter</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct TypeParameter {
+    pub attributes: Vec&lt;Attribute&gt;,
+    pub variance: Option&lt;Variance&gt;,      // in, out
+    pub identifier: Identifier,
+}
+<span class="boring">}</span></code></pre></pre>
+<h4 id="typeparameterconstraint"><a class="header" href="#typeparameterconstraint">TypeParameterConstraint</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub enum TypeParameterConstraint {
+    TypeConstraint { parameter: Identifier, constraint_type: Type },
+    ConstructorConstraint(Identifier),    // new()
+    ClassConstraint(Identifier),          // class
+    StructConstraint(Identifier),         // struct
+    UnmanagedConstraint(Identifier),      // unmanaged
+}
+<span class="boring">}</span></code></pre></pre>
+<h2 id="ast-metadata"><a class="header" href="#ast-metadata">AST Metadata</a></h2>
+<h3 id="attributes"><a class="header" href="#attributes">Attributes</a></h3>
+<p>Comprehensive attribute support:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct Attribute {
+    pub name: Identifier,
+    pub arguments: Vec&lt;AttributeArgument&gt;,
+}
+
+pub enum AttributeArgument {
+    Positional(Expression),
+    Named { name: Identifier, value: Expression },
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="modifiers"><a class="header" href="#modifiers">Modifiers</a></h3>
+<p>All C# modifiers are represented:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub enum Modifier {
+    // Access modifiers
+    Public, Private, Protected, Internal, ProtectedInternal, PrivateProtected,
+    
+    // Other modifiers
+    Static, Abstract, Virtual, Override, Sealed, New,
+    Async, Unsafe, Volatile, Readonly, Const,
+    Partial, Extern,
+}
+<span class="boring">}</span></code></pre></pre>
+<h2 id="navigation-and-relationships"><a class="header" href="#navigation-and-relationships">Navigation and Relationships</a></h2>
+<p>The AST maintains clear parent-child relationships while providing navigation capabilities through traits:</p>
+<ul>
+<li><strong>Ownership</strong>: Parent nodes own their children</li>
+<li><strong>Navigation</strong>: Traits provide methods to traverse and search the AST</li>
+<li><strong>Context</strong>: Nodes can access their containing context when needed</li>
+</ul>
+<p>This structure provides a complete, navigable representation of C# code that supports both analysis and transformation scenarios.</p>
+<footer class="gitinfo-footer" style="font-size:0.8em;padding:4px;margin:0 0 2em 0;text-align:center;display:block;">2025-10-21 11:38:49 • commit: d6ce8b3</footer>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../parser/core-components.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../parser/error-handling.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../parser/core-components.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../parser/error-handling.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+        <script src="../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

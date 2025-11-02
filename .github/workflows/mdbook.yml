@@ -30,7 +30,7 @@ jobs:
     name: Build docs
     runs-on: ubuntu-latest
     env:
-      MDBOOK_VERSION: 0.4.36
+      MDBOOK_VERSION: 0.4.52
     steps:
       - uses: actions/checkout@v4
       - name: Install Rust (stable)
@@ -75,7 +75,6 @@ jobs:
         run: cargo install wasm-pack
 
       - name: Setup Pages
-        if: ${{ !env.ACT }}
         id: pages
         uses: actions/configure-pages@v5
 
@@ -102,6 +101,5 @@ jobs:
     needs: docs_build
     steps:
       - name: Deploy to GitHub Pages
-        if: ${{ !env.ACT }}
         id: deployment
         uses: actions/deploy-pages@v4
