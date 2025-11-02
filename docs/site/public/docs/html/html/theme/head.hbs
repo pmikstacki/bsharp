@@ -1,0 +1,41 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ path_to_root }}custom.css">
+
+<script>
+  (function() {
+    function applyTheme(mode){
+      const theme = mode === 'dark' ? 'coal' : 'light';
+      try { localStorage.setItem('mdbook-theme', theme); } catch(e) {}
+      const html = document.documentElement;
+      html.classList.remove('light','rust','coal','navy','ayu','default_theme');
+      html.classList.add(theme,'js');
+    }
+    function detectFromParent(){
+      try {
+        if (window.parent && window.parent !== window) {
+          const phtml = window.parent.document.documentElement;
+          if (phtml.classList.contains('dark')) return 'dark';
+          if (phtml.classList.contains('light')) return 'light';
+        }
+      } catch(e) {}
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    applyTheme(detectFromParent());
+    window.addEventListener('message', (e) => {
+      const d = e && e.data;
+      if (!d || d.type !== 'bsharp:theme') return;
+      applyTheme(d.value === 'dark' ? 'dark' : 'light');
+    });
+    try {
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => applyTheme(e.matches ? 'dark' : 'light'));
+    } catch(e) {}
+    window.addEventListener('DOMContentLoaded', () => {
+      const themeBtn = document.getElementById('theme-toggle');
+      const themeList = document.getElementById('theme-list');
+      if (themeBtn) themeBtn.style.display = 'none';
+      if (themeList) themeList.style.display = 'none';
+    });
+  })();
+</script>

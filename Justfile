@@ -12,7 +12,7 @@ setup:
     bun install --cwd site
 
 docs:
-    mdbook build docs -d site/public/docs/book
+    mdbook build docs -d site/public/docs/html
 
 docs-admonish-install:
     mdbook-admonish install .

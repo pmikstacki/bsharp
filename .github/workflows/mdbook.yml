@@ -78,13 +78,26 @@ jobs:
         id: pages
         uses: actions/configure-pages@v5
 
-      - name: Build docs (mdBook) into Astro public/docs
-        run: mdbook build -d ../site/public/docs
+      - name: Build docs (mdBook) into Astro public/docs/html
+        run: mdbook build -d ../site/public/docs/html
         working-directory: docs
 
       - name: Build Astro (Bun)
         run: bun run build
         working-directory: site
+
+      - name: Sanity check built output
+        run: |
+          set -euo pipefail
+          test -f site/dist/docs/html/index.html
+          if grep -R "/src/scripts/" -n -- "site/dist"; then
+            echo "Found dev-only /src/scripts/ paths in build" >&2
+            exit 1
+          fi
+          if grep -R "type=\"module\".*\.ts" -n -- "site/dist"; then
+            echo "Found .ts module URLs in final HTML" >&2
+            exit 1
+          fi
 
       - name: Upload artifact (Astro dist)
         if: ${{ env.ACT != 'true' }}

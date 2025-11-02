@@ -1,0 +1,472 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Parse Command - BSharp C# Parser Documentation</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="../custom.css">
+        
+        <script>
+          (function() {
+            function applyTheme(mode){
+              const theme = mode === 'dark' ? 'coal' : 'light';
+              try { localStorage.setItem('mdbook-theme', theme); } catch(e) {}
+              const html = document.documentElement;
+              html.classList.remove('light','rust','coal','navy','ayu','default_theme');
+              html.classList.add(theme,'js');
+            }
+            function detectFromParent(){
+              try {
+                if (window.parent && window.parent !== window) {
+                  const phtml = window.parent.document.documentElement;
+                  if (phtml.classList.contains('dark')) return 'dark';
+                  if (phtml.classList.contains('light')) return 'light';
+                }
+              } catch(e) {}
+              return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+            applyTheme(detectFromParent());
+            window.addEventListener('message', (e) => {
+              const d = e && e.data;
+              if (!d || d.type !== 'bsharp:theme') return;
+              applyTheme(d.value === 'dark' ? 'dark' : 'light');
+            });
+            try {
+              window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => applyTheme(e.matches ? 'dark' : 'light'));
+            } catch(e) {}
+            window.addEventListener('DOMContentLoaded', () => {
+              const themeBtn = document.getElementById('theme-toggle');
+              const themeList = document.getElementById('theme-list');
+              if (themeBtn) themeBtn.style.display = 'none';
+              if (themeList) themeList.style.display = 'none';
+            });
+          })();
+        </script>
+
+        <meta name="description" content="Comprehensive documentation for the BSharp C# parser and analysis toolkit">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../custom.css">
+        <link rel="stylesheet" href=".././mdbook-admonish.css">
+        <link rel="stylesheet" href="../theme/pagetoc.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BSharp C# Parser Documentation</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/pmikstacki/bsharp" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/pmikstacki/bsharp/edit/main/docs/./cli/parse.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <p><strong><code>--emit-spans</code></strong></p>
+<ul>
+<li>When used with <code>--errors-json</code>, include absolute and relative spans in the JSON under <code>error.spans</code>.</li>
+<li>No effect unless <code>--errors-json</code> is set.</li>
+</ul>
+<h1 id="parse-command"><a class="header" href="#parse-command">Parse Command</a></h1>
+<p>The <code>parse</code> command parses C# source code and prints a textual AST tree representation to stdout.</p>
+<hr />
+<h2 id="usage"><a class="header" href="#usage">Usage</a></h2>
+<pre><code class="language-bash">bsharp parse --input &lt;INPUT&gt; [--errors-json] [--emit-spans] [--no-color] [--lenient]
+</code></pre>
+<h3 id="arguments"><a class="header" href="#arguments">Arguments</a></h3>
+<p><strong><code>&lt;INPUT&gt;</code></strong> (required)</p>
+<ul>
+<li>Path to C# source file</li>
+<li>Must have <code>.cs</code> extension</li>
+<li>File must exist and be readable</li>
+</ul>
+<h3 id="options"><a class="header" href="#options">Options</a></h3>
+<p><strong><code>--errors-json</code></strong></p>
+<ul>
+<li>Print a machine-readable JSON error object to stdout on parse failure and exit non-zero</li>
+<li>Disables pretty error output</li>
+</ul>
+<p>See: <a href="./errors-json.html">Parse Errors JSON Output</a></p>
+<p><strong><code>--no-color</code></strong></p>
+<ul>
+<li>Disable ANSI colors in pretty error output</li>
+</ul>
+<p><strong><code>--lenient</code></strong></p>
+<ul>
+<li>Enable best-effort recovery mode (default is strict)</li>
+</ul>
+<hr />
+<p>Note: The <code>--output</code> option is currently not used; the command writes the textual tree to stdout.</p>
+<h2 id="examples"><a class="header" href="#examples">Examples</a></h2>
+<h3 id="basic-parsing"><a class="header" href="#basic-parsing">Basic Parsing</a></h3>
+<pre><code class="language-bash"># Parse and print textual AST tree to stdout
+bsharp parse Program.cs
+</code></pre>
+<h3 id="batch-parsing"><a class="header" href="#batch-parsing">Batch Parsing</a></h3>
+<pre><code class="language-bash"># Parse all C# files in a directory (prints textual trees)
+for file in src/**/*.cs; do
+    bsharp parse "$file"
+done
+</code></pre>
+<hr />
+<h2 id="output"><a class="header" href="#output">Output</a></h2>
+<p>The command prints a human-readable textual tree describing the AST. For visualization outputs (Mermaid/DOT), use the <code>tree</code> command.</p>
+<hr />
+<h2 id="error-handling"><a class="header" href="#error-handling">Error Handling</a></h2>
+<h3 id="parse-errors"><a class="header" href="#parse-errors">Parse Errors</a></h3>
+<pre><code class="language-bash">$ bsharp parse InvalidSyntax.cs
+Error: Parse failed
+
+0: at line 5, in keyword "class":
+public clas MyClass { }
+       ^--- expected keyword "class"
+
+1: in context "class declaration"
+</code></pre>
+<p><strong>Error Information:</strong></p>
+<ul>
+<li>Line and column numbers</li>
+<li>Context stack showing where parsing failed</li>
+<li>Expected vs. actual input</li>
+<li>Helpful error messages</li>
+</ul>
+<h4 id="pretty-error-formatting"><a class="header" href="#pretty-error-formatting">Pretty error formatting</a></h4>
+<p>The parser integrates with the <code>miette</code> crate for rich, labeled diagnostics in pretty (non-JSON) mode. CLI parse errors are formatted from the underlying <code>ErrorTree</code> with spans and context information for easier debugging.</p>
+<p>For programmatic formatting from parser code, see <code>bsharp_parser::errors::to_miette_report</code> which converts an <code>ErrorTree</code> to a <code>miette::Report</code> with source code attached.</p>
+<h3 id="file-errors"><a class="header" href="#file-errors">File Errors</a></h3>
+<pre><code class="language-bash">$ bsharp parse NonExistent.cs
+Error: Failed to read file: NonExistent.cs
+Caused by: No such file or directory (os error 2)
+</code></pre>
+<hr />
+<h2 id="use-cases"><a class="header" href="#use-cases">Use Cases</a></h2>
+<h3 id="1-syntax-validation"><a class="header" href="#1-syntax-validation">1. Syntax Validation</a></h3>
+<pre><code class="language-bash"># Check if file has valid syntax
+if bsharp parse MyFile.cs &gt; /dev/null 2&gt;&amp;1; then
+    echo "Syntax OK"
+else
+    echo "Syntax Error"
+    exit 1
+fi
+</code></pre>
+<h3 id="2-ast-inspection"><a class="header" href="#2-ast-inspection">2. AST Inspection</a></h3>
+<pre><code class="language-bash"># Parse and inspect AST structure
+bsharp parse MyClass.cs --output ast.json
+jq '.declarations[0].Class.name.name' ast.json
+</code></pre>
+<h3 id="3-documentation-input"><a class="header" href="#3-documentation-input">3. Documentation Input</a></h3>
+<pre><code class="language-bash"># Parse C# and generate documentation using your own script
+bsharp parse MyFile.cs --output ast.json
+python generate_docs.py ast.json &gt; docs.md
+</code></pre>
+<h3 id="4-static-analysis"><a class="header" href="#4-static-analysis">4. Static Analysis</a></h3>
+<pre><code class="language-bash"># Parse and analyze with custom tool
+bsharp parse MyFile.cs --output ast.json
+./my-analyzer ast.json
+</code></pre>
+<hr />
+<h2 id="performance"><a class="header" href="#performance">Performance</a></h2>
+<h3 id="parsing-speed"><a class="header" href="#parsing-speed">Parsing Speed</a></h3>
+<ul>
+<li><strong>Small files</strong> (&lt; 100 lines): &lt; 10ms</li>
+<li><strong>Medium files</strong> (100-1000 lines): 10-100ms</li>
+<li><strong>Large files</strong> (1000-10000 lines): 100ms-1s</li>
+<li><strong>Very large files</strong> (&gt; 10000 lines): 1-10s</li>
+</ul>
+<h3 id="memory-usage"><a class="header" href="#memory-usage">Memory Usage</a></h3>
+<ul>
+<li>Memory usage scales linearly with file size</li>
+<li>Typical: 1-5 MB per 1000 lines of code</li>
+<li>Peak memory during AST construction</li>
+</ul>
+<hr />
+<h2 id="integration"><a class="header" href="#integration">Integration</a></h2>
+<h3 id="cicd-pipeline"><a class="header" href="#cicd-pipeline">CI/CD Pipeline</a></h3>
+<pre><code class="language-yaml"># GitHub Actions
+- name: Validate C# Syntax
+  run: |
+    find . -name "*.cs" | while read file; do
+      bsharp parse "$file" || exit 1
+    done
+</code></pre>
+<h3 id="pre-commit-hook"><a class="header" href="#pre-commit-hook">Pre-commit Hook</a></h3>
+<pre><code class="language-bash">#!/bin/bash
+# .git/hooks/pre-commit
+
+git diff --cached --name-only --diff-filter=ACM | grep '\.cs$' | while read file; do
+    if ! bsharp parse "$file" &gt; /dev/null 2&gt;&amp;1; then
+        echo "Parse error in $file"
+        exit 1
+    fi
+done
+</code></pre>
+<h3 id="build-script"><a class="header" href="#build-script">Build Script</a></h3>
+<pre><code class="language-bash">#!/bin/bash
+# validate-syntax.sh
+
+errors=0
+for file in src/**/*.cs; do
+    if ! bsharp parse "$file" &gt; /dev/null 2&gt;&amp;1; then
+        echo "ERROR: $file"
+        ((errors++))
+    fi
+done
+
+if [ $errors -gt 0 ]; then
+    echo "Found $errors files with syntax errors"
+    exit 1
+fi
+</code></pre>
+<hr />
+<h2 id="comparison-with-other-tools"><a class="header" href="#comparison-with-other-tools">Comparison with Other Tools</a></h2>
+<h3 id="vs-roslyn"><a class="header" href="#vs-roslyn">vs. Roslyn</a></h3>
+<ul>
+<li><strong>BSharp:</strong> Fast, standalone, JSON output</li>
+<li><strong>Roslyn:</strong> Full compiler, .NET required, complex API</li>
+</ul>
+<h3 id="vs-tree-sitter"><a class="header" href="#vs-tree-sitter">vs. Tree-sitter</a></h3>
+<ul>
+<li><strong>BSharp:</strong> C#-specific, complete AST</li>
+<li><strong>Tree-sitter:</strong> Multi-language, syntax tree only</li>
+</ul>
+<hr />
+<h2 id="implementation"><a class="header" href="#implementation">Implementation</a></h2>
+<p><strong>Location:</strong> <code>src/bsharp_cli/src/commands/parse.rs</code></p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub fn execute(
+    input: PathBuf,
+    output: Option&lt;PathBuf&gt;,
+    errors_json: bool,
+    no_color: bool,
+    lenient: bool,
+) -&gt; Result&lt;()&gt; {
+    // Read file, choose strict/lenient, parse, and write &lt;input&gt;.json by default
+    // See the source file for detailed behavior and error formatting.
+<span class="boring">    Ok(())
+</span>}
+<span class="boring">}</span></code></pre></pre>
+<hr />
+<h2 id="related-documentation"><a class="header" href="#related-documentation">Related Documentation</a></h2>
+<ul>
+<li><a href="./overview.html">CLI Overview</a> - General CLI usage</li>
+<li><a href="./tree.html">Tree Visualization</a> - Visualize parsed AST</li>
+<li><a href="../parser/ast-structure.html">AST Structure</a> - AST node reference</li>
+<li><a href="../parser/error-handling.html">Error Handling</a> - Parse error details</li>
+</ul>
+<hr />
+<h2 id="references"><a class="header" href="#references">References</a></h2>
+<ul>
+<li><strong>Implementation:</strong> <code>src/bsharp_cli/src/commands/parse.rs</code></li>
+<li><strong>Parser:</strong> <code>src/bsharp_parser/src/</code></li>
+<li><strong>AST Definitions:</strong> <code>src/bsharp_syntax/src/</code></li>
+</ul>
+<footer class="gitinfo-footer" style="font-size:0.8em;padding:4px;margin:0 0 2em 0;text-align:center;display:block;">2025-10-29 21:23:59 • commit: 63cde56</footer>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../cli/overview.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../cli/tree.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../cli/overview.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../cli/tree.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+        <script src="../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

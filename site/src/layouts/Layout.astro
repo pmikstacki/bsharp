@@ -1,11 +1,11 @@
 ---
 import '../styles/tailwind.css';
 import trigUrl from '../scripts/trig.min.js?url';
-import materialColorsUrl from '../scripts/material-colors.ts?url';
 import Navbar from '../components/Navbar.astro';
 const { title = 'BSharp' } = Astro.props;
 const rawBase = import.meta.env.BASE_URL || '/';
 const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
+// load client modules below via relative src so Vite handles them
 ---
 <!doctype html>
 <html lang="en" class="dark scroll-smooth">
@@ -17,7 +17,7 @@ const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
     <meta name="color-scheme" content="light dark" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/trig-js/src/trig-animations.min.css" />
     <script src={trigUrl} defer></script>
-    <script type="module" src={materialColorsUrl}></script>
+    <script type="module">import '../scripts/material-colors.ts';</script>
     <title>{title}</title>
   </head>
   <body class="relative min-h-dvh bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-100">
@@ -49,82 +49,7 @@ const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
         <polyline points="18 15 12 9 6 15"></polyline>
       </svg>
     </button>
-    <script type="module">
-      import { generateSimplePalette, applyPaletteToNavbar, updateNavbarFromSection } from '/src/scripts/palette-utils.js';
-
-      // Apply first palette immediately to hero section using shared utilities
-      function applyFirstPalette() {
-        const heroSection = document.querySelector('section[data-mc-seed="#00C9B9"]');
-        if (heroSection) {
-          // Generate palette using shared utility
-          const vars = generateSimplePalette('#00C9B9');
-          
-          // Apply to hero section
-          Object.entries(vars).forEach(([k, v]) => heroSection.style.setProperty(k, v));
-          
-          // Apply to navbar and global colors using shared utility
-          applyPaletteToNavbar(vars);
-        }
-      }
-
-      // Apply first palette immediately when script loads
-      applyFirstPalette();
-
-      // Update palette on scroll and resize
-      function updateFabPalette() {
-        const fab = document.querySelector('.fab');
-        if (!fab) return;
-        
-        // Hide FAB when hero section is still dominant
-        const hero = document.querySelector('section[data-mc-seed="#00C9B9"]');
-        if (hero) {
-          const heroRect = hero.getBoundingClientRect();
-          if (heroRect && heroRect.bottom > window.innerHeight * 0.8) {
-            fab.style.display = 'none';
-            return;
-          }
-        }
-        
-        // Show FAB when scrolled down from hero
-        fab.style.display = '';
-        
-        // Find the section that's currently most in view
-        const sections = Array.from(document.querySelectorAll('section[data-mc-seed]'));
-        let closest = null;
-        let minDist = Infinity;
-        sections.forEach(sec => {
-          const rect = sec.getBoundingClientRect();
-          const dist = Math.abs(rect.top + rect.height / 2 - window.innerHeight / 2);
-          if (dist < minDist) {
-            minDist = dist;
-            closest = sec;
-          }
-        });
-        if (closest) {
-          // Update FAB colors
-          const computed = getComputedStyle(closest);
-          fab.style.setProperty('--mc-surface-variant', computed.getPropertyValue('--mc-surface-variant'));
-          fab.style.setProperty('--mc-outline-variant', computed.getPropertyValue('--mc-outline-variant'));
-          fab.style.setProperty('--mc-primary', computed.getPropertyValue('--mc-primary'));
-          
-          // Update navbar colors using shared utility
-          updateNavbarFromSection(closest);
-        }
-      }
-      
-      window.addEventListener('scroll', updateFabPalette, { passive: true });
-      window.addEventListener('resize', updateFabPalette, { passive: true });
-      
-      // Listen for Material Colors to be ready (from external script)
-      document.addEventListener('material-colors-ready', updateFabPalette);
-      
-      // Also update when dark mode toggles
-      const mo = new MutationObserver(updateFabPalette);
-      mo.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-      
-      // Try once immediately in case colors are already available
-      updateFabPalette();
-    </script>
+    <script type="module">import '../scripts/layout-init.ts';</script>
     <footer class="border-t border-slate-200/60 px-4 py-8 text-center text-xs text-slate-500 dark:border-slate-800/60">
       <p class="flex items-center justify-center gap-1">
         <span>{new Date().getFullYear()} BSharp</span>

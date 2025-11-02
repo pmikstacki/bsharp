@@ -1,0 +1,823 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Workspace Loading - BSharp C# Parser Documentation</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="../custom.css">
+        
+        <script>
+          (function() {
+            function applyTheme(mode){
+              const theme = mode === 'dark' ? 'coal' : 'light';
+              try { localStorage.setItem('mdbook-theme', theme); } catch(e) {}
+              const html = document.documentElement;
+              html.classList.remove('light','rust','coal','navy','ayu','default_theme');
+              html.classList.add(theme,'js');
+            }
+            function detectFromParent(){
+              try {
+                if (window.parent && window.parent !== window) {
+                  const phtml = window.parent.document.documentElement;
+                  if (phtml.classList.contains('dark')) return 'dark';
+                  if (phtml.classList.contains('light')) return 'light';
+                }
+              } catch(e) {}
+              return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+            applyTheme(detectFromParent());
+            window.addEventListener('message', (e) => {
+              const d = e && e.data;
+              if (!d || d.type !== 'bsharp:theme') return;
+              applyTheme(d.value === 'dark' ? 'dark' : 'light');
+            });
+            try {
+              window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => applyTheme(e.matches ? 'dark' : 'light'));
+            } catch(e) {}
+            window.addEventListener('DOMContentLoaded', () => {
+              const themeBtn = document.getElementById('theme-toggle');
+              const themeList = document.getElementById('theme-list');
+              if (themeBtn) themeBtn.style.display = 'none';
+              if (themeList) themeList.style.display = 'none';
+            });
+          })();
+        </script>
+
+        <meta name="description" content="Comprehensive documentation for the BSharp C# parser and analysis toolkit">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../custom.css">
+        <link rel="stylesheet" href=".././mdbook-admonish.css">
+        <link rel="stylesheet" href="../theme/pagetoc.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BSharp C# Parser Documentation</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/pmikstacki/bsharp" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/pmikstacki/bsharp/edit/main/docs/./workspace/overview.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="workspace-loading"><a class="header" href="#workspace-loading">Workspace Loading</a></h1>
+<p>The BSharp workspace loading system provides comprehensive support for loading C# projects and solutions, including solution files (.sln), project files (.csproj), and directory-based discovery.</p>
+<hr />
+<h2 id="overview"><a class="header" href="#overview">Overview</a></h2>
+<p><strong>Location:</strong> <code>src/bsharp_analysis/src/workspace/</code></p>
+<p>The workspace loader:</p>
+<ul>
+<li>Parses Visual Studio solution files (.sln)</li>
+<li>Parses MSBuild project files (.csproj)</li>
+<li>Discovers source files</li>
+<li>Resolves project references</li>
+<li>Handles multiple projects deterministically</li>
+</ul>
+<hr />
+<h2 id="workspace-model"><a class="header" href="#workspace-model">Workspace Model</a></h2>
+<h3 id="core-types"><a class="header" href="#core-types">Core Types</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct Workspace {
+    pub root: PathBuf,
+    pub projects: Vec&lt;Project&gt;,
+    pub solution: Option&lt;Solution&gt;,
+    pub source_map: SourceMap,
+}
+
+pub struct Project {
+    pub name: String,
+    pub path: PathBuf,
+    pub target_framework: String,
+    pub output_type: String,
+    pub files: Vec&lt;ProjectFile&gt;,
+    pub references: Vec&lt;ProjectRef&gt;,
+    pub package_references: Vec&lt;PackageReference&gt;,
+    pub errors: Vec&lt;String&gt;,
+}
+
+pub struct Solution {
+    pub name: String,
+    pub path: PathBuf,
+    pub projects: Vec&lt;SolutionProject&gt;,
+}
+<span class="boring">}</span></code></pre></pre>
+<hr />
+<h2 id="loading-workspaces"><a class="header" href="#loading-workspaces">Loading Workspaces</a></h2>
+<h3 id="workspaceloader-api"><a class="header" href="#workspaceloader-api">WorkspaceLoader API</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct WorkspaceLoader;
+
+impl WorkspaceLoader {
+    // Load from any path (auto-detects type)
+    pub fn from_path(path: &amp;Path) -&gt; Result&lt;Workspace&gt;;
+    
+    // Load with options
+    pub fn from_path_with_options(
+        path: &amp;Path, 
+        opts: WorkspaceLoadOptions
+    ) -&gt; Result&lt;Workspace&gt;;
+}
+
+pub struct WorkspaceLoadOptions {
+    pub follow_refs: bool,  // Follow ProjectReference transitively
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="loading-from-solution-file"><a class="header" href="#loading-from-solution-file">Loading from Solution File</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use bsharp_analysis::workspace::WorkspaceLoader;
+
+let workspace = WorkspaceLoader::from_path(Path::new("MySolution.sln"))?;
+
+println!("Loaded {} projects", workspace.projects.len());
+for project in &amp;workspace.projects {
+    println!("  - {}: {} files", project.name, project.files.len());
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="loading-from-project-file"><a class="header" href="#loading-from-project-file">Loading from Project File</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let workspace = WorkspaceLoader::from_path(Path::new("MyProject.csproj"))?;
+
+// Automatically follows ProjectReference if follow_refs = true
+assert!(workspace.projects.len() &gt;= 1);
+<span class="boring">}</span></code></pre></pre>
+<h3 id="loading-from-directory"><a class="header" href="#loading-from-directory">Loading from Directory</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let workspace = WorkspaceLoader::from_path(Path::new("./src"))?;
+
+// Discovers .sln or .csproj files in directory
+<span class="boring">}</span></code></pre></pre>
+<hr />
+<h2 id="solution-file-parsing"><a class="header" href="#solution-file-parsing">Solution File Parsing</a></h2>
+<h3 id="solution-format"><a class="header" href="#solution-format">Solution Format</a></h3>
+<p><strong>Example .sln:</strong></p>
+<pre><code>Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyApp", "MyApp\MyApp.csproj", "{GUID}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyLib", "MyLib\MyLib.csproj", "{GUID}"
+EndProject
+</code></pre>
+<h3 id="parsing-implementation"><a class="header" href="#parsing-implementation">Parsing Implementation</a></h3>
+<p><strong>Location:</strong> <code>src/bsharp_analysis/src/workspace/sln/reader.rs</code></p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct SolutionReader;
+
+impl SolutionReader {
+    pub fn read(path: &amp;Path) -&gt; Result&lt;Solution&gt; {
+        let content = fs::read_to_string(path)?;
+        Self::parse(&amp;content, path)
+    }
+    
+    fn parse(content: &amp;str, base_path: &amp;Path) -&gt; Result&lt;Solution&gt; {
+        // Parse solution format
+        // Extract project entries
+        // Resolve project paths
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="solution-structure"><a class="header" href="#solution-structure">Solution Structure</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct Solution {
+    pub name: String,
+    pub path: PathBuf,
+    pub projects: Vec&lt;SolutionProject&gt;,
+}
+
+pub struct SolutionProject {
+    pub name: String,
+    pub path: PathBuf,
+    pub type_guid: String,
+    pub guid: String,
+}
+<span class="boring">}</span></code></pre></pre>
+<hr />
+<h2 id="project-file-parsing"><a class="header" href="#project-file-parsing">Project File Parsing</a></h2>
+<h3 id="project-format"><a class="header" href="#project-format">Project Format</a></h3>
+<p><strong>Example .csproj:</strong></p>
+<pre><code class="language-xml">&lt;Project Sdk="Microsoft.NET.Sdk"&gt;
+  &lt;PropertyGroup&gt;
+    &lt;TargetFramework&gt;net8.0&lt;/TargetFramework&gt;
+    &lt;OutputType&gt;Exe&lt;/OutputType&gt;
+  &lt;/PropertyGroup&gt;
+  
+  &lt;ItemGroup&gt;
+    &lt;Compile Include="Program.cs" /&gt;
+    &lt;Compile Include="Utils.cs" /&gt;
+  &lt;/ItemGroup&gt;
+  
+  &lt;ItemGroup&gt;
+    &lt;ProjectReference Include="..\MyLib\MyLib.csproj" /&gt;
+  &lt;/ItemGroup&gt;
+  
+  &lt;ItemGroup&gt;
+    &lt;PackageReference Include="Newtonsoft.Json" Version="13.0.1" /&gt;
+  &lt;/ItemGroup&gt;
+&lt;/Project&gt;
+</code></pre>
+<h3 id="parsing-implementation-1"><a class="header" href="#parsing-implementation-1">Parsing Implementation</a></h3>
+<p><strong>Location:</strong> <code>src/bsharp_analysis/src/workspace/csproj/reader.rs</code></p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct CsprojReader;
+
+impl CsprojReader {
+    pub fn read(path: &amp;Path) -&gt; Result&lt;Project&gt; {
+        let content = fs::read_to_string(path)?;
+        Self::parse(&amp;content, path)
+    }
+    
+    fn parse(content: &amp;str, project_path: &amp;Path) -&gt; Result&lt;Project&gt; {
+        // Parse XML
+        // Extract properties (TargetFramework, OutputType)
+        // Discover source files (Compile items)
+        // Extract ProjectReference entries
+        // Extract PackageReference entries
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="source-file-discovery"><a class="header" href="#source-file-discovery">Source File Discovery</a></h3>
+<p><strong>Glob Patterns:</strong></p>
+<ul>
+<li>Default: <code>**/*.cs</code> (all C# files recursively)</li>
+<li>Respects <code>&lt;Compile Include="..." /&gt;</code> items</li>
+<li>Respects <code>&lt;Compile Remove="..." /&gt;</code> exclusions</li>
+<li>Excludes <code>obj/</code> and <code>bin/</code> directories</li>
+</ul>
+<p><strong>Implementation:</strong></p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn discover_source_files(project_dir: &amp;Path) -&gt; Vec&lt;ProjectFile&gt; {
+    let pattern = project_dir.join("**/*.cs");
+    let mut files = Vec::new();
+    
+    for entry in glob::glob(pattern.to_str().unwrap()) {
+        let path = entry.unwrap();
+        
+        // Skip obj/ and bin/
+        if path.components().any(|c| c.as_os_str() == "obj" || c.as_os_str() == "bin") {
+            continue;
+        }
+        
+        files.push(ProjectFile {
+            path,
+            kind: ProjectFileKind::Compile,
+        });
+    }
+    
+    files
+}
+<span class="boring">}</span></code></pre></pre>
+<hr />
+<h2 id="project-references"><a class="header" href="#project-references">Project References</a></h2>
+<h3 id="transitive-resolution"><a class="header" href="#transitive-resolution">Transitive Resolution</a></h3>
+<p><strong>follow_refs Option:</strong></p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let opts = WorkspaceLoadOptions { follow_refs: true };
+let workspace = WorkspaceLoader::from_path_with_options(path, opts)?;
+<span class="boring">}</span></code></pre></pre>
+<p><strong>Behavior:</strong></p>
+<ul>
+<li>Follows <code>&lt;ProjectReference&gt;</code> transitively</li>
+<li>Loads all referenced projects</li>
+<li>Avoids duplicates</li>
+<li>Stays within workspace root</li>
+<li>Deterministic ordering (sorted by path)</li>
+</ul>
+<p><strong>Example:</strong></p>
+<pre><code>MyApp.csproj
+  → MyLib.csproj
+    → MyCore.csproj
+
+Result: [MyApp, MyLib, MyCore]
+</code></pre>
+<h3 id="implementation"><a class="header" href="#implementation">Implementation</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn follow_project_references(root: &amp;Path, projects: &amp;mut Vec&lt;Project&gt;) {
+    let mut seen = HashSet::new();
+    let mut queue = VecDeque::new();
+    
+    // Add initial projects
+    for proj in projects.iter() {
+        seen.insert(proj.path.clone());
+        queue.push_back(proj.path.clone());
+    }
+    
+    // BFS traversal
+    while let Some(proj_path) = queue.pop_front() {
+        let proj = match CsprojReader::read(&amp;proj_path) {
+            Ok(p) =&gt; p,
+            Err(_) =&gt; continue,
+        };
+        
+        for ref_path in proj.references.iter().map(|r| &amp;r.path) {
+            // Resolve relative to project directory
+            let abs_path = proj_path.parent().unwrap().join(ref_path);
+            
+            // Skip if outside root
+            if !abs_path.starts_with(root) {
+                continue;
+            }
+            
+            // Skip if already seen
+            if seen.insert(abs_path.clone()) {
+                queue.push_back(abs_path.clone());
+                
+                // Load and add project
+                if let Ok(referenced_proj) = CsprojReader::read(&amp;abs_path) {
+                    projects.push(referenced_proj);
+                }
+            }
+        }
+    }
+    
+    // Sort for determinism
+    projects.sort_by(|a, b| a.path.cmp(&amp;b.path));
+}
+<span class="boring">}</span></code></pre></pre>
+<hr />
+<h2 id="source-map"><a class="header" href="#source-map">Source Map</a></h2>
+<h3 id="purpose"><a class="header" href="#purpose">Purpose</a></h3>
+<p>The <code>SourceMap</code> provides fast lookup of source files:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct SourceMap {
+    files: HashMap&lt;PathBuf, SourceFileInfo&gt;,
+}
+
+impl SourceMap {
+    pub fn get(&amp;self, path: &amp;Path) -&gt; Option&lt;&amp;SourceFileInfo&gt;;
+    pub fn all_files(&amp;self) -&gt; Vec&lt;&amp;Path&gt;;
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="usage"><a class="header" href="#usage">Usage</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let workspace = WorkspaceLoader::from_path(path)?;
+
+// Look up file
+if let Some(info) = workspace.source_map.get(Path::new("Program.cs")) {
+    println!("Found in project: {}", info.project_name);
+}
+
+// Iterate all files
+for file_path in workspace.source_map.all_files() {
+    println!("File: {}", file_path.display());
+}
+<span class="boring">}</span></code></pre></pre>
+<hr />
+<h2 id="error-handling"><a class="header" href="#error-handling">Error Handling</a></h2>
+<h3 id="resilient-loading"><a class="header" href="#resilient-loading">Resilient Loading</a></h3>
+<p><strong>Philosophy:</strong> Continue loading even if individual projects fail</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Failed projects recorded as stubs with errors
+let workspace = WorkspaceLoader::from_path(sln_path)?;
+
+for project in &amp;workspace.projects {
+    if !project.errors.is_empty() {
+        eprintln!("Errors in {}: {:?}", project.name, project.errors);
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="error-types"><a class="header" href="#error-types">Error Types</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub enum WorkspaceError {
+    IoError(io::Error),
+    ParseError(String),
+    InvalidPath(String),
+    Unsupported(String),
+}
+<span class="boring">}</span></code></pre></pre>
+<hr />
+<h2 id="cli-integration"><a class="header" href="#cli-integration">CLI Integration</a></h2>
+<h3 id="analyze-command"><a class="header" href="#analyze-command">Analyze Command</a></h3>
+<pre><code class="language-bash"># Analyze solution
+bsharp analyze MySolution.sln
+
+# Analyze project
+bsharp analyze MyProject.csproj
+
+# Follow references (default: true)
+bsharp analyze MyProject.csproj --follow-refs true
+
+# Don't follow references
+bsharp analyze MyProject.csproj --follow-refs false
+</code></pre>
+<h3 id="filtering"><a class="header" href="#filtering">Filtering</a></h3>
+<pre><code class="language-bash"># Include only specific files
+bsharp analyze MySolution.sln --include "**/*Service.cs"
+
+# Exclude test files
+bsharp analyze MySolution.sln --exclude "**/Tests/**"
+
+# Multiple patterns
+bsharp analyze MySolution.sln \
+    --include "src/**/*.cs" \
+    --exclude "**/obj/**" "**/bin/**"
+</code></pre>
+<hr />
+<h2 id="deterministic-behavior"><a class="header" href="#deterministic-behavior">Deterministic Behavior</a></h2>
+<h3 id="guarantees"><a class="header" href="#guarantees">Guarantees</a></h3>
+<ol>
+<li><strong>Project Order:</strong> Always sorted by absolute path</li>
+<li><strong>File Order:</strong> Always sorted within each project</li>
+<li><strong>Deduplication:</strong> No duplicate projects or files</li>
+<li><strong>Reproducible:</strong> Same input always produces same output</li>
+</ol>
+<h3 id="implementation-1"><a class="header" href="#implementation-1">Implementation</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Sort projects
+projects.sort_by(|a, b| a.path.cmp(&amp;b.path));
+
+// Deduplicate by path
+let mut seen = HashSet::new();
+projects.retain(|p| seen.insert(p.path.clone()));
+
+// Sort files within each project
+for project in &amp;mut projects {
+    project.files.sort_by(|a, b| a.path.cmp(&amp;b.path));
+}
+<span class="boring">}</span></code></pre></pre>
+<hr />
+<h2 id="performance"><a class="header" href="#performance">Performance</a></h2>
+<h3 id="loading-speed"><a class="header" href="#loading-speed">Loading Speed</a></h3>
+<ul>
+<li><strong>Small solution</strong> (1-5 projects): &lt; 100ms</li>
+<li><strong>Medium solution</strong> (5-20 projects): 100-500ms</li>
+<li><strong>Large solution</strong> (20-100 projects): 500ms-2s</li>
+</ul>
+<h3 id="memory-usage"><a class="header" href="#memory-usage">Memory Usage</a></h3>
+<ul>
+<li>Minimal: Only metadata loaded, not source content</li>
+<li>Typical: 1-5 MB per solution</li>
+</ul>
+<h3 id="optimization"><a class="header" href="#optimization">Optimization</a></h3>
+<ul>
+<li>Parallel project loading (with <code>parallel_analysis</code> feature)</li>
+<li>Lazy source file reading</li>
+<li>Efficient path canonicalization</li>
+</ul>
+<hr />
+<h2 id="examples"><a class="header" href="#examples">Examples</a></h2>
+<h3 id="example-1-load-and-analyze"><a class="header" href="#example-1-load-and-analyze">Example 1: Load and Analyze</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use bsharp_analysis::workspace::WorkspaceLoader;
+use bsharp_parser::facade::Parser;
+
+let workspace = WorkspaceLoader::from_path(Path::new("MySolution.sln"))?;
+
+let parser = Parser::new();
+for project in &amp;workspace.projects {
+    for file in &amp;project.files {
+        let source = fs::read_to_string(&amp;file.path)?;
+        match parser.parse(&amp;source) {
+            Ok(cu) =&gt; println!("Parsed: {}", file.path.display()),
+            Err(e) =&gt; eprintln!("Error in {}: {}", file.path.display(), e),
+        }
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="example-2-project-statistics"><a class="header" href="#example-2-project-statistics">Example 2: Project Statistics</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let workspace = WorkspaceLoader::from_path(path)?;
+
+println!("Solution: {}", workspace.solution.as_ref().unwrap().name);
+println!("Projects: {}", workspace.projects.len());
+
+let total_files: usize = workspace.projects.iter()
+    .map(|p| p.files.len())
+    .sum();
+println!("Total files: {}", total_files);
+
+for project in &amp;workspace.projects {
+    println!("  {}: {} files", project.name, project.files.len());
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="example-3-dependency-graph"><a class="header" href="#example-3-dependency-graph">Example 3: Dependency Graph</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let workspace = WorkspaceLoader::from_path(path)?;
+
+println!("Project Dependencies:");
+for project in &amp;workspace.projects {
+    if !project.references.is_empty() {
+        println!("{}:", project.name);
+        for ref_ in &amp;project.references {
+            println!("  → {}", ref_.name);
+        }
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<hr />
+<h2 id="testing"><a class="header" href="#testing">Testing</a></h2>
+<h3 id="test-fixtures"><a class="header" href="#test-fixtures">Test Fixtures</a></h3>
+<p><strong>Location:</strong> <code>tests/fixtures/</code></p>
+<pre><code>tests/fixtures/
+├── happy_path/
+│   ├── test.sln
+│   ├── testApplication/
+│   │   ├── testApplication.csproj
+│   │   └── Program.cs
+│   └── testDependency/
+│       ├── testDependency.csproj
+│       └── Library.cs
+└── complex/
+    └── ...
+</code></pre>
+<h3 id="test-examples"><a class="header" href="#test-examples">Test Examples</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[test]
+fn test_load_solution() {
+    let sln_path = PathBuf::from("tests/fixtures/happy_path/test.sln");
+    let workspace = WorkspaceLoader::from_path(&amp;sln_path).unwrap();
+    
+    assert_eq!(workspace.projects.len(), 2);
+    assert!(workspace.solution.is_some());
+}
+
+#[test]
+fn test_follow_references() {
+    let proj_path = PathBuf::from("tests/fixtures/happy_path/testApplication/testApplication.csproj");
+    let workspace = WorkspaceLoader::from_path(&amp;proj_path).unwrap();
+    
+    // Should load both testApplication and testDependency
+    assert_eq!(workspace.projects.len(), 2);
+}
+<span class="boring">}</span></code></pre></pre>
+<hr />
+<h2 id="future-enhancements"><a class="header" href="#future-enhancements">Future Enhancements</a></h2>
+<h3 id="planned-features"><a class="header" href="#planned-features">Planned Features</a></h3>
+<ol>
+<li>
+<p><strong>NuGet Package Resolution</strong></p>
+<ul>
+<li>Resolve package references</li>
+<li>Download packages if needed</li>
+<li>Parse package assemblies</li>
+</ul>
+</li>
+<li>
+<p><strong>MSBuild Integration</strong></p>
+<ul>
+<li>Full MSBuild evaluation</li>
+<li>Property expansion</li>
+<li>Target execution</li>
+</ul>
+</li>
+<li>
+<p><strong>Multi-targeting Support</strong></p>
+<ul>
+<li>Handle multiple target frameworks</li>
+<li>Conditional compilation</li>
+</ul>
+</li>
+<li>
+<p><strong>Incremental Loading</strong></p>
+<ul>
+<li>Cache workspace metadata</li>
+<li>Reload only changed projects</li>
+</ul>
+</li>
+</ol>
+<hr />
+<h2 id="related-documentation"><a class="header" href="#related-documentation">Related Documentation</a></h2>
+<ul>
+<li><a href="../cli/overview.html">CLI Overview</a> - CLI integration</li>
+<li><a href="../analysis/pipeline.html">Analysis Pipeline</a> - Using workspace in analysis</li>
+<li><a href="../development/architecture.html">Architecture</a> - Design decisions</li>
+</ul>
+<hr />
+<h2 id="references"><a class="header" href="#references">References</a></h2>
+<ul>
+<li><strong>Implementation:</strong> <code>src/bsharp_analysis/src/workspace/</code></li>
+<li><strong>Loader:</strong> <code>src/bsharp_analysis/src/workspace/loader.rs</code></li>
+<li><strong>Solution Reader:</strong> <code>src/bsharp_analysis/src/workspace/sln/reader.rs</code></li>
+<li><strong>Project Reader:</strong> <code>src/bsharp_analysis/src/workspace/csproj/reader.rs</code></li>
+<li><strong>Model:</strong> <code>src/bsharp_analysis/src/workspace/model.rs</code></li>
+<li><strong>Source Map:</strong> <code>src/bsharp_analysis/src/workspace/source_map.rs</code></li>
+<li><strong>Tests:</strong> <code>src/bsharp_tests/src/workspace/</code> and <code>src/bsharp_tests/src/integration/</code></li>
+</ul>
+<footer class="gitinfo-footer" style="font-size:0.8em;padding:4px;margin:0 0 2em 0;text-align:center;display:block;">2025-10-21 11:38:49 • commit: d6ce8b3</footer>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../cli/errors-json.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../configuration/overview.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../cli/errors-json.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../configuration/overview.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+        <script src="../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

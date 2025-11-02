@@ -6,6 +6,4 @@ const { id, initial = '', height = '460px' } = Astro.props as {
 };
 ---
 <div id={id} data-monaco="true" data-initial={initial} style={`height:${height}`} class="h-[460px] w-full overflow-hidden rounded-md border border-white/10 bg-black/30"></div>
-<script type="module">
-  import '/src/scripts/monaco-auto-init.ts';
-</script>
+<script type="module">import '../scripts/monaco-auto-init.ts';</script>

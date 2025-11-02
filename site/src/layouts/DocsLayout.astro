@@ -14,20 +14,8 @@ const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
     <meta name="generator" content={Astro.generator} />
     <meta name="color-scheme" content="light dark" />
     <script type="module">
-      import '/src/scripts/material-colors.ts';
-      import { generateSimplePalette, applyPaletteToNavbar } from '/src/scripts/palette-utils.js';
-      
-      // Apply the same cyan palette as main site for consistency
-      function applyDocsPalette() {
-        // Generate palette using the same cyan color as main site
-        const vars = generateSimplePalette('#00C9B9');
-        
-        // Apply to navbar and global colors using shared utility
-        applyPaletteToNavbar(vars);
-      }
-      
-      // Apply palette immediately when script loads
-      applyDocsPalette();
+      import '../scripts/material-colors.ts';
+      import '../scripts/docs-init.ts';
     </script>
     <title>{title}</title>
   </head>

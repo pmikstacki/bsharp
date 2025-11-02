@@ -1,0 +1,409 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Overview - BSharp C# Parser Documentation</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="../custom.css">
+        
+        <script>
+          (function() {
+            function applyTheme(mode){
+              const theme = mode === 'dark' ? 'coal' : 'light';
+              try { localStorage.setItem('mdbook-theme', theme); } catch(e) {}
+              const html = document.documentElement;
+              html.classList.remove('light','rust','coal','navy','ayu','default_theme');
+              html.classList.add(theme,'js');
+            }
+            function detectFromParent(){
+              try {
+                if (window.parent && window.parent !== window) {
+                  const phtml = window.parent.document.documentElement;
+                  if (phtml.classList.contains('dark')) return 'dark';
+                  if (phtml.classList.contains('light')) return 'light';
+                }
+              } catch(e) {}
+              return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+            applyTheme(detectFromParent());
+            window.addEventListener('message', (e) => {
+              const d = e && e.data;
+              if (!d || d.type !== 'bsharp:theme') return;
+              applyTheme(d.value === 'dark' ? 'dark' : 'light');
+            });
+            try {
+              window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => applyTheme(e.matches ? 'dark' : 'light'));
+            } catch(e) {}
+            window.addEventListener('DOMContentLoaded', () => {
+              const themeBtn = document.getElementById('theme-toggle');
+              const themeList = document.getElementById('theme-list');
+              if (themeBtn) themeBtn.style.display = 'none';
+              if (themeList) themeList.style.display = 'none';
+            });
+          })();
+        </script>
+
+        <meta name="description" content="Comprehensive documentation for the BSharp C# parser and analysis toolkit">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../custom.css">
+        <link rel="stylesheet" href=".././mdbook-admonish.css">
+        <link rel="stylesheet" href="../theme/pagetoc.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BSharp C# Parser Documentation</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/pmikstacki/bsharp" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/pmikstacki/bsharp/edit/main/docs/./parser/overview.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="parser-overview"><a class="header" href="#parser-overview">Parser Overview</a></h1>
+<p>The BSharp parser transforms C# source code into a structured Abstract Syntax Tree (AST). Built using the <code>nom</code> parser combinator library, it provides a robust and extensible foundation for parsing modern C# syntax as part of the BSharp toolkit.</p>
+<h2 id="architecture"><a class="header" href="#architecture">Architecture</a></h2>
+<p>The parser follows a modular architecture with clear separation of concerns. It serves as the frontend for tools that consume the AST (analysis, visualization, etc.):</p>
+<h3 id="parser-infrastructure-srcbsharp_syntaxsrc"><a class="header" href="#parser-infrastructure-srcbsharp_syntaxsrc">Parser Infrastructure (<code>src/bsharp_syntax/src/</code>)</a></h3>
+<ul>
+<li><strong><code>mod.rs</code></strong>: Public API and re-exports</li>
+<li><strong><code>ast.rs</code></strong>: Root AST node definitions (<code>CompilationUnit</code>, <code>TopLevelDeclaration</code>)</li>
+<li><strong><code>errors.rs</code></strong>: Error formatting utilities (<code>format_error_tree</code>)</li>
+<li><strong><code>parser_helpers.rs</code></strong>: Core parsing utilities (<code>context</code>, <code>bws</code>, <code>keyword</code>, etc.)</li>
+<li><strong><code>test_helpers.rs</code></strong>: Testing utilities (<code>expect_ok</code>, etc.)</li>
+<li><strong><code>nodes/</code></strong>: AST node definitions organized by category</li>
+</ul>
+<h3 id="parser-implementations-srcbsharp_parsersrc"><a class="header" href="#parser-implementations-srcbsharp_parsersrc">Parser Implementations (<code>src/bsharp_parser/src/</code>)</a></h3>
+<p>The parsers are organized by language construct type:</p>
+<ul>
+<li><strong><code>expressions/</code></strong>: All expression parsing (literals, operators, method calls, etc.)</li>
+<li><strong><code>keywords/</code></strong>: Keyword parsing organized by category</li>
+<li><strong><code>types/</code></strong>: Type system parsing (primitives, generics, arrays, etc.)</li>
+<li><strong><code>helpers/</code></strong>: Declaration helpers and utilities</li>
+<li><strong><code>preprocessor/</code></strong>: Preprocessor directive parsing</li>
+</ul>
+<h3 id="ast-node-definitions-srcbsharp_syntaxsrc"><a class="header" href="#ast-node-definitions-srcbsharp_syntaxsrc">AST Node Definitions (<code>src/bsharp_syntax/src/</code>)</a></h3>
+<p>Structured node definitions that mirror C# language constructs:</p>
+<ul>
+<li><strong><code>declarations/</code></strong>: All declaration node types</li>
+<li><strong><code>expressions/</code></strong>: All expression node types</li>
+<li><strong><code>statements/</code></strong>: All statement node types</li>
+<li><strong><code>types/</code></strong>: Type system node definitions</li>
+</ul>
+<h2 id="parser-design-principles"><a class="header" href="#parser-design-principles">Parser Design Principles</a></h2>
+<h3 id="1-compositional-design"><a class="header" href="#1-compositional-design">1. Compositional Design</a></h3>
+<p>The parser is built from small, focused parser functions that combine to handle complex language constructs:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Example: Method declaration combines multiple sub-parsers
+fn parse_method_declaration(input: &amp;str) -&gt; BResult&lt;&amp;str, MethodDeclaration&gt; {
+    let (input, attributes) = parse_attributes(input.into())?;
+    let (input, modifiers) = parse_modifiers(input.into())?;
+    let (input, return_type) = parse_type(input.into())?;
+    let (input, name) = parse_identifier(input.into())?;
+    let (input, parameters) = parse_parameter_list(input.into())?;
+    let (input, body) = opt(parse_block_statement)(input.into())?;
+    // ... construct and return MethodDeclaration
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="2-error-recovery-and-context"><a class="header" href="#2-error-recovery-and-context">2. Error Recovery and Context</a></h3>
+<p>Custom error types provide detailed context about parse failures:</p>
+<ul>
+<li>Location information (line, column)</li>
+<li>Expected vs. actual input</li>
+<li>Contextual error messages</li>
+<li>Error recovery strategies</li>
+</ul>
+<h3 id="3-extensibility"><a class="header" href="#3-extensibility">3. Extensibility</a></h3>
+<p>The modular design allows easy addition of new language features:</p>
+<ul>
+<li>Add new expression types by extending the <code>Expression</code> enum</li>
+<li>Implement new statement parsers following established patterns</li>
+<li>Extend AST navigation traits for new analysis capabilities</li>
+</ul>
+<h2 id="parsing-flow"><a class="header" href="#parsing-flow">Parsing Flow</a></h2>
+<h3 id="1-entry-point"><a class="header" href="#1-entry-point">1. Entry Point</a></h3>
+<p>Parsing begins via the public facade in <code>src/bsharp_parser/src/facade.rs</code>:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let parser = bsharp_parser::facade::Parser::new();
+let cu = parser.parse(source)?;
+<span class="boring">}</span></code></pre></pre>
+<h3 id="2-compilation-unit-parsing"><a class="header" href="#2-compilation-unit-parsing">2. Compilation Unit Parsing</a></h3>
+<p>The parser starts by parsing a <code>CompilationUnit</code>, which represents a complete C# source file:</p>
+<ul>
+<li>Global attributes (assembly/module level)</li>
+<li>Using directives</li>
+<li>Top-level declarations (namespaces, classes, etc.)</li>
+<li>File-scoped namespaces (C# 10+)</li>
+<li>Top-level statements (C# 9+)</li>
+</ul>
+<h3 id="3-recursive-descent"><a class="header" href="#3-recursive-descent">3. Recursive Descent</a></h3>
+<p>The parser uses recursive descent to handle nested structures:</p>
+<ul>
+<li>Namespaces contain type declarations</li>
+<li>Types contain member declarations</li>
+<li>Methods contain statements</li>
+<li>Statements contain expressions</li>
+</ul>
+<h2 id="key-parser-features"><a class="header" href="#key-parser-features">Key Parser Features</a></h2>
+<h3 id="expression-parsing-with-precedence"><a class="header" href="#expression-parsing-with-precedence">Expression Parsing with Precedence</a></h3>
+<p>The expression parser handles operator precedence correctly:</p>
+<ul>
+<li>Primary expressions (literals, identifiers, parentheses)</li>
+<li>Unary operators (!, -, +, ++, --, etc.)</li>
+<li>Binary operators with correct precedence and associativity</li>
+<li>Conditional expressions (ternary operator)</li>
+<li>Assignment expressions</li>
+</ul>
+<h3 id="statement-parsing"><a class="header" href="#statement-parsing">Statement Parsing</a></h3>
+<p>Comprehensive support for all C# statement types:</p>
+<ul>
+<li>Control flow: <code>if</code>, <code>switch</code>, <code>for</code>, <code>foreach</code>, <code>while</code>, <code>do-while</code></li>
+<li>Jump statements: <code>break</code>, <code>continue</code>, <code>return</code>, <code>throw</code>, <code>goto</code></li>
+<li>Exception handling: <code>try-catch-finally</code></li>
+<li>Resource management: <code>using</code>, <code>lock</code></li>
+<li>Local declarations and assignments</li>
+</ul>
+<h3 id="declaration-parsing"><a class="header" href="#declaration-parsing">Declaration Parsing</a></h3>
+<p>Full support for C# type and member declarations:</p>
+<ul>
+<li>Types: classes, structs, interfaces, records, enums, delegates</li>
+<li>Members: methods, properties, fields, events, indexers, operators</li>
+<li>Modifiers: access modifiers, static, abstract, virtual, override, etc.</li>
+<li>Generics: type parameters, constraints, variance</li>
+</ul>
+<h3 id="modern-c-features"><a class="header" href="#modern-c-features">Modern C# Features</a></h3>
+<p>Support for recent C# language additions:</p>
+<ul>
+<li>Records (C# 9)</li>
+<li>File-scoped namespaces (C# 10)</li>
+<li>Top-level statements (C# 9)</li>
+<li>Pattern matching enhancements</li>
+<li>Nullable reference types</li>
+</ul>
+<h2 id="error-handling-strategy"><a class="header" href="#error-handling-strategy">Error Handling Strategy</a></h2>
+<p>The parser uses a multi-layered error handling approach:</p>
+<ol>
+<li><strong>Parse Errors</strong>: Detailed information about what went wrong during parsing</li>
+<li><strong>Context Propagation</strong>: Errors include context about where in the parsing process they occurred</li>
+<li><strong>Recovery Mechanisms</strong>: Ability to continue parsing after certain types of errors</li>
+<li><strong>User-Friendly Messages</strong>: Clear, actionable error messages for developers</li>
+</ol>
+<p>This design makes the parser robust and helpful for development and debugging. Code generation/compilation is out of scope for now; the parser and analysis crates form the current focus of the toolkit.</p>
+<hr />
+<h2 id="see-also"><a class="header" href="#see-also">See Also</a></h2>
+<ul>
+<li><a href="./keywords-and-tokens.html">Keywords and Tokens</a> – keyword helpers, word boundaries, trivia handling</li>
+</ul>
+<footer class="gitinfo-footer" style="font-size:0.8em;padding:4px;margin:0 0 2em 0;text-align:center;display:block;">2025-10-21 11:38:49 • commit: d6ce8b3</footer>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../parser/core-components.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../parser/core-components.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+        <script src="../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

@@ -1,0 +1,377 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Writing Parsers - BSharp C# Parser Documentation</title>
+
+
+        <!-- Custom HTML head -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="../custom.css">
+        
+        <script>
+          (function() {
+            function applyTheme(mode){
+              const theme = mode === 'dark' ? 'coal' : 'light';
+              try { localStorage.setItem('mdbook-theme', theme); } catch(e) {}
+              const html = document.documentElement;
+              html.classList.remove('light','rust','coal','navy','ayu','default_theme');
+              html.classList.add(theme,'js');
+            }
+            function detectFromParent(){
+              try {
+                if (window.parent && window.parent !== window) {
+                  const phtml = window.parent.document.documentElement;
+                  if (phtml.classList.contains('dark')) return 'dark';
+                  if (phtml.classList.contains('light')) return 'light';
+                }
+              } catch(e) {}
+              return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+            applyTheme(detectFromParent());
+            window.addEventListener('message', (e) => {
+              const d = e && e.data;
+              if (!d || d.type !== 'bsharp:theme') return;
+              applyTheme(d.value === 'dark' ? 'dark' : 'light');
+            });
+            try {
+              window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => applyTheme(e.matches ? 'dark' : 'light'));
+            } catch(e) {}
+            window.addEventListener('DOMContentLoaded', () => {
+              const themeBtn = document.getElementById('theme-toggle');
+              const themeList = document.getElementById('theme-list');
+              if (themeBtn) themeBtn.style.display = 'none';
+              if (themeList) themeList.style.display = 'none';
+            });
+          })();
+        </script>
+
+        <meta name="description" content="Comprehensive documentation for the BSharp C# parser and analysis toolkit">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../custom.css">
+        <link rel="stylesheet" href=".././mdbook-admonish.css">
+        <link rel="stylesheet" href="../theme/pagetoc.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BSharp C# Parser Documentation</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/pmikstacki/bsharp" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/pmikstacki/bsharp/edit/main/docs/./development/writing-parsers.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="writing-parsers"><a class="header" href="#writing-parsers">Writing Parsers</a></h1>
+<p>Guidelines for implementing parsers in <code>bsharp_parser</code> using nom and spans.</p>
+<hr />
+<h2 id="spans--result-type"><a class="header" href="#spans--result-type">Spans &amp; Result Type</a></h2>
+<ul>
+<li><strong>Span:</strong> <code>bsharp_parser::syntax::span::Span&lt;'a&gt;</code> (alias of <code>nom_locate::LocatedSpan&lt;&amp;'a str&gt;</code>)</li>
+<li><strong>Error type:</strong> <code>nom_supreme::error::ErrorTree&lt;Span&lt;'a&gt;&gt;</code></li>
+<li><strong>Result alias:</strong> <code>type BResult&lt;'a, O&gt; = IResult&lt;Span&lt;'a&gt;, O, ErrorTree&lt;Span&lt;'a&gt;&gt;&gt;</code> in <code>bsharp_parser::syntax::errors</code></li>
+</ul>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use bsharp_parser::syntax::errors::BResult;
+use bsharp_parser::syntax::span::Span;
+<span class="boring">}</span></code></pre></pre>
+<hr />
+<h2 id="streaming-vs-complete"><a class="header" href="#streaming-vs-complete">Streaming vs Complete</a></h2>
+<p>nom supports streaming parsers by default. Use <code>nom::combinator::complete(parser)</code> to transform <code>Incomplete</code> into <code>Error</code> when you want a "complete input" behavior for a sub-parser (e.g., tokens, literals).</p>
+<p>Example (from nom docs):</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use nom::bytes::streaming::take;
+use nom::combinator::complete;
+
+let mut parser = complete(take(5u8));
+assert_eq!(parser.parse("abcdefg"), Ok(("fg", "abcde")));
+assert!(parser.parse("abcd").is_err());
+<span class="boring">}</span></code></pre></pre>
+<p>At the top level, wrap file parsers with <code>nom::combinator::all_consuming</code> to ensure the entire input is consumed:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use nom::combinator::all_consuming;
+let mut parser = all_consuming(file_parser);
+<span class="boring">}</span></code></pre></pre>
+<hr />
+<h2 id="error-contexts-and-cuts"><a class="header" href="#error-contexts-and-cuts">Error Contexts and Cuts</a></h2>
+<p>Use <code>nom_supreme</code> for structured errors and better messages:</p>
+<ul>
+<li><code>context("label", p)</code> to push human-readable frames.</li>
+<li><code>cut(p)</code> to prevent backtracking across critical boundaries and surface the right error.</li>
+<li>Our pretty-printer <code>format_error_tree(&amp;source, &amp;error_tree)</code> renders the tree with line/column and context stack.</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use nom::{branch::alt, sequence::{preceded, terminated}};
+use nom_supreme::context::ContextError;
+use nom_supreme::ParserExt; // for .context(), .cut()
+
+fn identifier(input: Span) -&gt; BResult&lt;String&gt; { /* ... */ }
+fn lbrace(input: Span) -&gt; BResult&lt;()&gt; { /* ... */ }
+fn rbrace(input: Span) -&gt; BResult&lt;()&gt; { /* ... */ }
+
+fn block(input: Span) -&gt; BResult&lt;Vec&lt;Stmt&gt;&gt; {
+    preceded(
+        lbrace.context("block: '{'"),
+        terminated(statements, rbrace.cut().context("block: '}'"))
+    ).parse(input)
+}
+<span class="boring">}</span></code></pre></pre>
+<hr />
+<h2 id="common-combinators"><a class="header" href="#common-combinators">Common Combinators</a></h2>
+<ul>
+<li><code>preceded(a, b)</code>, <code>terminated(a, b)</code>, <code>delimited(a, b, c)</code></li>
+<li><code>alt((p1, p2, ...))</code> for alternatives</li>
+<li><code>tuple((p1, p2, ...))</code> to sequence</li>
+<li><code>separated_list0(sep, item)</code> to parse comma-separated lists</li>
+<li><code>map(p, f)</code> to build AST nodes</li>
+</ul>
+<p>Prefer small, focused parsers composed with these combinators.</p>
+<hr />
+<h2 id="top-level-entry-points"><a class="header" href="#top-level-entry-points">Top-Level Entry Points</a></h2>
+<ul>
+<li>Keep clear entry points for precedence chains (e.g., primary → postfix → binary → assignment).</li>
+<li>Use wrapper nodes for constructs like <code>New</code>, <code>Invocation</code>, <code>MemberAccess</code>, etc., to keep variants orthogonal in the AST (see <code>bsharp_syntax::expressions::expression.rs</code>).</li>
+</ul>
+<hr />
+<h2 id="testing-parsers"><a class="header" href="#testing-parsers">Testing Parsers</a></h2>
+<ul>
+<li>Place tests in <code>src/bsharp_tests/src/parser/...</code>.</li>
+<li>Parse using <code>Parser::new().parse_with_spans(&amp;source)</code> and assert expected AST shapes.</li>
+<li>On failure, pretty-print errors with <code>format_error_tree</code> to diagnose.</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[test]
+fn parses_expression_statement() {
+    let src = "class C { void M(){ Foo(1); } }";
+    let (cu, _spans) = bsharp_parser::facade::Parser::new().parse_with_spans(src).unwrap();
+    // Verify expected nodes using Query or pattern matching
+}
+<span class="boring">}</span></code></pre></pre>
+<hr />
+<h2 id="tips"><a class="header" href="#tips">Tips</a></h2>
+<ul>
+<li><strong>Return early with cut</strong> after consuming a keyword to avoid misleading alternatives.</li>
+<li><strong>Use complete</strong> for tokens/literals that must not be partial.</li>
+<li><strong>all_consuming</strong> at file/compilation-unit to ban trailing garbage.</li>
+<li><strong>Context labels</strong>: Be concise and specific; they surface in error messages and docs.</li>
+</ul>
+<hr />
+<h2 id="references"><a class="header" href="#references">References</a></h2>
+<ul>
+<li>nom combinator <code>complete</code>: https://docs.rs/nom/8.0.0/nom/combinator/fn.complete.html</li>
+<li>nom combinator <code>all_consuming</code>: https://docs.rs/nom/8.0.0/nom/combinator/fn.all_consuming.html</li>
+</ul>
+<footer class="gitinfo-footer" style="font-size:0.8em;padding:4px;margin:0 0 2em 0;text-align:center;display:block;">2025-10-21 11:38:49 • commit: d6ce8b3</footer>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../development/extending-syntax.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../development/spanned-parsers.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../development/extending-syntax.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../development/spanned-parsers.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+        <script src="../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
