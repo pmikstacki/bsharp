@@ -6,7 +6,6 @@ const sample = `public class TestClass
 }`;
 const rawBase = import.meta.env.BASE_URL || '/';
 const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
-// scripts are imported statically inside the module script below
 ---
 <section class="w-full px-4 py-8 md:px-8">
   <p style="color: var(--mc-on-surface-variant)">Try it yourself: paste C# code below and visualize its abstract syntax tree in real-time.</p>
@@ -27,42 +26,7 @@ const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
   </div>
 </section>
 
-<script type="module" define:vars={{ base }}>
-  import { renderMermaid } from '../scripts/mermaid-setup.ts';
-  function wasmUrl() {
-    const b = base.endsWith('/') ? base : `${base}/`;
-    return new URL(`${b}wasm/bsharp_wasm.js`, window.location.origin).toString();
-  }
-  (function(){
-    async function wasm(){
-      const m = await import(wasmUrl());
-      if (m && m.default) await m.default();
-      return m;
-    }
-    const $ = (s)=>document.querySelector(s);
-    const btn = $('#btn');
-    const target = $('#m-target');
-    function getEditor(){ return window.__monacoEditors?.['parser-monaco']; }
-  async function ensureEditor(){
-    const start = Date.now();
-    while (!getEditor() && Date.now() - start < 2000) await new Promise(r => setTimeout(r, 50));
-    if (!getEditor()) console.warn('Monaco editor instance not found after timeout');
-    return getEditor();
-  }
-  btn?.addEventListener('click', async () => {
-    try {
-      const mod = await wasm();
-      const ed = await ensureEditor();
-      const diag = await mod.ast_to_mermaid(ed.getValue());
-      const id = 'ast-' + Math.random().toString(36).slice(2);
-      await renderMermaid(target, id, diag);
-    } catch (e) {
-      target.textContent = 'Mermaid render error: ' + (e?.message || String(e));
-    }
-  });
-  window.addEventListener('load', () => btn?.click());
-  })();
-</script>
+<script src="../scripts/parser-diagram-init.ts"></script>
 
 <style is:inline>
   :global(#mermaid-wrap) { width: 100%; height: 460px; overflow: hidden; }

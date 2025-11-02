@@ -17,7 +17,7 @@ const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
     <meta name="color-scheme" content="light dark" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/trig-js/src/trig-animations.min.css" />
     <script src={trigUrl} defer></script>
-    <script type="module">import '../scripts/material-colors.ts';</script>
+    <script src="../scripts/material-colors.ts"></script>
     <title>{title}</title>
   </head>
   <body class="relative min-h-dvh bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-100">
@@ -49,7 +49,7 @@ const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
         <polyline points="18 15 12 9 6 15"></polyline>
       </svg>
     </button>
-    <script type="module">import '../scripts/layout-init.ts';</script>
+    <script src="../scripts/layout-init.ts"></script>
     <footer class="border-t border-slate-200/60 px-4 py-8 text-center text-xs text-slate-500 dark:border-slate-800/60">
       <p class="flex items-center justify-center gap-1">
         <span>{new Date().getFullYear()} BSharp</span>
