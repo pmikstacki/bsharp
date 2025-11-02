@@ -54,19 +54,18 @@ jobs:
         run: mdbook-admonish install .
         working-directory: docs
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Install Astro dependencies (npm ci)
-        run: npm ci
-        working-directory: site
-
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
         with:
-          bun-version: 'latest'
+          bun-version: '1.3.1'
+
+      - name: Remove npm lockfile (prevent Bun migration)
+        run: rm -f package-lock.json
+        working-directory: site
+
+      - name: Install Astro dependencies (Bun)
+        run: bun install
+        working-directory: site
 
       - name: Install wasm32 target
         run: rustup target add wasm32-unknown-unknown
@@ -75,6 +74,7 @@ jobs:
         run: cargo install wasm-pack
 
       - name: Setup Pages
+        if: ${{ env.ACT != 'true' }}
         id: pages
         uses: actions/configure-pages@v5
 
@@ -82,11 +82,12 @@ jobs:
         run: mdbook build -d ../site/public/docs
         working-directory: docs
 
-      - name: Build Astro (npm)
-        run: npm run build
+      - name: Build Astro (Bun)
+        run: bun run build
         working-directory: site
 
       - name: Upload artifact (Astro dist)
+        if: ${{ env.ACT != 'true' }}
         uses: actions/upload-pages-artifact@v3
         with:
           path: site/dist
