@@ -151,6 +151,12 @@ target
 book/
 docs/book/
 
+site/public/docs/
+site/public/wasm/
+site/dist/
+docs/site/
+site/.astro/
+
 # RustRover
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
 #  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
