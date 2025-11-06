@@ -11,17 +11,12 @@ clap = { version = "4.4", features = ["derive"] }
 env_logger = "0.11.8"
 log = "0.4"
 serde_json = "1.0"
-toml = "0.8"
+toml = "0.9.8"
 bsharp_analysis = { path = "../bsharp_analysis" }
 bsharp_parser = { path = "../bsharp_parser" }
 bsharp_syntax = { path = "../bsharp_syntax" }
 argfile = "0.2.1"
 nom = "8.0.0"
 nom-supreme = { package = "bsharp_nom_supreme", path = "../bsharp_nom_supreme" }
-serde = { version = "1.0.219", features = ["derive", "serde_derive"] }
-miette = { version = "5", features = ["fancy"] }
 
 [dev-dependencies]
-assert_cmd = "2"
-predicates = "3"
-tempfile = "3.10"

@@ -6,17 +6,14 @@ license.workspace = true
 authors.workspace = true
 
 [dependencies]
-log = "0.4"
 nom = "8.0.0"
-nom-supreme = { package = "bsharp_nom_supreme", path = "../bsharp_nom_supreme" }
 analysis = { package = "bsharp_analysis", path = "../bsharp_analysis" }
 parser = { package = "bsharp_parser", path = "../bsharp_parser" }
 syntax = { package = "bsharp_syntax", path = "../bsharp_syntax" }
 serde = { version = "1.0.219", features = ["derive"] }
-phf = { version = "0.11", features = ["macros"] }
 serde_json = "1.0"
 anyhow = "1.0"
-bsharp_il = { package = "bsharp_il", path = "../bsharp_il" }
+bsharp_il = { path = "../bsharp_il" }
 
 [features]
 parser_recovery_trace = []
