@@ -7,9 +7,7 @@ use bsharp_syntax::declarations::{
     NamespaceDeclaration,
 };
 use bsharp_syntax::statements::statement::Statement;
-use bsharp_syntax::statements::statement::Statement::{
-    DoWhile, For, If, Switch, Try, Using, While,
-};
+use crate::framework::stmt_walk::{walk_statement_with, StmtHooks};
 
 impl Default for AstWalker<'_> {
     fn default() -> Self {
@@ -101,7 +99,8 @@ impl<'a> AstWalker<'a> {
             | NamespaceBodyDeclaration::Enum(_)
             | NamespaceBodyDeclaration::Delegate(_)
             | NamespaceBodyDeclaration::Record(_)
-            | NamespaceBodyDeclaration::GlobalAttribute(_) => {}
+            | NamespaceBodyDeclaration::GlobalAttribute(_)
+            | NamespaceBodyDeclaration::Extension(_) => {}
         }
     }
 
@@ -143,52 +142,21 @@ impl<'a> AstWalker<'a> {
     }
 
     fn visit_statement(&mut self, stmt: &'a Statement, session: &mut AnalysisSession) {
-        let node: NodeRef = NodeRef::from(stmt);
-        self.notify_enter(&node, session);
-        match stmt {
-            If(s) => {
-                self.visit_statement(&s.consequence, session);
-                if let Some(alt) = &s.alternative {
-                    self.visit_statement(alt, session);
-                }
-            }
-            For(s) => {
-                self.visit_statement(&s.body, session);
-            }
-            While(s) => {
-                self.visit_statement(&s.body, session);
-            }
-            DoWhile(s) => {
-                self.visit_statement(&s.body, session);
-            }
-            Switch(sw) => {
-                for sec in &sw.sections {
-                    for st in &sec.statements {
-                        self.visit_statement(st, session);
-                    }
-                }
-            }
-            Try(t) => {
-                self.visit_statement(&t.try_block, session);
-                for c in &t.catches {
-                    self.visit_statement(&c.block, session);
-                }
-                if let Some(fin) = &t.finally_clause {
-                    self.visit_statement(&fin.block, session);
-                }
-            }
-            Using(u) => {
-                if let Some(body) = &u.body {
-                    self.visit_statement(body, session);
-                }
-            }
-            Statement::Block(stmts) => {
-                for st in stmts {
-                    self.visit_statement(st, session);
-                }
-            }
-            _ => {}
+        struct Hook<'b, 'c> {
+            walker: &'b mut AstWalker<'c>,
+            session: &'b mut AnalysisSession,
         }
-        self.notify_exit(&node, session);
+        impl<'b, 'c> StmtHooks for Hook<'b, 'c> {
+            fn enter(&mut self, s: &Statement) {
+                let node: NodeRef = NodeRef::from(s);
+                self.walker.notify_enter(&node, self.session);
+            }
+            fn exit(&mut self, s: &Statement) {
+                let node: NodeRef = NodeRef::from(s);
+                self.walker.notify_exit(&node, self.session);
+            }
+        }
+        let mut hook = Hook { walker: self, session };
+        walk_statement_with(&mut hook, stmt);
     }
 }

@@ -19,6 +19,7 @@ pub mod delegate_declaration_parser;
 pub mod destructor_declaration_parser;
 pub mod enum_declaration_parser;
 pub mod event_declaration_parser;
+pub mod extension_declaration_parser;
 pub mod file_scoped_namespace_parser;
 pub mod global_attribute_parser;
 pub mod indexer_declaration_parser;

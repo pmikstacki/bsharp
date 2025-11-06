@@ -10,6 +10,7 @@ pub mod passes; // indexing, control_flow, dependencies, reporting
 pub mod project; // Project model
 pub mod report; // AnalysisReport
 pub mod rules; // naming, semantic, control_flow_smells
+pub mod semantic; // semantic passes and data
 
 // Expose workspace module for CLI consumption (WorkspaceLoader, etc.)
 pub mod workspace;

@@ -22,6 +22,7 @@ use nom::sequence::delimited;
 use nom_supreme::ParserExt;
 use syntax::Identifier;
 use syntax::declarations::{NamespaceBodyDeclaration, NamespaceDeclaration, UsingDirective};
+use crate::parser::expressions::declarations::extension_declaration_parser::parse_extension_declaration;
 
 /// Parse a namespace member (class, struct, interface, enum, record, or nested namespace)
 fn parse_namespace_member_safe(input: Span) -> BResult<NamespaceBodyDeclaration> {
@@ -48,6 +49,7 @@ fn parse_namespace_member_safe(input: Span) -> BResult<NamespaceBodyDeclaration>
             parse_delegate_declaration,
             NamespaceBodyDeclaration::Delegate,
         ),
+        map(parse_extension_declaration, NamespaceBodyDeclaration::Extension),
         // Try nested namespace last since it might be more ambiguous
         map(
             parse_namespace_declaration,

@@ -113,6 +113,20 @@ fn parse_lambda_parameters(input: Span) -> BResult<Vec<LambdaParameter>> {
         alt((
             // Parenthesized list: (x, y) => x + y or (int x, string y) => ...
             parse_param_list,
+            // Single parameter without parentheses, with modifier: ref x | in x | out x
+            map(
+                (
+                    delimited(ws, parse_lambda_parameter_modifier, ws),
+                    delimited(ws, parse_identifier, ws),
+                ),
+                |(modifier, name)| {
+                    vec![LambdaParameter {
+                        name,
+                        ty: None,
+                        modifier: Some(modifier),
+                    }]
+                },
+            ),
             // Single parameter without parentheses: x => x * 2
             // This should only work if there's no type or modifier
             map(delimited(ws, parse_identifier, ws), |name| {

@@ -41,6 +41,8 @@ pub enum DiagnosticCode {
     BSE03008, // Struct cannot inherit
     BSE03009, // Type visibility inconsistency
     BSE03010, // Generic type parameter name conflict
+    BSE03011, // Duplicate symbol
+    BSE03012, // Unresolved or ambiguous name
 
     // Access Modifier Errors (BSE04000-BSE04999)
     BSE04001, // Member not accessible
@@ -137,6 +139,8 @@ impl DiagnosticCode {
             | DiagnosticCode::BSE03008
             | DiagnosticCode::BSE03009
             | DiagnosticCode::BSE03010
+            | DiagnosticCode::BSE03011
+            | DiagnosticCode::BSE03012
             | DiagnosticCode::BSE04001
             | DiagnosticCode::BSE04002
             | DiagnosticCode::BSE04003
@@ -187,7 +191,9 @@ impl DiagnosticCode {
             | DiagnosticCode::BSE03007
             | DiagnosticCode::BSE03008
             | DiagnosticCode::BSE03009
-            | DiagnosticCode::BSE03010 => DiagnosticCategory::Type,
+            | DiagnosticCode::BSE03010
+            | DiagnosticCode::BSE03011
+            | DiagnosticCode::BSE03012 => DiagnosticCategory::Type,
 
             // Access modifier errors
             DiagnosticCode::BSE04001
@@ -288,6 +294,8 @@ impl DiagnosticCode {
             DiagnosticCode::BSE03008 => "BSE03008",
             DiagnosticCode::BSE03009 => "BSE03009",
             DiagnosticCode::BSE03010 => "BSE03010",
+            DiagnosticCode::BSE03011 => "BSE03011",
+            DiagnosticCode::BSE03012 => "BSE03012",
 
             // Access modifier errors
             DiagnosticCode::BSE04001 => "BSE04001",
@@ -388,6 +396,8 @@ impl DiagnosticCode {
             DiagnosticCode::BSE03008 => "Structs cannot inherit from other types",
             DiagnosticCode::BSE03009 => "Inconsistent type visibility",
             DiagnosticCode::BSE03010 => "Generic type parameter names must be unique",
+            DiagnosticCode::BSE03011 => "Duplicate symbol declared in the same scope",
+            DiagnosticCode::BSE03012 => "Name could not be resolved or is ambiguous",
 
             // Access modifier errors
             DiagnosticCode::BSE04001 => "Member is not accessible in this context",

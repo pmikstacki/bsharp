@@ -356,7 +356,7 @@ This document tracks the implementation status of C# language features in the BS
 
 | Feature | Status | Notes |
 |---------|--------|-------|
-| Extension members | ⚠️ | Planned - `extension` blocks |
+| Extension members | 🟡 | Parser + emitter for `extension` blocks; semantics planned |
 | `field` keyword | ⚠️ | Planned - Field-backed properties |
 | Null-conditional assignment | ⚠️ | Planned - `?.` on left side of `=` |
 | `nameof` unbound generics | ⚠️ | Planned - `nameof(List<>)` |

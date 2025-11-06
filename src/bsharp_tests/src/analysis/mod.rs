@@ -40,3 +40,4 @@ pub mod query_api_filter_tests;
 pub mod query_children_descendants_coverage;
 pub mod report_aggregation_tests;
 mod workspace_integration;
+pub mod workspace_regression_tests;

@@ -70,6 +70,17 @@ impl AnalyzerRegistry {
         reg.register_pass(crate::passes::dependencies::DependenciesPass);
         // Phase D: rules that consume global artifacts should run in Semantic phase
         reg.register_semantic_ruleset(crate::rules::control_flow_smells::ruleset());
+        // Phase E: semantic passes
+        reg.register_pass(crate::semantic::symbols::SymbolsPass);
+        reg.register_pass(crate::semantic::binding::BindingPass);
+        reg.register_pass(crate::semantic::types::TypeCheckPass);
+        reg.register_pass(crate::semantic::overload::OverloadPass);
+        reg.register_pass(crate::semantic::generics::GenericsPass);
+        reg.register_pass(crate::semantic::flow::FlowPass);
+        reg.register_pass(crate::semantic::nullability::NullabilityPass);
+        reg.register_pass(crate::semantic::attributes::AttributesPass);
+        reg.register_pass(crate::semantic::access::AccessPass);
+        reg.register_pass(crate::semantic::extensions::ExtensionsPass);
         // Phase E: reporting
         reg.register_pass(crate::passes::reporting::ReportingPass);
         reg
