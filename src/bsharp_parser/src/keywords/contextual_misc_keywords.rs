@@ -9,3 +9,4 @@ define_keyword_pair!(kw_base, peek_base, "base");
 define_keyword_pair!(kw_global, peek_global, "global");
 define_keyword_pair!(kw_var, peek_var, "var");
 define_keyword_pair!(kw_dynamic, peek_dynamic, "dynamic");
+define_keyword_pair!(kw_extension, peek_extension, "extension");

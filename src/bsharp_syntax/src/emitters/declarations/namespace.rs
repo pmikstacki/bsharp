@@ -69,6 +69,7 @@ impl Emit for NamespaceBodyDeclaration {
             NamespaceBodyDeclaration::Delegate(d) => d.emit(w, cx),
             NamespaceBodyDeclaration::Record(r) => r.emit(w, cx),
             NamespaceBodyDeclaration::GlobalAttribute(ga) => ga.emit(w, cx),
+            NamespaceBodyDeclaration::Extension(ext) => ext.emit(w, cx),
         }
     }
 }

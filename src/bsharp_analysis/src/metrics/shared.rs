@@ -1,5 +1,131 @@
 use crate::syntax::statements::statement::Statement;
 
+#[derive(Default, Debug, Clone, Copy)]
+pub struct StatementMetrics {
+    pub total_if_statements: usize,
+    pub total_for_loops: usize,
+    pub total_while_loops: usize,
+    pub total_switch_statements: usize,
+    pub total_try_statements: usize,
+    pub total_using_statements: usize,
+
+    pub decision_points: usize,
+    pub max_nesting: usize,
+    pub statement_count: usize,
+
+    // Preserve current behavior: extra +1 cyclomatic for each try
+    pub extra_try_bonus: usize,
+}
+
+pub fn compute_statement_metrics(root: &Statement) -> StatementMetrics {
+    fn walk(s: &Statement, depth: usize, m: &mut StatementMetrics) {
+        // Count statements like count_statements(Some(_)) where Block does not add 1
+        if !matches!(s, Statement::Block(_)) {
+            m.statement_count += 1;
+        }
+        // Per-kind counters and approximation of decision points for traversal
+        match s {
+            Statement::If(inner) => {
+                m.total_if_statements += 1;
+                m.decision_points += 1;
+                let new_depth = depth + 1;
+                walk(&inner.consequence, new_depth, m);
+                if let Some(alt) = &inner.alternative {
+                    walk(alt, new_depth, m);
+                }
+                m.max_nesting = m.max_nesting.max(new_depth);
+                return;
+            }
+            Statement::For(inner) => {
+                m.total_for_loops += 1;
+                m.decision_points += 1;
+                let new_depth = depth + 1;
+                walk(&inner.body, new_depth, m);
+                m.max_nesting = m.max_nesting.max(new_depth);
+                return;
+            }
+            Statement::ForEach(inner) => {
+                m.total_for_loops += 1;
+                m.decision_points += 1;
+                let new_depth = depth + 1;
+                walk(&inner.body, new_depth, m);
+                m.max_nesting = m.max_nesting.max(new_depth);
+                return;
+            }
+            Statement::While(inner) => {
+                m.total_while_loops += 1;
+                m.decision_points += 1;
+                let new_depth = depth + 1;
+                walk(&inner.body, new_depth, m);
+                m.max_nesting = m.max_nesting.max(new_depth);
+                return;
+            }
+            Statement::DoWhile(inner) => {
+                m.total_while_loops += 1;
+                m.decision_points += 1;
+                let new_depth = depth + 1;
+                walk(&inner.body, new_depth, m);
+                m.max_nesting = m.max_nesting.max(new_depth);
+                return;
+            }
+            Statement::Using(inner) => {
+                m.total_using_statements += 1;
+                m.decision_points += 1;
+                if let Some(b) = &inner.body {
+                    let new_depth = depth + 1;
+                    walk(b, new_depth, m);
+                    m.max_nesting = m.max_nesting.max(new_depth);
+                }
+                return;
+            }
+            Statement::Switch(sw) => {
+                m.total_switch_statements += 1;
+                m.decision_points += sw.sections.len();
+                let new_depth = depth + 1;
+                for sec in &sw.sections {
+                    for st in &sec.statements {
+                        walk(st, new_depth, m);
+                    }
+                }
+                m.max_nesting = m.max_nesting.max(new_depth);
+                return;
+            }
+            Statement::Try(t) => {
+                m.total_try_statements += 1;
+                // Existing behavior increments cyclomatic by +1 for try
+                m.extra_try_bonus += 1;
+                // decision_points adds 1 for try as per old function
+                m.decision_points += 1;
+                let new_depth = depth + 1;
+                walk(&t.try_block, new_depth, m);
+                for c in &t.catches {
+                    walk(&c.block, new_depth, m);
+                }
+                if let Some(fin) = &t.finally_clause {
+                    walk(&fin.block, new_depth, m);
+                }
+                m.max_nesting = m.max_nesting.max(new_depth);
+                return;
+            }
+            Statement::Block(stmts) => {
+                for st in stmts {
+                    walk(st, depth, m);
+                }
+                return;
+            }
+            _ => {}
+        }
+        // All other statements: no additional recursion beyond default
+    }
+    let mut m = StatementMetrics::default();
+    walk(root, 0, &mut m);
+    // Guarantee equivalence with legacy helpers for these computed fields
+    m.decision_points = decision_points(root);
+    m.max_nesting = max_nesting_of(root, 0);
+    m.statement_count = count_statements(Some(root));
+    m
+}
+
 pub fn decision_points(stmt: &Statement) -> usize {
     match stmt {
         Statement::If(if_stmt) => {

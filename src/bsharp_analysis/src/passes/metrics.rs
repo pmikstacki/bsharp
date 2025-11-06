@@ -1,11 +1,10 @@
 use crate::framework::{AnalysisSession, AnalyzerPass, Phase, Query};
 use crate::metrics::AstAnalysis;
-use crate::metrics::shared::{count_statements, decision_points, max_nesting_of};
+use crate::metrics::shared::compute_statement_metrics;
 use crate::syntax::ast::CompilationUnit;
 use crate::syntax::declarations::{
     ClassBodyDeclaration, ClassDeclaration, StructBodyDeclaration, StructDeclaration,
 };
-use crate::syntax::statements::statement::Statement;
 use bsharp_syntax::declarations::{
     DelegateDeclaration, EnumDeclaration, InterfaceDeclaration, RecordDeclaration,
 };
@@ -44,7 +43,16 @@ impl AnalyzerPass for MetricsPass {
 
         // Also consider top-level statements
         for s in &cu.top_level_statements {
-            accumulate_statement_metrics(&mut analysis, s);
+            let m = compute_statement_metrics(s);
+            analysis.total_if_statements += m.total_if_statements;
+            analysis.total_for_loops += m.total_for_loops;
+            analysis.total_while_loops += m.total_while_loops;
+            analysis.total_switch_statements += m.total_switch_statements;
+            analysis.total_try_statements += m.total_try_statements;
+            analysis.total_using_statements += m.total_using_statements;
+            analysis.cyclomatic_complexity += m.decision_points + m.extra_try_bonus;
+            analysis.max_nesting_depth = analysis.max_nesting_depth.max(m.max_nesting);
+            analysis.lines_of_code += m.statement_count;
         }
 
         // Simple LOC from source (non-empty, non-`//` lines)
@@ -70,11 +78,16 @@ fn process_class(analysis: &mut AstAnalysis, class: &ClassDeclaration) {
                 analysis.total_methods += 1;
                 analysis.cyclomatic_complexity += 1; // baseline per method
                 if let Some(body) = &m.body {
-                    accumulate_statement_metrics(analysis, body);
-                    analysis.max_nesting_depth =
-                        analysis.max_nesting_depth.max(max_nesting_of(body, 0));
-                    analysis.lines_of_code += count_statements(Some(body));
-                    analysis.cyclomatic_complexity += decision_points(body);
+                    let m = compute_statement_metrics(body);
+                    analysis.total_if_statements += m.total_if_statements;
+                    analysis.total_for_loops += m.total_for_loops;
+                    analysis.total_while_loops += m.total_while_loops;
+                    analysis.total_switch_statements += m.total_switch_statements;
+                    analysis.total_try_statements += m.total_try_statements;
+                    analysis.total_using_statements += m.total_using_statements;
+                    analysis.max_nesting_depth = analysis.max_nesting_depth.max(m.max_nesting);
+                    analysis.lines_of_code += m.statement_count;
+                    analysis.cyclomatic_complexity += m.decision_points + m.extra_try_bonus;
                 }
             }
             ClassBodyDeclaration::Constructor(_) => analysis.total_constructors += 1,
@@ -94,11 +107,16 @@ fn process_struct(analysis: &mut AstAnalysis, strukt: &StructDeclaration) {
                 analysis.total_methods += 1;
                 analysis.cyclomatic_complexity += 1;
                 if let Some(body) = &m.body {
-                    accumulate_statement_metrics(analysis, body);
-                    analysis.max_nesting_depth =
-                        analysis.max_nesting_depth.max(max_nesting_of(body, 0));
-                    analysis.lines_of_code += count_statements(Some(body));
-                    analysis.cyclomatic_complexity += decision_points(body);
+                    let m = compute_statement_metrics(body);
+                    analysis.total_if_statements += m.total_if_statements;
+                    analysis.total_for_loops += m.total_for_loops;
+                    analysis.total_while_loops += m.total_while_loops;
+                    analysis.total_switch_statements += m.total_switch_statements;
+                    analysis.total_try_statements += m.total_try_statements;
+                    analysis.total_using_statements += m.total_using_statements;
+                    analysis.max_nesting_depth = analysis.max_nesting_depth.max(m.max_nesting);
+                    analysis.lines_of_code += m.statement_count;
+                    analysis.cyclomatic_complexity += m.decision_points + m.extra_try_bonus;
                 }
             }
             StructBodyDeclaration::Constructor(_) => analysis.total_constructors += 1,
@@ -108,56 +126,4 @@ fn process_struct(analysis: &mut AstAnalysis, strukt: &StructDeclaration) {
             _ => {}
         }
     }
-}
-
-fn accumulate_statement_metrics(analysis: &mut AstAnalysis, root: &Statement) {
-    fn walk(s: &Statement, f: &mut impl FnMut(&Statement)) {
-        f(s);
-        match s {
-            Statement::Block(stmts) => {
-                for st in stmts {
-                    walk(st, f);
-                }
-            }
-            Statement::If(s1) => {
-                walk(&s1.consequence, f);
-                if let Some(alt) = &s1.alternative {
-                    walk(alt, f);
-                }
-            }
-            Statement::For(s1) => walk(&s1.body, f),
-            Statement::ForEach(s1) => walk(&s1.body, f),
-            Statement::While(s1) => walk(&s1.body, f),
-            Statement::DoWhile(s1) => walk(&s1.body, f),
-            Statement::Switch(sw) => {
-                for sec in &sw.sections {
-                    for st in &sec.statements {
-                        walk(st, f);
-                    }
-                }
-            }
-            Statement::Try(t) => {
-                walk(&t.try_block, f);
-                for c in &t.catches {
-                    walk(&c.block, f);
-                }
-                if let Some(fin) = &t.finally_clause {
-                    walk(&fin.block, f);
-                }
-            }
-            _ => {}
-        }
-    }
-    walk(root, &mut |s| match s {
-        Statement::If(_) => analysis.total_if_statements += 1,
-        Statement::For(_) | Statement::ForEach(_) => analysis.total_for_loops += 1,
-        Statement::While(_) | Statement::DoWhile(_) => analysis.total_while_loops += 1,
-        Statement::Switch(_) => analysis.total_switch_statements += 1,
-        Statement::Try(_) => {
-            analysis.total_try_statements += 1;
-            analysis.cyclomatic_complexity += 1;
-        }
-        Statement::Using(_) => analysis.total_using_statements += 1,
-        _ => {}
-    });
 }

@@ -11,6 +11,7 @@ mod delegate_declaration_tests;
 mod destructor_declaration_tests;
 mod enum_declaration_tests;
 mod event_declaration_tests;
+mod extension_declaration_parser_tests;
 mod field_declaration_tests;
 mod file_scoped_namespace_declaration_tests;
 mod global_attribute_tests;

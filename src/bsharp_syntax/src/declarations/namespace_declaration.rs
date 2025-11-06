@@ -3,6 +3,7 @@ use crate::declarations::{
     ClassDeclaration, DelegateDeclaration, EnumDeclaration, GlobalAttribute, InterfaceDeclaration,
     RecordDeclaration, StructDeclaration, UsingDirective,
 };
+use crate::declarations::ExtensionDeclaration;
 use serde::{Deserialize, Serialize};
 
 #[derive(bsharp_syntax_derive::AstNode, Debug, PartialEq, Clone, Serialize, Deserialize)]
@@ -25,4 +26,5 @@ pub enum NamespaceBodyDeclaration {
     Delegate(DelegateDeclaration),
     Record(RecordDeclaration),
     GlobalAttribute(GlobalAttribute),
+    Extension(ExtensionDeclaration),
 }

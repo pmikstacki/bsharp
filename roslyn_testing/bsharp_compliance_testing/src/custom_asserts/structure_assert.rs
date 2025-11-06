@@ -236,6 +236,11 @@ fn ns_member_to_expected(
             children: vec![],
         }],
         NBD::GlobalAttribute(_) => vec![],
+        NBD::Extension(_) => vec![ExpectedNode {
+            kind: "ExtensionDeclaration".to_string(),
+            token_value: None,
+            children: vec![],
+        }],
     }
 }
 

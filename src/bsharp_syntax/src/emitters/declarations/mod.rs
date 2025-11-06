@@ -20,3 +20,4 @@ mod type_decl;
 mod type_parameter_constraint;
 mod using;
 mod variables;
+mod extension;

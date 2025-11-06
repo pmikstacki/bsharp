@@ -11,6 +11,7 @@ pub mod rules;
 pub mod session;
 pub mod visit;
 pub mod walker;
+mod stmt_walk;
 
 pub use bsharp_syntax::node::ast_node::NodeRef;
 pub use fqn::{class_fqn, method_fqn, namespace_fqn};

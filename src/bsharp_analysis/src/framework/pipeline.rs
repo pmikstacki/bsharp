@@ -12,6 +12,18 @@ use rayon::prelude::*;
 
 pub struct AnalyzerPipeline;
 
+/// Shared visitor that dispatches to a set of rules on each node enter
+struct RulesVisitor<'a> {
+    rules: Vec<&'a dyn Rule>,
+}
+impl Visit for RulesVisitor<'_> {
+    fn enter(&mut self, node: &crate::framework::NodeRef, session: &mut AnalysisSession) {
+        for r in &self.rules {
+            r.visit(node, session);
+        }
+    }
+}
+
 impl AnalyzerPipeline {
     /// Run the analyzer pipeline using a registry derived from the session's config
     pub fn run_with_defaults(cu: &CompilationUnit, session: &mut AnalysisSession) {
@@ -64,36 +76,8 @@ impl AnalyzerPipeline {
         session: &mut AnalysisSession,
         registry: &AnalyzerRegistry,
     ) {
-        let mut all_rules: Vec<&dyn Rule> = Vec::new();
-        for rs in registry.rulesets_local() {
-            // If config has a toggle for this ruleset id, honor it
-            if let Some(enabled) = session.config.enable_rulesets.get(rs.id)
-                && !enabled
-            {
-                continue;
-            }
-            for r in rs.iter() {
-                all_rules.push(r);
-            }
-        }
-        // Even if there are no rules, we still want to collect metrics in this phase
-
-        struct RulesVisitor<'a> {
-            rules: Vec<&'a dyn Rule>,
-        }
-        impl Visit for RulesVisitor<'_> {
-            fn enter(&mut self, node: &crate::framework::NodeRef, session: &mut AnalysisSession) {
-                for r in &self.rules {
-                    r.visit(node, session);
-                }
-            }
-        }
-
-        let mut walker = AstWalker::new();
-        if !all_rules.is_empty() {
-            walker = walker.with_visitor(Box::new(RulesVisitor { rules: all_rules }));
-            walker.run(cu, session);
-        }
+        let rules = Self::collect_rules(registry, false, &session.config);
+        Self::run_rules_via_walk(cu, session, rules);
     }
 
     fn run_semantic_rules(
@@ -101,35 +85,113 @@ impl AnalyzerPipeline {
         session: &mut AnalysisSession,
         registry: &AnalyzerRegistry,
     ) {
-        let mut all_rules: Vec<&dyn Rule> = Vec::new();
-        for rs in registry.rulesets_semantic() {
-            if let Some(enabled) = session.config.enable_rulesets.get(rs.id)
-                && !enabled
-            {
+        let rules = Self::collect_rules(registry, true, &session.config);
+        Self::run_rules_via_walk(cu, session, rules);
+    }
+
+    fn collect_rules<'a, 'b>(
+        registry: &'a AnalyzerRegistry,
+        semantic: bool,
+        cfg: &'b crate::context::AnalysisConfig,
+    ) -> Vec<&'a dyn Rule> {
+        let mut all: Vec<&'a dyn Rule> = Vec::new();
+        let iter = if semantic {
+            registry.rulesets_semantic().iter()
+        } else {
+            registry.rulesets_local().iter()
+        };
+        for rs in iter {
+            if let Some(enabled) = cfg.enable_rulesets.get(rs.id) && !enabled {
                 continue;
             }
             for r in rs.iter() {
-                all_rules.push(r);
+                all.push(r);
             }
         }
-        if all_rules.is_empty() {
+        all
+    }
+
+    fn run_rules_via_walk(
+        cu: &CompilationUnit,
+        session: &mut AnalysisSession,
+        rules: Vec<&dyn Rule>,
+    ) {
+        if rules.is_empty() {
             return;
         }
-
-        struct RulesVisitor<'a> {
-            rules: Vec<&'a dyn Rule>,
-        }
-        impl Visit for RulesVisitor<'_> {
-            fn enter(&mut self, node: &crate::framework::NodeRef, session: &mut AnalysisSession) {
-                for r in &self.rules {
-                    r.visit(node, session);
-                }
-            }
-        }
-
         let mut walker = AstWalker::new();
-        walker = walker.with_visitor(Box::new(RulesVisitor { rules: all_rules }));
+        walker = walker.with_visitor(Box::new(RulesVisitor { rules }));
         walker.run(cu, session);
+    }
+
+    pub fn analyze_file_report(
+        path: &std::path::Path,
+        config: Option<&crate::context::AnalysisConfig>,
+    ) -> Option<AnalysisReport> {
+        let path_str = path.display().to_string();
+        let source = std::fs::read_to_string(path).ok()?;
+        let parser = Parser::new();
+        let (cu, spans) = parser.parse_with_spans(Span::new(&source)).ok()?;
+        let mut ctx = AnalysisContext::new(path_str, source);
+        if let Some(cfg) = config {
+            ctx.config = cfg.clone();
+        }
+        let mut session = AnalysisSession::new(ctx.clone(), spans.clone());
+        Self::run_with_defaults(&cu, &mut session);
+        Some(AnalysisReport::from_session(&session))
+    }
+
+    fn merge_report(
+        merged_diags: &mut DiagnosticCollection,
+        merged_metrics: &mut Option<AstAnalysis>,
+        merged_cfg: &mut Option<CfgSummary>,
+        dep_node_keys: &mut std::collections::HashSet<String>,
+        dep_edge_keys: &mut std::collections::HashSet<String>,
+        report: &AnalysisReport,
+    ) {
+        // diagnostics
+        merged_diags.extend(report.diagnostics.clone());
+        // metrics
+        if let Some(m) = &report.metrics {
+            let m = m.clone();
+            *merged_metrics = Some(match merged_metrics.take() {
+                Some(prev) => prev.combine(m),
+                None => m,
+            });
+        }
+        // cfg summary
+        if let Some(cfg) = &report.cfg {
+            let cfg = cfg.clone();
+            *merged_cfg = Some(match merged_cfg.take() {
+                Some(prev) => CfgSummary {
+                    total_methods: prev.total_methods + cfg.total_methods,
+                    high_complexity_methods: prev.high_complexity_methods
+                        + cfg.high_complexity_methods,
+                    deep_nesting_methods: prev.deep_nesting_methods + cfg.deep_nesting_methods,
+                },
+                None => cfg,
+            });
+        }
+        // deps
+        if let Some(node_keys) = &report.deps_node_keys {
+            dep_node_keys.extend(node_keys.iter().cloned());
+        }
+        if let Some(edge_keys) = &report.deps_edge_keys {
+            dep_edge_keys.extend(edge_keys.iter().cloned());
+        }
+    }
+
+    fn collect_workspace_warnings(workspace: &Workspace) -> Vec<String> {
+        let mut ws_warnings: Vec<String> = Vec::new();
+        if let Some(sol) = &workspace.solution {
+            ws_warnings.extend(sol.errors.clone());
+        }
+        for p in &workspace.projects {
+            ws_warnings.extend(p.errors.clone());
+        }
+        ws_warnings.sort();
+        ws_warnings.dedup();
+        ws_warnings
     }
 
     /// Analyze an entire workspace deterministically and return an aggregated report.
@@ -152,97 +214,24 @@ impl AnalyzerPipeline {
         let mut merged_cfg: Option<CfgSummary> = None;
         let mut dep_node_keys: std::collections::HashSet<String> = std::collections::HashSet::new();
         let mut dep_edge_keys: std::collections::HashSet<String> = std::collections::HashSet::new();
-        let mut ws_warnings: Vec<String> = Vec::new();
 
         for path in files {
-            // Read source and parse
-            let path_str = path.display().to_string();
-            let Ok(source) = std::fs::read_to_string(&path) else {
-                continue;
-            };
-
-            let parser = Parser::new();
-            let Ok((cu, spans)) = parser.parse_with_spans(Span::new(&source)) else {
-                continue;
-            };
-
-            let ctx = AnalysisContext::new(path_str, source);
-            let mut session = AnalysisSession::new(ctx.clone(), spans.clone());
-            Self::run_with_defaults(&cu, &mut session);
-
-            let report = AnalysisReport::from_session(&session);
-
-            // Merge diagnostics
-            merged_diags.extend(report.diagnostics.clone());
-
-            // Merge metrics
-            if let Some(m) = report.metrics {
-                merged_metrics = Some(match merged_metrics.take() {
-                    Some(prev) => prev.combine(m),
-                    None => m,
-                });
-            }
-
-            // Merge CFG summary
-            if let Some(cfg) = report.cfg {
-                merged_cfg = Some(match merged_cfg.take() {
-                    Some(prev) => CfgSummary {
-                        total_methods: prev.total_methods + cfg.total_methods,
-                        high_complexity_methods: prev.high_complexity_methods
-                            + cfg.high_complexity_methods,
-                        deep_nesting_methods: prev.deep_nesting_methods + cfg.deep_nesting_methods,
-                    },
-                    None => cfg,
-                });
-            }
-
-            // Merge deps using deduped key sets if available
-            if let Some(node_keys) = &report.deps_node_keys {
-                dep_node_keys.extend(node_keys.iter().cloned());
-            }
-            if let Some(edge_keys) = &report.deps_edge_keys {
-                dep_edge_keys.extend(edge_keys.iter().cloned());
+            if let Some(report) = Self::analyze_file_report(&path, None) {
+                Self::merge_report(
+                    &mut merged_diags,
+                    &mut merged_metrics,
+                    &mut merged_cfg,
+                    &mut dep_node_keys,
+                    &mut dep_edge_keys,
+                    &report,
+                );
             }
         }
 
         // Stable diagnostic ordering: by file, line, column, then code string
-        merged_diags.diagnostics.sort_by(|a, b| {
-            let af = a
-                .location
-                .as_ref()
-                .map(|l| l.file.clone())
-                .unwrap_or_default();
-            let bf = b
-                .location
-                .as_ref()
-                .map(|l| l.file.clone())
-                .unwrap_or_default();
-            af.cmp(&bf)
-                .then_with(|| {
-                    a.location
-                        .as_ref()
-                        .map(|l| l.line)
-                        .unwrap_or(0)
-                        .cmp(&b.location.as_ref().map(|l| l.line).unwrap_or(0))
-                })
-                .then_with(|| {
-                    a.location
-                        .as_ref()
-                        .map(|l| l.column)
-                        .unwrap_or(0)
-                        .cmp(&b.location.as_ref().map(|l| l.column).unwrap_or(0))
-                })
-                .then_with(|| a.code.as_str().cmp(b.code.as_str()))
-        });
+        Self::sort_diagnostics(&mut merged_diags);
         // Merge workspace-level loader errors as warnings (deterministic ordering)
-        if let Some(sol) = &workspace.solution {
-            ws_warnings.extend(sol.errors.clone());
-        }
-        for p in &workspace.projects {
-            ws_warnings.extend(p.errors.clone());
-        }
-        ws_warnings.sort();
-        ws_warnings.dedup();
+        let ws_warnings = Self::collect_workspace_warnings(workspace);
 
         // Finalize deps summary from deduped sets; keep non-null for stable schema
         let deps = Some(crate::artifacts::dependencies::DependencySummary {
@@ -314,48 +303,18 @@ impl AnalyzerPipeline {
         let mut merged_cfg: Option<CfgSummary> = None;
         let mut dep_node_keys: std::collections::HashSet<String> = std::collections::HashSet::new();
         let mut dep_edge_keys: std::collections::HashSet<String> = std::collections::HashSet::new();
-        let mut ws_warnings: Vec<String> = Vec::new();
 
         #[cfg(not(feature = "parallel_analysis"))]
         for path in files {
-            let path_str = path.display().to_string();
-            let Ok(source) = std::fs::read_to_string(&path) else {
-                continue;
-            };
-            let parser = Parser::new();
-            let Ok((cu, spans)) = parser.parse_with_spans(Span::new(&source)) else {
-                continue;
-            };
-
-            let mut ctx = AnalysisContext::new(path_str, source);
-            ctx.config = config.clone();
-            let mut session = AnalysisSession::new(ctx.clone(), spans.clone());
-            Self::run_with_defaults(&cu, &mut session);
-
-            let report = AnalysisReport::from_session(&session);
-            merged_diags.extend(report.diagnostics.clone());
-            if let Some(m) = report.metrics {
-                merged_metrics = Some(match merged_metrics.take() {
-                    Some(prev) => prev.combine(m),
-                    None => m,
-                });
-            }
-            if let Some(cfg) = report.cfg {
-                merged_cfg = Some(match merged_cfg.take() {
-                    Some(prev) => CfgSummary {
-                        total_methods: prev.total_methods + cfg.total_methods,
-                        high_complexity_methods: prev.high_complexity_methods
-                            + cfg.high_complexity_methods,
-                        deep_nesting_methods: prev.deep_nesting_methods + cfg.deep_nesting_methods,
-                    },
-                    None => cfg,
-                });
-            }
-            if let Some(node_keys) = &report.deps_node_keys {
-                dep_node_keys.extend(node_keys.iter().cloned());
-            }
-            if let Some(edge_keys) = &report.deps_edge_keys {
-                dep_edge_keys.extend(edge_keys.iter().cloned());
+            if let Some(report) = Self::analyze_file_report(&path, Some(&config)) {
+                Self::merge_report(
+                    &mut merged_diags,
+                    &mut merged_metrics,
+                    &mut merged_cfg,
+                    &mut dep_node_keys,
+                    &mut dep_edge_keys,
+                    &report,
+                );
             }
         }
 
@@ -364,51 +323,22 @@ impl AnalyzerPipeline {
             let results: Vec<(std::path::PathBuf, AnalysisReport)> = files
                 .par_iter()
                 .filter_map(|path| {
-                    let path_str = path.display().to_string();
-                    let Ok(source) = std::fs::read_to_string(path) else {
-                        return None;
-                    };
-                    let parser = Parser::new();
-                    let Ok((cu, spans)) = parser.parse_with_spans(Span::new(&source)) else {
-                        return None;
-                    };
-                    let mut ctx = AnalysisContext::new(path_str, source);
-                    ctx.config = config.clone();
-                    let mut session = AnalysisSession::new(ctx.clone(), spans.clone());
-                    Self::run_with_defaults(&cu, &mut session);
-                    let report = AnalysisReport::from_session(&session);
-                    Some((path.clone(), report))
+                    Self::analyze_file_report(path, Some(&config))
+                        .map(|report| (path.clone(), report))
                 })
                 .collect();
             // Merge deterministically by sorted path
             let mut sorted = results;
             sorted.sort_by(|a, b| a.0.cmp(&b.0));
             for (_path, report) in sorted.into_iter() {
-                merged_diags.extend(report.diagnostics.clone());
-                if let Some(m) = report.metrics {
-                    merged_metrics = Some(match merged_metrics.take() {
-                        Some(prev) => prev.combine(m),
-                        None => m,
-                    });
-                }
-                if let Some(cfg) = report.cfg {
-                    merged_cfg = Some(match merged_cfg.take() {
-                        Some(prev) => CfgSummary {
-                            total_methods: prev.total_methods + cfg.total_methods,
-                            high_complexity_methods: prev.high_complexity_methods
-                                + cfg.high_complexity_methods,
-                            deep_nesting_methods: prev.deep_nesting_methods
-                                + cfg.deep_nesting_methods,
-                        },
-                        None => cfg,
-                    });
-                }
-                if let Some(node_keys) = &report.deps_node_keys {
-                    dep_node_keys.extend(node_keys.iter().cloned());
-                }
-                if let Some(edge_keys) = &report.deps_edge_keys {
-                    dep_edge_keys.extend(edge_keys.iter().cloned());
-                }
+                Self::merge_report(
+                    &mut merged_diags,
+                    &mut merged_metrics,
+                    &mut merged_cfg,
+                    &mut dep_node_keys,
+                    &mut dep_edge_keys,
+                    &report,
+                );
             }
         }
         // Finalize deps summary from deduped sets; keep non-null for stable schema
@@ -416,6 +346,24 @@ impl AnalyzerPipeline {
             nodes: dep_node_keys.len(),
             edges: dep_edge_keys.len(),
         });
+        Self::sort_diagnostics(&mut merged_diags);
+        let ws_warnings = Self::collect_workspace_warnings(workspace);
+        AnalysisReport {
+            schema_version: 1,
+            diagnostics: merged_diags,
+            metrics: merged_metrics,
+            cfg: merged_cfg,
+            deps,
+            workspace_warnings: ws_warnings,
+            workspace_errors: Vec::new(),
+            deps_node_keys: None,
+            deps_edge_keys: None,
+        }
+    }
+}
+
+impl AnalyzerPipeline {
+    pub fn sort_diagnostics(merged_diags: &mut DiagnosticCollection) {
         merged_diags.diagnostics.sort_by(|a, b| {
             let af = a
                 .location
@@ -444,24 +392,5 @@ impl AnalyzerPipeline {
                 })
                 .then_with(|| a.code.as_str().cmp(b.code.as_str()))
         });
-        if let Some(sol) = &workspace.solution {
-            ws_warnings.extend(sol.errors.clone());
-        }
-        for p in &workspace.projects {
-            ws_warnings.extend(p.errors.clone());
-        }
-        ws_warnings.sort();
-        ws_warnings.dedup();
-        AnalysisReport {
-            schema_version: 1,
-            diagnostics: merged_diags,
-            metrics: merged_metrics,
-            cfg: merged_cfg,
-            deps,
-            workspace_warnings: ws_warnings,
-            workspace_errors: Vec::new(),
-            deps_node_keys: None,
-            deps_edge_keys: None,
-        }
     }
 }
