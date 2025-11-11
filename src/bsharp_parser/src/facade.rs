@@ -2,6 +2,7 @@ use crate::parser::SpanTable;
 use crate::parser::bsharp::{parse_csharp_source, parse_csharp_source_with_spans};
 use nom::Finish;
 use syntax::ast::CompilationUnit;
+use syntax::spans::span_db::SpanDb;
 
 /// Public parser facade re-exported by `syntax`.
 #[derive(Default)]
@@ -41,6 +42,13 @@ impl Parser {
             Ok((_, result)) => Ok(result),
             Err(e) => Err(format!("Failed to parse C# code (with spans): {:?}", e)),
         }
+    }
+
+    /// Temporary convenience: parse and return an empty SpanDb alongside the CompilationUnit.
+    /// The analysis layer will populate the SpanDb from the string-keyed SpanTable during migration.
+    pub fn parse_with_span_db<S: AsRef<str>>(&self, input: S) -> Result<(CompilationUnit, SpanDb), String> {
+        let (cu, _table) = self.parse_with_spans(input)?;
+        Ok((cu, SpanDb::new()))
     }
 }
 use syntax::span::Span;
