@@ -9,6 +9,7 @@ members = [
     "src/bsharp_tests",
     "src/bsharp_il",
     "src/bsharp_wasm",
+    "src/bsharp_diagnostics_macros",
     "roslyn_testing/bsharp_compliance",
     "roslyn_testing/bsharp_compliance_testing"
 ]
@@ -19,3 +20,6 @@ edition = "2024"
 version = "0.1.1"
 license = "MPL-2.0"
 authors = ["Piotr Mikstacki", "Apokryf",  "BSharp Contributors"]
+
+[patch.crates-io]
+solp = { path = "src/vendor/solp" }

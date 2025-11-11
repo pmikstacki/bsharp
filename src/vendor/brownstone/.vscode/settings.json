@@ -1,0 +1,4 @@
+{
+  "rust-analyzer.cargo.allFeatures": true,
+  "cSpell.words": ["arrayvec", "unsafes"]
+}

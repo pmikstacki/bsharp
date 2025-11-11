@@ -1,0 +1,67 @@
+
+use crate::ast::{Node};
+use crate::lex::{Tok, LexicalError};
+
+grammar<'a>(input: &'a str);
+
+pub Solution: Node<'a> = <f:FirstLine> <lines:Line*> => Node::Solution(Box::new(f), lines);
+
+Line = {
+    <HeaderLine>,
+    <Project>,
+    <Global>,
+};
+
+HeaderLine = {
+    <Comment>,
+    <Version>,
+};
+
+FirstLine : Node<'a> = <ids1:"id"+> "comma" <ids2:"id"*> <v:"digit_and_dot"> => Node::FirstLine(v);
+
+Version : Node<'a> = <id:"id"> "eq" <r:"digit_and_dot"> => Node::Version(id, r);
+
+Project : Node<'a> = "open_element" <b:ProjectBegin> <s:Section*> "close_element" => Node::Project(Box::new(b), s);
+
+Global : Node<'a> = "id" <s:Section*> "close_element" => Node::Global(s);
+
+ProjectBegin : Node<'a> = {
+    <t:"guid"> "eq" <n:"str"> "comma" <p:"str"> "comma" <id:"guid"> => {
+        Node::ProjectBegin(t, n, p, id)
+    },
+};
+
+Section : Node<'a> = "open_element" <b:SectionBegin> <c:SectionContent*> "close_element" => Node::Section(Box::new(b), c);
+
+SectionBegin : Node<'a> = {
+    <name:"id"+> "eq" <stage:"id"> => {
+        Node::SectionBegin(name, stage)
+    },
+};
+
+SectionContent : Node<'a> = {
+    <k:"section_key"> <v:"section_value"> => {
+        Node::SectionContent(k, v)
+    },
+};
+
+Comment : Node<'a> = "comment" => Node::Comment(<>);
+
+extern {
+    type Location = usize;
+    type Error = LexicalError;
+
+    enum Tok<'a> {
+        "comment" => Tok::Comment(<&'a str>),
+        "str" => Tok::Str(<&'a str>),
+        "section_key" => Tok::SectionKey(<&'a str>),
+        "section_value" => Tok::SectionValue(<&'a str>),
+        "guid" => Tok::Guid(<&'a str>),
+        "id" => Tok::Id(<&'a str>),
+        "digit_and_dot" => Tok::DigitsAndDots(<&'a str>),
+        "comma" => Tok::Comma,
+        "eq" => Tok::Eq,
+        "open_element" => Tok::OpenElement(<&'a str>),
+        "close_element" => Tok::CloseElement(<&'a str>),
+    }
+}

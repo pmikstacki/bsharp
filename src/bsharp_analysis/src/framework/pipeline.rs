@@ -27,6 +27,8 @@ impl Visit for RulesVisitor<'_> {
 impl AnalyzerPipeline {
     /// Run the analyzer pipeline using a registry derived from the session's config
     pub fn run_with_defaults(cu: &CompilationUnit, session: &mut AnalysisSession) {
+        // Set current CU for span resolution bridge
+        session.set_current_cu(cu);
         let registry = AnalyzerRegistry::from_config(&session.config);
         Self::run_for_file(cu, session, &registry);
     }
@@ -36,6 +38,8 @@ impl AnalyzerPipeline {
         session: &mut AnalysisSession,
         registry: &AnalyzerRegistry,
     ) {
+        // Ensure current CU is set (idempotent)
+        session.set_current_cu(cu);
         // 1) Index phase passes (no-op if none)
         Self::run_phase(Phase::Index, cu, session, registry);
         // 2) Local (per-file) passes that produce artifacts (e.g., metrics)
@@ -137,6 +141,9 @@ impl AnalyzerPipeline {
             ctx.config = cfg.clone();
         }
         let mut session = AnalysisSession::new(ctx.clone(), spans.clone());
+        // Prepare session for span lookups
+        session.set_current_cu(&cu);
+        session.populate_span_db_from_table(&cu);
         Self::run_with_defaults(&cu, &mut session);
         Some(AnalysisReport::from_session(&session))
     }

@@ -1,0 +1,30 @@
+[package]
+name = "jwalk"
+version = "0.8.1"
+authors = ["Jesse Grosjean <jesse@hogbaysoftware.com>", "Sebastian Thiel <byronimo@gmail.com>"]
+description = "Filesystem walk performed in parallel with streamed and sorted results."
+documentation = "https://docs.rs/jwalk/"
+homepage = "https://github.com/byron/jwalk"
+repository = "https://github.com/byron/jwalk"
+readme = "README.md"
+keywords = ["directory", "recursive", "walk", "iterator", "parallel"]
+categories = ["filesystem", "concurrency"]
+license = "MIT"
+edition = "2018"
+
+[dependencies]
+rayon = "1.5"
+crossbeam = "0.8"
+
+[dev-dependencies]
+criterion = "0.4.0"
+fs_extra = "1.2"
+walkdir = "2.3"
+ignore = "0.4"
+tempfile = "3.1"
+num_cpus = "1.12"
+lazy_static = "1.4"
+
+[[bench]]
+name = "walk_benchmark"
+harness = false

@@ -1,199 +1,272 @@
-# Semantic Analysis Plan (BSharp)
+ # Semantic Analysis and Diagnostics Redesign Plan
 
-This document lays out a phased implementation plan for semantic analysis across all C# language structures in the `bsharp_analysis` crate. It is organized to integrate cleanly with the current `AnalyzerPipeline` phases and reporting.
+ ## Objectives
+ - **DRY diagnostics**: Generate `DiagnosticCode`, severity, category, message mappings, and helpers from a declarative source (proc-macro), not hand-maintained tables.
+ - **Low-boilerplate analyzers**: Author semantic rules with minimal glue. Prefer `rule!`/`ruleset!` macros and typed visit hooks over manual `Rule` impls.
+ - **First-class spans**: Use `Spanned<T>`/`HasSpan` consistently across analysis. Remove stringly-typed span keys like "ctor::..."/"method::...".
+ - **Composable passes**: Typed artifact store and pass execution model that makes dependencies explicit and discoverable.
+ - **Robustness and extensibility**: Make it easy to add new rules from docs/development/semantic-rules.md without duplicating plumbing.
 
-- Design goals
-- Phased rollout overview
-- Detailed phase specs (inputs, outputs, diagnostics, data structures, tests)
-- Language structure coverage matrix
-- Integration with AnalyzerPipeline and diagnostics
-- Performance, determinism, and testing strategy
+ ## Current State (Findings)
+ - **Diagnostics**
+   - `diagnostics/diagnostic_code.rs` is a large hand-maintained enum + mappings for severity/category/default messages.
+   - `framework/diagnostic_builder.rs` provides builder ergonomics but still requires manual code/message/placement.
+   - Severity/category overrides are supported via `AnalysisConfig.rule_severities`.
+ - **Spans**
+   - Parser provides `Spanned<T>` (`span.rs` in bsharp_parser) and a sidecar `SpanTable` mapping string keys to `Range<usize>`.
+   - Analysis currently relies on `SpanTable` string keys (e.g., `find_ctor_span`, `find_method_span`) to locate nodes for diagnostics.
+   - `HasSpan` exists for `Spanned<T>`, but AST nodes in analysis are un-spanned; walker traverses plain AST with `NodeRef`.
+ - **Analyzer framework**
+   - Rules implement `Rule` with `visit(&NodeRef, &mut AnalysisSession)`. Rule sets are registered via `AnalyzerRegistry` and run via `AnalyzerPipeline` + `AstWalker`.
+   - Rules are verbose (pattern matching, span lookup via ad-hoc helpers, builder ceremony).
+ - **Artifacts**
+   - `ArtifactStore` exists in `AnalysisSession`, but rule authors must manually fetch artifacts; dependencies between passes/rules aren’t declared at type level.
 
-## Design Goals
-- Deterministic, incremental-friendly passes with explicit inputs/outputs.
-- Clear ownership boundaries: parser (syntax), analysis (semantics), reporting (diagnostics/artifacts).
-- One responsibility per pass; explicit ordering via labels.
-- Reuse and extend existing artifact stores and diagnostic pipeline.
-- Support both strict and lenient parsing modes (recovery-aware diagnostics where possible).
+ ## Design Principles
+ - **Macro-first ergonomics**: Diagnostics and rule registration generated from declarative specs.
+ - **Typed spans everywhere**: Every visited node can be mapped to a `ByteRange` via a stable, non-string identifier.
+ - **Return-early, explicit errors**: No hidden control flow; avoid silent failures; fail fast with clear diagnostics.
+ - **Single traversal, multi-visitor**: Keep one pass per phase with a shared visitor dispatch to minimize AST walking overhead.
 
-## Phased Rollout Overview
-We’ll map to the existing pipeline stages while keeping passes fine-grained and composable.
+ ---
 
-- Phase 0: Syntax artifacts (already present)
-- Phase 1: Symbol indexing (types, members, namespaces)
-- Phase 2: Name binding and scope resolution
-- Phase 3: Type checking, conversions, and overload resolution
-- Phase 4: Generics and constraints validation
-- Phase 5: Flow analysis: definite assignment, reachability, variable capture
-- Phase 6: Nullability and flow state (NRT)
-- Phase 7: Attributes, constants, and compile-time evaluation
-- Phase 8: Accessibility and modifiers validation
-- Phase 9: Extension constructs (extension methods today, extension members in `extension {}` blocks)
-- Phase 10: Diagnostics aggregation, cross-file checks, and reporting
+ ## Phase 1 — Diagnostics Macroization (proc-macro crate)
+ - **Deliverables**
+   - New crate `bsharp_diagnostics_macros` that exports a `diagnostics! { ... }` macro.
+   - Generated items in `bsharp_analysis::diagnostics`:
+     - `enum DiagnosticCode` with documented variants.
+     - `impl DiagnosticCode` with `as_str()`, `severity()`, `category()`, `default_message()`.
+     - `fn parse_code(&str) -> Option<DiagnosticCode>` and `fn all_codes() -> &'static [DiagnosticCode]` for tooling.
+   - Replace current `diagnostic_code.rs` with generated equivalent; keep `Diagnostic`, `DiagnosticCollection`, `SourceLocation` unchanged.
 
-Each phase defines its resources, diagnostics, and test strategy.
+ - **Macro DSL sketch**
+   ```rust
+   diagnostics! {
+       // group "Semantic"; error
+       BSE01001 => {
+           category: Semantic,
+           severity: Error,
+           title: "Async constructor not allowed",
+           message: "Constructors cannot be declared async"
+       },
+       BSE02009 => {
+           category: Semantic,
+           severity: Error,
+           title: "Async returns Task or Task<T>",
+           message: "Async methods must return Task or Task<T>"
+       },
+       BSW02005 => {
+           category: Style,
+           severity: Warning,
+           title: "Unused variable",
+           message: "Variable is declared but never used"
+       }
+   }
+   ```
+   - The macro expands to the enum, metadata tables, and helper impls.
+   - Source-of-truth becomes the macro invocation; no hand-edited match arms.
 
----
+ - **Builder ergonomics**
+   - Introduce `diag!` helper macro to cut boilerplate:
+     ```rust
+     // Minimal (default message, at node)
+     diag!(session, BSE02009, at node);
 
-## Phase 1: Symbol Indexing
-- Goal: Build symbol tables (projects/files) for namespaces, types (class/struct/interface/record/enum/delegate), and members (fields, properties, events, methods, constructors, indexers, operators).
-- Inputs: AST `CompilationUnit`; configuration.
-- Outputs: `SymbolTable` artifact per file, merged at workspace-level; symbol IDs for later passes.
-- Data structures:
-  - `SymbolId`, `SymbolKind`, `SymbolTable { scopes, symbols_by_name, parents }`.
-  - `TypeKey`, `MemberKey` for stable references.
-- Diagnostics: Duplicates (type/member), illegal partial declarations, illegal nested constructs.
-- Tests: Unit tests per construct; integration for nested/partial types; cross-file duplicate tests.
-- Pipeline: `Phase::Index` (already available). Store artifacts in `ArtifactStore`.
+     // With custom message and related
+     diag!(session, BSE02009, at node,
+          msg: format!("Invalid return type '{}'", ty),
+          related: [(other_node, "Reason here")]);
+     ```
+   - `diag!` resolves spans via Phase 2 span APIs (see below). Falls back to default message if `msg:` omitted.
 
-## Phase 2: Name Binding and Scope Resolution
-- Goal: Resolve identifier references: types, namespaces, members, using-aliases; build bound trees for members.
-- Inputs: AST + `SymbolTable` + using directives.
-- Outputs: `BindingTable` mapping AST nodes to symbol/namespace/type refs; per-file bound member trees.
-- Data structures: `BoundNode`, `BoundExpr`, `BoundStmt`, `BoundPattern` with symbol links.
-- Diagnostics: Unresolved identifiers, ambiguous names, circular usings, invalid alias targets.
-- Tests: Positive/negative binding scenarios, namespace aliasing, global using.
-- Pipeline: `Phase::Semantic` (binding pass runs before type checking).
+ - **Config overrides**
+   - Preserve `AnalysisConfig.rule_severities` override in `diag!` expansion (post-build severity patch stays intact).
 
-## Phase 3: Type Checking, Conversions, and Overload Resolution
-- Goal: Compute expression types; implement standard/implicit/explicit conversions; resolve method group invocations and overloads; handle user-defined operators.
-- Inputs: Bound trees + `SymbolTable` + type system primitives.
-- Outputs: `TypeInfoTable` (per-node types), `ConversionTable`, `CallResolutionTable`.
-- Diagnostics: No viable overload, ambiguous call, invalid conversions, boxing/unboxing errors.
-- Tests: Overload resolution matrices, extension methods applicability, operator resolution.
-- Pipeline: `Phase::Semantic` (after binding).
+ ---
 
-## Phase 4: Generics and Constraints Validation
-- Goal: Validate type/ method type parameters and constraints (`where`), variance, default type args.
-- Inputs: Bound trees + `SymbolTable`.
-- Outputs: `GenericsCheckReport` per file.
-- Diagnostics: Constraint violations, invalid variance, recursive constraints, `new()` misuse.
-- Tests: Constraint satisfaction across type arguments, variance edge cases.
-- Pipeline: `Phase::Semantic` (after type checking to leverage inferred types where needed).
+ ## Phase 2 — Unified Span Model
+ - **Goals**
+   - Eliminate string-keyed `SpanTable` lookups from rules.
+   - Provide a stable way to obtain `ByteRange` for any `NodeRef` or concrete AST node.
 
-## Phase 5: Flow Analysis (DA/Reachability/Captures)
-- Goal: Definite assignment, definite unassignment, unreachable code, variable capture (closures), async/iterator flow checks.
-- Inputs: Bound statements + TypeInfo.
-- Outputs: `FlowState` per block, `CaptureInfo` per lambda/local function.
-- Diagnostics: Use-of-unassigned, unreachable, missing return, invalid capture (ref/stack), iterator/async constraints.
-- Tests: Classic DA suites; branching, loops, try/catch/finally interaction; lambdas and locals.
-- Pipeline: `Phase::Semantic` (after type checking).
+ - **Components**
+   - `SpanDb` (per file): `NodeId -> ByteRange` + optional `TextRange`.
+   - `NodeId`: opaque stable identifier for nodes during a single analysis run.
+     - Implementation options:
+       - Pointer identity hash of underlying AST node (stable within a run and traversal).
+       - Or, parser-side arena allocation assigning sequential IDs during AST construction.
+     - Chosen path: start with pointer-identity hash via `NodeRef` to avoid AST changes; migrate to arena IDs later if needed.
+   - `SpanProvider` trait exposed by analysis:
+     ```rust
+     pub trait SpanProvider {
+         fn span_of(&self, node: &NodeRef) -> Option<(usize, usize)>; // (start, len)
+     }
+     ```
+   - `AnalysisSession` gains `spans_db: SpanDb` (replacing raw `SpanTable` for rules). Back-compat accessor remains temporarily.
 
-## Phase 6: Nullability (NRT) Flow State
-- Goal: Track nullability annotations and flow; enforce dereference safety and assignment rules.
-- Inputs: TypeInfo + FlowState + annotations context (`#nullable`).
-- Outputs: `NullabilityState` per expression and variable.
-- Diagnostics: Possible null dereference, redundant checks, incorrect suppression.
-- Tests: NRT on/off, flow-sensitive examples, attributes that affect nullability.
-- Pipeline: `Phase::Semantic`.
+ - **Parser integration**
+   - Maintain `Spanned<T>` in `bsharp_parser` as it is.
+   - During parse, build `(CompilationUnit, SpanDb)` instead of `(CompilationUnit, SpanTable)` by pairing nodes to their spans when the AST is constructed or immediately after (bridge phase).
+   - For nodes created without direct parser span (synthesized nodes), map to nearest enclosing span where reasonable.
 
-## Phase 7: Attributes, Constants, and Compile-time Evaluation
-- Goal: Bind attributes and arguments, evaluate constants (const expressions), fold where allowed.
-- Inputs: Bound trees + TypeInfo + Binding.
-- Outputs: `AttributeTable`, `ConstEvalTable`.
-- Diagnostics: Misapplied attributes, invalid const expressions, attribute ctor resolution errors.
-- Tests: Attribute targets, global attributes, constant folding edge cases.
-- Pipeline: `Phase::Semantic` (after type/binding).
+ - **`HasSpan` usage**
+   - Extend analysis helper to resolve span for any `NodeRef` via `session.span_of(node)`.
+   - For rules that have direct access to a concrete AST node type (e.g., `&MethodDeclaration`), provide `at(node)` convenience:
+     - `at(node)` internally forms a `NodeRef::from(node)` and queries `SpanDb`.
 
-## Phase 8: Accessibility and Modifiers Validation
-- Goal: Validate accessibility rules and modifier combinations for types and members.
-- Inputs: Symbols + Binding.
-- Outputs: `AccessCheckReport`.
-- Diagnostics: Inaccessible type/member, illegal modifiers combinations, override/virtual/sealed rules.
-- Tests: Cross-assembly (mock), nested types, tricky override chains.
-- Pipeline: `Phase::Semantic`.
+ - **Remove string keys**
+   - Rewrite helpers like `find_ctor_span`/`find_method_span` to use typed nodes:
+     - Inside `on::<ClassBodyDeclaration::Constructor>` handlers, call `at(ctor)` directly.
 
-## Phase 9: Extension Constructs
-- Goal: Validate extension methods and upcoming extension members blocks (`extension T { ... }`).
-- Inputs: Symbols + Binding + TypeInfo.
-- Outputs: `ExtensionAnalysisReport`.
-- Rules:
-  - Extension methods: static, first parameter `this T`, accessibility rules, shadowing/ambiguity.
-  - Extension members (experimental):
-    - Members must be static.
-    - No instance state (fields) permitted.
-    - Receiver type must be non-dynamic; closed generic arguments resolved.
-    - Disallow constructors and destructors.
-- Diagnostics: Invalid extension receiver, non-static member in extension, conflicts with existing instance members, ambiguity vs. extension methods.
-- Tests: Positive and negative cases; ambiguous resolution; recovery when inside extension body (lenient mode).
-- Pipeline: `Phase::Semantic` (after type/binding).
+ ---
 
-## Phase 10: Diagnostics Aggregation and Workspace Reporting
-- Goal: Merge per-file reports, stable sort, cross-file diagnostics (e.g., duplicate symbols across files, partial types completeness).
-- Inputs: Per-file reports from earlier phases.
-- Outputs: Final `AnalysisReport` fields (`diagnostics`, `cfg`, `deps`, metrics).
-- Diagnostics: Aggregated and de-duplicated with stable sorting.
-- Pipeline: Already implemented in `AnalyzerPipeline::run_workspace*`.
+ ## Phase 3 — Analyzer Authoring Macros and Typed Visits
+ - **Goals**
+   - Replace verbose `Rule` implementations with declarative macros and typed hooks.
+   - Keep a single traversal per phase, dispatching to many rules.
 
----
+ - **Macros**
+   - `ruleset!` for grouping:
+     ```rust
+     ruleset!("semantic",
+         CtorNoAsync,
+         CtorNameMatchesClass,
+         MethodNoStaticOverride,
+         AsyncReturnsTask,
+     );
+     ```
+   - `rule!` for individual rules:
+     ```rust
+     rule! {
+       id: "semantic.ctor.no_async",
+       category: Semantic,
+       on bsharp_syntax::declarations::ClassBodyDeclaration::Constructor as ctor => |cx| {
+           if cx.ctor.modifiers.contains(&Modifier::Async) {
+               diag!(cx.session, BSE01001, at cx.ctor);
+           }
+       }
+     }
+     ```
+     - `cx` provides: `session`, `node`-specific fields (e.g., `ctor`), and `span_of`/`emit` helpers.
+     - Additional hooks: `on_enter<T>`, `on_exit<T>`, and `filter` predicates.
 
-## Language Structure Coverage Matrix (Semantics)
-- Namespaces & Usings: binding, alias targets, cycles.
-- Types: class/struct/interface/record/enum/delegate (symbols, inheritance/implements, constraints).
-- Members: fields/properties/events/indexers/operators/methods/constructors/destructors.
-- Generics: type/method params, variance, constraints.
-- Expressions: types, conversions, overloads, constant folding.
-- Statements: DA/reachability, pattern semantics, switch rules (fall-through legality), try/catch/filter.
-- Lambdas & Local functions: capture analysis, async/iterator rules.
-- Attributes: binding and validation.
-- Nullability: flow-sensitive checks.
-- Extension constructs: methods and extension blocks (experimental semantics).
+ - **Typed visitor glue**
+   - Generate a `Visit` implementation that converts `NodeRef` to the target node type when possible and calls the rule body.
+   - Errors in downcast should never be silent; no-ops are acceptable when node type does not match.
 
----
+ - **Rule dependencies**
+   - Optional macro attribute for declaring required artifacts:
+     ```rust
+     #[requires(artifact = Symbols, phase = Semantic)]
+     rule! { /* ... */ }
+     ```
+   - The generated code performs runtime checks (`session.get_artifact::<Symbols>()`). If missing, it should return early; not emit diagnostics that depend on missing context.
 
-## Integration with AnalyzerPipeline
-- Add a new `semantic` module with subpasses:
-  - `symbols`, `binding`, `types`, `overload`, `generics`, `flow`, `nullability`, `attributes`, `access`, `extensions`.
-- Register passes under `Phase::Semantic` in explicit order; keep pass functions small and testable.
-- Use `ArtifactStore` to persist tables between passes.
-- Emit diagnostics via existing `Diagnostic` API; keep messages stable and include precise locations.
+ ---
 
----
+ ## Phase 4 — Pass/Artifact API Hardening
+ - **Goals**
+   - Make artifacts strongly typed and easy to fetch; reduce boilerplate.
 
-## Performance & Determinism
-- Use stable, deterministic traversal orders and sorting for merged diagnostics.
-- Employ interning for type/symbol keys to reduce memory.
-- Provide configuration toggles (e.g., enable/disable NRT) via `AnalysisConfig`.
+ - **Improvements**
+   - Add `artifact!` derive macro for new artifacts, registering type name & debug summary.
+   - `AnalysisSession` helper methods:
+     - `session.require::<T>() -> Arc<T>` returns artifact or panics with clear message (internal bug) — only for rules that declare `#[requires(T)]`.
+     - `session.try_get::<T>() -> Option<Arc<T>>` for optional artifacts.
+   - Keep `ArtifactStore` as is; this is API sugar and safety around it.
 
-## Testing Strategy
-- Unit tests per pass and construct.
-- Integration tests per phase ordering.
-- Workspace-level tests for cross-file issues.
-- Lenient vs. strict mode parity tests (where appropriate), including recovery in extension bodies.
+ ---
 
----
+ ## Phase 5 — Reimplement Baseline Semantic Rules
+ - **Targets (from docs/development/semantic-rules.md)**
+   - Migrate currently implemented constructor/method semantics to the macro style:
+     - BSE01001 (async ctor), BSE01005 (ctor name mismatch), BSE01003 (ctor virtual/abstract),
+       BSE02001 (abstract method with body), BSE02006 (static override), BSE02009 (async returns Task/Task<T>).
+   - For each newly implemented rule from the table:
+     - Add its entry to the `diagnostics!` macro.
+     - Implement with a typed `on <NodeType>` handler.
+     - Use `diag!(..., at node)` instead of manual span lookup.
 
-## Initial Execution Plan (Iteration Order)
-1. Phase 1: Symbol indexing (types/members), partial types merge basics.
-2. Phase 2: Binding of identifiers, namespaces, and usings.
-3. Phase 3: Type checking + conversions + overload resolution.
-4. Phase 4: Generics/constraints validation.
-5. Phase 5: Flow analysis for DA/reachability/captures.
-6. Phase 6: Nullability.
-7. Phase 7: Attributes/const eval.
-8. Phase 8: Accessibility/modifiers.
-9. Phase 9: Extension constructs (methods + extension blocks semantics).
-10. Phase 10: Aggregation checks.
+ - **Patterns**
+   - Prefer `on` hooks closest to the node of interest to avoid walking unrelated parts.
+   - For cross-node checks (e.g., override resolution), fetch artifacts (`Symbols`, `Binding`, `Types`) produced by semantic passes.
 
-Each step lands with tests and documentation updates.
+ ---
 
----
+ ## Phase 6 — CLI/Reporting Integration
+ - Preserve `AnalyzerPipeline` phase ordering.
+ - Ensure `AnalyzerPipeline::sort_diagnostics` remains stable.
+ - Pretty formatting stays under `diagnostics/format.rs`; update only if span model changes affect caret length/placement.
+ - JSON schema of `AnalysisReport` remains stable; category/severity derive from generated code.
 
-## Ready-to-run Prompt for Next Session
-Copy-paste the following prompt to kick off execution of this plan:
+ ---
 
-"""
-Continue with Semantic Analysis implementation in bsharp_analysis:
+ ## Phase 7 — Tests and Validation
+ - **Unit tests**
+   - `diagnostics!` macro expansion: enum count, message mapping, category/severity per code.
+   - `diag!` macro: default message vs custom message, severity override from config.
+   - Span resolution: `SpanDb::span_of(NodeRef)` returns expected byte ranges for representative nodes.
+ - **Rule tests**
+   - Golden tests per rule using small code samples; assert emitted diagnostics (code, message, location) in stable order.
+   - Negative tests to ensure no false positives.
+ - **Integration**
+   - End-to-end file analysis via `AnalyzerPipeline::analyze_file_report`; snapshot of diagnostics for curated fixtures.
 
-- Create `src/bsharp_analysis/src/semantic/` with submodules:
-  - `symbols.rs`, `binding.rs`, `types.rs`, `overload.rs`, `generics.rs`, `flow.rs`, `nullability.rs`, `attributes.rs`, `access.rs`, `extensions.rs`.
-- Wire passes into `AnalyzerPipeline` under `Phase::Semantic` in that order, storing artifacts in `ArtifactStore`.
-- Implement Phase 1 (symbols) and Phase 2 (binding) end-to-end with:
-  - Artifacts (`SymbolTable`, `BindingTable`).
-  - Diagnostics for duplicates and unresolved names.
-  - Unit tests in `bsharp_tests/src/analysis/` and incremental workspace tests.
-- Add recovery-aware diagnostics for malformed members inside `extension { }` when in lenient mode.
-- Update docs: feature matrix and planning per pass as we land work.
+ ---
 
-Stop after symbols + binding passes are green and documented.
-"""
+ ## Phase 8 — Migration and Cleanup
+ - Replace `SpanTable` usage in rules with `SpanDb`.
+ - Remove ad-hoc helpers `find_ctor_span`/`find_method_span` and string concatenations for span keys.
+ - Delete or gate old manual `diagnostic_code.rs` behind a feature while the proc-macro version bakes; then remove.
+ - Convert `rules/semantic.rs` and `rules/naming.rs` to macro-based rulesets incrementally; keep mixed mode temporarily if needed.
+ - Document authoring guidelines:
+   - Add a `CONTRIBUTING.md` section for writing rules using `rule!`/`ruleset!` and `diag!`.
+
+ ---
+
+ ## API Sketch (Consolidated)
+ - **Span API**
+   ```rust
+   // session additions
+   impl AnalysisSession {
+       pub fn span_of(&self, n: &NodeRef) -> Option<(usize, usize)>;
+       pub fn at(&self, n: &NodeRef) -> Option<SourceLocation>; // uses ctx.location_from_span
+   }
+   ```
+
+ - **Diagnostics helpers**
+   ```rust
+   // builder alternative via macro
+   diag!(session, BSE03011, at node, msg: "Duplicate symbol");
+   ```
+
+ - **Rule authoring**
+   ```rust
+   ruleset!("semantic", CtorNoAsync, MethodNoStaticOverride);
+
+   rule! {
+       id: "semantic.method.no_static_override",
+       category: Semantic,
+       on bsharp_syntax::declarations::ClassBodyDeclaration::Method as m => |cx| {
+           if m.modifiers.contains(&Modifier::Static) && m.modifiers.contains(&Modifier::Override) {
+               diag!(cx.session, BSE02006, at m);
+           }
+       }
+   }
+   ```
+
+ ---
+
+ ## Risks and Mitigations
+ - **NodeId stability**: Pointer-identity approach is stable only within a process. This is acceptable for analysis runs; if we need persistence, switch to parser-assigned arena IDs.
+ - **Macro complexity**: Keep macro DSL focused; avoid over-abstracting. Start with `on <ExactNodeType>` and add filters later.
+ - **Performance**: Single traversal with many rules remains; per-node dispatch via small Vec of rules is cheap and already present.
+
+ ---
+
+ ## Immediate Next Steps
+ - **Diagnostics**: Implement `bsharp_diagnostics_macros` and replace `diagnostic_code.rs` with macro-generated content.
+ - **Spans**: Introduce `SpanDb`, add `AnalysisSession::span_of`, bridge existing `SpanTable` to `SpanDb` for initial runs.
+ - **Ergonomics**: Add `diag!`, `ruleset!`, `rule!` macros; port the 6 existing semantic rules as exemplars.
+ - **Tests**: Add golden tests for migrated rules and macro helpers.
+
