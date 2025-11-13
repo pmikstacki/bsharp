@@ -236,6 +236,7 @@ dependencies = [
  "env_logger",
  "log",
  "nom",
+ "serde",
  "serde_json",
  "toml",
 ]
@@ -308,6 +309,7 @@ dependencies = [
 name = "bsharp_syntax"
 version = "0.1.1"
 dependencies = [
+ "bsharp_diagnostics_macros",
  "bsharp_syntax_derive",
  "nom_locate",
  "serde",

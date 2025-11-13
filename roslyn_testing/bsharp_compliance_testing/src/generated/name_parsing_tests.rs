@@ -1,8 +1,4 @@
 // Auto-generated from Roslyn: NameParsingTests
-use crate::custom_asserts::after_parse;
-use crate::custom_asserts::after_parse::CaseData;
-use bsharp_parser::bsharp::parse_csharp_source_strict;
-use bsharp_syntax::span::Span;
 /// Roslyn: NameParsingTests.ParseGlobalAliasQualifiedNameAfterConditionalExpression (case 1)
 #[test]
 fn parse_global_alias_qualified_name_after_conditional_expression() {

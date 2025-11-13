@@ -1,9 +1,4 @@
 // Auto-generated from Roslyn: SyntaxRewriterTests
-use crate::custom_asserts::after_parse;
-use crate::custom_asserts::after_parse::CaseData;
-use bsharp_parser::bsharp::parse_csharp_source_strict;
-use bsharp_parser::statement_parser::parse_statement_ws_spanned;
-use bsharp_syntax::span::Span;
 /// Roslyn: SyntaxRewriterTests.TestSyntaxTreeForParsedSyntaxNode (case 1)
 #[test]
 fn syntax_tree_for_parsed_syntax_node() {

@@ -1,9 +1,4 @@
 // Auto-generated from Roslyn: TopLevelStatementsParsingTests
-use crate::custom_asserts::after_parse;
-use crate::custom_asserts::after_parse::CaseData;
-use crate::custom_asserts::roslyn_asserts::ExpectedDiagnostics;
-use bsharp_parser::bsharp::parse_csharp_source_strict;
-use bsharp_syntax::span::Span;
 /// Roslyn: TopLevelStatementsParsingTests.InsertOpenBraceBeforeCodes (case 1)
 #[test]
 fn insert_open_brace_before_codes() {

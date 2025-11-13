@@ -36,6 +36,13 @@ impl AnalyzerPipeline {
         session: &mut AnalysisSession,
         registry: &AnalyzerRegistry,
     ) {
+        // Ensure SpanDb is available for accurate SourceLocation mapping.
+        // If tests used legacy parse_with_spans (SpanTable) and did not set SpanDb,
+        // build it now from the SpanTable for this CompilationUnit.
+        if session.span_db.is_none() {
+            let db = bsharp_parser::span_db_build::build_span_db_from_table(cu, &session.spans);
+            session.span_db = Some(db);
+        }
         // SpanDb already provided by parser; no CU pointer needed
         // 1) Index phase passes (no-op if none)
         Self::run_phase(Phase::Index, cu, session, registry);

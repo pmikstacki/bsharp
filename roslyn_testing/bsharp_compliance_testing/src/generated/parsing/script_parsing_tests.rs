@@ -1,7 +1,4 @@
 // Auto-generated STRUCTURE tests from Roslyn: ScriptParsingTests
-use crate::custom_asserts::structure_assert;
-use bsharp_parser::bsharp::parse_csharp_source_strict;
-use bsharp_syntax::span::Span;
 #[test]
 fn error_new_keyword_used_as_operator() {
     let src = r#""#;

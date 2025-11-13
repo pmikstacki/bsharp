@@ -1,7 +1,4 @@
 // Auto-generated STRUCTURE tests from Roslyn: NameParsingTests
-use crate::custom_asserts::structure_assert;
-use bsharp_parser::bsharp::parse_csharp_source_strict;
-use bsharp_syntax::span::Span;
 #[test]
 fn parse_generic_name_invocation_with_omitted_type_arguments() {
     let src = r#"x\u00ady"#;

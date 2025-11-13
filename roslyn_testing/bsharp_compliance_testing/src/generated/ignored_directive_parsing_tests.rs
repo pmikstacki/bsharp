@@ -1,8 +1,4 @@
 // Auto-generated from Roslyn: IgnoredDirectiveParsingTests
-use crate::custom_asserts::after_parse;
-use crate::custom_asserts::after_parse::CaseData;
-use bsharp_parser::bsharp::parse_csharp_source_strict;
-use bsharp_syntax::span::Span;
 /// Roslyn: IgnoredDirectiveParsingTests.Api_Shebang (case 1)
 #[test]
 fn api_shebang() {

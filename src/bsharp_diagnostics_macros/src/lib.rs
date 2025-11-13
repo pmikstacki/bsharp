@@ -9,6 +9,60 @@ struct Entry {
     message: LitStr,
 }
 
+// enum_as_str!(TypeName { VariantA => "a", VariantB => "b" })
+#[derive(Debug)]
+struct AsStrItem {
+    variant: Ident,
+    _arrow: Token![=>],
+    text: LitStr,
+}
+
+#[derive(Debug)]
+struct AsStrSpec {
+    ty: Ident,
+    _brace: syn::token::Brace,
+    items: Punctuated<AsStrItem, Comma>,
+}
+
+impl Parse for AsStrItem {
+    fn parse(input: syn::parse::ParseStream) -> syn::Result<Self> {
+        Ok(AsStrItem {
+            variant: input.parse()?,
+            _arrow: input.parse()?,
+            text: input.parse()?,
+        })
+    }
+}
+
+impl Parse for AsStrSpec {
+    fn parse(input: syn::parse::ParseStream) -> syn::Result<Self> {
+        let ty: Ident = input.parse()?;
+        let content;
+        let _brace = braced!(content in input);
+        let items = Punctuated::<AsStrItem, Comma>::parse_terminated(&content)?;
+        Ok(AsStrSpec { ty, _brace, items })
+    }
+}
+
+#[proc_macro]
+pub fn enum_as_str(input: TokenStream) -> TokenStream {
+    let AsStrSpec { ty, items, .. } = parse_macro_input!(input as AsStrSpec);
+    let mut arms = Vec::new();
+    for it in items.iter() {
+        let v = &it.variant;
+        let s = &it.text;
+        arms.push(quote! { #ty::#v => #s });
+    }
+    let out = quote! {
+        impl #ty {
+            pub fn as_str(&self) -> &'static str {
+                match self { #( #arms, )* }
+            }
+        }
+    };
+    out.into()
+}
+
 impl Parse for Entry {
     fn parse(input: syn::parse::ParseStream) -> syn::Result<Self> {
         let code: Ident = input.parse()?;
@@ -60,6 +114,8 @@ pub fn diagnostics(input: TokenStream) -> TokenStream {
     let mut enum_variants = Vec::new();
     let mut as_str_arms = Vec::new();
     let mut default_msg_arms = Vec::new();
+    let mut severity_arms = Vec::new();
+    let mut category_arms = Vec::new();
 
     for e in entries.iter() {
         let code_ident = &e.code;
@@ -68,6 +124,30 @@ pub fn diagnostics(input: TokenStream) -> TokenStream {
         enum_variants.push(quote! { #code_ident });
         as_str_arms.push(quote! { DiagnosticCode::#code_ident => #code_str });
         default_msg_arms.push(quote! { DiagnosticCode::#code_ident => #msg });
+
+        // Severity derived from prefix: BSE* => Error, BSW* => Warning
+        if code_str.starts_with("BSE") {
+            severity_arms.push(quote! { DiagnosticCode::#code_ident => DiagnosticSeverity::Error });
+        } else {
+            severity_arms.push(quote! { DiagnosticCode::#code_ident => DiagnosticSeverity::Warning });
+        }
+
+        // Category derived from code family
+        // Errors: BSE03*** => Type; other BSE => Semantic
+        // Warnings: BSW01*** => Maintainability; BSW02*** => Style; BSW03*** => Performance; BSW04*** => Security
+        if code_str.starts_with("BSE03") {
+            category_arms.push(quote! { DiagnosticCode::#code_ident => DiagnosticCategory::Type });
+        } else if code_str.starts_with("BSE") {
+            category_arms.push(quote! { DiagnosticCode::#code_ident => DiagnosticCategory::Semantic });
+        } else if code_str.starts_with("BSW01") {
+            category_arms.push(quote! { DiagnosticCode::#code_ident => DiagnosticCategory::Maintainability });
+        } else if code_str.starts_with("BSW02") {
+            category_arms.push(quote! { DiagnosticCode::#code_ident => DiagnosticCategory::Style });
+        } else if code_str.starts_with("BSW03") {
+            category_arms.push(quote! { DiagnosticCode::#code_ident => DiagnosticCategory::Performance });
+        } else if code_str.starts_with("BSW04") {
+            category_arms.push(quote! { DiagnosticCode::#code_ident => DiagnosticCategory::Security });
+        }
     }
 
     let out = quote! {
@@ -80,6 +160,12 @@ pub fn diagnostics(input: TokenStream) -> TokenStream {
             }
             pub fn default_message(&self) -> &'static str {
                 match self { #( #default_msg_arms, )* }
+            }
+            pub fn severity(&self) -> DiagnosticSeverity {
+                match self { #( #severity_arms, )* }
+            }
+            pub fn category(&self) -> DiagnosticCategory {
+                match self { #( #category_arms, )* }
             }
         }
     };
@@ -102,9 +188,19 @@ impl Parse for EnumList {
 pub fn diagnostic_enum(input: TokenStream) -> TokenStream {
     let EnumList { idents } = parse_macro_input!(input as EnumList);
     let variants: Vec<Ident> = idents.into_iter().collect();
+    let as_str_arms = variants.iter().map(|v| {
+        let s = v.to_string();
+        quote! { DiagnosticCode::#v => #s }
+    });
     let out = quote! {
         #[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
         pub enum DiagnosticCode { #( #variants ),* }
+
+        impl DiagnosticCode {
+            pub fn as_str(&self) -> &'static str {
+                match self { #( #as_str_arms, )* }
+            }
+        }
     };
     out.into()
 }

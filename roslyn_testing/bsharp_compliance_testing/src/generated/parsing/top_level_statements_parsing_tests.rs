@@ -1,7 +1,4 @@
 // Auto-generated STRUCTURE tests from Roslyn: TopLevelStatementsParsingTests
-use crate::custom_asserts::structure_assert;
-use bsharp_parser::bsharp::parse_csharp_source_strict;
-use bsharp_syntax::span::Span;
 #[test]
 fn insert_open_brace_before_codes() {
     let src = r#""#;

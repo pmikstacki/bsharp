@@ -1,272 +1,169 @@
- # Semantic Analysis and Diagnostics Redesign Plan
+# Semantic Analysis and Diagnostics Implementation Plan
 
- ## Objectives
- - **DRY diagnostics**: Generate `DiagnosticCode`, severity, category, message mappings, and helpers from a declarative source (proc-macro), not hand-maintained tables.
- - **Low-boilerplate analyzers**: Author semantic rules with minimal glue. Prefer `rule!`/`ruleset!` macros and typed visit hooks over manual `Rule` impls.
- - **First-class spans**: Use `Spanned<T>`/`HasSpan` consistently across analysis. Remove stringly-typed span keys like "ctor::..."/"method::...".
- - **Composable passes**: Typed artifact store and pass execution model that makes dependencies explicit and discoverable.
- - **Robustness and extensibility**: Make it easy to add new rules from docs/development/semantic-rules.md without duplicating plumbing.
+This plan outlines how we will implement semantic errors and warnings using our macro-driven diagnostics and migrate rules incrementally while keeping the workspace green.
 
- ## Current State (Findings)
- - **Diagnostics**
-   - `diagnostics/diagnostic_code.rs` is a large hand-maintained enum + mappings for severity/category/default messages.
-   - `framework/diagnostic_builder.rs` provides builder ergonomics but still requires manual code/message/placement.
-   - Severity/category overrides are supported via `AnalysisConfig.rule_severities`.
- - **Spans**
-   - Parser provides `Spanned<T>` (`span.rs` in bsharp_parser) and a sidecar `SpanTable` mapping string keys to `Range<usize>`.
-   - Analysis currently relies on `SpanTable` string keys (e.g., `find_ctor_span`, `find_method_span`) to locate nodes for diagnostics.
-   - `HasSpan` exists for `Spanned<T>`, but AST nodes in analysis are un-spanned; walker traverses plain AST with `NodeRef`.
- - **Analyzer framework**
-   - Rules implement `Rule` with `visit(&NodeRef, &mut AnalysisSession)`. Rule sets are registered via `AnalyzerRegistry` and run via `AnalyzerPipeline` + `AstWalker`.
-   - Rules are verbose (pattern matching, span lookup via ad-hoc helpers, builder ceremony).
- - **Artifacts**
-   - `ArtifactStore` exists in `AnalysisSession`, but rule authors must manually fetch artifacts; dependencies between passes/rules aren’t declared at type level.
+## Current state (codebase)
 
- ## Design Principles
- - **Macro-first ergonomics**: Diagnostics and rule registration generated from declarative specs.
- - **Typed spans everywhere**: Every visited node can be mapped to a `ByteRange` via a stable, non-string identifier.
- - **Return-early, explicit errors**: No hidden control flow; avoid silent failures; fail fast with clear diagnostics.
- - **Single traversal, multi-visitor**: Keep one pass per phase with a shared visitor dispatch to minimize AST walking overhead.
+- Macro platform
+  - `bsharp_diagnostics_macros` provides:
+    - `diagnostics!` that generates `DiagnosticCode` enum plus `as_str()`, `default_message()`, `severity()`, `category()`.
+    - `diagnostic_enum!` to emit enums with `as_str()`.
+    - `enum_as_str!` for simple enum-to-string mappings (used in `bsharp_syntax::types::CallingConvention`).
+  - `bsharp_analysis::diagnostics::diagnostic_code.rs` now uses a single `diagnostics!` invocation (no hand-written tables).
 
- ---
+- Analyzer framework
+  - Phases and passes remain (`Index`, `LocalRules`, `Global`, `Semantic`, `Reporting`, etc.) with `AnalyzerPipeline` orchestrating them.
+  - `AnalyzerRegistry` registers core passes and rulesets; rules are still a mix of legacy and newer style.
 
- ## Phase 1 — Diagnostics Macroization (proc-macro crate)
- - **Deliverables**
-   - New crate `bsharp_diagnostics_macros` that exports a `diagnostics! { ... }` macro.
-   - Generated items in `bsharp_analysis::diagnostics`:
-     - `enum DiagnosticCode` with documented variants.
-     - `impl DiagnosticCode` with `as_str()`, `severity()`, `category()`, `default_message()`.
-     - `fn parse_code(&str) -> Option<DiagnosticCode>` and `fn all_codes() -> &'static [DiagnosticCode]` for tooling.
-   - Replace current `diagnostic_code.rs` with generated equivalent; keep `Diagnostic`, `DiagnosticCollection`, `SourceLocation` unchanged.
+- Spans
+  - `AnalysisSession` initializes `span_db` (bridge built from parser spans). Typed span access is available via the session; string-keyed lookups are being phased out.
 
- - **Macro DSL sketch**
-   ```rust
-   diagnostics! {
-       // group "Semantic"; error
-       BSE01001 => {
-           category: Semantic,
-           severity: Error,
-           title: "Async constructor not allowed",
-           message: "Constructors cannot be declared async"
-       },
-       BSE02009 => {
-           category: Semantic,
-           severity: Error,
-           title: "Async returns Task or Task<T>",
-           message: "Async methods must return Task or Task<T>"
-       },
-       BSW02005 => {
-           category: Style,
-           severity: Warning,
-           title: "Unused variable",
-           message: "Variable is declared but never used"
-       }
-   }
-   ```
-   - The macro expands to the enum, metadata tables, and helper impls.
-   - Source-of-truth becomes the macro invocation; no hand-edited match arms.
+- Implemented rules (documented)
+  - From `docs/development/semantic-rules.md` (Status: Implemented):
+    - CS0101 → BSE03011 Duplicate symbol
+    - CS0102 → BSE03011 Duplicate symbol
+    - CS0103 → BSE03012 Unresolved or ambiguous name
+    - CS0104 → BSE03012 Unresolved or ambiguous name
 
- - **Builder ergonomics**
-   - Introduce `diag!` helper macro to cut boilerplate:
-     ```rust
-     // Minimal (default message, at node)
-     diag!(session, BSE02009, at node);
+- Build status
+  - Workspace builds. Some crates emit warnings unrelated to semantic diagnostics (to be cleaned separately per cleanup guide).
 
-     // With custom message and related
-     diag!(session, BSE02009, at node,
-          msg: format!("Invalid return type '{}'", ty),
-          related: [(other_node, "Reason here")]);
-     ```
-   - `diag!` resolves spans via Phase 2 span APIs (see below). Falls back to default message if `msg:` omitted.
+---
 
- - **Config overrides**
-   - Preserve `AnalysisConfig.rule_severities` override in `diag!` expansion (post-build severity patch stays intact).
+## Guiding principles
 
- ---
+- Macro-first: diagnostics defined once via `diagnostics!`; rules emit diagnostics via helpers, not manual tables.
+- Small steps: keep each phase compilable and testable.
+- Typed spans everywhere: avoid string-keyed span lookups in rules.
+- Prefer return-early logic and explicit errors; avoid hidden control flow.
 
- ## Phase 2 — Unified Span Model
- - **Goals**
-   - Eliminate string-keyed `SpanTable` lookups from rules.
-   - Provide a stable way to obtain `ByteRange` for any `NodeRef` or concrete AST node.
+---
 
- - **Components**
-   - `SpanDb` (per file): `NodeId -> ByteRange` + optional `TextRange`.
-   - `NodeId`: opaque stable identifier for nodes during a single analysis run.
-     - Implementation options:
-       - Pointer identity hash of underlying AST node (stable within a run and traversal).
-       - Or, parser-side arena allocation assigning sequential IDs during AST construction.
-     - Chosen path: start with pointer-identity hash via `NodeRef` to avoid AST changes; migrate to arena IDs later if needed.
-   - `SpanProvider` trait exposed by analysis:
-     ```rust
-     pub trait SpanProvider {
-         fn span_of(&self, node: &NodeRef) -> Option<(usize, usize)>; // (start, len)
-     }
-     ```
-   - `AnalysisSession` gains `spans_db: SpanDb` (replacing raw `SpanTable` for rules). Back-compat accessor remains temporarily.
+## Phase 0 — Inventory and scoping (planning)
 
- - **Parser integration**
-   - Maintain `Spanned<T>` in `bsharp_parser` as it is.
-   - During parse, build `(CompilationUnit, SpanDb)` instead of `(CompilationUnit, SpanTable)` by pairing nodes to their spans when the AST is constructed or immediately after (bridge phase).
-   - For nodes created without direct parser span (synthesized nodes), map to nearest enclosing span where reasonable.
+- Extract/prioritize groups from `docs/development/CSharpErrorsAndWarnings.md` into `docs/development/semantic-rules.md` with B# code assignments and statuses.
+- Ensure every row in `semantic-rules.md` has a B# code family consistent with our scheme:
+  - Errors: `BSE01***` constructors, `BSE02***` methods/overrides, `BSE03***` types/symbols/generics, `BSE04***` accessibility/modifiers.
+  - Warnings: `BSW01***` maintainability, `BSW02***` style, `BSW03***` performance, `BSW04***` security.
+- Add or amend entries in the central `diagnostics!` invocation accordingly (messages are the source of truth).
 
- - **`HasSpan` usage**
-   - Extend analysis helper to resolve span for any `NodeRef` via `session.span_of(node)`.
-   - For rules that have direct access to a concrete AST node type (e.g., `&MethodDeclaration`), provide `at(node)` convenience:
-     - `at(node)` internally forms a `NodeRef::from(node)` and queries `SpanDb`.
+Deliverables
+- Updated `semantic-rules.md` rows with B# codes and Status.
+- `diagnostics!` contains all referenced B# codes with messages.
 
- - **Remove string keys**
-   - Rewrite helpers like `find_ctor_span`/`find_method_span` to use typed nodes:
-     - Inside `on::<ClassBodyDeclaration::Constructor>` handlers, call `at(ctor)` directly.
+---
 
- ---
+## Phase 1 — Diagnostics platform hardening (macro utilities)
 
- ## Phase 3 — Analyzer Authoring Macros and Typed Visits
- - **Goals**
-   - Replace verbose `Rule` implementations with declarative macros and typed hooks.
-   - Keep a single traversal per phase, dispatching to many rules.
+- Add helpers to `DiagnosticCode` (if/when needed by tooling):
+  - `parse_code(&str) -> Option<DiagnosticCode>`
+  - `all_codes() -> &'static [DiagnosticCode]`
+- Introduce `diag!` helper macro for concise emission:
+  - `diag!(session, BSE02009, at node);`
+  - Optional overrides: `msg:`, `related:`.
+- Keep severity/category derived from code prefix (already implemented).
 
- - **Macros**
-   - `ruleset!` for grouping:
-     ```rust
-     ruleset!("semantic",
-         CtorNoAsync,
-         CtorNameMatchesClass,
-         MethodNoStaticOverride,
-         AsyncReturnsTask,
-     );
-     ```
-   - `rule!` for individual rules:
-     ```rust
-     rule! {
-       id: "semantic.ctor.no_async",
-       category: Semantic,
-       on bsharp_syntax::declarations::ClassBodyDeclaration::Constructor as ctor => |cx| {
-           if cx.ctor.modifiers.contains(&Modifier::Async) {
-               diag!(cx.session, BSE01001, at cx.ctor);
-           }
-       }
-     }
-     ```
-     - `cx` provides: `session`, `node`-specific fields (e.g., `ctor`), and `span_of`/`emit` helpers.
-     - Additional hooks: `on_enter<T>`, `on_exit<T>`, and `filter` predicates.
+Deliverables
+- `diag!` macro available in analysis crates.
+- Unit tests for macro expansions (basic sanity: mapping count, messages, category/severity).
 
- - **Typed visitor glue**
-   - Generate a `Visit` implementation that converts `NodeRef` to the target node type when possible and calls the rule body.
-   - Errors in downcast should never be silent; no-ops are acceptable when node type does not match.
+---
 
- - **Rule dependencies**
-   - Optional macro attribute for declaring required artifacts:
-     ```rust
-     #[requires(artifact = Symbols, phase = Semantic)]
-     rule! { /* ... */ }
-     ```
-   - The generated code performs runtime checks (`session.get_artifact::<Symbols>()`). If missing, it should return early; not emit diagnostics that depend on missing context.
+## Phase 2 — Typed spans and rule ergonomics
 
- ---
+- Stabilize `SpanDb` accessors in `AnalysisSession`:
+  - `span_of(&NodeRef)`, `at(&NodeRef)` helpers for location.
+- Remove remaining string-keyed span helpers from rules; switch to typed lookups.
+- Prepare typed visit ergonomics for rules (macro-based `rule!`/`ruleset!` in a later phase).
 
- ## Phase 4 — Pass/Artifact API Hardening
- - **Goals**
-   - Make artifacts strongly typed and easy to fetch; reduce boilerplate.
+Deliverables
+- Rules no longer rely on string-keyed span tables.
+- Tests for span resolution against representative nodes.
 
- - **Improvements**
-   - Add `artifact!` derive macro for new artifacts, registering type name & debug summary.
-   - `AnalysisSession` helper methods:
-     - `session.require::<T>() -> Arc<T>` returns artifact or panics with clear message (internal bug) — only for rules that declare `#[requires(T)]`.
-     - `session.try_get::<T>() -> Option<Arc<T>>` for optional artifacts.
-   - Keep `ArtifactStore` as is; this is API sugar and safety around it.
+---
 
- ---
+## Phase 3 — Core semantic correctness rules (high value)
 
- ## Phase 5 — Reimplement Baseline Semantic Rules
- - **Targets (from docs/development/semantic-rules.md)**
-   - Migrate currently implemented constructor/method semantics to the macro style:
-     - BSE01001 (async ctor), BSE01005 (ctor name mismatch), BSE01003 (ctor virtual/abstract),
-       BSE02001 (abstract method with body), BSE02006 (static override), BSE02009 (async returns Task/Task<T>).
-   - For each newly implemented rule from the table:
-     - Add its entry to the `diagnostics!` macro.
-     - Implement with a typed `on <NodeType>` handler.
-     - Use `diag!(..., at node)` instead of manual span lookup.
+Implement or finalize these first, using typed hooks and `diag!`:
 
- - **Patterns**
-   - Prefer `on` hooks closest to the node of interest to avoid walking unrelated parts.
-   - For cross-node checks (e.g., override resolution), fetch artifacts (`Symbols`, `Binding`, `Types`) produced by semantic passes.
+- Symbols/names (BSE0301x–BSE03012)
+  - Duplicates, ambiguous/unresolved names, type not found.
+- Methods/overrides (BSE0200x)
+  - Abstract method with body; static cannot override; override target not found; signature mismatches.
+- Constructors (BSE0100x)
+  - Async ctor not allowed; name must match type; invalid base ctor call; interface cannot have constructors.
+- Accessibility (BSE0400x)
+  - Inaccessible member; visibility mismatches; abstract/virtual/sealed conflicts.
 
- ---
+Deliverables
+- Each rule emits the appropriate B# code from `diagnostics!`.
+- Golden tests per rule with small fixtures; verify code, message, and location.
 
- ## Phase 6 — CLI/Reporting Integration
- - Preserve `AnalyzerPipeline` phase ordering.
- - Ensure `AnalyzerPipeline::sort_diagnostics` remains stable.
- - Pretty formatting stays under `diagnostics/format.rs`; update only if span model changes affect caret length/placement.
- - JSON schema of `AnalysisReport` remains stable; category/severity derive from generated code.
+---
 
- ---
+## Phase 4 — Type system and generics constraints
 
- ## Phase 7 — Tests and Validation
- - **Unit tests**
-   - `diagnostics!` macro expansion: enum count, message mapping, category/severity per code.
-   - `diag!` macro: default message vs custom message, severity override from config.
-   - Span resolution: `SpanDb::span_of(NodeRef)` returns expected byte ranges for representative nodes.
- - **Rule tests**
-   - Golden tests per rule using small code samples; assert emitted diagnostics (code, message, location) in stable order.
-   - Negative tests to ensure no false positives.
- - **Integration**
-   - End-to-end file analysis via `AnalyzerPipeline::analyze_file_report`; snapshot of diagnostics for curated fixtures.
+- Enforce generic arity/constraints, circular dependencies, invalid inheritance relations, type argument mismatch.
+- Representative CS codes: CS0304–CS0315, CS0450–CS0457 mapped to `BSE0300x/BSE0304x` as per table.
 
- ---
+Deliverables
+- Rules implemented with artifact access to Symbols/Types where necessary.
+- Tests covering positive/negative cases.
 
- ## Phase 8 — Migration and Cleanup
- - Replace `SpanTable` usage in rules with `SpanDb`.
- - Remove ad-hoc helpers `find_ctor_span`/`find_method_span` and string concatenations for span keys.
- - Delete or gate old manual `diagnostic_code.rs` behind a feature while the proc-macro version bakes; then remove.
- - Convert `rules/semantic.rs` and `rules/naming.rs` to macro-based rulesets incrementally; keep mixed mode temporarily if needed.
- - Document authoring guidelines:
-   - Add a `CONTRIBUTING.md` section for writing rules using `rule!`/`ruleset!` and `diag!`.
+---
 
- ---
+## Phase 5 — Modifiers and accessibility consistency
 
- ## API Sketch (Consolidated)
- - **Span API**
-   ```rust
-   // session additions
-   impl AnalysisSession {
-       pub fn span_of(&self, n: &NodeRef) -> Option<(usize, usize)>;
-       pub fn at(&self, n: &NodeRef) -> Option<SourceLocation>; // uses ctx.location_from_span
-   }
-   ```
+- Inconsistent accessibility across members and accessors.
+- Invalid combinations: abstract/private, sealed/non-override, static/virtual, etc.
+- Map to `BSE0400x` family.
 
- - **Diagnostics helpers**
-   ```rust
-   // builder alternative via macro
-   diag!(session, BSE03011, at node, msg: "Duplicate symbol");
-   ```
+Deliverables
+- Rules with clear, actionable messages grounded in our `diagnostics!` defaults.
 
- - **Rule authoring**
-   ```rust
-   ruleset!("semantic", CtorNoAsync, MethodNoStaticOverride);
+---
 
-   rule! {
-       id: "semantic.method.no_static_override",
-       category: Semantic,
-       on bsharp_syntax::declarations::ClassBodyDeclaration::Method as m => |cx| {
-           if m.modifiers.contains(&Modifier::Static) && m.modifiers.contains(&Modifier::Override) {
-               diag!(cx.session, BSE02006, at m);
-           }
-       }
-   }
-   ```
+## Phase 6 — Flow analysis basics
 
- ---
+- Not all code paths return a value (CS0161), fall-through between case labels (CS0163), definite assignment (CS0165/CS0170/CS0171).
+- Consider minimal flow engine or reuse existing passes; prefer precise checks over noisy heuristics.
 
- ## Risks and Mitigations
- - **NodeId stability**: Pointer-identity approach is stable only within a process. This is acceptable for analysis runs; if we need persistence, switch to parser-assigned arena IDs.
- - **Macro complexity**: Keep macro DSL focused; avoid over-abstracting. Start with `on <ExactNodeType>` and add filters later.
- - **Performance**: Single traversal with many rules remains; per-node dispatch via small Vec of rules is cheap and already present.
+Deliverables
+- Deterministic diagnostics with minimal false positives; unit tests for edge cases.
 
- ---
+---
 
- ## Immediate Next Steps
- - **Diagnostics**: Implement `bsharp_diagnostics_macros` and replace `diagnostic_code.rs` with macro-generated content.
- - **Spans**: Introduce `SpanDb`, add `AnalysisSession::span_of`, bridge existing `SpanTable` to `SpanDb` for initial runs.
- - **Ergonomics**: Add `diag!`, `ruleset!`, `rule!` macros; port the 6 existing semantic rules as exemplars.
- - **Tests**: Add golden tests for migrated rules and macro helpers.
+## Phase 7 — Async/await and interop-specific semantics
 
+- Async returns Task/Task<T> (BSE02009), invalid throw usage, invalid base usage in ctors, DllImport constraints, unmanaged calling convention validation when relevant.
+
+Deliverables
+- Tests with async constructs and interop samples.
+
+---
+
+## Phase 8 — Warnings: maintainability, style, performance, security
+
+- Maintainability (BSW01***): large/complex methods, duplication basics where available.
+- Style (BSW02***): naming conventions, unused variables/parameters (where we can do reliably).
+- Performance (BSW03***): obvious anti-patterns (boxing in hot loops, string concatenation in loops).
+- Security (BSW04***): basic patterns (hardcoded credentials, unsafe deserialization) gated behind clear heuristics.
+
+Deliverables
+- Rules added gradually; each has targeted tests. Warnings are opt-down via config where applicable.
+
+---
+
+## Phase 9 — CLI/reporting and coverage tracking
+
+- Keep `AnalyzerPipeline` ordering stable; reporting unaffected.
+- Track coverage directly from `semantic-rules.md` (Status column) and `all_codes()`.
+- Add a CI check that all B# codes defined in `diagnostics!` are exercised by at least one unit test (incremental goal).
+
+---
+
+## Working agreements
+
+- Update `semantic-rules.md` when adding a new rule: set B# code and Status.
+- Add diagnostics only via `diagnostics!`; do not hand-write mapping code.
+- Prefer small PR-sized changes; after each batch, run workspace build and tests.

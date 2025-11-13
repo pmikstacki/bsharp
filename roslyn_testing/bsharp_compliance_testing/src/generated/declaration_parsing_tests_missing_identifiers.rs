@@ -1,9 +1,4 @@
 // Auto-generated from Roslyn: DeclarationParsingTests_MissingIdentifiers
-use crate::custom_asserts::after_parse;
-use crate::custom_asserts::after_parse::CaseData;
-use crate::custom_asserts::roslyn_asserts::ExpectedDiagnostics;
-use bsharp_parser::bsharp::parse_csharp_source_strict;
-use bsharp_syntax::span::Span;
 /// Roslyn: DeclarationParsingTests_MissingIdentifiers.DefiniteStatementAfterGenericType_Fixed (case 1)
 #[test]
 fn definite_statement_after_generic_type_fixed() {

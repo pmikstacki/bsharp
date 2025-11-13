@@ -1,8 +1,4 @@
 // Auto-generated from Roslyn: SyntaxTreeTests
-use crate::custom_asserts::after_parse;
-use crate::custom_asserts::after_parse::CaseData;
-use bsharp_parser::bsharp::parse_csharp_source_strict;
-use bsharp_syntax::span::Span;
 /// Roslyn: SyntaxTreeTests.Create (case 1)
 #[test]
 fn create() {

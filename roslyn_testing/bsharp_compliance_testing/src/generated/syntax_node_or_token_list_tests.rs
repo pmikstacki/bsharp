@@ -1,8 +1,4 @@
 // Auto-generated from Roslyn: SyntaxNodeOrTokenListTests
-use crate::custom_asserts::after_parse;
-use crate::custom_asserts::after_parse::CaseData;
-use bsharp_parser::bsharp::parse_csharp_source_strict;
-use bsharp_syntax::span::Span;
 /// Roslyn: SyntaxNodeOrTokenListTests.TestAddInsertRemove (case 1)
 #[test]
 fn add_insert_remove() {

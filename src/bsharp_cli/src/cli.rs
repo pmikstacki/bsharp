@@ -2,6 +2,7 @@ use crate::commands::analyze::AnalyzeArgs;
 use crate::commands::format::FormatArgs;
 use crate::commands::parse::ParseArgs;
 use crate::commands::tree::TreeArgs;
+use crate::commands::rules::RulesArgs;
 use crate::commands::{analyze, parse, tree};
 use clap::{Parser, Subcommand};
 use std::env;
@@ -27,6 +28,9 @@ pub enum Commands {
 
     /// Format .cs files under a path (file or directory) using the built-in formatter
     Format(Box<FormatArgs>),
+
+    /// List analysis rulesets and rules
+    Rules(Box<RulesArgs>),
 }
 
 pub fn run() -> anyhow::Result<()> {
@@ -43,5 +47,7 @@ pub fn run() -> anyhow::Result<()> {
         Commands::Analyze(args) => analyze::execute(args.input.clone(), *args),
 
         Commands::Format(args) => crate::commands::format::execute(*args),
+
+        Commands::Rules(args) => crate::commands::rules::execute(*args),
     }
 }
