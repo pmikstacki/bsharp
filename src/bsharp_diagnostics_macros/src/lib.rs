@@ -249,13 +249,13 @@ pub fn rule(input: TokenStream) -> TokenStream {
         let category_str = item.category_str;
         let visit_block = item.visit_block;
         struct_defs.push(quote! {
-            struct #name;
+            pub struct #name;
         });
         impls.push(quote! {
-            impl Rule for #name {
+            impl crate::framework::Rule for #name {
                 fn id(&self) -> &'static str { #id_str }
                 fn category(&self) -> &'static str { #category_str }
-                fn visit(&self, node: &NodeRef, session: &mut AnalysisSession) {
+                fn visit(&self, node: &crate::framework::NodeRef, session: &mut crate::framework::AnalysisSession) {
                     #visit_block
                 }
             }
