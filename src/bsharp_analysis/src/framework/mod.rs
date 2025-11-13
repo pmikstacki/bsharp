@@ -4,20 +4,19 @@ pub mod config;
 pub mod diagnostic_builder;
 pub mod fqn;
 pub mod lookup;
+pub mod macros;
 pub mod passes;
 pub mod pipeline;
 pub mod registry;
+pub mod rule;
 pub mod rules;
 pub mod session;
+pub mod stmt_walk;
 pub mod visit;
 pub mod walker;
-mod stmt_walk;
-#[macro_use]
-pub mod macros;
 
 pub use bsharp_syntax::node::ast_node::NodeRef;
 pub use fqn::{class_fqn, method_fqn, namespace_fqn};
-pub use lookup::{find_symbols_by_name, find_symbols_with_locations};
 // Minimal re-exports for ergonomic use
 pub use passes::{AnalyzerPass, Phase};
 pub use pipeline::AnalyzerPipeline;
@@ -27,3 +26,5 @@ pub use rules::{Rule, RuleSet, RuleTarget};
 pub use session::{AnalysisSession, ArtifactStore};
 pub use visit::Visit;
 pub use walker::AstWalker;
+// Lookup helpers for tests and rules
+pub use lookup::{find_symbols_by_name, find_symbols_with_locations};

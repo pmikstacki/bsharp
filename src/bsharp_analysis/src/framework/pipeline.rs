@@ -27,8 +27,6 @@ impl Visit for RulesVisitor<'_> {
 impl AnalyzerPipeline {
     /// Run the analyzer pipeline using a registry derived from the session's config
     pub fn run_with_defaults(cu: &CompilationUnit, session: &mut AnalysisSession) {
-        // Set current CU for span resolution bridge
-        session.set_current_cu(cu);
         let registry = AnalyzerRegistry::from_config(&session.config);
         Self::run_for_file(cu, session, &registry);
     }
@@ -38,20 +36,18 @@ impl AnalyzerPipeline {
         session: &mut AnalysisSession,
         registry: &AnalyzerRegistry,
     ) {
-        // Ensure current CU is set (idempotent)
-        session.set_current_cu(cu);
+        // SpanDb already provided by parser; no CU pointer needed
         // 1) Index phase passes (no-op if none)
         Self::run_phase(Phase::Index, cu, session, registry);
-        // 2) Local (per-file) passes that produce artifacts (e.g., metrics)
+        // 2) Local (per-file) passes and rules
         Self::run_phase(Phase::LocalRules, cu, session, registry);
-        // 3) Local rules in a single traversal
         Self::run_local_rules(cu, session, registry);
-        // 4) Global passes
+        // 3) Global passes
         Self::run_phase(Phase::Global, cu, session, registry);
-        // 5) Semantic passes/rules
-        Self::run_semantic_rules(cu, session, registry);
+        // 4) Semantic passes and rules
         Self::run_phase(Phase::Semantic, cu, session, registry);
-        // 6) Reporting
+        Self::run_semantic_rules(cu, session, registry);
+        // 5) Reporting
         Self::run_phase(Phase::Reporting, cu, session, registry);
     }
 
@@ -135,15 +131,14 @@ impl AnalyzerPipeline {
         let path_str = path.display().to_string();
         let source = std::fs::read_to_string(path).ok()?;
         let parser = Parser::new();
-        let (cu, spans) = parser.parse_with_spans(Span::new(&source)).ok()?;
+        let (cu, db) = parser.parse_with_span_db(Span::new(&source)).ok()?;
         let mut ctx = AnalysisContext::new(path_str, source);
         if let Some(cfg) = config {
             ctx.config = cfg.clone();
         }
-        let mut session = AnalysisSession::new(ctx.clone(), spans.clone());
-        // Prepare session for span lookups
-        session.set_current_cu(&cu);
-        session.populate_span_db_from_table(&cu);
+        // Provide legacy SpanTable as empty during transition; SpanDb is authoritative
+        let mut session = AnalysisSession::new(ctx.clone(), Default::default());
+        session.span_db = Some(db);
         Self::run_with_defaults(&cu, &mut session);
         Some(AnalysisReport::from_session(&session))
     }

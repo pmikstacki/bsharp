@@ -166,8 +166,8 @@ pub fn execute(input: PathBuf, opts: AnalyzeArgs) -> Result<()> {
     let source = fs::read_to_string(&input)
         .with_context(|| format!("Failed to read input file: {}", path_str))?;
     let parser = Parser::new();
-    let (cu, spans) = parser
-        .parse_with_spans(Span::new(source.as_str()))
+    let (cu, db) = parser
+        .parse_with_span_db(Span::new(source.as_str()))
         .map_err(|e| anyhow::anyhow!(e))
         .with_context(|| "Parse error")?;
     let mut ctx = AnalysisContext::new(path_str.clone(), source);
@@ -209,7 +209,8 @@ pub fn execute(input: PathBuf, opts: AnalyzeArgs) -> Result<()> {
     match opts.symbol {
         Some(name) => {
             // Build a session and run the pipeline to populate SymbolIndex, then query it.
-            let mut session = AnalysisSession::new(ctx.clone(), spans.clone());
+            let mut session = AnalysisSession::new(ctx.clone(), Default::default());
+            session.span_db = Some(db.clone());
             AnalyzerPipeline::run_with_defaults(&cu, &mut session);
             let results = find_symbols_with_locations(&session, &name);
             if results.is_empty() {
@@ -228,7 +229,8 @@ pub fn execute(input: PathBuf, opts: AnalyzeArgs) -> Result<()> {
             }
         }
         None => {
-            let mut session = AnalysisSession::new(ctx.clone(), spans.clone());
+            let mut session = AnalysisSession::new(ctx.clone(), Default::default());
+            session.span_db = Some(db);
             AnalyzerPipeline::run_with_defaults(&cu, &mut session);
             let report = session
                 .artifacts

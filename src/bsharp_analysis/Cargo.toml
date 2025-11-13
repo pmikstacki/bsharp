@@ -15,6 +15,7 @@ rayon = { version = "1.10", optional = true }
 nom-supreme = { package = "bsharp_nom_supreme", path = "../bsharp_nom_supreme" }
 bsharp_syntax = { path = "../bsharp_syntax" }
 bsharp_parser = { path = "../bsharp_parser" }
+bsharp_diagnostics_macros = { path = "../bsharp_diagnostics_macros" }
 git2 = { version = "0.20.2", optional = true }
 bsharp_il = { path = "../bsharp_il" }
 [features]

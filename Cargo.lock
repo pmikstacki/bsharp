@@ -208,6 +208,7 @@ dependencies = [
 name = "bsharp_analysis"
 version = "0.1.1"
 dependencies = [
+ "bsharp_diagnostics_macros",
  "bsharp_il",
  "bsharp_nom_supreme",
  "bsharp_parser",

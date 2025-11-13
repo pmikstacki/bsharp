@@ -1,109 +1,29 @@
 use crate::DiagnosticSeverity;
 use crate::diagnostics::diagnostic_category::DiagnosticCategory;
 use serde::{Deserialize, Serialize};
+use bsharp_diagnostics_macros::diagnostic_enum;
 
 /// B# Diagnostic Error/Warning Codes
 /// Format: BSE[XXXXX] for errors, BSW[XXXXX] for warnings
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-pub enum DiagnosticCode {
-    // Semantic Errors (BSE01000-BSE01999)
-    BSE01001, // Async constructor not allowed
-    BSE01002, // Constructor cannot have return type
-    BSE01003, // Constructor cannot be virtual/abstract
-    BSE01004, // Constructor cannot be static and instance
-    BSE01005, // Constructor name must match class name
-    BSE01006, // Multiple constructors with same signature
-    BSE01007, // Base constructor call invalid
-    BSE01008, // Circular constructor dependency
-    BSE01009, // Constructor cannot override
-    BSE01010, // Interface cannot have constructor
-
-    // Method Semantic Errors (BSE02000-BSE02999)
-    BSE02001, // Abstract method cannot have body
-    BSE02002, // Non-abstract method must have body
-    BSE02003, // Virtual method in sealed class
-    BSE02004, // Override method has wrong signature
-    BSE02005, // Method cannot be both virtual and static
-    BSE02006, // Static method cannot override
-    BSE02007, // Method not found for override
-    BSE02008, // Interface method cannot have body
-    BSE02009, // Async method must return Task or Task<T>
-    BSE02010, // Method parameter name conflicts
-
-    // Type System Errors (BSE03000-BSE03999)
-    BSE03001, // Type not found
-    BSE03002, // Type cannot be instantiated
-    BSE03003, // Type argument mismatch
-    BSE03004, // Constraints not satisfied
-    BSE03005, // Circular type dependency
-    BSE03006, // Interface cannot inherit from class
-    BSE03007, // Class cannot inherit from interface
-    BSE03008, // Struct cannot inherit
-    BSE03009, // Type visibility inconsistency
-    BSE03010, // Generic type parameter name conflict
-    BSE03011, // Duplicate symbol
-    BSE03012, // Unresolved or ambiguous name
-
-    // Access Modifier Errors (BSE04000-BSE04999)
-    BSE04001, // Member not accessible
-    BSE04002, // Private member in interface
-    BSE04003, // Protected member in struct
-    BSE04004, // Inconsistent accessibility
-    BSE04005, // Static constructor cannot have modifiers
-    BSE04006, // Abstract member cannot be private
-    BSE04007, // Virtual member cannot be private
-    BSE04008, // Override member visibility mismatch
-    BSE04009, // Sealed member not virtual
-    BSE04010, // Abstract member in non-abstract class
-
-    // Maintainability Warnings (BSW01000-BSW01999)
-    BSW01001, // Method too complex (cyclomatic complexity)
-    BSW01002, // Method too long (line count)
-    BSW01003, // Too many parameters
-    BSW01004, // Missing documentation
-    BSW01005, // Deep nesting detected
-    BSW01006, // Large class detected
-    BSW01007, // High coupling detected
-    BSW01008, // Low cohesion detected
-    BSW01009, // God class anti-pattern
-    BSW01010, // Feature envy detected
-
-    // Style Warnings (BSW02000-BSW02999)
-    BSW02001, // Naming convention violation
-    BSW02002, // PascalCase expected
-    BSW02003, // camelCase expected
-    BSW02004, // UPPER_CASE expected
-    BSW02005, // Unused variable
-    BSW02006, // Unused parameter
-    BSW02007, // Redundant assignment
-    BSW02008, // Magic number detected
-    BSW02009, // String literal duplication
-    BSW02010, // Empty block statement
-
-    // Performance Warnings (BSW03000-BSW03999)
-    BSW03001, // Boxing/unboxing detected
-    BSW03002, // String concatenation in loop
-    BSW03003, // LINQ performance concern
-    BSW03004, // Unnecessary allocation
-    BSW03005, // Synchronous call in async method
-    BSW03006, // Exception for control flow
-    BSW03007, // Inefficient collection usage
-    BSW03008, // Closure allocation in loop
-    BSW03009, // Large object heap allocation
-    BSW03010, // Database query in loop
-
-    // Security Warnings (BSW04000-BSW04999)
-    BSW04001, // SQL injection risk
-    BSW04002, // XSS vulnerability risk
-    BSW04003, // Hardcoded credential
-    BSW04004, // Weak cryptography
-    BSW04005, // Path traversal risk
-    BSW04006, // Insecure random generation
-    BSW04007, // Missing input validation
-    BSW04008, // Sensitive data in log
-    BSW04009, // Unsafe deserialization
-    BSW04010, // Missing authentication check
-}
+diagnostic_enum!(
+    BSE01001, BSE01002, BSE01003, BSE01004, BSE01005,
+    BSE01006, BSE01007, BSE01008, BSE01009, BSE01010,
+    BSE02001, BSE02002, BSE02003, BSE02004, BSE02005,
+    BSE02006, BSE02007, BSE02008, BSE02009, BSE02010,
+    BSE03001, BSE03002, BSE03003, BSE03004, BSE03005,
+    BSE03006, BSE03007, BSE03008, BSE03009, BSE03010,
+    BSE03011, BSE03012,
+    BSE04001, BSE04002, BSE04003, BSE04004, BSE04005,
+    BSE04006, BSE04007, BSE04008, BSE04009, BSE04010,
+    BSW01001, BSW01002, BSW01003, BSW01004, BSW01005,
+    BSW01006, BSW01007, BSW01008, BSW01009, BSW01010,
+    BSW02001, BSW02002, BSW02003, BSW02004, BSW02005,
+    BSW02006, BSW02007, BSW02008, BSW02009, BSW02010,
+    BSW03001, BSW03002, BSW03003, BSW03004, BSW03005,
+    BSW03006, BSW03007, BSW03008, BSW03009, BSW03010,
+    BSW04001, BSW04002, BSW04003, BSW04004, BSW04005,
+    BSW04006, BSW04007, BSW04008, BSW04009, BSW04010
+);
 
 impl DiagnosticCode {
     pub fn severity(&self) -> DiagnosticSeverity {

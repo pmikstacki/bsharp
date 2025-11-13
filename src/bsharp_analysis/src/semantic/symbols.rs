@@ -1,4 +1,5 @@
 use crate::framework::{AnalysisSession, AnalyzerPass, Phase, Query};
+use crate::diag;
 use crate::syntax::ast::CompilationUnit;
 use bsharp_syntax::declarations::{NamespaceDeclaration, TypeDeclaration};
 use serde::{Deserialize, Serialize};
@@ -91,9 +92,11 @@ impl AnalyzerPass for SymbolsPass {
 
         // Emit duplicate symbol diagnostics (same FQN within file)
         for (name, fqn) in duplicates {
-            crate::framework::diagnostic_builder::DiagnosticBuilder::new(crate::DiagnosticCode::BSE03011)
-                .with_message(format!("Duplicate symbol '{name}' ({fqn}) in the same file"))
-                .emit(session);
+            diag!(
+                session,
+                crate::DiagnosticCode::BSE03011,
+                msg: format!("Duplicate symbol '{name}' ({fqn}) in the same file")
+            );
         }
 
         session.insert_artifact(table);

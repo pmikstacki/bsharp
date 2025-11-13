@@ -1,4 +1,4 @@
-use crate::node::ast_node::DynNodeRef;
+use crate::node::NodeRef;
 use std::collections::HashMap;
 use std::ops::Range;
 
@@ -12,14 +12,14 @@ impl SpanDb {
         Self { map: HashMap::new() }
     }
 
-    pub fn insert(&mut self, node: DynNodeRef, range: Range<usize>) {
+    pub fn insert(&mut self, node: NodeRef, range: Range<usize>) {
         let raw: *const dyn crate::node::ast_node::AstNode = node.0;
         let data_ptr = raw as *const ();
         let key = data_ptr as usize;
         self.map.insert(key, range);
     }
 
-    pub fn get(&self, node: &DynNodeRef) -> Option<&Range<usize>> {
+    pub fn get(&self, node: &NodeRef) -> Option<&Range<usize>> {
         let raw: *const dyn crate::node::ast_node::AstNode = node.0;
         let data_ptr = raw as *const ();
         let key = data_ptr as usize;
