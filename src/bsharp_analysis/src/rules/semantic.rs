@@ -5,134 +5,34 @@ use crate::{diag, DiagnosticCode, rule, ruleset};
 use bsharp_syntax::declarations::{ClassBodyDeclaration, Modifier};
 use bsharp_syntax::types::{PrimitiveType, Type};
 
-fn ident_text(id: &crate::syntax::Identifier) -> String {
-    match id {
-        crate::syntax::Identifier::Simple(s) => s.clone(),
-        crate::syntax::Identifier::QualifiedIdentifier(parts) => parts.join("."),
-        crate::syntax::Identifier::OperatorOverrideIdentifier(_) => "operator".to_string(),
-    }
-}
+#[path = "semantic/utils.rs"]
+pub mod utils;
+#[path = "semantic/ctor_no_async.rs"]
+mod ctor_no_async;
+#[path = "semantic/ctor_name_matches_class.rs"]
+mod ctor_name_matches_class;
+#[path = "semantic/ctor_no_virtual_or_abstract.rs"]
+mod ctor_no_virtual_or_abstract;
+#[path = "semantic/method_no_abstract_body.rs"]
+mod method_no_abstract_body;
+#[path = "semantic/method_no_static_override.rs"]
+mod method_no_static_override;
+#[path = "semantic/async_returns_task.rs"]
+mod async_returns_task;
+#[path = "semantic/method_must_have_body_unless_abstract.rs"]
+mod method_must_have_body_unless_abstract;
+#[path = "semantic/ctor_invalid_base_call.rs"]
+mod ctor_invalid_base_call;
 
-rule! {
-    CtorNoAsync: "semantic.ctor.no_async", "Semantic", {
-        let Some(cu) = node.of::<crate::syntax::ast::CompilationUnit>() else {
-            return;
-        };
-        for decl in &cu.declarations {
-            if let TopLevelDeclaration::Class(class) = decl {
-                for member in &class.body_declarations {
-                    if let ClassBodyDeclaration::Constructor(ctor) = member
-                        && ctor.modifiers.contains(&Modifier::Async)
-                    {
-                        diag!(session, DiagnosticCode::BSE01001, at ctor);
-                    }
-                }
-            }
-        }
-    },
-    CtorNameMatchesClass: "semantic.ctor.name_matches_class", "Semantic", {
-        let Some(cu) = node.of::<crate::syntax::ast::CompilationUnit>() else {
-            return;
-        };
-        for decl in &cu.declarations {
-            if let TopLevelDeclaration::Class(class) = decl {
-                for member in &class.body_declarations {
-                    if let ClassBodyDeclaration::Constructor(ctor) = member {
-                        let ctor_name = ident_text(&ctor.name);
-                        let class_name = ident_text(&class.name);
-                        if ctor_name != class_name {
-                            diag!(
-                                session,
-                                DiagnosticCode::BSE01005,
-                                at ctor,
-                                msg: format!(
-                                    "Constructor name '{}' does not match class name '{}'",
-                                    ctor_name, class_name
-                                )
-                            );
-                        }
-                    }
-                }
-            }
-        }
-    },
-    CtorNoVirtualOrAbstract: "semantic.ctor.no_virtual_or_abstract", "Semantic", {
-        let Some(cu) = node.of::<crate::syntax::ast::CompilationUnit>() else {
-            return;
-        };
-        for decl in &cu.declarations {
-            if let TopLevelDeclaration::Class(class) = decl {
-                for member in &class.body_declarations {
-                    if let ClassBodyDeclaration::Constructor(ctor) = member
-                        && (ctor.modifiers.contains(&Modifier::Virtual)
-                            || ctor.modifiers.contains(&Modifier::Abstract))
-                    {
-                        diag!(session, DiagnosticCode::BSE01003, at ctor);
-                    }
-                }
-            }
-        }
-    },
-    MethodNoAbstractBody: "semantic.method.no_abstract_body", "Semantic", {
-        let Some(cu) = node.of::<crate::syntax::ast::CompilationUnit>() else {
-            return;
-        };
-        for decl in &cu.declarations {
-            if let TopLevelDeclaration::Class(class) = decl {
-                for member in &class.body_declarations {
-                    if let ClassBodyDeclaration::Method(m) = member
-                        && m.modifiers.contains(&Modifier::Abstract)
-                        && m.body.is_some()
-                    {
-                        diag!(session, DiagnosticCode::BSE02001, at m);
-                    }
-                }
-            }
-        }
-    },
-    MethodNoStaticOverride: "semantic.method.no_static_override", "Semantic", {
-        let Some(cu) = node.of::<crate::syntax::ast::CompilationUnit>() else {
-            return;
-        };
-        for decl in &cu.declarations {
-            if let TopLevelDeclaration::Class(class) = decl {
-                for member in &class.body_declarations {
-                    if let ClassBodyDeclaration::Method(m) = member
-                        && m.modifiers.contains(&Modifier::Static)
-                        && m.modifiers.contains(&Modifier::Override)
-                    {
-                        diag!(session, DiagnosticCode::BSE02006, at m);
-                    }
-                }
-            }
-        }
-    },
-    AsyncReturnsTask: "semantic.async.returns_task_or_task_t", "Semantic", {
-        let Some(cu) = node.of::<crate::syntax::ast::CompilationUnit>() else {
-            return;
-        };
-        for decl in &cu.declarations {
-            if let TopLevelDeclaration::Class(class) = decl {
-                for member in &class.body_declarations {
-                    if let ClassBodyDeclaration::Method(m) = member
-                        && m.modifiers.contains(&Modifier::Async)
-                    {
-                        let valid = match &m.return_type {
-                            Type::Reference(rt) => ident_text(rt) == "Task",
-                            Type::Generic { base, .. } => ident_text(base) == "Task",
-                            Type::Primitive(PrimitiveType::Void) => true, // allowed but discouraged
-                            _ => false,
-                        };
-                        if !valid {
-                            diag!(session, DiagnosticCode::BSE02009, at m);
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
+use self::ctor_no_async::CtorNoAsync;
+use self::ctor_name_matches_class::CtorNameMatchesClass;
+use self::ctor_no_virtual_or_abstract::CtorNoVirtualOrAbstract;
+use self::method_no_abstract_body::MethodNoAbstractBody;
+use self::method_no_static_override::MethodNoStaticOverride;
+use self::async_returns_task::AsyncReturnsTask;
+use self::method_must_have_body_unless_abstract::MethodMustHaveBodyUnlessAbstract;
+use self::ctor_invalid_base_call::CtorInvalidBaseCall;
 
 ruleset! {
-    semantic: CtorNoAsync, CtorNameMatchesClass, CtorNoVirtualOrAbstract, MethodNoAbstractBody, MethodNoStaticOverride, AsyncReturnsTask
+    semantic: CtorNoAsync, CtorNameMatchesClass, CtorNoVirtualOrAbstract, MethodNoAbstractBody, MethodNoStaticOverride, AsyncReturnsTask, MethodMustHaveBodyUnlessAbstract, CtorInvalidBaseCall
 }
