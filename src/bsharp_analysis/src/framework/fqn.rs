@@ -1,6 +1,6 @@
 use crate::syntax::ast::{CompilationUnit, TopLevelDeclaration};
 use crate::syntax::declarations::{
-    ClassBodyDeclaration, ClassDeclaration, MethodDeclaration, NamespaceDeclaration,
+    ClassBodyDeclaration, ClassDeclaration, ConstructorDeclaration, MethodDeclaration, NamespaceDeclaration, PropertyDeclaration,
     namespace_declaration::NamespaceBodyDeclaration,
 };
 
@@ -10,6 +10,178 @@ fn ident_text(id: &crate::syntax::Identifier) -> String {
         crate::syntax::Identifier::QualifiedIdentifier(parts) => parts.join("."),
         crate::syntax::Identifier::OperatorOverrideIdentifier(_) => "operator".to_string(),
     }
+}
+
+fn find_ctor_in_namespace(
+    ns_path: Option<&str>,
+    members: &[NamespaceBodyDeclaration],
+    ctor: &ConstructorDeclaration,
+) -> Option<String> {
+    for m in members {
+        match m {
+            NamespaceBodyDeclaration::Namespace(inner) => {
+                let new_ns = match ns_path {
+                    Some(p) => format!("{}.{}", p, ident_text(&inner.name)),
+                    None => ident_text(&inner.name),
+                };
+                if let Some(cfqn) = find_ctor_in_namespace(Some(&new_ns), &inner.declarations, ctor)
+                {
+                    return Some(cfqn);
+                }
+            }
+            NamespaceBodyDeclaration::Class(class) => {
+                if let Some(cfqn) = find_ctor_in_class(ns_path, class, ctor, &mut Vec::new()) {
+                    return Some(cfqn);
+                }
+            }
+            _ => {}
+        }
+    }
+    None
+}
+
+fn find_ctor_in_class(
+    ns_path: Option<&str>,
+    class: &ClassDeclaration,
+    ctor: &ConstructorDeclaration,
+    stack: &mut Vec<String>,
+) -> Option<String> {
+    stack.push(ident_text(&class.name));
+    for member in &class.body_declarations {
+        match member {
+            ClassBodyDeclaration::Constructor(c) => {
+                if std::ptr::eq(c, ctor) {
+                    let class_path = stack.join(".");
+                    let cfqn = match ns_path {
+                        Some(ns) => format!("{}.{}", ns, class_path),
+                        None => class_path,
+                    };
+                    stack.pop();
+                    return Some(cfqn);
+                }
+            }
+            ClassBodyDeclaration::NestedClass(nested) => {
+                if let Some(cfqn) = find_ctor_in_class(ns_path, nested, ctor, stack) {
+                    stack.pop();
+                    return Some(cfqn);
+                }
+            }
+            _ => {}
+        }
+    }
+    stack.pop();
+    None
+}
+
+fn find_prop_in_namespace(
+    ns_path: Option<&str>,
+    members: &[NamespaceBodyDeclaration],
+    prop: &PropertyDeclaration,
+) -> Option<(String, String)> {
+    for m in members {
+        match m {
+            NamespaceBodyDeclaration::Namespace(inner) => {
+                let new_ns = match ns_path {
+                    Some(p) => format!("{}.{}", p, ident_text(&inner.name)),
+                    None => ident_text(&inner.name),
+                };
+                if let Some(found) = find_prop_in_namespace(Some(&new_ns), &inner.declarations, prop)
+                {
+                    return Some(found);
+                }
+            }
+            NamespaceBodyDeclaration::Class(class) => {
+                if let Some(found) = find_prop_in_class(ns_path, class, prop, &mut Vec::new()) {
+                    return Some(found);
+                }
+            }
+            _ => {}
+        }
+    }
+    None
+}
+
+fn find_prop_in_class(
+    ns_path: Option<&str>,
+    class: &ClassDeclaration,
+    prop: &PropertyDeclaration,
+    stack: &mut Vec<String>,
+) -> Option<(String, String)> {
+    stack.push(ident_text(&class.name));
+    for member in &class.body_declarations {
+        match member {
+            ClassBodyDeclaration::Property(p) => {
+                if std::ptr::eq(p, prop) {
+                    let class_path = stack.join(".");
+                    let cfqn = match ns_path {
+                        Some(ns) => format!("{}.{}", ns, class_path),
+                        None => class_path,
+                    };
+                    let name = ident_text(&p.name);
+                    stack.pop();
+                    return Some((cfqn, name));
+                }
+            }
+            ClassBodyDeclaration::NestedClass(nested) => {
+                if let Some(found) = find_prop_in_class(ns_path, nested, prop, stack) {
+                    stack.pop();
+                    return Some(found);
+                }
+            }
+            _ => {}
+        }
+    }
+    stack.pop();
+    None
+}
+pub fn constructor_owner_fqn(cu: &CompilationUnit, ctor: &ConstructorDeclaration) -> String {
+    if let Some(fs) = &cu.file_scoped_namespace
+        && let Some(cfqn) = find_ctor_in_namespace(None, &fs.declarations, ctor)
+    {
+        return cfqn;
+    }
+    for decl in &cu.declarations {
+        match decl {
+            TopLevelDeclaration::Namespace(ns) => {
+                let ns_path = ident_text(&ns.name);
+                if let Some(cfqn) = find_ctor_in_namespace(Some(&ns_path), &ns.declarations, ctor) {
+                    return cfqn;
+                }
+            }
+            TopLevelDeclaration::Class(c) => {
+                if let Some(cfqn) = find_ctor_in_class(None, c, ctor, &mut Vec::new()) {
+                    return cfqn;
+                }
+            }
+            _ => {}
+        }
+    }
+    String::new()
+}
+
+pub fn property_fqn(cu: &CompilationUnit, prop: &PropertyDeclaration) -> String {
+    if let Some(fs) = &cu.file_scoped_namespace
+        && let Some((cfqn, name)) = find_prop_in_namespace(None, &fs.declarations, prop)
+    {
+        return format!("{}::{}", cfqn, name);
+    }
+    for decl in &cu.declarations {
+        match decl {
+            TopLevelDeclaration::Namespace(ns) => {
+                let ns_path = ident_text(&ns.name);
+                if let Some((cfqn, name)) = find_prop_in_namespace(Some(&ns_path), &ns.declarations, prop) {
+                    return format!("{}::{}", cfqn, name);
+                }
+            }
+            TopLevelDeclaration::Class(c) => {
+                if let Some((cfqn, name)) = find_prop_in_class(None, c, prop, &mut Vec::new()) {
+                    return format!("{}::{}", cfqn, name);
+                }
+            }
+            _ => {}
+        }
+    }
+    String::new()
 }
 
 pub fn method_fqn(cu: &CompilationUnit, method: &MethodDeclaration) -> String {

@@ -1,9 +1,4 @@
 // Auto-generated from Roslyn: RangeExpressionParsingTests
-use crate::custom_asserts::after_parse;
-use crate::custom_asserts::after_parse::CaseData;
-use crate::custom_asserts::roslyn_asserts::ExpectedDiagnostics;
-use bsharp_parser::bsharp::parse_csharp_source_strict;
-use bsharp_syntax::span::Span;
 /// Roslyn: RangeExpressionParsingTests.CastingRangeExpressionWithoutStartOrEnd (case 1)
 #[test]
 fn casting_range_expression_without_start_or_end() {

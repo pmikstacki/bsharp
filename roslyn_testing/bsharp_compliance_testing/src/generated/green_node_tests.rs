@@ -1,8 +1,4 @@
 // Auto-generated from Roslyn: GreenNodeTests
-use crate::custom_asserts::after_parse;
-use crate::custom_asserts::after_parse::CaseData;
-use bsharp_parser::bsharp::parse_csharp_source_strict;
-use bsharp_syntax::span::Span;
 /// Roslyn: GreenNodeTests.ConvenienceSwitchStatementFactoriesAddParensWhenNeeded_01 (case 1)
 #[test]
 fn convenience_switch_statement_factories_add_parens_when_needed_01() {

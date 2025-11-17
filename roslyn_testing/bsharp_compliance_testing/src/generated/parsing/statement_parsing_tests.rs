@@ -1,7 +1,4 @@
 // Auto-generated STRUCTURE tests from Roslyn: StatementParsingTests
-use crate::custom_asserts::structure_assert;
-use bsharp_parser::bsharp::parse_csharp_source_strict;
-use bsharp_syntax::span::Span;
 #[test]
 fn await_using_var_with_var_decl_reversed() {
     let src = r#"await using var a = b;"#;

@@ -30,6 +30,7 @@ pub mod errors;
 // Sidecar span types and parser extension
 pub mod span;
 pub mod span_ext;
+pub mod span_db_build;
 
 use std::collections::HashMap;
 

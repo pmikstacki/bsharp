@@ -1,8 +1,4 @@
 // Auto-generated from Roslyn: SeparatedSyntaxListTests
-use crate::custom_asserts::after_parse;
-use crate::custom_asserts::after_parse::CaseData;
-use bsharp_parser::bsharp::parse_csharp_source_strict;
-use bsharp_syntax::span::Span;
 /// Roslyn: SeparatedSyntaxListTests.TestSeparatedListInsert (case 1)
 #[test]
 fn separated_list_insert() {

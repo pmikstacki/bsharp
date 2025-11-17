@@ -1,7 +1,4 @@
 // Auto-generated STRUCTURE tests from Roslyn: LambdaParameterParsingTests
-use crate::custom_asserts::structure_assert;
-use bsharp_parser::bsharp::parse_csharp_source_strict;
-use bsharp_syntax::span::Span;
 #[test]
 fn end_of_file_after_out() {
     let src = r#""#;

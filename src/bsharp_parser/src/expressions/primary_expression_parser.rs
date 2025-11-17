@@ -2,7 +2,7 @@
 use crate::parser::expressions::collection_expression_parser::parse_collection_expression_or_brackets;
 use crate::parser::expressions::default_expression_parser::parse_default_expression;
 use crate::parser::expressions::lambda_expression_parser::parse_lambda_or_anonymous_method;
-use crate::parser::expressions::literal_parser::{parse_literal, parse_literal_spanned};
+use crate::parser::expressions::literal_parser::parse_literal_spanned;
 use crate::parser::expressions::nameof_expression_parser::parse_nameof_expression;
 use crate::parser::expressions::new_expression_parser::parse_new_expression;
 use crate::parser::expressions::paren_tuple_primary_parser::parse_paren_or_tuple_primary;
@@ -15,9 +15,7 @@ use crate::parser::keywords::contextual_misc_keywords::{kw_base, kw_this};
 use crate::parser::types::type_parser::parse_type_expression;
 use crate::trivia::comment_parser::ws;
 use crate::errors::BResult;
-use nom_supreme::ParserExt;
 
-use crate::parser::expressions::assignment_expression_parser;
 use crate::syntax::list_parser::parse_delimited_list0;
 use syntax::span::Span;
 use crate::span::Spanned;
@@ -27,7 +25,6 @@ use crate::tokens::relational::{tok_gt, tok_lt};
 use crate::tokens::separators::tok_comma;
 use nom::{
     Parser,
-    branch::alt,
     combinator::{map, peek},
     sequence::delimited,
 };

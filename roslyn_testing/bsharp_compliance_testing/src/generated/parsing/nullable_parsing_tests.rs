@@ -1,7 +1,4 @@
 // Auto-generated STRUCTURE tests from Roslyn: NullableParsingTests
-use crate::custom_asserts::structure_assert;
-use bsharp_parser::bsharp::parse_csharp_source_strict;
-use bsharp_syntax::span::Span;
 #[test]
 fn partial_accessibility_and_nullable_array() {
     let src = r#""#;

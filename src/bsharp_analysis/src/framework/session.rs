@@ -5,12 +5,15 @@ use std::any::{Any, TypeId};
 use std::collections::HashMap;
 use std::sync::Arc;
 use std::sync::RwLock;
+use bsharp_syntax::spans::span_db::SpanDb;
 
 /// Type-safe, thread-safe artifact store keyed by TypeId
 #[derive(Default)]
 pub struct ArtifactStore {
     inner: RwLock<HashMap<TypeId, Box<dyn Any + Send + Sync>>>,
 }
+
+// Using shared SpanDb from bsharp_syntax
 
 impl ArtifactStore {
     pub fn new() -> Self {
@@ -47,6 +50,8 @@ pub struct AnalysisSession {
     pub config: AnalysisConfig,
     // Project-wide handle
     pub project: Project,
+    // Optional pointer-keyed span database (now authoritative)
+    pub span_db: Option<SpanDb>,
 }
 
 impl AnalysisSession {
@@ -58,7 +63,21 @@ impl AnalysisSession {
             diagnostics: DiagnosticCollection::default(),
             artifacts: ArtifactStore::new(),
             project: Project::new(),
+            span_db: None,
         }
+    }
+
+    /// Resolve span for a NodeRef via SpanDb
+    pub fn span_of(&self, node: &crate::framework::NodeRef) -> Option<(usize, usize)> {
+        let db = self.span_db.as_ref()?;
+        let range = db.get(node)?;
+        Some((range.start, range.end.saturating_sub(range.start)))
+    }
+
+
+    /// Temporary placeholder: map NodeRef to SourceLocation using ctx and span_of
+    pub fn at(&self, node: &crate::framework::NodeRef) -> Option<crate::diagnostics::source_location::SourceLocation> {
+        self.span_of(node).map(|(start, len)| self.ctx.location_from_span(start, len))
     }
 
     /// Insert a typed artifact into the session store.

@@ -1,0 +1,18 @@
+[package]
+name = "cool_asserts"
+version = "2.0.3"
+authors = ["Nathan West <Lucretiel@gmail.com>"]
+edition = "2021"
+readme = "README.md"
+description = "A collection of useful testing assertions and utilities"
+repository = "https://github.com/Lucretiel/cool_asserts"
+license = "MPL-2.0"
+
+[badges]
+travis-ci = { repository = "Lucretiel/cool_asserts" }
+maintenance = { status = "actively-developed" }
+
+[dependencies]
+indent_write = { version = "2.2.0", default-features = false }
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html

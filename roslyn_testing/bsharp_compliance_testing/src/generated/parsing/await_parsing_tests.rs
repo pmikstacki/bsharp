@@ -1,7 +1,4 @@
 // Auto-generated STRUCTURE tests from Roslyn: AwaitParsingTests
-use crate::custom_asserts::structure_assert;
-use bsharp_parser::bsharp::parse_csharp_source_strict;
-use bsharp_syntax::span::Span;
 #[test]
 fn await_on_identifier_in_asynchronous_context() {
     let src = r#""#;

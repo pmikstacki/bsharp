@@ -25,3 +25,6 @@ pub use diagnostics::source_location::SourceLocation;
 pub use framework::diagnostic_builder::DiagnosticBuilder;
 pub use metrics::AstAnalysis;
 pub use report::AnalysisReport;
+
+// Proc macro re-exports for ergonomic use
+pub use bsharp_diagnostics_macros::{rule, ruleset};

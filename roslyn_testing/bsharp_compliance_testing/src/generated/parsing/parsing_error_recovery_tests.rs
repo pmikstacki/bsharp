@@ -1,7 +1,4 @@
 // Auto-generated STRUCTURE tests from Roslyn: ParsingErrorRecoveryTests
-use crate::custom_asserts::structure_assert;
-use bsharp_parser::bsharp::parse_csharp_source_strict;
-use bsharp_syntax::span::Span;
 #[test]
 fn semicolon_after_object_initializer_member_2() {
     let src = r#"class c { void m() { var x = new C { a = b; }; var y = 5; } }"#;

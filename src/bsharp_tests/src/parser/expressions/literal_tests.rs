@@ -75,7 +75,7 @@ fn test_verbatim_and_raw_strings() {
 fn test_boolean_literal() {
     // Test true
     let input_true = "true".into();
-    let result_true = parse_literal(input_true);
+    let _result_true = parse_literal(input_true);
     let input_true = "true";
     let result_true = parse_literal(input_true.into());
     assert!(

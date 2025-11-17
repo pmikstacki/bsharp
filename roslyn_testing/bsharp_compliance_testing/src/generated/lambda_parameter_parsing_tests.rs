@@ -1,10 +1,4 @@
 // Auto-generated from Roslyn: LambdaParameterParsingTests
-use crate::custom_asserts::after_parse;
-use crate::custom_asserts::after_parse::CaseData;
-use crate::custom_asserts::roslyn_asserts::ExpectedDiagnostics;
-use bsharp_parser::bsharp::parse_csharp_source as parse_csharp_source_strict;
-use bsharp_parser::statement_parser::parse_statement_ws_spanned;
-use bsharp_syntax::span::Span;
 /// Roslyn: LambdaParameterParsingTests.EndOfFileAfterOut (case 1)
 #[test]
 fn end_of_file_after_out() {

@@ -1,9 +1,4 @@
 // Auto-generated from Roslyn: ForStatementParsingTest
-use crate::custom_asserts::after_parse;
-use crate::custom_asserts::after_parse::CaseData;
-use crate::custom_asserts::roslyn_asserts::ExpectedDiagnostics;
-use bsharp_parser::statement_parser::parse_statement_ws_spanned;
-use bsharp_syntax::span::Span;
 /// Roslyn: ForStatementParsingTest.TestCommaSeparators1 (case 1)
 #[test]
 fn comma_separators_1() {

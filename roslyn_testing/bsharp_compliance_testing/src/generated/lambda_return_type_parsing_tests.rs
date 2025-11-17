@@ -1,8 +1,4 @@
 // Auto-generated from Roslyn: LambdaReturnTypeParsingTests
-use crate::custom_asserts::after_parse;
-use crate::custom_asserts::after_parse::CaseData;
-use bsharp_parser::bsharp::parse_csharp_source_strict;
-use bsharp_syntax::span::Span;
 /// Roslyn: LambdaReturnTypeParsingTests.NullablePointer (case 1)
 #[test]
 fn nullable_pointer() {

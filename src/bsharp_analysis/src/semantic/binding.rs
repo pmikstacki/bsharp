@@ -1,4 +1,5 @@
 use crate::framework::{AnalysisSession, AnalyzerPass, Phase, Query};
+use crate::diag;
 use crate::syntax::ast::CompilationUnit;
 use crate::semantic::symbols::SymbolTable;
 use bsharp_syntax::types::Type;
@@ -44,18 +45,19 @@ impl AnalyzerPass for BindingPass {
                     let cand = symtab.resolve_simple(&name);
                     match cand.len() {
                         0 => {
-                            crate::framework::diagnostic_builder::DiagnosticBuilder::new(crate::DiagnosticCode::BSE03012)
-                                .with_message(format!("Unresolved name '{name}'"))
-                                .emit(session);
+                            diag!(session, crate::DiagnosticCode::BSE03012, at id, msg: format!("Unresolved name '{name}'"));
                         }
                         1 => {
                             table.types_by_simple.insert(name, cand[0].clone());
                         }
                         _ => {
                             // Ambiguous; treat as unresolved for now
-                            crate::framework::diagnostic_builder::DiagnosticBuilder::new(crate::DiagnosticCode::BSE03012)
-                                .with_message(format!("Ambiguous name '{}': {} candidates", name, cand.len()))
-                                .emit(session);
+                            diag!(
+                                session,
+                                crate::DiagnosticCode::BSE03012,
+                                at id,
+                                msg: format!("Ambiguous name '{}': {} candidates", name, cand.len())
+                            );
                         }
                     }
                 }
@@ -65,13 +67,14 @@ impl AnalyzerPass for BindingPass {
                     if cand.len() == 1 {
                         table.types_by_simple.insert(name, cand[0].clone());
                     } else if cand.is_empty() {
-                        crate::framework::diagnostic_builder::DiagnosticBuilder::new(crate::DiagnosticCode::BSE03012)
-                            .with_message(format!("Unresolved name '{name}'"))
-                            .emit(session);
+                        diag!(session, crate::DiagnosticCode::BSE03012, at base, msg: format!("Unresolved name '{name}'"));
                     } else {
-                        crate::framework::diagnostic_builder::DiagnosticBuilder::new(crate::DiagnosticCode::BSE03012)
-                            .with_message(format!("Ambiguous name '{}': {} candidates", name, cand.len()))
-                            .emit(session);
+                        diag!(
+                            session,
+                            crate::DiagnosticCode::BSE03012,
+                            at base,
+                            msg: format!("Ambiguous name '{}': {} candidates", name, cand.len())
+                        );
                     }
                 }
                 _ => {}

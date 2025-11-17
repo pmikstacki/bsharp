@@ -1,7 +1,4 @@
 // Auto-generated STRUCTURE tests from Roslyn: AnonymousFunctionParsingTests
-use crate::custom_asserts::structure_assert;
-use bsharp_parser::bsharp::parse_csharp_source_strict;
-use bsharp_syntax::span::Span;
 #[test]
 fn multiple_async_modifiers_on_anonymous_method() {
     let src = r#""#;

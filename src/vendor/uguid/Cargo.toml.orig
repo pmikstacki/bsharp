@@ -1,0 +1,37 @@
+# Copyright 2022 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
+# https://www.apache.org/licenses/LICENSE-2.0> or the MIT license
+# <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your
+# option. This file may not be copied, modified, or distributed
+# except according to those terms.
+
+[package]
+name = "uguid"
+version = "2.2.1"
+categories = ["data-structures", "embedded", "no-std"]
+description = "GUID (Globally Unique Identifier) no_std library"
+keywords = ["gpt", "guid", "no_std", "uefi"]
+
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+bytemuck = { workspace = true, features = ["derive"], optional = true }
+serde = { version = "1.0.0", default-features = false, features = ["derive"], optional = true }
+
+[dev-dependencies]
+serde_test = "1.0.0"
+trybuild = "1.0.80"
+
+[features]
+# See module docstring in src/lib.rs for details of what these features do.
+bytemuck = ["dep:bytemuck"]
+serde = ["dep:serde"]
+std = []
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]

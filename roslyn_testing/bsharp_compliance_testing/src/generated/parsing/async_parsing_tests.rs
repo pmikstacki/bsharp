@@ -1,7 +1,4 @@
 // Auto-generated STRUCTURE tests from Roslyn: AsyncParsingTests
-use crate::custom_asserts::structure_assert;
-use bsharp_parser::bsharp::parse_csharp_source_strict;
-use bsharp_syntax::span::Span;
 #[test]
 fn simple_async_method() {
     let src = r#""#;

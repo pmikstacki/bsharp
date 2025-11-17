@@ -62,14 +62,14 @@ impl AnalyzerRegistry {
         // Phase C: metrics (generic Query-based)
         reg.register_pass(crate::passes::metrics::MetricsPass);
         // Phase C: baseline naming rules
-        reg.register_ruleset(crate::rules::naming::ruleset());
+        reg.register_ruleset(crate::rules::naming::naming_ruleset());
         // Phase C: baseline semantic rules (these don't depend on global artifacts yet)
-        reg.register_ruleset(crate::rules::semantic::ruleset());
+        reg.register_ruleset(crate::rules::semantic::semantic_ruleset());
         // Phase D: global passes
         reg.register_pass(crate::passes::control_flow::ControlFlowPass);
         reg.register_pass(crate::passes::dependencies::DependenciesPass);
         // Phase D: rules that consume global artifacts should run in Semantic phase
-        reg.register_semantic_ruleset(crate::rules::control_flow_smells::ruleset());
+        reg.register_semantic_ruleset(crate::rules::control_flow_smells::control_flow_smells_ruleset());
         // Phase E: semantic passes
         reg.register_pass(crate::semantic::symbols::SymbolsPass);
         reg.register_pass(crate::semantic::binding::BindingPass);
