@@ -1,0 +1,22 @@
+pub mod ids;
+pub mod value;
+pub mod instr;
+pub mod module;
+pub mod error;
+pub mod builder;
+pub mod verify;
+pub mod debug;
+pub mod optimizer;
+pub mod lowering;
+
+pub use crate::ids::{BlockId, FunctionId, GlobalId, LocalId, RegisterId};
+pub use crate::value::ValueKind;
+pub use crate::instr::{CapturedVar, IrInstr};
+pub use crate::module::{FunctionFlags, IrBlock, IrConstant, IrFunction, IrGlobal, IrLocal, IrModule, IrParam};
+pub use crate::error::{IrError, IrResult};
+pub use crate::builder::{IrFunctionBuilder, IrModuleBuilder};
+pub use crate::verify::IrVerifier;
+pub use crate::debug::{dump_block, dump_function, dump_module};
+pub use crate::optimizer::{run_optimizations, OptimizerConfig};
+pub use crate::lowering::entry::lower_compilation_unit;
+pub use crate::lowering::error::CompileError as LoweringError;

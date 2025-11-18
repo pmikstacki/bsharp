@@ -1,95 +1,104 @@
-
 # Summary
 
 [Introduction](./README.md)
 
 # Parser Architecture
 
-- [Overview](./parser/overview.md)
-- [Core Components](./parser/core-components.md)
-- [AST Structure](./parser/ast-structure.md)
-- [Error Handling](./parser/error-handling.md)
+*   [Overview](./parser/overview.md)
+*   [Core Components](./parser/core-components.md)
+*   [AST Structure](./parser/ast-structure.md)
+*   [Error Handling](./parser/error-handling.md)
 
 # Parser Modules
 
-- [Expression Parsing](./parser/expressions.md)
-- [Statement Parsing](./parser/statements.md)
-- [Declaration Parsing](./parser/declarations.md)
-- [Type System](./parser/types.md)
-- [Feature Completeness](./parser/feature-completeness.md)
-- [Keywords and Tokens](./parser/keywords-and-tokens.md)
+*   [Expression Parsing](./parser/expressions.md)
+*   [Statement Parsing](./parser/statements.md)
+*   [Declaration Parsing](./parser/declarations.md)
+*   [Type System](./parser/types.md)
+*   [Feature Completeness](./parser/feature-completeness.md)
+*   [Keywords and Tokens](./parser/keywords-and-tokens.md)
 
 # Advanced Features
 
-- [Query API](./parser/navigation.md)
-- [Comment Parsing](./parser/comments.md)
-- [Preprocessor Directives](./parser/preprocessor.md)
+*   [Query API](./parser/navigation.md)
+*   [Comment Parsing](./parser/comments.md)
+*   [Preprocessor Directives](./parser/preprocessor.md)
 
 # Syntax
 
-- [Spans](./syntax/spans.md)
-- [Traits](./syntax/traits.md)
-- [Derive Macros](./syntax/derive-macros.md)
-- [Formatter and Emitters](./syntax/formatter.md)
+*   [Spans](./syntax/spans.md)
+*   [Traits](./syntax/traits.md)
+*   [Derive Macros](./syntax/derive-macros.md)
+*   [Formatter and Emitters](./syntax/formatter.md)
 
 # Analysis Framework
 
-- [Analysis Overview](./analysis/overview.md)
-- [Analysis Pipeline](./analysis/pipeline.md)
-- [Traversal Guide](./analysis/traversal-guide.md)
-- [Control Flow Analysis](./analysis/control-flow.md)
-- [Dependency Analysis](./analysis/dependencies.md)
-- [Metrics Collection](./analysis/metrics.md)
-- [Type Analysis](./analysis/types.md)
-- [Code Quality](./analysis/quality.md)
-- [Passes and Rules](./analysis/passes-and-rules.md)
-- [Report Schema](./analysis/report-schema.md)
-- [Writing a Pass](./analysis/writing-a-pass.md)
-- [Writing a Ruleset](./analysis/writing-a-ruleset.md)
+*   [Analysis Overview](./analysis/overview.md)
+*   [Analysis Pipeline](./analysis/pipeline.md)
+*   [Traversal Guide](./analysis/traversal-guide.md)
+*   [Control Flow Analysis](./analysis/control-flow.md)
+*   [Dependency Analysis](./analysis/dependencies.md)
+*   [Metrics Collection](./analysis/metrics.md)
+*   [Type Analysis](./analysis/types.md)
+*   [Code Quality](./analysis/quality.md)
+*   [Passes and Rules](./analysis/passes-and-rules.md)
+*   [Report Schema](./analysis/report-schema.md)
+*   [Writing a Pass](./analysis/writing-a-pass.md)
+*   [Writing a Ruleset](./analysis/writing-a-ruleset.md)
 
 # CLI Tools
 
-- [Command Line Interface](./cli/overview.md)
-- [Parse Command](./cli/parse.md)
-- [Tree Visualization](./cli/tree.md)
-- [Analysis Command](./cli/analyze.md)
-- [Format Command](./cli/format.md)
-- [Parse Errors JSON](./cli/errors-json.md)
+*   [Command Line Interface](./cli/overview.md)
+*   [Parse Command](./cli/parse.md)
+*   [Tree Visualization](./cli/tree.md)
+*   [Analysis Command](./cli/analyze.md)
+*   [Format Command](./cli/format.md)
+*   [Parse Errors JSON](./cli/errors-json.md)
 
 # Workspace
 
-- [Workspace Loading](./workspace/overview.md)
+*   [Workspace Loading](./workspace/overview.md)
 
 # Configuration
 
-- [Configuration Overview](./configuration/overview.md)
+*   [Configuration Overview](./configuration/overview.md)
 
 # Development
 
-- [Contributing](./development/contributing.md)
-- [Testing](./development/testing.md)
-- [Architecture Decisions](./development/architecture.md)
-- [Cookbooks](./development/cookbooks.md)
-  - [Query Cookbook](./development/query-cookbook.md)
-  - [Parser Cookbook](./development/parser-cookbook.md)
-- [Writing Tests](./development/writing-tests.md)
-- [bsharp_tests Overview](./development/bsharp_tests.md)
-- [Extending Syntax (New Nodes)](./development/extending-syntax.md)
-- [Writing Parsers](./development/writing-parsers.md)
-- [Spanned-first Parsers](./development/spanned-parsers.md)
-- [Compliance](./development/compliance/README.md)
-  - [Overview](./development/compliance/overview.md)
-  - [Compliance Guide](./development/compliance/compliance_guide.md)
-  - [Generator](./development/compliance/Generator.md)
+*   [Contributing](./development/contributing.md)
+*   [Testing](./development/testing.md)
+*   [Architecture Decisions](./development/architecture.md)
+*   [Cookbooks](./development/cookbooks.md)
+    *   [Query Cookbook](./development/query-cookbook.md)
+    *   [Parser Cookbook](./development/parser-cookbook.md)
+*   [Writing Tests](./development/writing-tests.md)
+*   [bsharp\_tests Overview](./development/bsharp_tests.md)
+*   [Extending Syntax (New Nodes)](./development/extending-syntax.md)
+*   [Writing Parsers](./development/writing-parsers.md)
+*   [Spanned-first Parsers](./development/spanned-parsers.md)
+*   [Compliance](./development/compliance/README.md)
+    *   [Overview](./development/compliance/overview.md)
+    *   [Compliance Guide](./development/compliance/compliance_guide.md)
+    *   [Generator](./development/compliance/Generator.md)
 
 # Research & Development
 
-## CIL Runtime 
-- [dotscope Guide](./cil-runtime/dotscope-guide.md)
-- [VM Design](./cil-runtime/vm-design.md)
-- [Emitter Design](./cil-runtime/emitter-design.md)
-- [Testing & Conformance](./cil-runtime/testing.md)
-- [Roadmap](./cil-runtime/roadmap.md)
-- [Open Questions](./cil-runtime/open-questions.md)
-- [Glossary](./cil-runtime/glossary.md)
+## CIL Runtime
 
+*   [dotscope Guide](./cil-runtime/dotscope-guide.md)
+*   [VM Design](./cil-runtime/vm-design.md)
+*   [Emitter Design](./cil-runtime/emitter-design.md)
+*   [Testing & Conformance](./cil-runtime/testing.md)
+*   [Roadmap](./cil-runtime/roadmap.md)
+*   [Open Questions](./cil-runtime/open-questions.md)
+*   [Glossary](./cil-runtime/glossary.md)
+
+## BSharp VM Runtime (Custom IR)
+
+*   [Overview](./planning/vm-runtime-plan-overview.md)
+*   [Stage 1 – Architecture and Constraints](./planning/vm-stage1-architecture.md)
+*   [Stage 2 – IR Model Design](./planning/vm-stage2-ir-model.md)
+*   [Stage 3 – AST and Analysis Lowering](./planning/vm-stage3-lowering.md)
+*   [Stage 4 – VM Core Design and Implementation](./planning/vm-stage4-vm-design.md)
+*   [Stage 5 – Scripting Runtime and Embedding](./planning/vm-stage5-scripting-runtime.md)
+*   [Opcode Table](./planning/vm-opcode-table.md)

@@ -12,7 +12,7 @@ members = [
     "src/bsharp_diagnostics_macros",
     "roslyn_testing/bsharp_compliance",
     "roslyn_testing/bsharp_compliance_testing"
-]
+, "src/bsharp_vm", "src/bsharp_vm_ir"]
 resolver = "2"
 
 [workspace.package]

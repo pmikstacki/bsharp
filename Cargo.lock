@@ -344,6 +344,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "bsharp_vm"
+version = "0.1.1"
+dependencies = [
+ "bsharp_vm_ir",
+]
+
+[[package]]
+name = "bsharp_vm_ir"
+version = "0.1.1"
+dependencies = [
+ "bsharp_syntax",
+]
+
+[[package]]
 name = "bsharp_wasm"
 version = "0.1.1"
 dependencies = [

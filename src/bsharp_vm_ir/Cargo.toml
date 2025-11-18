@@ -1,0 +1,10 @@
+[package]
+name = "bsharp_vm_ir"
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+
+bsharp_syntax = { path = "../bsharp_syntax" }
