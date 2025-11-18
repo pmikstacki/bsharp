@@ -6,13 +6,13 @@ Practical recipes for nom-based parsers in `bsharp_parser`.
 
 ## Spanned-first policy
 
-- All public parser entrypoints return `Spanned<T>` so callers have precise source ranges for AST nodes.
-- Internals should prefer spanned parsers as well to preserve spans through transformations.
-- When you only need the inner value, map via `.node`.
+*   All public parser entrypoints return `Spanned<T>` so callers have precise source ranges for AST nodes.
+*   Internals should prefer spanned parsers as well to preserve spans through transformations.
+*   When you only need the inner value, map via `.node`.
 
 Examples:
 
-```rust
+```
 // Prefer the spanned variant and map to inner node when spans are not needed
 let (rest, expr) = nom::sequence::delimited(ws, parse_expression_spanned, ws)
     .map(|s| s.node)
@@ -31,18 +31,18 @@ let (rest, args) = parse_delimited_list0(
 
 ### Parsable trait
 
-- For one-shot parsing of a type to `Spanned<Self>`, implement or use the crate’s `Parsable` abstraction (where available) instead of bespoke entrypoints.
-- This keeps a consistent contract across the parser and simplifies tests and tools that need spans.
+*   For one-shot parsing of a type to `Spanned<Self>`, implement or use the crate’s `Parsable` abstraction (where available) instead of bespoke entrypoints.
+*   This keeps a consistent contract across the parser and simplifies tests and tools that need spans.
 
 ---
 
 ## Conventions
 
-- Use `Span<'a>` and `BResult<'a, T>` from `bsharp_parser::syntax` modules.
-- Prefer small, composable parsers and add `context()` labels.
-- Use `cut()` to avoid misleading backtracking after committing to a branch.
+*   Use `Span<'a>` and `BResult<'a, T>` from `bsharp_parser::syntax` modules.
+*   Prefer small, composable parsers and add `context()` labels.
+*   Use `cut()` to avoid misleading backtracking after committing to a branch.
 
-```rust
+```
 use bsharp_parser::syntax::span::Span;
 use bsharp_parser::syntax::errors::BResult;
 use nom::{IResult, branch::alt, bytes::complete::tag, character::complete as cc, combinator::{all_consuming, complete, map}, sequence::{delimited, preceded, terminated, tuple}};
@@ -53,7 +53,7 @@ use nom_supreme::ParserExt; // for .context(), .cut()
 
 ## Identifier
 
-```rust
+```
 fn identifier(input: Span) -> BResult<String> {
     // very simplified: letter (letter|digit|_)*
     map(
@@ -67,7 +67,7 @@ fn identifier(input: Span) -> BResult<String> {
 
 ## Comma-Separated List
 
-```rust
+```
 use nom::multi::separated_list0;
 
 fn comma_sep<T, F>(item: F) -> impl FnMut(Span) -> BResult<Vec<T>>
@@ -80,7 +80,7 @@ where F: Fn(Span) -> BResult<T> {
 
 ## Delimited Braces Block
 
-```rust
+```
 fn lbrace(i: Span) -> BResult<()> { map(tag("{"), |_| ()).context("'{'").parse(i) }
 fn rbrace(i: Span) -> BResult<()> { map(tag("}"), |_| ()).context("'}'").parse(i) }
 
@@ -101,7 +101,7 @@ where F: FnMut(Span) -> BResult<Vec<T>> {
 
 ## Using complete() for Tokens
 
-```rust
+```
 use nom::bytes::streaming::take;
 use nom::combinator::complete;
 
@@ -112,9 +112,9 @@ fn exactly_n(n: u8) -> impl FnMut(Span) -> BResult<Span<'_>> {
 
 ---
 
-## all_consuming at File Level
+## all\_consuming at File Level
 
-```rust
+```
 use nom::combinator::all_consuming;
 
 fn parse_file(input: Span) -> BResult<File> {
@@ -126,7 +126,7 @@ fn parse_file(input: Span) -> BResult<File> {
 
 ## Precedence Chain Skeleton
 
-```rust
+```
 fn primary(i: Span) -> BResult<Expr> { /* literals, names, parenthesized */ }
 fn postfix(i: Span) -> BResult<Expr> { /* member access, invocation */ }
 fn unary(i: Span) -> BResult<Expr> { /* + - ! ~ */ }
@@ -144,7 +144,7 @@ fn expression(i: Span) -> BResult<Expr> { assignment(i) }
 
 ## Context Labels and Cuts
 
-```rust
+```
 fn class_declaration(i: Span) -> BResult<ClassDecl> {
     preceded(
         tag("class").context("keyword 'class'"),
@@ -160,6 +160,6 @@ fn class_declaration(i: Span) -> BResult<ClassDecl> {
 
 ## Tips
 
-- **Whitespace**: Prefer explicit `multispace0`/`multispace1` at boundaries to avoid accidental greedy matches.
-- **Error messages**: Keep `context()` labels concise and domain-specific (e.g., "parameter list").
-- **Backtracking**: Insert `cut()` after committing to a branch to stop alt from swallowing errors.
+*   **Whitespace**: Prefer explicit `multispace0`/`multispace1` at boundaries to avoid accidental greedy matches.
+*   **Error messages**: Keep `context()` labels concise and domain-specific (e.g., "parameter list").
+*   **Backtracking**: Insert `cut()` after committing to a branch to stop alt from swallowing errors.
